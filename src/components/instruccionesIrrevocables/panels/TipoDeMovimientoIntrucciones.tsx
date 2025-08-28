@@ -221,70 +221,8 @@ export function TipoDeMovimientoIntrucciones() {
               entePublicoObligado: tipoMovimiento.entePublicoObligado,
               tipoFuente: tipoMovimiento.tipoFuente,
               fondoIngreso: tipoMovimiento.fondoIngreso,
-              fondoIngresoGobiernoEstatal:
-                tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
-                  "participaciones"
-                  ? "80.00"
-                  : "100.00",
-              fondoIngresoMunicipios:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
-                  ? tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
-                    "participaciones"
-                    ? "20.00"
-                    : "0.00"
-                  : "0.00",
-              fondoIngresoAsignadoMunicipio:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
-                  ? "100.00"
-                  : "0.00",
-              ingresoOrganismo:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "gobierno estatal"
-                  ? "0.00"
-                  : "0.00",
-              fondoIngresoAfectadoXGobiernoEstatal:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
-                  ? ""
-                  : "",
-              afectacionGobiernoEstatalEntre100:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
-                  ? "0.00"
-                  : "",
-              acumuladoAfectacionGobiernoEstatalEntre100:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "gobierno estatal"
-                  ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                  : "",
-              fondoIngresoAfectadoXMunicipio:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
-                  ? "0"
-                  : "0",
-              acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                  "municipio"
-                  ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                  : "",
-              ingresoAfectadoXOrganismo:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "gobierno estatal"
-                  ? ""
-                  : "",
-              acumuladoAfectacionOrganismoEntre100:
-                tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "municipio" &&
-                  tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                  "gobierno estatal"
-                  ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                  : "",
+              AfectadoTotalIngreso: tipoMovimiento.AfectadoTotalIngreso,
+              EquivalenciaCorrespondienteMunicipios: tipoMovimiento.EquivalenciaCorrespondienteMunicipios,
             });
             cleanTipoMovimiento();
           }}

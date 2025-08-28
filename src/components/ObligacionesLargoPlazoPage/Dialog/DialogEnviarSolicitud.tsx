@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { queries } from "../../../queries";
@@ -23,6 +24,7 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IDataAgregarSolicitud } from "../../../store/CreditoLargoPlazo/solicitud_inscripcion";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -45,9 +47,7 @@ export function ConfirmacionEnviarSolicitud({
 
   const [idUsuarioAsignado, setidUsuarioAsignado] = React.useState("");
 
-  const [usuarios, setUsuarios] = React.useState<Array<IUsuariosAsignables>>(
-    []
-  );
+  const [usuarios, setUsuarios] = React.useState<Array<IUsuariosAsignables>>([]);
 
   React.useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -63,6 +63,14 @@ export function ConfirmacionEnviarSolicitud({
   const cleanSolicitud: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
+
+  const createAsignacionTipoSolicitud: Function = useLargoPlazoStore(
+    (state) => state.createAsignacionTipoSolicitud
+  );
+
+  const [dataAsignacion, setDataAsignacion] = useState<IDataAgregarSolicitud>()
+
+
 
   return (
     <Dialog
@@ -166,10 +174,10 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    // cleanSolicitud();
+                    // navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
+                      "Crédito simple a largo plazo",
                       "La solicitud de inscripción está lista para firmar",
                       [localStorage.getItem("IdUsuario") || ""]
                     );
@@ -201,7 +209,7 @@ export function ConfirmacionEnviarSolicitud({
                     cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
-                      "Crédito simple a corto plazo",
+                      "Crédito simple a largo plazo",
                       "Se te ha asignado una solicitud de inscripción",
                       [idUsuarioAsignado]
                     );
@@ -221,9 +229,10 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   "3",
-                  localStorage.getItem("IdUsuario")
+                  localStorage.getItem("IdUsuario"),
+                  setDataAsignacion
                 )
-                  .then(() => {
+                  .then((data: any) => {
                     addComentario(
                       solicitud.Id,
                       JSON.stringify(comentarios),
@@ -236,8 +245,8 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    // cleanSolicitud();
+                    // navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -249,7 +258,7 @@ export function ConfirmacionEnviarSolicitud({
                     });
                   });
                 createNotification(
-                  "Crédito simple a corto plazo",
+                  "Crédito simple a largo plazo",
                   "La solicitud de inscripción está lista para firmar",
                   [localStorage.getItem("IdUsuario") || ""]
                 );
@@ -258,6 +267,7 @@ export function ConfirmacionEnviarSolicitud({
                   localStorage.getItem("IdUsuario"),
                   "2",
                   idUsuarioAsignado,
+                  setDataAsignacion
                 )
                   .then(() => {
                     addComentario(
@@ -291,17 +301,15 @@ export function ConfirmacionEnviarSolicitud({
           sx={queries.buttonContinuar}
         >
           {JSON.stringify(comentarios) == null ||
-          /^[\s]*$/.test(JSON.stringify(comentarios))
-            ? `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `
-            : `${
-                localStorage.getItem("Rol") === "Capturador"
-                  ? "Enviar"
-                  : "Finalizar"
-              } `}
+            /^[\s]*$/.test(JSON.stringify(comentarios))
+            ? `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `
+            : `${localStorage.getItem("Rol") === "Capturador"
+              ? "Enviar"
+              : "Finalizar"
+            } `}
         </Button>
       </DialogActions>
     </Dialog>

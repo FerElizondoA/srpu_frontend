@@ -33,7 +33,7 @@ import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { ISoporteDocumentalMandato } from "../../../store/Mandatos/mandato";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso"; 
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { buttonTheme } from "../dialog/AgregarMandatos";
@@ -68,7 +68,7 @@ export function SoporteDocumentalMandato() {
       reader.onerror = reject;
     });
 
-  const soporteDocumental: ISoporteDocumentalMandato = useMandatoStore(
+  const soporteDocumental: ISoporteDocumentalFuentePago = useMandatoStore(
     (state) => state.soporteDocumental
   );
 
@@ -89,7 +89,7 @@ export function SoporteDocumentalMandato() {
     (state) => state.addSoporteDocumental
   );
 
-  const tablaSoporteDocumentalMandato: ISoporteDocumentalMandato[] =
+  const tablaSoporteDocumentalMandato: ISoporteDocumentalFuentePago[] =
     useMandatoStore((state) => state.tablaSoporteDocumentalMandato);
 
   const cleanSoporteDocumental: Function = useMandatoStore(
@@ -295,7 +295,7 @@ export function SoporteDocumentalMandato() {
               }}
               disabled={
                 soporteDocumental.tipo === "" ||
-                soporteDocumental.fechaArchivo === "" ||
+                !soporteDocumental.fechaArchivo ||
                 soporteDocumental.nombreArchivo === ""
               }
               onClick={() => {

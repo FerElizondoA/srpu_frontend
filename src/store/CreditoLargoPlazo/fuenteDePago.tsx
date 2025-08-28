@@ -19,8 +19,10 @@ export interface IRegistro {
   Mandante: string;
   TipoEntePublicoObligado: string;
 
+
   CLABE: string;
-  Banco: string;
+  IdBanco: string;
+  NombreBanco: string;
   EntePublicoObligado: string;
 
   TipoMovimiento: string;
@@ -61,6 +63,9 @@ export interface FuenteDePagoLargoPlazoSlice {
 
 
 
+
+  OriginalTablaAsignarFuenteNew: IDeudorFideicomisoNew[];
+  //setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
   tablaAsignarFuenteNew: IDeudorFideicomisoNew[];
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
   removeTablaAsignarFuente: (index: number) => void;
@@ -80,7 +85,7 @@ export interface FuenteDePagoLargoPlazoSlice {
   updateTipoMovimientoField: (
     index: number,
     field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>,
-    value: number
+    value: number,
   ) => void;
 }
 
@@ -88,12 +93,15 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
 
-  updateTipoMovimientoField: (index, field, value) => {
+  updateTipoMovimientoField: (index: number, field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>
+    , value: number) => {
     set((state) => {
       const updatedTabla = state.tablaAsignarFuenteNew.map((row, i) =>
         i === index ? { ...row, [field]: value } : row
       );
+      // setState(updatedTabla);
       return { tablaAsignarFuenteNew: updatedTabla };
+
     });
   },
   removeTablaAsignarFuente: (index: number) =>
@@ -132,8 +140,10 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     Mandante: "",
     TipoEntePublicoObligado: "",
 
+    NumeroCuenta: "",
     CLABE: "",
-    Banco: "",
+    IdBanco: "",
+    NombreBanco: "",
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
@@ -145,10 +155,12 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
   tablaAsignarFuente: [],
 
   tablaAsignarFuenteNew: [],
+  OriginalTablaAsignarFuenteNew: [],
 
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) =>
     set(() => ({
       tablaAsignarFuenteNew: fuente,
+      OriginalTablaAsignarFuenteNew: fuente
     })),
 
   cleanTablaAsignarFuenteNew: () =>

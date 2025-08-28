@@ -55,9 +55,11 @@ export const buttonTheme = createTheme({
 export function AgregarMandatos({
   handler,
   openState,
+  getMecanismosVehiculosPago,
 }: {
   handler: Function;
   openState: boolean;
+  getMecanismosVehiculosPago: Function;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -78,6 +80,9 @@ export function AgregarMandatos({
   const modificaMandato: Function = useMandatoStore(
     (state) => state.modificaMandato
   );
+
+  const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+
 
   const [loading, setLoading] = useState(false);
 
@@ -122,20 +127,24 @@ export function AgregarMandatos({
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
-              disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
+                disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   if (IdMandato === "") {
+                    //console.log("CREA MANDATO")
                     setLoading(true);
                     createMandato(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
                     });
                   } else if (IdMandato !== "") {
+                   // console.log("EDITA MANDATO")
                     setLoading(true);
                     modificaMandato(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
                     });
                   }
                   setTabIndex(0);
@@ -150,8 +159,8 @@ export function AgregarMandatos({
                     },
                   }}
                 >
-                    {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
-                : IdMandato === "" ? "Agregar" : "Editar"} Mandato
+                  {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
+                    : IdMandato === "" ? "Agregar" : "Editar"} Mandato
                   {/* {IdMandato === "" ? "Agregar" : "Editar"} Mandato */}
                 </Typography>
               </Button>

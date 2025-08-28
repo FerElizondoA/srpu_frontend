@@ -10,6 +10,9 @@ import { alertaError, alertaErrorConfirm, alertaExitoConfirm } from "../../gener
 import { IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 import { useState } from "react";
 import { useCancelacionStore } from "../Cancelacion/main";
+import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
+import { useFideicomisoStore } from "../Fideicomiso/main";
+import Swal from "sweetalert2";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -30,6 +33,217 @@ export interface IDataFirmaDetalle {
   FechaCreacion: string;
   Deleted: number;
 }
+
+export interface IDatosCompletosSolicitud {
+
+  encabezado: {
+    tipoCredito: {
+      Id: string;
+      Descripcion: string;
+    };
+    tipoDocumento: string;
+    solicitanteAutorizado: {
+      IdSolicitante: string;
+      Cargo: string;
+      Nombre: string;
+    };
+    tipoEntePublico: {
+      Id: string;
+      TipoEntePublico: string;
+    };
+    organismo: {
+      Id: string;
+      Organismo: string;
+    };
+    fechaContratacion: string;
+  };
+  informacionGeneral: {
+    informacionGeneral: {
+      fechaContratacion: string;
+      fechaVencimiento: string;
+      plazo: number;
+      destino: {
+        Id: string;
+        Descripcion: string;
+      };
+      monto: string;
+      denominacion: string;
+      institucionFinanciera: {
+        Id: string;
+        Descripcion: string;
+      };
+    };
+    obligadosSolidarios: {
+      entePublicoObligado: string;
+      tipoEntePublicoObligado: string;
+    }[];
+    destinoGastosCostos: {
+      destino: {
+        Id: string;
+        Descripcion: string;
+      };
+      detalleInversion: {
+        Id: string;
+        Descripcion: string;
+      };
+      archivoDetalleInversion: {
+        archivo: Record<string, unknown>;
+        nombreArchivo: string;
+      };
+      claveInscripcionFinanciamiento: string;
+      descripcion: string;
+      monto: string;
+      gastosAdicionales: string;
+      montoGastosAdicionales: string;
+      saldoVigente: string;
+    }[];
+  };
+  autorizacion: {
+    Id: string;
+    MontoAutorizado: string;
+    NumeroAutorizacion: string;
+  };
+  fuenteDePago: {
+    mecanismoVehiculoDePago: {
+      Tipo: string;
+      Id: string;
+      NumeroRegistro: string;
+      TipoFideicomiso: string;
+      Fiduciario: string;
+    };
+    fuente: {
+      id: string;
+      tipoFideicomitente: {
+        Id: string;
+        Descripcion: string;
+      };
+      fideicomitente: {
+        Id: string;
+        Descripcion: string;
+      };
+      tipoFuente: {
+        Id: string;
+        Descripcion: string;
+      };
+      fondoIngreso: {
+        Id: string;
+        Descripcion: string;
+        TipoDeFuente: string;
+      };
+      AfectadoTotalIngreso: number;
+      EquivalenciaCorrespondienteMunicipios: number;
+    }[];
+    garantiaDePago: string;
+  };
+  condicionesFinancieras: {
+    pagosDeCapital: {
+      fechaPrimerPago: string;
+      periodicidadDePago: {
+        Id: string;
+        Descripcion: string;
+      };
+      numeroDePago: string;
+    };
+    disposicion: {
+      fechaDisposicion: string;
+      importe: string;
+    }[];
+    tasaInteres: {
+      tasaFija: string;
+      fechaPrimerPago: string;
+      diasEjercicio: {
+        Id: string;
+        Descripcion: string;
+      };
+      periocidadPago: {
+        Id: string;
+        Descripcion: string;
+      };
+      tasaReferencia: {
+        Id: string;
+        Descripcion: string;
+      };
+      sobreTasa: number;
+    }[];
+    tasaEfectiva: {
+      tasaEfectiva: string;
+      diasEjercicio: {
+        Id: string;
+        Descripcion: string;
+      };
+    };
+    comisiones: {
+      fechaComision: string;
+      tipoDeComision: {
+        Id: string;
+        Descripcion: string;
+      };
+      periodicidadDePago: {
+        Id: string;
+        Descripcion: string;
+      };
+      monto: string;
+      porcentaje: string;
+      iva: boolean;
+    }[];
+  }[];
+  documentacion: {
+    descripcionTipo: string;
+    tipoArchivo: string;
+  }[];
+  inscripcion: {
+    servidorPublicoDirigido: string;
+    cargoServidorPublicoServidorPublicoDirigido: string;
+    declaratorias: [];
+  };
+  SolicitudReestructuracion: {
+    autorizacionReestructura: {
+      Id: string;
+      MontoAutorizado: string;
+      NumeroAutorizacion: string;
+    };
+    tablaDeclaratorias: [];
+    ReestructuraDeclaratorias: {
+      TipoConvenio: {
+        Id: string;
+        Descripcion: string;
+      };
+      FechaConvenio: string;
+      SalgoVigente: number;
+      PeriodoFinanciamiento: string;
+      PeriodoAdminitracion: string;
+      ClaseTitulo: {
+        Id: string;
+        Descripcion: string;
+      };
+    };
+  };
+}
+
+export interface IDatosPorcentajesAcumulados {
+  id: string;
+  tipoFideicomitente: {
+    Id: string;
+    Descripcion: string;
+  };
+  fideicomitente: {
+    Id: string;
+    Descripcion: string;
+  };
+  tipoFuente: {
+    Id: string;
+    Descripcion: string;
+  };
+  fondoIngreso: {
+    Id: string;
+    Descripcion: string;
+    TipoDeFuente: string;
+  };
+  AfectadoTotalIngreso: number;
+  EquivalenciaCorrespondienteMunicipios: number;
+  garantiaDePago: string;
+}
+
 
 export interface SolicitudFirmaSlice {
   proceso: string;
@@ -124,125 +338,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
     return parteEnteraEnPalabras;
   },
 
-  //  convertirMontosAPalabras (numeroConFormato: string): string  {
-
-
-  //   function limpiarFormatoMoneda(monto: string): number {
-  //     const montoLimpio = monto.replace(/[^0-9.]/g, '');
-  //     return parseFloat(montoLimpio);
-  //   }
-
-  //   const numeroFloat = limpiarFormatoMoneda(numeroConFormato)
-
-  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
-
-  //   function convertirNumeroAPalabras(numero: number): string {
-  //     if (numero === 0) return 'cero';
-  //     if (numero < 10) return unidades[numero];
-  //     if (numero < 20) return especiales[numero - 10];
-  //     if (numero < 100) return convertirDecenas(numero);
-  //     if (numero < 1000) return convertirCentenas(numero);
-  //     if (numero < 1000000) return convertirMiles(numero);
-  //     if (numero < 1000000000000) return convertirMillones(numero);
-
-  //     return 'Número demasiado grande';
-  //   }
-
-  //   function convertirDecenas(numero: number): string {
-  //     const decena = Math.floor(numero / 10);
-  //     const unidad = numero % 10;
-  //     if (numero < 30) {
-  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //     }
-  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //   }
-
-  //   function convertirCentenas(numero: number): string {
-  //     const centena = Math.floor(numero / 100);
-  //     const resto = numero % 100;
-  //     if (numero === 100) return 'cien';
-  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-  //   }
-
-  //   function convertirMiles(numero: number): string {
-  //     const miles = Math.floor(numero / 1000);
-  //     const resto = numero % 1000;
-  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //     return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //   }
-
-  //   function convertirMillones(numero: number): string {
-  //     const millones = Math.floor(numero / 1000000);
-  //     const resto = numero % 1000000;
-  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-  //     return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-  //   }
-
-  //   return convertirNumeroAPalabras(numeroFloat);
-  // },
-
-
-
-
-  // convertirMontosAPalabras: (numeroString: string) => {
-
-  //   const montoLimpio = parseFloat(numeroString.replace(/[^0-9.]/g, ''));
-
-  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
-
-
-  //     if (montoLimpio === 0) return 'cero';
-  //     if (montoLimpio < 10) return unidades[montoLimpio];
-  //     if (montoLimpio < 20) return especiales[montoLimpio - 10];
-  //     if (montoLimpio < 100) return convertirDecenas(montoLimpio);
-  //     if (montoLimpio < 1000) return convertirCentenas(montoLimpio);
-  //     if (montoLimpio < 1000000) return convertirMiles(montoLimpio);
-  //     if (montoLimpio < 1000000000000) return convertirMillones(montoLimpio);
-  //     return 'Número demasiado grande';
-
-
-  //   function convertirDecenas(numero: number): string {
-  //     const decena = Math.floor(numero / 10);
-  //     const unidad = numero % 10;
-
-  //     if (numero < 30) {
-  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //     }
-
-  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //   }
-
-  //   function convertirCentenas(numero: number): string {
-  //     const centena = Math.floor(numero / 100);
-  //     const resto = numero % 100;
-
-  //     if (numero === 100) return 'cien';
-  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-  //   }
-
-  //   function convertirMiles(numero: number): string {
-  //     const miles = Math.floor(numero / 1000);
-  //     const resto = numero % 1000;
-
-  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //     return convertirCentenas(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //   }
-
-  //   function convertirMillones(numero: number): string {
-  //     const millones = Math.floor(numero / 1000000);
-  //     const resto = numero % 1000000;
-
-  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-  //     return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-  //   }
-  // },
-
   proceso: "",
 
   url: "",
@@ -325,8 +420,6 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         ControlInterno: "",
         IdClaveInscripcion: ""
       };
-      console.log("info", info);
-      console.log("inf", inf);
 
       if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
         filtro.inscripcionReestructura?.IdSolicitud === null ||
@@ -339,7 +432,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           NoEstatus: state.NoEstatus,
           Estatus: state.Estatus,
           ControlInterno: state.ControlInterno,
-          IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
+          IdClaveInscripcion: state.IdClaveInscripcion
         };
 
       } else {
@@ -352,8 +445,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             NoEstatus: state.Estatus,
             Estatus: "",
             ControlInterno: "reestructura",
-            IdClaveInscripcion: state.IdClaveInscripcion //prueba reviar 07/01/2025
-
+            IdClaveInscripcion: state.IdClaveInscripcion
           }
         } else {
           //console.log("Entre al ELSE de state Filtro.insciprion", filtro.inscripcion);
@@ -368,6 +460,22 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           };
         }
       }
+      //Para guardar los porcentajes acumulados ya inscritos
+      // if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
+      //   //const LPS = useLargoPlazoStore.getState();
+      //   //const DatosFull: IDatosCompletosSolicitud = LPS.inscripcion
+      //   const SolicitudDatos: IDatosCompletosSolicitud = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
+
+      //   const DatosPorcentajesAcumulados = {
+      //     IdTipoEntePublicoObligado: SolicitudDatos.fuenteDePago.fuente[0].tipoFideicomitente.Id,
+      //     IdEntePublicoObligado: SolicitudDatos.fuenteDePago.fuente[0].fideicomitente.Id,
+      //     NombreEntePublico: SolicitudDatos.fuenteDePago.fuente[0].fideicomitente.Descripcion,
+      //     IdFondoOIngreso: SolicitudDatos.fuenteDePago.fuente[0].fondoIngreso.Id,
+      //     NombreFondoOIngreso: SolicitudDatos.fuenteDePago.fuente[0].fondoIngreso.Descripcion,
+      //     AfectadoTotalIngreso: SolicitudDatos.fuenteDePago.fuente[0].AfectadoTotalIngreso,
+      //     EquivalenciaCorrespondienteMunicipios: SolicitudDatos?.fuenteDePago?.fuente[0]?.EquivalenciaCorrespondienteMunicipios,
+      //   }
+      // }
 
       axios
         .post(
@@ -397,9 +505,28 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           }
         )
         .then((response) => {
-          console.log("response: ", response)
-          console.log("estatusPrevio", estatusPrevio);
+          //Para guardar los porcentajes acumulados ya inscritos
+          if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
 
+            console.log("Entro para guardar los porcentajes acumulados");
+            console.log("filtro.inscripcion.TipoSolicitud", filtro.inscripcion.TipoSolicitud);
+
+
+            const SolicitudDatos: IDatosCompletosSolicitud = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
+            console.log("SolicitudDatos", SolicitudDatos);
+
+            const DatosPorcentajesAcumulados = SolicitudDatos.fuenteDePago.fuente.map((fuente: any) => ({
+              id: fuente.id || "",
+              tipoFideicomitente: fuente.tipoFideicomitente,
+              fideicomitente: fuente.fideicomitente,
+              tipoFuente: fuente.tipoFuente,
+              fondoIngreso: fuente.fondoIngreso,
+              AfectadoTotalIngreso: fuente.AfectadoTotalIngreso,
+              EquivalenciaCorrespondienteMunicipios: fuente.EquivalenciaCorrespondienteMunicipios,
+              garantiaDePago: SolicitudDatos.fuenteDePago.garantiaDePago || "",
+            }));
+            createPorcentajesAcumulados(DatosPorcentajesAcumulados)
+          }
 
 
           //  let titulo =
@@ -468,7 +595,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
-              cambiaEstatus(
+
+
+          cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4" // Revision // Asignaccion
               : estatusPrevio.NoEstatus === "8" ? "9" // 7 y 8
@@ -533,6 +662,69 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
   setUrl: (url: any) => set(() => ({ url: url })),
 });
+
+export async function createPorcentajesAcumulados(DatosPorcentajesAcumulados: IDatosPorcentajesAcumulados[]) {
+
+  const state = useFideicomisoStore.getState();
+
+  const peticiones = DatosPorcentajesAcumulados.map(async (item) => {
+
+    console.log("ITEM", item)
+    try {
+      const { data } = await axios.post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-PorcentajesAcumulados",
+        {
+          IdTipoEntePublicoObligado: item.tipoFideicomitente.Id,
+          IdEntePublicoObligado: item.fideicomitente.Id,
+          NombreEntePublico: item.fideicomitente.Descripcion,
+          IdFondoOIngreso: item.fondoIngreso.Id,
+          NombreFondoOIngreso: item.fondoIngreso.Descripcion,
+          AfectadoTotalIngreso: item.AfectadoTotalIngreso || 0,
+          EquivalenciaCorrespondienteMunicipios: item.EquivalenciaCorrespondienteMunicipios || 0,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      );
+      console.log("DATA CREADA PORCENTAJE ACUMULADO", data?.data);
+      return data;
+    } catch (error: any) {
+      console.error("ERROR", error);
+
+      const mensajeError = error?.response?.data?.error || "Error desconocido al guardar los datos.";
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: mensajeError,
+        confirmButtonColor: "#d33",
+      });
+      console.log("data?.data", error?.data);
+      console.error("ERROR DATA", error?.response?.data || error.message);
+      throw error; // Esto es importante para que Promise.all detecte errores
+    }
+  });
+
+  try {
+    await Promise.all(peticiones); // Espera que todas las peticiones terminen
+    console.log("✅ Todos los porcentajes acumulados fueron creados");
+
+    // if (state.idFideicomiso === "") {
+    //   state.createFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+    // }
+
+    // //quitar
+    // else if (state.idFideicomiso !== "") {
+    //   state.modificaFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+    // }
+
+  } catch (error) {
+    console.error("❌ Error al crear uno o más porcentajes acumulados:", error);
+    // Puedes mostrar un mensaje al usuario si quieres
+  }
+}
 
 export async function GeneraAcuseRespuesta(
   tipoSolicitud: string,
@@ -997,178 +1189,6 @@ export async function ConsultaRequerimientosReestructura(
     .catch((err) => { });
 }
 
-// export async function ConsultaRequerimientosReestructura(
-//   Solicitud: string,
-//   Requerimientos: {},
-//   NoOficio: string,
-//   setUrl: Function,
-//   idClaveInscripcion: string,
-// ) {
-//   const solicitud: any = JSON.parse(Solicitud);
-
-//   function limpiarFormatoMoneda(monto: string): number {
-//     // Elimina el símbolo de peso y las comas
-//     const montoLimpio = monto.replace(/[^0-9.]/g, '');
-//     return parseFloat(montoLimpio);
-//   }
-
-//   function convertirMontosAPalabras (numero: number)  {
-//     const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-//     const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-//     const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-//     const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
-
-//     function convertirNumeroAPalabras(numero: number): string {
-//       if (numero === 0) return 'cero';
-
-//       if (numero < 10) return unidades[numero];
-//       if (numero < 20) return especiales[numero - 10];
-//       if (numero < 100) return convertirDecenas(numero);
-//       if (numero < 1000) return convertirCentenas(numero);
-//       if (numero < 1000000) return convertirMiles(numero);
-//       if (numero < 1000000000000) return convertirMillones(numero);
-
-//       return 'Número demasiado grande';
-//     }
-
-//     function convertirDecenas(numero: number): string {
-//       const decena = Math.floor(numero / 10);
-//       const unidad = numero % 10;
-
-//       if (numero < 30) {
-//         return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-//       }
-
-//       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-//     }
-
-//     function convertirCentenas(numero: number): string {
-//       const centena = Math.floor(numero / 100);
-//       const resto = numero % 100;
-
-//       if (numero === 100) return 'cien';
-//       return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-//     }
-
-//     function convertirMiles(numero: number): string {
-//       const miles = Math.floor(numero / 1000);
-//       const resto = numero % 1000;
-
-//       if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-//       return convertirCentenas(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-//     }
-
-//     function convertirMillones(numero: number): string {
-//       const millones = Math.floor(numero / 1000000);
-//       const resto = numero % 1000000;
-
-//       if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-//       return convertirCentenas(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-//     }
-
-//   }
-
-//   const montoLimpio = limpiarFormatoMoneda(solicitud?.informacionGeneral?.informacionGeneral?.monto)
-
-//   const palabras = convertirMontosAPalabras(Math.floor(montoLimpio));
-
-//   console.log("solicitud?.solicitud?.informacionGeneral?.informacionGeneral?.monto", solicitud?.informacionGeneral?.informacionGeneral?.monto)
-//   console.log("Palabra", palabras)
-
-//   await axios
-//     .post(
-//       process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-constancia-reestructura",
-//       {
-
-//         //oficioRequerimiento: 1,
-//         oficioNum: NoOficio,
-//         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
-
-//         claseTitulo: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.ClaseTitulo.Descripcion,
-
-//         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
-//         fechaSolicitud: format(new Date(), "PPP", {
-//           locale: es,
-//         }),
-
-//         tipoDocumento: "Solicitud de reestructuración",
-
-//         // fechaContratacion: format(new Date(), "PPP", {
-//         //   locale: es,
-//         // }),
-
-//         organismo: solicitud.encabezado.organismo.Organismo,
-//         oficioSolicitud: NoOficio,
-
-//         fechaContratacion: format(
-//           new Date(solicitud.encabezado.fechaContratacion),
-//           "PPP",
-//           {
-//             locale: es,
-//           }
-//         ),
-
-//         claveInscripcion: (idClaveInscripcion !== "" || idClaveInscripcion !== undefined)
-//           ? idClaveInscripcion
-//           : "Sin Id Clave de Inscripcion",
-
-//         fechaClave: format(
-//           new Date(solicitud.encabezado.fechaContratacion),
-//           "PPP",
-//           {
-//             locale: es,
-//           }
-//         ),
-
-//         fechaReestructuracion: format(new Date(), "PPP", {
-//           locale: es,
-//         }),
-
-//         entePublicoObligado: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
-//         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
-//         obligadoSolidarioAval:
-//           solicitud.informacionGeneral.obligadosSolidarios.length > 0
-//             ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
-//             : ["No Aplica"],
-
-//         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-//         montoPalabra: palabras,
-
-//         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
-//         mecanismoVehiculoDePago: solicitud.fuenteDePago.mecanismoVehiculoDePago.Tipo,
-//         fuentePago: solicitud.fuenteDePago?.fuente[0].fondoIngreso.Descripcion,
-
-//         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
-//         autoriazcionReestructura: solicitud.SolicitudReestructuracion.autorizacionReestructura.NumeroAutorizacion,
-//         periodicidad: solicitud.condicionesFinancieras[0].pagosDeCapital.periodicidadDePago.Descripcion,
-
-//         comentarios: JSON.stringify(Requerimientos),
-//         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
-//         cargoDirectorGeneral: solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
-//       },
-//       {
-//         headers: {
-//           Authorization: localStorage.getItem("jwtToken"),
-//           "Access-Control-Allow-Origin": "*",
-//         },
-//         responseType: "arraybuffer",
-//       }
-//     )
-//     .then((response) => {
-//       const a = window.URL || window.webkitURL;
-
-//       const url = a.createObjectURL(
-//         new Blob([response.data], { type: "application/pdf" })
-//       );
-
-//       setUrl(url);
-//     })
-//     .catch((err) => { });
-// }
-
-
-
-
 export async function ConsultaRequerimientos(
   Solicitud: string,
   Requerimientos: {},
@@ -1294,7 +1314,7 @@ export async function RegistroEstatalReestructura(
       }
     )
     .then((response) => {
-      console.log("JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias)", JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias));
+      // console.log("JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias)", JSON.stringify(solicitud.SolicitudReestructuracion.tablaDeclaratorias));
 
       const a = window.URL || window.webkitURL;
 
@@ -1433,10 +1453,9 @@ export async function GeneraAcuse(
   oficio: string,
   idRegistro: string
 ) {
-  console.log("idRegistro en ACUSE ", idRegistro);
+  //console.log("idRegistro en ACUSE ", idRegistro);
 
   let objBody = {
-    titulo: titulo,
     mensaje: mensaje,
     oficio: oficio,
   }
@@ -1465,8 +1484,8 @@ export async function GeneraAcuse(
       }
     )
     .then((response) => {
-      console.log("response YA FIRMADO", response);
-      console.log("objBody", JSON.stringify(objBody));
+      //console.log("response YA FIRMADO", response);
+      //console.log("objBody", JSON.stringify(objBody));
 
       const state = useCortoPlazoStore.getState();
 
@@ -1481,7 +1500,7 @@ export async function GeneraAcuse(
         //new File([response.data], `Acuse-${oficio}.pdf`)
       );
     })
-    
+
     .catch(() => { });
 }
 
@@ -1490,10 +1509,6 @@ export const CambiaEstatus = (
   IdSolicitud: string,
   IdEditor: string
 ) => {
-  console.log("intento cambiar de estatus 1");
-  console.log("Estatus res", Estatus);
-  console.log("IdEditor res", IdEditor);
-  console.log("IdSolicitud res", IdSolicitud);
 
   return axios
     .post(

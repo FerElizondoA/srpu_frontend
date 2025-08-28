@@ -44,6 +44,7 @@ import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacion
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -110,7 +111,11 @@ export function Mandatos() {
 
   const idMandato: string = useMandatoStore((state) => state.idMandato);
 
-  const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+  // const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+
+  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
+    (state) => state.getMecanismosVehiculosPago
+  );
   const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
   const deleteMandato: Function = useMandatoStore(
     (state) => state.deleteMandato
@@ -163,9 +168,10 @@ export function Mandatos() {
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   useEffect(() => {
-    getMandatos(setMandatos);
+    getMecanismosVehiculosPago("Mandato", () => { })
+    //getMandatos(setMandatos);
     getOrganismos();
-    getSumaPorcentajeAcumulado("Mandatos");
+    // getSumaPorcentajeAcumulado("Mandatos");
   }, []);
 
   useEffect(() => {
@@ -184,7 +190,8 @@ export function Mandatos() {
       cleanMandato();
     }
     if (!openDialogEliminar) {
-      getMandatos(setMandatos);
+      getMecanismosVehiculosPago("Mandato", () => { });
+      // getMandatos(setMandatos);
     }
   }, [openAgregarMandato]);
 
@@ -203,14 +210,10 @@ export function Mandatos() {
     );
   };
   useEffect(() => {
-    getMecanismosVehiculosPago("Mandato", () => {})
+    getMecanismosVehiculosPago("Mandato", () => { })
     //getMandatos(setMandatos);
   }, []);
 
-
-  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
-    (state) => state.getMecanismosVehiculosPago
-  );
 
   const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
     (state) => state.tablaMecanismoVehiculoPago
@@ -232,29 +235,20 @@ export function Mandatos() {
     TipoEntePublicoObligado: "",
 
     CLABE: "",
-    Banco: "",
+    IdBanco: "",
+    NombreBanco: "",
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
     SoporteDocumental: "",
-    // AcumuladoEstado: "",
-    // AcumuladoMunicipios: "",
-    // AcumuladoOrganismos: "",
-    // CreadoPor: "",
-    // Deleted: "",
-    // FechaCreacion: "",
-    // FechaMandato: "",
-    // Id: "",
-    // Mandatario: "",
-    // MecanismoPago: "",
-    // ModificadoPor: "",
-    // MunicipioOrganismoMandante: "",
-    // NumeroMandato: "",
-    // SoporteDocumental: "",
-    // TipoEntePublicoObligado: "",
-    // TipoMovimiento: "",
-    // UltimaModificacion: "",
   });
+
+  const DetalleAsignacionTipoMoviSolicitudes: Function = useFideicomisoStore(
+    (state) => state.DetalleAsignacionTipoMoviSolicitudes
+  );
+
+
+  const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
 
 
@@ -436,25 +430,6 @@ export function Mandatos() {
                             type="button"
                             onClick={() => {
                               let auxArray = JSON.parse(row.TipoMovimiento);
-                              console.log(auxArray)
-
-                              // auxArray.map((column: any) => {
-                              //   return (
-                              //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                              //       Number(
-                              //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                              //       ).toString()),
-                              //     (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                              //       Number(
-                              //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                              //       ).toString()),
-                              //     (column.acumuladoAfectacionOrganismoEntre100 =
-                              //       Number(
-                              //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                              //       ).toString())
-                              //   );
-                              // });
-
                               editarMandato(
                                 row.Id,
                                 {
@@ -487,6 +462,8 @@ export function Mandatos() {
                             onClick={() => {
                               setIdMandato(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
+                              DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
+
                             }}
                           >
                             <DeleteIcon />
@@ -506,6 +483,7 @@ export function Mandatos() {
         <AgregarMandatos
           handler={setOpenAgregarMandato}
           openState={openAgregarMandato}
+          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
         />
       )}
 

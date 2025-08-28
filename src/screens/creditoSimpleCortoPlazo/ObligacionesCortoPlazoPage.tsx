@@ -106,7 +106,7 @@ export function ObligacionesCortoPlazoPage() {
                   ...queries.bold_text,
                 }}
               >
-                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro || IdSolicitudBorrador}`}</strong>
               </Typography>
             </Grid>
           )}

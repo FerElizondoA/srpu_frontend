@@ -71,7 +71,6 @@ export function Catalogos() {
 
   useEffect(() => {
     setCatalogoFiltrado(catalogo);
-    console.log(catalogo)
   }, [catalogo]);
 
   const [page, setPage] = useState(0);

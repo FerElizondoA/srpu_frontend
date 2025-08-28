@@ -261,11 +261,6 @@ export function Resumen({
   // const activacionComentariosRevisor = ["4", "12", "20"]
   const activacionComentariosRevisor = ["5", "13", "21"]
 
-  useEffect(() => {
-    console.log("comentario", comentarios)
-    console.log("openComentarioApartado", openComentarioApartado)
-  }, [openComentarioApartado])
-
   return (
 
     <Grid
@@ -958,7 +953,7 @@ export function Resumen({
                 <TableBody>
                   {documentos.map((row, index) => {
                     //console.log('documentos resumen:', row);
-
+                    console.log("dOCUMENTOS SOLICITUD", documentos)
                     return (
                       <StyledTableRow key={index}>
                         {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
@@ -1026,8 +1021,9 @@ export function Resumen({
                                 ) : (
 
                                   <IconButton
-                                    onClick={async () => {
-
+                                    onClick={
+                                      async () => {
+                                      console.log("row?.archivo?.name", row?.archivo)
                                       let base64String = '';
                                       try {
                                         if (row.archivo instanceof File) {

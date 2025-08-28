@@ -346,18 +346,30 @@ export const createInstruccionesIrrevocables: StateCreator<
 
   createInstruccion: async (setLoading: Function) => {
     const state = useInstruccionesStore.getState();
+    const stateSaveFiles = useCortoPlazoStore.getState();
 
-    let acumuladoEstado = 0;
-    let acumuladoMunicipio = 0;
-    let acumuladoOrganismo = 0;
+    // let acumuladoEstado = 0;
+    // let acumuladoMunicipio = 0;
+    // let acumuladoOrganismo = 0;
 
-    state.tablaTipoMovimiento.map((v: any, index: number) => {
-      acumuladoEstado += parseFloat(
-        v.fondoIngresoAfectadoXGobiernoEstatal || 0
-      );
-      acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
-      acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
-    });
+    // state.tablaTipoMovimiento.map((v: any, index: number) => {
+    //   acumuladoEstado += parseFloat(
+    //     v.fondoIngresoAfectadoXGobiernoEstatal || 0
+    //   );
+    //   acumuladoMunicipio += parseFloat(v.fondoIngresoAfectadoXMunicipio || 0);
+    //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
+    // });
+
+    
+    const soporteDocumentalPrueba = state.tablaSoporteDocumentalInstruccion.map(({
+      tipo, archivo, nombreArchivo, fechaArchivo }) => ({
+        tipo,
+        archivo,
+        nombreArchivo,
+        fechaArchivo,
+      })
+    );
+    console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimiento)
 
     await axios
       .post(
@@ -365,16 +377,14 @@ export const createInstruccionesIrrevocables: StateCreator<
         {
           NumeroCuenta: state.datosGenerales.numeroCuenta,
           CLABE: state.datosGenerales.cuentaCLABE,
-          Banco: state.datosGenerales.banco.Descripcion,
+          IdBanco: state.datosGenerales.banco.Id,
+          NombreBanco: state.datosGenerales.banco.Descripcion,
           FechaInstruccion: state.datosGenerales.fechaInstruccion,
-          TipoEntePublicoObligado:
-            state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
-          EntePublicoObligado:
-            state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
+          TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
+          EntePublicoObligado: state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-
           SoporteDocumental: JSON.stringify(
-            state.tablaSoporteDocumentalInstruccion
+            soporteDocumentalPrueba
           ),
           CreadoPor: localStorage.getItem("IdUsuario"),
         },
@@ -386,9 +396,17 @@ export const createInstruccionesIrrevocables: StateCreator<
       )
       .then(({ data }) => {
         state.setIdInstruccion(data.data.Id);
-        state.saveFilesInstruccion(
+        // state.saveFilesInstruccion(
+        //   data.data.Id,
+        //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.data.Id}`,
+        //   setLoading
+        // );
+
+        stateSaveFiles.saveFilesFuentesPago(
+          "Instruccion",
+          soporteDocumentalPrueba,
           data.data.Id,
-          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.data.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${data.data.Id}`,
           setLoading
         );
 
@@ -405,31 +423,28 @@ export const createInstruccionesIrrevocables: StateCreator<
   modificaInstruccion: async (setLoading: Function) => {
     const state = useInstruccionesStore.getState();
     const cpState = useCortoPlazoStore.getState();
-    let acumuladoEstado = 0;
-    let acumuladoMunicipio = 0;
-    let acumuladoOrganismo = 0;
 
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-Instruccion",
         {
           Id: state.idInstruccion,
-          IdUsuario: localStorage.getItem("IdUsuario"),
-          NumeroCuenta: state.datosGenerales.numeroCuenta,
           CLABE: state.datosGenerales.cuentaCLABE,
-          MunicipioOrganismoMandante:
-            state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
-          TipoEntePublicoObligado:
-            state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
-          MecanismoPago: "Instrucciones Irrevocables",
+          IdBanco: state.datosGenerales.banco.Id,
+          BancoNombre: state.datosGenerales.banco.Descripcion,
+          FechaInstruccion: state.datosGenerales.fechaInstruccion,
+          TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
+          EntePublicoObligado: state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
           TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          AcumuladoEstado: acumuladoEstado,
-          AcumuladoMunicipios: acumuladoMunicipio,
-          AcumuladoOrganismos: acumuladoOrganismo,
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalInstruccion
           ),
-          CreadoPor: localStorage.getItem("IdUsuario"),
+          ModificadoPor: localStorage.getItem("IdUsuario"),
+          //NumeroCuenta: state.datosGenerales.numeroCuenta, //Posiblemente no se puede editar
+          //MecanismoPago: "Instrucciones Irrevocables",
+
+
+          // CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
           headers: {
@@ -442,6 +457,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         // cpState.deleteFiles(
         //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
         // );
+        
         state.saveFilesInstruccion(
           data.result.Id,
           `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
@@ -569,7 +585,7 @@ export const createInstruccionesIrrevocables: StateCreator<
       })
       .catch((e) => { });
   },
-    updateTipoMovimientoField: (index, field, value) => {
+  updateTipoMovimientoField: (index, field, value) => {
     set((state) => {
       const updatedTabla = state.tablaTipoMovimiento.map((row, i) =>
         i === index ? { ...row, [field]: value } : row

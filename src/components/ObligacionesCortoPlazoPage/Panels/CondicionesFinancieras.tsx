@@ -382,7 +382,6 @@ export function CondicionesFinancieras() {
                         <Button
                           onClick={() => {
                             setRowTasa(row.tasaInteres);
-                            console.log("rowTasa", rowTasa)
                             setOpenTasa(true);
                           }}
                         >

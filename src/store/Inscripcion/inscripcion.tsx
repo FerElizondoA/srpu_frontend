@@ -8,7 +8,7 @@ import {
 import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
-import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
+import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
 import { IAnexoClausula, IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 
 export interface IInscripcion {
@@ -62,7 +62,7 @@ export interface ISolicitudLargoPlazo {
     NumeroAutorizacion: string;
   };
   fuenteDePago: {
-    fuente: IDeudorFideicomiso[];
+    fuente: IDeudorFideicomisoNew[];
     garantiaDePago: string;
     mecanismoVehiculoDePago: {
       Tipo: string;
@@ -213,7 +213,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
       );
-      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
+      lpState.setTablaAsignarFuenteNew(aux?.fuenteDePago?.fuente);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);
@@ -309,7 +309,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
       );
-      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
+
+      console.log("aux?.fuenteDePago?.fuente", aux?.fuenteDePago?.fuente)
+      lpState.setTablaAsignarFuenteNew(aux?.fuenteDePago?.fuente);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);
@@ -428,7 +430,8 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       TipoEntePublicoObligado: "",
 
       CLABE: "",
-      Banco: "",
+      IdBanco: "",
+      NombreBanco: "",
       EntePublicoObligado: "",
 
       TipoMovimiento: "",

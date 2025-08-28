@@ -61,9 +61,7 @@ export function getSolicitudes(tipoListado: string, setState: Function, setState
 
     .then(({ data }) => {
       const state = useTrazabilidad.getState()
-      //console.log("state.IdSolicitudNotificacion", state.IdSolicitudNotificacion);
-      //
-      //console.log("state", state)
+      
       if (state.IdSolicitudNotificacion !== "") {
         setStateFilter(data.data.filter((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || "")))
         setTimeout(() => state.cleanIdSolicitud, 1000)

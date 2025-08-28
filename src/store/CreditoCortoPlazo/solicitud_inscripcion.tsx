@@ -11,6 +11,7 @@ import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Pan
 import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import { alertaInfo } from "../../avisosPAUA/componentes/Alertas";
+import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -55,7 +56,7 @@ export interface SolicitudInscripcionSlice {
   deleteFiles: (ruta: string) => void;
 
   saveFiles: (idRegistro: string, ruta: string) => void;
-  saveFilesFuentesPago: (idRegistro: string, ruta: string) => void;
+  saveFilesFuentesPago: (NombreFuentePago:string, TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading:Function) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -189,8 +190,6 @@ comentariosSolicitudInscrpcion:{},
         }
       )
       .then(({ data }) => {
-        console.log("data.data.Id", data.data.Id)
-        console.log("data.data", data.data)
 
         state.setIdSolicitudBorrador(data.data.Id)
         setIdSolicitudCreada(data.data.Id)
@@ -202,8 +201,8 @@ comentariosSolicitudInscrpcion:{},
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
-        //inscripcionState.setInscripcion(data.data);
-        //state.addComentario(data.data.Id, comentario, "Captura");
+        inscripcionState.setInscripcion(data.data);
+        state.addComentario(data.data.Id, comentario, "Captura");
       });
   },
 
@@ -251,7 +250,7 @@ comentariosSolicitudInscrpcion:{},
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
-          IdSolicitud: inscripcionState.inscripcion.Id,
+          IdSolicitud: inscripcionState.inscripcion.Id || state.IdSolicitudBorrador,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
@@ -409,11 +408,11 @@ comentariosSolicitudInscrpcion:{},
       .catch((e) => { });
   },
 
-  saveFilesFuentesPago: async (idRegistro: string, ruta: string) => {
+  saveFilesFuentesPago: async (NombreFuentePago:string ,TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading: Function) => {
     const state = useFideicomisoStore.getState();
-    console.log("Entre saveFiles");
+    console.log("Entre saveFiles TablaFuentePago: ", TablaFuentePago);
 
-    return await state.tablaSoporteDocumentalFideicomiso.map((file, index) => {
+    return await TablaFuentePago.map((file, index) => {
       console.log(file);
 
       return setTimeout(() => {
@@ -440,11 +439,15 @@ comentariosSolicitudInscrpcion:{},
             .then(({ data }) => {
               console.log("data response", data);
 
-              state.savePathDocFideicomiso(
+              //HACER UN IF PARA LAS DISTINTAS FUENTES DE PAGO *******************
+
+              state.savePathDocFuentePago(
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO,
+                setLoading,
+                NombreFuentePago
                 // file.tipoArchivo
               );
               console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
@@ -578,7 +581,7 @@ comentariosSolicitudInscrpcion:{},
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: state.idAcuse
+          TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {
           headers: {

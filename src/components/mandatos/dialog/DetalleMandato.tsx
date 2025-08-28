@@ -30,11 +30,11 @@ import {
 } from "../../../screens/fuenteDePago/Mandatos";
 import {
   IDeudorMandatoNew,
-  ISoporteDocumentalMandato,
 } from "../../../store/Mandatos/mandato";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 
 const headsTipoMovimiento: { label: string }[] = [
   {
@@ -317,7 +317,7 @@ export function DetalleMandato({
             </TableHead>
             <TableBody>
               {JSON.parse(mandato.SoporteDocumental).map(
-                (row: ISoporteDocumentalMandato, index: number) => {
+                (row: ISoporteDocumentalFuentePago, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">

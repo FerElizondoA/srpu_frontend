@@ -177,7 +177,7 @@ export function DetalleInstruccion({
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong>Banco:</strong> {instruccion.Banco}
+            <strong>Banco:</strong> {instruccion.NombreBanco}
           </Typography>
 
           <Divider color="lightGrey"></Divider>
@@ -264,7 +264,7 @@ export function DetalleInstruccion({
                       {/* Equivalencia Sin incluir el monto de municipios */}
                       <StyledTableCell align="center">
                         {row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : "No aplica"}
-                        {row.EquivalenciaCorrespondienteMunicipios || ''}
+                        {/* {row.EquivalenciaCorrespondienteMunicipios || ''} */}
                       </StyledTableCell>
 
 

@@ -45,10 +45,11 @@ export function Encabezado() {
     (state) => state.listadoUsuarios
   );
 
-  useEffect(() => {
-    listadoUsuarios.length <= 0 && getListadoUsuarios();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const getTiposSolicitudes: Function = useCortoPlazoStore(
+    (state) => state.getTiposSolicitudes
+  );
+
+
 
   const datosActualizar: Array<string> = useLargoPlazoStore(
     (state) => state.datosActualizar
@@ -69,6 +70,12 @@ export function Encabezado() {
   const catalogoTiposSolicitudes: Array<ICatalogo> = useCortoPlazoStore(
     (state) => state.catalogoTiposSolicitudes
   );
+
+  useEffect(() => {
+    listadoUsuarios.length <= 0 && getListadoUsuarios();
+    getTiposSolicitudes()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Grid container height={"30rem"}>

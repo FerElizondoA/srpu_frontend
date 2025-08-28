@@ -102,11 +102,6 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.inscripcionReestructura
   );
   
-  useEffect(() => {
-    console.log("inscripcion", inscripcion);
-    console.log("inscripcionReestructura", inscripcionReestructura);
-  }, [])
-  
 
   return (
     <>

@@ -70,8 +70,6 @@ export function VerBorradorDocumento(props: Props) {
 
     setBotonVolverFiltro(a);
     setComentarios(a);
-    //console.log("comentarios", comentarios)
-
     useCortoPlazoStore.setState({
       idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
         ?.Id,
@@ -142,8 +140,6 @@ export function VerBorradorDocumento(props: Props) {
 
     // Comparar valores clave por clave
     const prueba = claves1.every(clave => obj2.hasOwnProperty(clave) && obj1[clave] === obj2[clave]);
-    console.log("prueba comparacion", prueba);
-
     return prueba
   }
 

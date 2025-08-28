@@ -526,11 +526,10 @@ export async function CancelacionSolicitud(setUrl: Function) {
 
       console.log("URL, cancelaciones xD", url);
 
-      //AQUI NO VA CORREGIR 
-      // state.saveFiles(
-      //   response.data.Id,
-      //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/DOCSOL/${response.data.Id}`
-      // );
+      //  state.saveFiles(
+      //    response.data.Id,
+      //    process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/DOCSOL/${response.data.Id}`
+      //  );
 
       // console.log("URL, cancelaciones xD", url);
 

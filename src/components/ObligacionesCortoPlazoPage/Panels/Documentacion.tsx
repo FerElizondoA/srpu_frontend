@@ -93,6 +93,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
   function cargarArchivo(event: any, index: number) {
     let file = event.target.files[0];
 
+
     if (file !== undefined) {
       if (index < tablaDocumentos.length) {
         let auxArrayArchivos = [...tablaDocumentos];
@@ -306,11 +307,15 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                         multiline={!query.isMobile}
                         value={val.nombreArchivo}
                         onChange={(v) => {
+                          console.log("V", v)
                           let auxArrayArchivos = [...tablaDocumentos];
                           auxArrayArchivos[index].nombreArchivo = v.target.value
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
+                          
+                            console.log(" auxArrayArchivos[index].nombreArchivo",  auxArrayArchivos[index].nombreArchivo)
+
                           setTablaDocumentos(auxArrayArchivos);
                         }}
                       ></TextField>
@@ -378,6 +383,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                             type="file"
                             accept="application/pdf"
                             onChange={(v) => {
+                              console.log("v", v)
                               cargarArchivo(v, index);
                             }}
                             style={{

@@ -225,8 +225,11 @@ export function InstruccionesIrrevocables() {
       Mandante: "",
       TipoEntePublicoObligado: "",
 
+
+    
       CLABE: "",
-      Banco: "",
+      IdBanco: "",
+      NombreBanco: "",
       EntePublicoObligado: "",
 
       TipoMovimiento: "",
@@ -408,7 +411,7 @@ export function InstruccionesIrrevocables() {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          {row.CLABE}
+                          {row.NumeroRegistro}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
@@ -427,7 +430,7 @@ export function InstruccionesIrrevocables() {
                             fontFamily: "MontserratRegular",
                             fontSize: "1.6ch"
                           }}>
-                            {row.Banco}
+                            {row.NombreBanco}
                           </Typography>
                         </StyledTableCell>
 
@@ -482,7 +485,7 @@ export function InstruccionesIrrevocables() {
                                     cuentaCLABE: row.CLABE,
                                     banco: catalogoInstituciones.filter(
                                       (i: ICatalogo) =>
-                                        i.Descripcion === row.Banco
+                                        i.Descripcion === row.NombreBanco
                                     )[0],
                                     fechaInstruccion: new Date(
                                       row.FechaRegistro
@@ -527,6 +530,8 @@ export function InstruccionesIrrevocables() {
         <AgregarInstruccionesIrrevocables
           handler={setOpenAgregarInstruccion}
           openState={openAgregarInstruccion}
+          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+          
         />
       )}
 

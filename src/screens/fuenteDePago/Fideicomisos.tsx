@@ -78,6 +78,20 @@ export interface IDatosFideicomisoNew {
   //UltimaModificacion: string;
 }
 
+export interface IDataAsignacionTipoMoviSolicitudes {
+  Id: string,
+  IdSolicitud: string,
+  IdFuentePago: string,
+  TipoMoviRelacionado: string,
+  NombreTipoFuentePago: string,
+  IdEntePublicoObligado: string,
+  IdFondoIngreso: string,
+  PorcentajeOriginalIngreso: number,
+  PorcentajeOriginalEquivalencia: number,
+  PorcentajeUtilizadoIngreso: number,
+  PorcentajeUtilizadoEquivalencia: number,
+}
+
 interface Head {
   label: string;
 }
@@ -180,6 +194,20 @@ export function Fideicomisos() {
   );
 
 
+  const DetallePorcentajesAcumulados: Function = useFideicomisoStore(
+    (state) => state.DetallePorcentajesAcumulados
+  );
+
+
+
+  const DetalleAsignacionTipoMoviSolicitudes: Function = useFideicomisoStore(
+    (state) => state.DetalleAsignacionTipoMoviSolicitudes
+  );
+
+
+
+
+
 
 
   const sumaPorcentajeAcumulado: {
@@ -236,7 +264,8 @@ export function Fideicomisos() {
       TipoEntePublicoObligado: "",
 
       CLABE: "",
-      Banco: "",
+      IdBanco:"",
+      NombreBanco: "",
       EntePublicoObligado: "",
 
       TipoMovimiento: "",
@@ -288,6 +317,8 @@ export function Fideicomisos() {
   //   console.log("sumaAfectatoToalIngreso", sumaAfectatoToalIngreso);
   //   console.log("SumEquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
   // }, [sumaAfectatoToalIngreso, SumEquivalenciaCorrespondienteMunicipios])
+
+  const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
 
   return (
@@ -473,23 +504,6 @@ export function Fideicomisos() {
                                 let auxArray = JSON.parse(row.TipoMovimiento);
                                 console.log("auxArray", auxArray);
 
-                                // auxArray.map((column: any) => {
-                                //   return (
-                                //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                //       Number(
-                                //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                //       ).toString()),
-                                //     (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                //       Number(
-                                //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                //       ).toString()),
-                                //     (column.acumuladoAfectacionOrganismoEntre100 =
-                                //       Number(
-                                //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                //       ).toString())
-                                //   );
-                                // });
-
                                 editarFideicomisoNew(
                                   row.Id,
                                   {
@@ -529,8 +543,12 @@ export function Fideicomisos() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                console.log("row", row);
+                                DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
                                 setIdFideicomiso(row?.Id || "");
                                 setOpenDialogEliminar(!openDialogEliminar);
+
+                                console.log("dataAsignacionTipoMoviSolicitudes", dataAsignacionTipoMoviSolicitudes)
                               }}
                             >
                               <DeleteIcon />
@@ -551,6 +569,8 @@ export function Fideicomisos() {
         <AgregarFideicomisos
           handler={setOpenAgregarFideicomiso}
           openState={openAgregarFideicomisos}
+          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+
         />
       )}
 
@@ -559,25 +579,36 @@ export function Fideicomisos() {
         keepMounted
         TransitionComponent={Transition}
       >
-        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogTitle sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>Advertencia </DialogTitle>
         <DialogContent>
-          <Typography>¿Seguro que desea eliminar este fideicomiso?</Typography>
+          <Typography sx={{ ...queries.text }}>
+            {dataAsignacionTipoMoviSolicitudes.length > 0
+              ? "No es posible eliminar este Fideicomiso, ya que tiene al menos una asignación vinculada a una solicitud."
+              : "¿Seguro que desea eliminar este fideicomiso?"}
+
+          </Typography>
         </DialogContent>
 
         <DialogActions>
-          <Button
-            sx={queries.buttonContinuar}
-            onClick={() => {
-              setOpenDialogEliminar(!openDialogEliminar);
-              deleteFideicomiso(idFideicomiso);
-            }}
-          >
-            Aceptar
-          </Button>
+          {dataAsignacionTipoMoviSolicitudes.length < 0 ? (
+            <Button
+              sx={queries.buttonContinuar}
+              onClick={() => {
+                setOpenDialogEliminar(!openDialogEliminar);
+                deleteFideicomiso(idFideicomiso);
+
+              }}
+            >
+              Aceptar
+            </Button>
+          ) : null}
+
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
               setOpenDialogEliminar(!openDialogEliminar);
+              setDataAsignacionTipoMoviSolicitudes([]);
+
             }}
           >
             Cancelar

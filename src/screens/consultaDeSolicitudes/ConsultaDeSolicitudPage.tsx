@@ -653,9 +653,7 @@ export function ConsultaDeSolicitudPage() {
                               onClick={() => {
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
-                                getCatalogoFirmaDetalle(row.Id);
-                                console.log("Row RESUMEN", row)
-                              }}
+                                getCatalogoFirmaDetalle(row.Id);                              }}
                             >
                               <VisibilityIcon />
                             </IconButton>
@@ -668,12 +666,9 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    console.log("ROW", row);
-                                    console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
+                                    // console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
-                                    if (row.NoEstatus === "3") {
-                                      console.log("entre al if del estatus 3");
-                                      
+                                    if (row.NoEstatus === "3") {                                      
                                       setInscripcion(row);
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");

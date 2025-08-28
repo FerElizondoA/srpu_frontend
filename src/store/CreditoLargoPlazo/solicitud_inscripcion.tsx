@@ -7,6 +7,27 @@ import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
+import { IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
+
+export interface IDataAgregarSolicitud {
+  ControlInterno: string;
+  CreadoPor: string;
+  Estatus: number
+  FechaContratacion: string;
+  Id: string;
+  IdClaveInscripcion: string;
+  IdEditor: string;
+  IdEntePublico: string;
+  IdInsitucionFinanciera: string;
+  IdTipoEntePublico: string;
+  MontoOriginalContratado: string;
+  NumeroRegistro: number
+  Respuesta: string;
+  Solicitud: string;
+  TipoCredito: string;
+  TipoSolicitud: string;
+}
+
 
 export interface SolicitudInscripcionLargoPlazoSlice {
 
@@ -21,13 +42,19 @@ export interface SolicitudInscripcionLargoPlazoSlice {
 
   reglasAplicables: string[];
 
+
   changeInscripcion: (servidorPublicoDirigido: string, cargo: string) => void;
   setReglasAplicables: (newReglas: string[]) => void;
+
+  IdAsignacionSolicitud: string;
+  setIdAsignacionSolicitud: (IdAsignacionSolicitud: string) => void;
+
 
   crearSolicitud: (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
+    setDataAsignacion: Function
   ) => void;
 
   modificaSolicitud: (
@@ -36,6 +63,16 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     estatus: string,
     comentario: string
   ) => void;
+
+  createAsignacionTipoSolicitud: (
+    DataSolicitud: IDataAgregarSolicitud,
+    IdFuentePago: string,
+    TablaFuentePago: IDeudorFideicomisoNew,
+    TablaFuentePagoOriginal: IDeudorFideicomisoNew,
+    NombreTipoFuentePago:string
+  ) => void;
+
+
 
   borrarSolicitud: (Id: string) => void;
 
@@ -56,6 +93,14 @@ export interface SolicitudInscripcionLargoPlazoSlice {
 export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   SolicitudInscripcionLargoPlazoSlice
 > = (set, get) => ({
+
+  IdAsignacionSolicitud: "",
+
+  setIdAsignacionSolicitud: (IdAsignacionSolicitud: string) =>
+    set(() => ({
+      IdAsignacionSolicitud: IdAsignacionSolicitud
+    })),
+
   inscripcion: {
     servidorPublicoDirigido: "Rosalba Aguilar Díaz",
     cargo: "Directora de Deuda Pública y Planeación Financiera",
@@ -69,15 +114,55 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   setReglasAplicables: (newReglas: any) =>
     set(() => ({ reglasAplicables: newReglas })),
 
+  createAsignacionTipoSolicitud: async (
+    DataSolicitud: any,
+    IdFuentePago: string,
+    TablaFuentePago: any,
+    TablaFuentePagoOriginal: any,
+    NombreTipoFuentePago:string,
+  ) => {
+
+    console.log("TablaFuentePago", TablaFuentePago);
+
+    const payload = {
+      IdSolicitud: DataSolicitud.Id.trim(),
+      IdFuentePago: IdFuentePago.trim(),
+      TipoMovRelacionado: TablaFuentePago.id.trim(),
+    };
+
+    return await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-AsignacionTipoMovSolicitudes",
+        {
+          IdSolicitud: payload.IdSolicitud,
+          IdFuentePago: payload.IdFuentePago,
+          TipoMovRelacionado: payload.TipoMovRelacionado,
+          NombreTipoFuentePago: NombreTipoFuentePago,
+          IdEntePublicoObligado: TablaFuentePago?.fideicomitente?.Id || TablaFuentePago?.mandatario?.Id || TablaFuentePago?.entePublicoObligado?.Id,
+          IdFondoIngreso: TablaFuentePago?.fondoIngreso?.Id,
+          PorcentajeOriginalIngreso: TablaFuentePagoOriginal.AfectadoTotalIngreso ?? 0,
+          PorcentajeOriginalEquivalencia: TablaFuentePagoOriginal.EquivalenciaCorrespondienteMunicipios ?? 0,
+          PorcentajeUtilizadoIngreso: TablaFuentePago.AfectadoTotalIngreso ?? 0,
+          PorcentajeUtilizadoEquivalencia: TablaFuentePago.EquivalenciaCorrespondienteMunicipios ?? 0
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then((data) => {
+        console.log("data ASIGNACIONTIPOMOVISOLICITUDES ", data);
+      });
+  },
+
   crearSolicitud: async (
     idEditor: string,
     estatus: string,
-    comentario: string
+    comentario: string,
   ) => {
     const lpState = useLargoPlazoStore.getState();
-    //const cpState = useCortoPlazoStore.getState();
-   // const inscripcionState = useInscripcionStore.getState();
-
+    
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
 
@@ -106,7 +191,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
           Fiduciario: lpState.mecanismoVehiculoPago.Fiduciario,
         },
-        fuente: lpState.tablaAsignarFuente,
+        fuente: lpState.tablaAsignarFuenteNew, //NUEVA TABLA
         garantiaDePago: lpState.garantiaPago,
       },
 
@@ -127,12 +212,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
       SolicitudReestructuracion: {
-        autorizacionReestructura:{
+        autorizacionReestructura: {
           Id: lpState.autorizacionSelectReestructura.Id,
           MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
           NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
@@ -154,6 +239,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdTipoEntePublico: lpState.encabezado.tipoEntePublico.Id,
           IdEntePublico: lpState.encabezado.organismo.Id,
           TipoSolicitud: lpState.encabezado.tipoDocumento,
+          TipoCredito: lpState.encabezado.tipoCredito.Descripcion,
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
@@ -171,18 +257,32 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then((data) => {
-        console.log("data", data);
+        // console.log("IIIIDDDD data solicitud Largo plazo creada data.data.data.Id", data.data.data.Id);
+        // console.log("DAAATAAAA", data)
+        // console.log("DATAAAA.DAAATAAA", data.data)
 
-        // inscripcionState.setInscripcion(data.data);
-        // cpState.addComentario(data.data.Id, comentario, "Captura");
-        // lpState.saveFiles(
-        //   data.data.Id,
-        //   `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
-        // );                            REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO
-       
+        const DataSolicitud = data.data.data;
+        const fuente = lpState.tablaAsignarFuenteNew[0];
+        const fuenteOriginal = lpState.OriginalTablaAsignarFuenteNew[0];
+
+        if (DataSolicitud !== undefined) {
+          console.log("Si encontro data de la solicitud", DataSolicitud.Id);
+          lpState.createAsignacionTipoSolicitud(DataSolicitud, lpState.mecanismoVehiculoPago.Id,
+            fuente, fuenteOriginal, lpState.tipoMecanismoVehiculoPago)
+        } else {
+          console.log("NO encontro data de la solicitud")
+        }
+
+        //  inscripcionState.setInscripcion(data.data);
+        //  cpState.addComentario(data.data.Id, comentario, "Captura");
+        //  lpState.saveFiles(
+        //    data.data.Id,
+        //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS_LARGOPLAZO + `/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`
+        //  );                            
+
         lpState.saveFiles(
           data.data.Id,
-           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
 
@@ -225,7 +325,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
           Fiduciario: lpState.mecanismoVehiculoPago.Fiduciario,
         },
-        fuente: lpState.tablaAsignarFuente,
+        fuente: lpState.tablaAsignarFuenteNew, //NUEVA TABLE
         garantiaDePago: lpState.garantiaPago,
       },
 
@@ -245,12 +345,12 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         declaratorias: lpState.reglasAplicables,
       },
       SolicitudReestructuracion: {
-        autorizacionReestructura:{
+        autorizacionReestructura: {
           Id: lpState.autorizacionSelectReestructura.Id,
           MontoAutorizado: lpState.autorizacionSelectReestructura.MontoAutorizado,
           NumeroAutorizacion: lpState.autorizacionSelectReestructura.NumeroAutorizacion
         },
-        tablaDeclaratorias: lpState.tablaDeclaratorias ,
+        tablaDeclaratorias: lpState.tablaDeclaratorias,
         ReestructuraDeclaratorias: {
           TipoConvenio: {
             Id: lpState.ReestructuraDeclaratorias.TipoConvenio.Id,
@@ -294,9 +394,9 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
         lpState.saveFiles(
           data.data.Id,
-           
-            
-            process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${data.data.Id}`
+
+
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`
         );
       });
   },
@@ -398,7 +498,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             .then(({ data }) => {
               console.log("data.RESPONSE: ", data.RESPONSE);
               console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
-              
+
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,
@@ -453,6 +553,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     NombreIdentificador: string,
     NombreArchivo: string
   ) => {
+    const state = useLargoPlazoStore.getState();
+
+    // console.log("state.idAcuse:", state.idAcuse);
+
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-addPathDocSol",

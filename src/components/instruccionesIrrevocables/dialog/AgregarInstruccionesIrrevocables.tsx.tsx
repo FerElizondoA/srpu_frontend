@@ -35,10 +35,12 @@ export function AgregarInstruccionesIrrevocables({
   deshabilidarCamposSCLP,
   handler,
   openState,
+  getMecanismosVehiculosPago,
 }: {
   deshabilidarCamposSCLP?: boolean;
   handler: Function;
   openState: boolean;
+  getMecanismosVehiculosPago?: Function;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -185,12 +187,14 @@ export function AgregarInstruccionesIrrevocables({
                     createInstruccion(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => {})
                     });
-                  } else if (IdInstruccion === "") {
+                  } else if (IdInstruccion !== "") {
                     setLoading(true);
                     modificaInstruccion(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => {})
                     });
                   }
                   setTabIndex(0);

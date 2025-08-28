@@ -153,18 +153,6 @@ export function TabsCancelacionArchivos({
           alignItems: "center",
         }}
       >
-
-        {/* <Button
-          onClick={() => {
-            console.log("archivos Cancelacion", archivos);
-            console.log("cargados Cancelacion", cargados);
-            console.log("arr Cancelacion", arr);
-            
-          }}
-        >
-
-          prueba de archivos cancelacion
-        </Button> */}
         <Box
           sx={{
             display: "flex",

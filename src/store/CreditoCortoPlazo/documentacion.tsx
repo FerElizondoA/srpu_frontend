@@ -33,9 +33,6 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
 
   getIdAcuse: async () => {
     const state = useInscripcionStore.getState();
-
-    console.log('state', state);
-
     await axios({
       method: "get",
       url:

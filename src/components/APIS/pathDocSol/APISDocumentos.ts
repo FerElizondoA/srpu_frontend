@@ -145,7 +145,7 @@ export const getDocumentos = async (
     .then(({ data }) => {
       let files = data.RESPONSE;
 
-      console.log('el conchesumadre files:', files);      
+      // console.log('el conchesumadre files:', files);      
             
       const auxArrayArchivos = state.tablaDocumentos.map((documento: any) => {
         const archivo = files.find((file: any) => file.NOMBRE === documento.nombreArchivo);
@@ -160,7 +160,7 @@ export const getDocumentos = async (
         return documento;
       });
 
-      console.log("auxArrayArchivos",auxArrayArchivos);
+      //console.log("auxArrayArchivos",auxArrayArchivos);
       
       state.setTablaDocumentos(auxArrayArchivos);
 

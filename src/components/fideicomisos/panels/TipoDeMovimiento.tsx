@@ -395,19 +395,8 @@ export function TipoDeMovimientoFideicomiso() {
     );
   };
 
-  useEffect(() => {
-    console.log("Porcentaje Acumulado", porcentajeAcumuladoRegistros);
-  }, [porcentajeAcumuladoRegistros])
 
 
-  useEffect(() => {
-
-
-    // console.log("UseEffect porcentajeacumulado", porcentajeAcumulado);
-    console.log("UseEffect tipoFideicomitente", tipoMovimientoFideicomisoNew.tipoFideicomitente);
-    console.log("UseEffect fideicomitente", tipoMovimientoFideicomisoNew.fideicomitente);
-    console.log("UseEffect tipoMovimientoFideicomisoNew", tipoMovimientoFideicomisoNew);
-  }, [tipoMovimientoFideicomisoNew])
 
   useEffect(() => {
     //1* primero va y busca los porcentajes acumulados

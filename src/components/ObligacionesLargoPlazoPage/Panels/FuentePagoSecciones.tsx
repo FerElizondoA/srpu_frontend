@@ -119,7 +119,7 @@ export function FuentePagoSecciones() {
         {
           numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
           cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: { id: "", Descripcion: mecanismoVehiculoPago.Banco },
+          banco: { id: "", Descripcion: mecanismoVehiculoPago.NombreBanco },
           fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
         },
         auxArray,

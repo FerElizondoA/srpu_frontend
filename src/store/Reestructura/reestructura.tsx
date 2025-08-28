@@ -299,7 +299,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
           TipoFideicomiso: lpState.mecanismoVehiculoPago.TipoFideicomiso,
           Fiduciario: lpState.mecanismoVehiculoPago.Fiduciario,
         },
-        fuente: lpState.tablaAsignarFuente,
+        fuente: lpState.tablaAsignarFuenteNew, //NUEVA TABLA
         garantiaDePago: lpState.garantiaPago,
       },
 

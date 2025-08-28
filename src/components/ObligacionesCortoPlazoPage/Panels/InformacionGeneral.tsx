@@ -55,7 +55,7 @@ export const moneyMask = (value: string) => {
   const options = { minimumFractionDigits: 2 };
 
   const result = new Intl.NumberFormat("en-US", options).format(
-    parseInt(value) / 100
+    parseInt(value) /100
   );
   return "$ " + result;
 };

@@ -80,8 +80,6 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
 
   useEffect(() => {
     catalogoReglas.length <= 0 && getReglas();
-    console.log('arrDocsEliminados SolicitudInscripcion', arrDocsEliminados);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,6 +93,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
       const state = useCortoPlazoStore.getState();
       const solicitud: any = {
         encabezado: state.encabezado,
+        tipoCredito: state.encabezado.tipoCredito.Descripcion,
         MontoOriginalContratado: state.informacionGeneral.monto,
         PlazoDias: state.informacionGeneral.plazo,
         Destino: state.informacionGeneral.destino.Descripcion,
@@ -128,7 +127,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
       ) {
         err = 1;
         errores.push(
-          "Sección Encabezado: Seleccionar algun tipo de Credito."
+          "Sección Encabezado: Seleccionar algun tipo de Documento." // de Credito
         );
       }
       if (
@@ -342,18 +341,12 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 974px)"),
   };
 
-  useEffect(() => {
-    console.log("comentarios", comentarios)
-  }, [])
-
   const [filtroBotonFinalizar, setFiltroBotonFinalizar] = useState(false)
 
   useEffect(() => {
-    console.log("Se ejecuto el la funcion de comentarios.lenght")
     console.log("Se ejecuto el la funcion de comentarios.lenght", comentarios)
 
     if (comentarios.length > 0) {
-      console.log("Se ejecuto el la funcion de comentarios.lenght ya validad")
       setFiltroBotonFinalizar(true)
     } else {
       setFiltroBotonFinalizar(false)

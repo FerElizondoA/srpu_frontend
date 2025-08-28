@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CommentIcon from "@mui/icons-material/Comment";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Dialog,
@@ -55,6 +56,7 @@ import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalI
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 import { log } from "console";
+import { IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
 
 
 interface Head {
@@ -122,52 +124,19 @@ const headsTipoMovimiento: Head[] = [
     label: "Id",
   },
   {
-    label: "Tipo de Ente Público Obligado",
+    label: "Tipo de Fuente",
   },
   {
-    label: "Ente Público Obligado",
+    label: "Fuente de Pago",// Label: "Fondo o Ingreso",
   },
   {
-    label: "Fuente de Pago",
+    label: "Ente Publico Obligado",//Label: "Fideicomitente",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+    label: "Porcentaje Afectado Sobre el Total de Ingreso",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
-  },
-  {
-    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
-  },
-  {
-    label: "% del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Gobierno del Estado",
-  },
-  {
-    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Municipio",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
+    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
   },
 ];
 
@@ -400,7 +369,7 @@ export function Resumen({ coments }: { coments: boolean }) {
   useEffect(() => {
     inscripcion.Id &&
       getDocumentos(
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
         setCargados
       );
@@ -448,6 +417,11 @@ export function Resumen({ coments }: { coments: boolean }) {
   const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
     (state) => state.tablaResumenMecanismoPago
   )
+
+
+  const tablaAsignarFuenteNew: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tablaAsignarFuenteNew
+  );
 
   useEffect(() => {
     console.log(tablaCondicionesFinancieras);
@@ -516,29 +490,29 @@ export function Resumen({ coments }: { coments: boolean }) {
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {activaAccion && (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentarios[head.label] &&
-                            comentarios[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          console.log("Hola Informacion General");
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios[head.label] &&
+                          comentarios[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        console.log("Hola Informacion General");
 
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabEncabezado",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabEncabezado",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )
                 }
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
@@ -922,137 +896,95 @@ export function Resumen({ coments }: { coments: boolean }) {
                     </TableRow>
                   </TableHead>
 
-                  <TableBody>
-                    <StyledTableRow>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.NumeroAutorizacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.FechaPublicacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="center"
-                        component="th"
-                        sx={{ width: 200 }}
-                      >
-                        <Typography>
-                          {autorizacionSelect?.MontoAutorizado}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.DescripcionMedioPublicacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
-                          <IconButton
-                            onClick={() => {
-                              setFileSelected(
-                                `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                  td.nombre.includes(
-                                    autorizacionSelect?.DocumentoSoporte
-                                  )
-                                )[0].file
-                                }`
-                              );
-                              setShowModalPrevia(true);
-                            }}
-                          >
-                            <FileOpenIcon></FileOpenIcon>
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.DetalleDestino &&
-                            JSON.parse(autorizacionSelect?.DetalleDestino)[0]
-                              .detalleDestino}
-                        </Typography>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-
-            {/* <Paper sx={{ width: "96%" }}>
-              <TableContainer
-                sx={{
-                  maxHeight: "100%",
-                  width: "95%",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".5vw",
-                    height: ".5vh",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}
-              >
-                {tablaObligados.length > 0 ? (
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        {heads.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            {head.label}
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {tablaObligados.map((row: any, index: number) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell component="th">
-                              {row.tipoEntePublicoObligado}
-                            </StyledTableCell>
-                            <StyledTableCell component="th">
-                              {row.entePublicoObligado}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        {heads.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            {head.label}
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-
+                  {autorizacionSelect?.NumeroAutorizacion === "" ?
                     <TableBody>
                       <StyledTableRow>
-                        <StyledTableCell component="th" align="left">
-                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
-                            NO APLICA
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          sx={{ width: 200 }}
+                        >
+                          <Typography>
+                            Sin seleccionar
                           </Typography>
                         </StyledTableCell>
 
-                        <StyledTableCell component="th"></StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
                       </StyledTableRow>
                     </TableBody>
-                  </Table>
-                )}
+                    :
+                    <TableBody>
+                      <StyledTableRow>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.NumeroAutorizacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.FechaPublicacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          sx={{ width: 200 }}
+                        >
+                          <Typography>
+                            {autorizacionSelect?.MontoAutorizado}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.DescripcionMedioPublicacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                            <IconButton
+                              onClick={() => {
+                                setFileSelected(
+                                  `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                    td.nombre.includes(
+                                      autorizacionSelect?.DocumentoSoporte
+                                    )
+                                  )[0].file
+                                  }`
+                                );
+                                setShowModalPrevia(true);
+                              }}
+                            >
+                              <FileOpenIcon></FileOpenIcon>
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.DetalleDestino &&
+                              JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                                .detalleDestino}
+                          </Typography>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    </TableBody>
+                  }
+                </Table>
               </TableContainer>
-            </Paper> */}
-
+            </Paper>
           </Grid>
         </Grid>
 
@@ -1154,7 +1086,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".5vw",
-                    height: "1vh",
+                    // height: "1vh",
                     mt: 1,
                   },
                   "&::-webkit-scrollbar-thumb": {
@@ -1169,7 +1101,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                     <TableRow>
                       {headsTipoMovimiento.map((head, index) => (
                         <StyledTableCell align="center" key={index}>
-                          <Typography sx={{ fontSize: "0.7rem" }}>
+                          <Typography sx={{ fontWeight: "bold" }}>
                             {head.label}
                           </Typography>
                         </StyledTableCell>
@@ -1178,41 +1110,41 @@ export function Resumen({ coments }: { coments: boolean }) {
                   </TableHead>
 
                   <TableBody>
-                    {tablaResumenMecanismoPago.length > 0
+                    {tablaAsignarFuenteNew.length > 0
                       ?
-                      tablaResumenMecanismoPago.map(
-                        (row: IDeudorInstrucciones, index: number) => {
+                      tablaAsignarFuenteNew.map(
+                        (movimiento: any, index: number) => {
                           return (
                             <StyledTableRow key={index}>
-                              {/* ID */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.id}
-                                </Typography>
-                              </StyledTableCell>
-
-                              {/* TIPO MANDANTE */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.tipoEntePublicoObligado.Descripcion}
-                                </Typography>
-                              </StyledTableCell>
-
 
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.entePublicoObligado.Descripcion}
-                                </Typography>
+                                {movimiento.id}
                               </StyledTableCell>
 
-                              {/* FUENTE DE PAGO */}
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.tipoFuente.Descripcion}
-                                </Typography>
+                                {movimiento.tipoFuente.Descripcion}
                               </StyledTableCell>
 
+                              <StyledTableCell align="center">
+                                {movimiento.fondoIngreso.Descripcion}
+                              </StyledTableCell>
 
+                              <StyledTableCell align="center">
+                                {movimiento?.fideicomitente?.Descripcion ||
+                                  movimiento?.mandatario?.Descripcion ||
+                                  movimiento?.entePublicoObligado?.Descripcion}
+                              </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {/* Poner la funcion updateTipoMovimientoField en cada fuente de pago*/}
+                                {movimiento.AfectadoTotalIngreso}
+
+                              </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {movimiento?.EquivalenciaCorrespondienteMunicipios || "No Aplica"}
+
+                              </StyledTableCell>
                             </StyledTableRow>
                           );
                         }

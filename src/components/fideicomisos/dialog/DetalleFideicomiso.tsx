@@ -30,12 +30,13 @@ import { IDatosFideicomiso, IDatosFideicomisoNew } from "../../../screens/fuente
 import {
   IDeudorFideicomiso,
   IFideicomisario,
-  ISoporteDocumentalFideicomiso,
+  ISoporteDocumentalFuentePago,
 } from "../../../store/Fideicomiso/fideicomiso";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 
 const headsTipoMovimiento: { label: string }[] = [
@@ -95,7 +96,7 @@ export function DetalleFideicomiso({
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/FUENTEDEPAGO/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
         setLoading(false);
       });
     }
@@ -306,9 +307,10 @@ export function DetalleFideicomiso({
                     {headsTipoMovimiento.map((head, index) => (
                       <StyledTableCell key={index} align="center">
                         <Typography
-                        sx={{ 
-                          //fontSize: "0.7rem", 
-                          fontWeight: "bold" }}
+                          sx={{
+                            //fontSize: "0.7rem", 
+                            fontWeight: "bold"
+                          }}
                         >
                           {head.label}
                         </Typography>
@@ -323,7 +325,7 @@ export function DetalleFideicomiso({
                         <StyledTableRow key={index}>
                           {/* ID */}
                           <StyledTableCell align="center">
-                            <Typography 
+                            <Typography
                             //sx={{ fontSize: "0.8rem" }}
                             >
                               {row?.id}
@@ -332,7 +334,7 @@ export function DetalleFideicomiso({
 
                           {/* TIPO MANDANTE  */}
                           <StyledTableCell align="center">
-                            <Typography 
+                            <Typography
                             //sx={{ fontSize: "0.8rem" }}
                             >
                               {row?.tipoFuente.Descripcion}
@@ -341,8 +343,8 @@ export function DetalleFideicomiso({
                           </StyledTableCell>
 
                           <StyledTableCell align="center">
-                            <Typography 
-                           // sx={{ fontSize: "0.8rem" }}
+                            <Typography
+                            // sx={{ fontSize: "0.8rem" }}
                             >
                               {row?.fondoIngreso.Descripcion}
                             </Typography>
@@ -350,7 +352,7 @@ export function DetalleFideicomiso({
 
                           {/* fideicomitente  */}
                           <StyledTableCell align="center">
-                            <Typography 
+                            <Typography
                             //sx={{ fontSize: "0.8rem" }}
                             >
                               {row?.fideicomitente.Descripcion}
@@ -425,7 +427,7 @@ export function DetalleFideicomiso({
             </TableHead>
             <TableBody>
               {JSON.parse(fideicomiso.SoporteDocumental).map(
-                (row: ISoporteDocumentalFideicomiso, index: number) => {
+                (row: ISoporteDocumentalFuentePago, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
@@ -452,17 +454,41 @@ export function DetalleFideicomiso({
 
                         <Tooltip title={"Mostrar vista previa del documento"}>
                           <IconButton
-                            onClick={() => {
-                              setFileSelected(
-                                `data:application/pdf;base64,${arr.filter((td: any) =>
-                                  td.NOMBREFORMATEADO.includes(
-                                    row.nombreArchivo
-                                  )
-                                )[0].FILE
-                                }`
-                              );
-                              setShowModalPrevia(true);
-                            }}
+                            onClick={
+                              async () => {
+                                console.log("row.archivo", row.archivo)
+
+                                let base64String = '';
+                                try {
+                                  if (row.archivo instanceof File) {
+                                    base64String = await convertFileToBase64(row.archivo);
+                                    console.log("base64String 1", base64String)
+
+                                  } else {
+                                    base64String = row.archivo;
+                                    console.log("base64String 2", base64String)
+
+                                  }
+
+                                  const dataUri = `data:application/pdf;base64,${base64String}`;
+                                  console.log("dataUri", dataUri)
+                                  setFileSelected(dataUri);
+                                } catch (error) {
+                                  console.error("Error al convertir el archivo a Base64", error);
+                                }
+
+                                setShowModalPrevia(true);
+                                // setFileSelected(
+                                //   `data:application/pdf;base64,${arr.filter((td: any) =>
+                                //     td.NOMBREFORMATEADO.includes(
+                                //       row.nombreArchivo
+                                //     )
+                                //   )[0].FILE
+                                //   }`
+                                // );
+                                // setShowModalPrevia(true);
+                              }
+                            }
                           >
                             <FileOpenIcon />
                           </IconButton>
