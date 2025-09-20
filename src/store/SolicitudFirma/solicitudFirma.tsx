@@ -608,17 +608,17 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                     ? "11" // Antes 10
                     : estatusPrevio.NoEstatus === "11" && //Antes 10
                       state.proceso === "cancelacion"
-                      ? "13" //Antes 12
+                      ? "13" //AQUI SE ASIGNA PROCESO CANCELACION //Antes 12
                       : estatusPrevio.ControlInterno === "cancelacion" &&
                         state.proceso === "actualizacion"
-                        ? "17" // Antes 16
+                        ? "18" // Antes 17 // Antes 16
                         : estatusPrevio.ControlInterno === "cancelado"
-                          ? "19" // Antes 18
-                          : estatusPrevio.NoEstatus === "20" // Antes 19 
-                            ? "21" // Antes 20
-                            : estatusPrevio.NoEstatus === "24" // Antes 23
-                              ? "25" // Antes 24
-                              : estatusPrevio.NoEstatus === "26" // Antes 25
+                          ? "20" //Antes 19// Antes 18
+                          : estatusPrevio.NoEstatus === "21" // Antes 20// Antes 19 
+                            ? "22" //Antes 21// Antes 20
+                            : estatusPrevio.NoEstatus === "26" // Antes 24 Se agrego 2 por las 2 asignaciones nuevas // Antes 23
+                              ? "27" // Antes 25 Se agrego 2 por las 2 asignaciones nuevas // Antes 24
+                              : estatusPrevio.NoEstatus === "28"  // Antes 26 Se agrego 2 por las 2 asignaciones nuevas // Antes 25
                                 ? "11" // Antes 10
                                 : "12", // Antes 11
             estatusPrevio.Id,
@@ -1757,3 +1757,86 @@ export async function AnularCancelacionSolicitud(
     })
     .catch((err) => { });
 }
+
+// // CANCELACION DE SOLICITUD NUEVA
+
+// export async function CancelacionSolicitud(setUrl: Function) {
+//   const stateC = useCancelacionStore.getState();
+//   const state = useInscripcionStore.getState();
+
+
+//   let infoSolicitud: any = JSON.parse(state.inscripcion.Solicitud);
+//   const MontoALetras = useCortoPlazoStore.getState().convertirMontosAPalabras(infoSolicitud.informacionGeneral.informacionGeneral.monto);
+
+
+//  // const montoOriginalPalabras = useSolicitudFirmaStore.getState().convertirMontosAPalabras(infoSolicitud.informacionGeneral.informacionGeneral.monto);
+
+//   let credito = state.inscripcion;
+//   //let cancelacion = stateC.cancelacion;
+
+//   console.log("CancelacionSolicitud ENTRO")
+
+//   // console.log("montoOriginalPalabras CANCELACION", montoOriginalPalabras)
+
+//   await axios
+//     .post(
+//       process.env.REACT_APP_APPLICATION_BACK +
+//       "/create-pdf-solicitud-cancelacion",
+//       {
+//         numeroSolicitud: credito.NumeroRegistro,
+//         UsuarioDestinatario: infoSolicitud.inscripcion.servidorPublicoDirigido,
+//         EntidadDestinatario:
+//           infoSolicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+//         UsuarioRemitente: infoSolicitud.encabezado.solicitanteAutorizado.Nombre,
+//         EntidadRemitente: infoSolicitud.encabezado.organismo.Organismo,
+//         claveInscripcion: credito.IdClaveInscripcion,
+//         fechaInscripcion: format(new Date(credito.FechaCreacion), "PPP", {
+//           locale: es,
+//         }),
+//         fechaLiquidacion: format(new Date(credito.FechaContratacion), "PPP", {
+//           locale: es,
+//         }),
+//         fechaContratacion: format(new Date(credito.FechaContratacion), "PPP", {
+//           locale: es,
+//         }),
+//         entePublicoObligado: credito.Nombre,
+//         institucionFinanciera: //CORREGIDO
+
+//           infoSolicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+
+//         montoOriginalContratado: infoSolicitud.informacionGeneral.informacionGeneral.monto,
+//         montoOriginalPalabras: MontoALetras,
+
+//         causaCancelacion: stateC.justificacion,
+//         documentoAcreditacionCancelacion: stateC.documentacionCancelacion.find(
+//           doc => doc.TipoArchivoJustificacion === "Acreditacion De La Cancelacion")?.nombreArchivo,
+//         documentoBajaCreditoFederal: stateC.documentacionCancelacion.find(
+//           doc => doc.TipoArchivoJustificacion === "Baja De Credito Federal")?.nombreArchivo,
+//       },
+//       {
+//         headers: {
+//           Authorization: localStorage.getItem("jwtToken"),
+//           "Access-Control-Allow-Origin": "*",
+//         },
+//         responseType: "arraybuffer",
+//       }
+//     )
+//     .then((response) => {
+//       const a = window.URL || window.webkitURL;
+//       const url = a.createObjectURL(
+//         new Blob([response.data], { type: "application/pdf" })
+//       );
+
+//       console.log("URL, cancelaciones xD", url);
+
+//       //  state.saveFiles(
+//       //    response.data.Id,
+//       //    process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/DOCSOL/${response.data.Id}`
+//       //  );
+
+//       // console.log("URL, cancelaciones xD", url);
+
+//       setUrl(url);
+//     })
+//     .catch((err) => { });
+// }

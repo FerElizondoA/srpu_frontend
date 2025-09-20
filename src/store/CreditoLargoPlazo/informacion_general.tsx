@@ -11,8 +11,9 @@ export interface IGastosCostos {
   destino: { Id: string; Descripcion: string };
   detalleInversion: { Id: string; Descripcion: string };
   archivoDetalleInversion: {
-    archivo: File;
+    archivo?: File;
     nombreArchivo: string;
+    tipoArchivo?: string;
   };
   claveInscripcionFinanciamiento: string;
   descripcion: string;
@@ -94,6 +95,7 @@ export const createInformacionGeneralLpSlice: StateCreator<
     archivoDetalleInversion: {
       archivo: new File([], ""),
       nombreArchivo: "",
+      tipoArchivo: "",
     },
     claveInscripcionFinanciamiento: "",
     descripcion: "",
@@ -165,6 +167,7 @@ export const createInformacionGeneralLpSlice: StateCreator<
         archivoDetalleInversion: {
           archivo: new File([], ""),
           nombreArchivo: "",
+          tipoArchivo: ""
         },
         claveInscripcionFinanciamiento: "",
         descripcion: "",
@@ -193,6 +196,7 @@ export const createInformacionGeneralLpSlice: StateCreator<
         archivoDetalleInversion: {
           archivo: newDocument,
           nombreArchivo: nombreArchivo,
+          tipoArchivo: state.gastosCostos.archivoDetalleInversion.tipoArchivo
         },
       },
     }));
@@ -206,6 +210,7 @@ export const createInformacionGeneralLpSlice: StateCreator<
         archivoDetalleInversion: {
           archivo: new File([], ""),
           nombreArchivo: "",
+          tipoArchivo: ""
         },
       },
     }));

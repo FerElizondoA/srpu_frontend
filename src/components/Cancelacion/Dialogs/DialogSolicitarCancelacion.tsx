@@ -18,16 +18,16 @@ import { queries } from "../../../queries";
 import { useCancelacionStore } from "../../../store/Cancelacion/main";
 import {
   ArchivoCancelacion,
-  CancelacionSolicitud,
   ICancelacion,
+  CancelacionSolicitud,
 } from "../../../store/Cancelacion/solicitud";
 import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
-
+//import { CancelacionSolicitud } from "../../../store/SolicitudFirma/solicitudFirma";
 export function DialogSolicitarCancelacion({
   handler,
-  openState,
+  openState, 
 }: {
   handler: Function;
   openState: boolean;

@@ -21,6 +21,9 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { alertaConfirmCancelar } from "../../../generics/Alertas";
+import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -36,16 +39,22 @@ export function DialogSolicitarModificacion({
   handler,
   openState,
   accion,
+  arrDocsEliminados,
 }: {
   handler: Function;
   openState: boolean;
   accion: string;
+  arrDocsEliminados?: IDocsEliminados[]
+
 }) {
   const navigate = useNavigate();
 
+  const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
+  const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
+
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
-  const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
+
 
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
@@ -65,12 +74,30 @@ export function DialogSolicitarModificacion({
     (state) => state.inscripcion
   );
 
+  
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+  
+  
+  const tablaGastosCostos: IGastosCostos[] = useLargoPlazoStore(
+    (state) => state.tablaGastosCostos
+  );
+
+
+
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
+    console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
+    console.log("tablaGastos y costos en dialog", tablaGastosCostos);
   }, [openState]);
+
 
   const checkform = () => { //Falta revisar los estatus
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
+      console.log("Entro por los roles");
       addComentario(
         inscripcion.Id,
         JSON.stringify(comentarios),
@@ -84,23 +111,22 @@ export function DialogSolicitarModificacion({
               : "25"
             : "21"
           : localStorage.getItem("Rol") === "Validador"
-          ? accion === "enviar"
-            ? "22"
-            : "20"
-          : "21",
+            ? accion === "enviar"
+              ? "22"
+              : "20"
+            : "21",
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para  ${
-            localStorage.getItem("Rol") === "Autorizador"
-              ? accion === "enviar"
-                ? "firmar"
-                : "validación"
-              : localStorage.getItem("Rol") === "Validador"
+          "Crédito simple a largo plazo",
+          `Se te ha asignado una solicitud para  ${localStorage.getItem("Rol") === "Autorizador"
+            ? accion === "enviar"
+              ? "firmar"
+              : "validación"
+            : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
                 ? "autorización"
                 : "revisión"
@@ -123,10 +149,14 @@ export function DialogSolicitarModificacion({
       });
     } else {
       if (inscripcion.Id !== "") {
+        console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
+
+        console.log("ENTRO AQUI AL SI HABER ID DE LA SOLICITUD");
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
-          "1"
+          "1",
+          arrDocsEliminados
         )
           .then(() => {
             !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
@@ -157,14 +187,26 @@ export function DialogSolicitarModificacion({
           "Se te ha asignado una solicitud para modificación",
           [idUsuarioAsignado]
         );
-        navigate("../ConsultaDeSolicitudes");
+        //navigate("../ConsultaDeSolicitudes");
       } else {
+        console.log("ENTRO AQUI POR QUE NO HAY ID DE LA SOLICITUD LOS CREA");
+        console.log('tablaGastosCostos dentro del IF: ', tablaGastosCostos);
         crearSolicitud(
-          localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1",
-          JSON.stringify(comentarios)
-        ).catch(() => {
+          "",
+          //JSON.stringify(comentarios),
+          setIdSolicitudCreada
+        ).then(() => {
+          addComentario(
+            idSolicitudCreada,
+            JSON.stringify(comentarios),
+            "Captura"
+          );
+          alertaConfirmCancelar("La solicitud se envió con éxito")
+          //cleanSolicitud();
+         // navigate("../ConsultaDeSolicitudes");
+        }).catch(() => {
           Swal.fire({
             confirmButtonColor: "#15212f",
             cancelButtonColor: "rgb(175, 140, 85)",
@@ -178,12 +220,14 @@ export function DialogSolicitarModificacion({
           `Se te ha asignado una solicitud para modificación`,
           [idUsuarioAsignado]
         );
-        navigate("../ConsultaDeSolicitudes");
+        //navigate("../ConsultaDeSolicitudes");
       }
     }
 
     handler(false);
   };
+
+
 
   return (
     <Dialog
@@ -208,7 +252,7 @@ export function DialogSolicitarModificacion({
 
       <DialogContent>
         {localStorage.getItem("Rol") === "Autorizador" &&
-        accion === "enviar" ? null : (
+          accion === "enviar" ? null : (
           <Grid mb={2}>
             <FormControl fullWidth>
               <TextField
@@ -219,25 +263,25 @@ export function DialogSolicitarModificacion({
                 }}
               >
                 {localStorage.getItem("Rol")! === "Autorizador" ||
-                localStorage.getItem("Rol") === "Revisor"
+                  localStorage.getItem("Rol") === "Revisor"
                   ? usuarios
-                      .filter((usr) => usr.Rol === "Validador")
-                      .map((usuario, index) => {
-                        return (
-                          <MenuItem value={usuario.Id} key={index}>
-                            {usuario.Nombre +
-                              " " +
-                              usuario.ApellidoPaterno +
-                              " " +
-                              usuario.ApellidoMaterno +
-                              " - " +
-                              (usuario.Rol || "")}
-                          </MenuItem>
-                        );
-                      })
+                    .filter((usr) => usr.Rol === "Validador")
+                    .map((usuario, index) => {
+                      return (
+                        <MenuItem value={usuario.Id} key={index}>
+                          {usuario.Nombre +
+                            " " +
+                            usuario.ApellidoPaterno +
+                            " " +
+                            usuario.ApellidoMaterno +
+                            " - " +
+                            (usuario.Rol || "")}
+                        </MenuItem>
+                      );
+                    })
                   : localStorage.getItem("Rol")! === "Validador"
-                  ? accion === "enviar"
-                    ? usuarios
+                    ? accion === "enviar"
+                      ? usuarios
                         .filter((usr) => usr.Rol === "Autorizador")
                         .map((usuario, index) => {
                           return (
@@ -252,7 +296,7 @@ export function DialogSolicitarModificacion({
                             </MenuItem>
                           );
                         })
-                    : usuarios
+                      : usuarios
                         .filter((usr) => usr.Rol === "Revisor")
                         .map((usuario, index) => {
                           return (
@@ -267,7 +311,7 @@ export function DialogSolicitarModificacion({
                             </MenuItem>
                           );
                         })
-                  : usuarios
+                    : usuarios
                       .filter((usr) => usr.Rol === "Capturador")
                       .map((usuario, index) => {
                         return (

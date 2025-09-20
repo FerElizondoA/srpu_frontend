@@ -10,6 +10,8 @@ export interface DocumentosSlice {
   catalogoTiposDocumentosObligatorios: ITiposDocumento[];
 
 
+  idAcuse: string;
+  getIdAcuse: (idAcuse: string) => void;
 
 
 
@@ -22,12 +24,40 @@ export interface DocumentosSlice {
 
 }
 
-
-
 export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
+  idAcuse: "",
+  getIdAcuse: async () => {
+
+    const state = useInscripcionStore.getState();
+    await axios({
+      method: "get",
+      url:
+        process.env.REACT_APP_APPLICATION_BACK +
+        "/get-tiposDocumentosLargoPlazo",
+      data: {},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+
+      // Busca el ID donde TipoDocumento sea "Acuses"
+      const acuse = data.data.find(
+        (td: any) => td.Descripcion === "Acuses"
+      );
+
+      if (acuse && acuse.Id) {
+        set((state) => ({
+          idAcuse: acuse.Id, // Guarda el ID en el estado
+        }));
+      }
+
+    });
+  },
+
   tablaDocumentos: [],
 
   catalogoTiposDocumentos: [],

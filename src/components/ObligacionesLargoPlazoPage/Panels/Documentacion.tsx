@@ -65,7 +65,7 @@ const heads: readonly Head[] = [
   },
 ];
 
-export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Function;}) => {
+export const Documentacion = ({ addArrDocsEliminados, }: { addArrDocsEliminados: Function; }) => {
 
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
@@ -80,7 +80,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
   );
 
   const [borrarDoc, setBorrarDoc] = useState<deleteDocumentos[]>([]);
- 
+
 
   const addDocumento: Function = useLargoPlazoStore(
     (state) => state.addDocumento
@@ -107,6 +107,35 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
       }
     }
   }
+
+  function clearArchivo(index: number) {
+    let auxArrayArchivos = [...tablaDocumentos];
+    let objetoSeleccionado = { ...auxArrayArchivos[index] }
+
+    addArrDocsEliminados({
+      NombreDoc: objetoSeleccionado.nombreArchivo,
+      TpoDoc: objetoSeleccionado.tipoArchivo
+    }
+    )
+    if (index < tablaDocumentos.length) {
+      auxArrayArchivos[index].archivo = newFile;
+      auxArrayArchivos[index].nombreArchivo = "";
+      setTablaDocumentos(auxArrayArchivos);
+    } else {
+      alertaInfo("Ocurrio un error al remover el archivo");
+    }
+  }
+  // function clearArchivo(index: number) {
+  //   if (index < tablaDocumentos.length) {
+  //     let auxArrayArchivos = [...tablaDocumentos];
+  //     auxArrayArchivos[index].archivo = newFile;
+  //     auxArrayArchivos[index].nombreArchivo = "";
+  //     setTablaDocumentos(auxArrayArchivos);
+  //   } else {
+  //     alertaInfo("Ocurrio un error al remover el archivo");
+  //   }
+  // }
+
 
   const quitDocument: Function = useLargoPlazoStore(
     (state) => state.removeDocumento
@@ -162,16 +191,11 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
     );
   }, []);
 
-  function clearArchivo(index: number) {
-    if (index < tablaDocumentos.length) {
-      let auxArrayArchivos = [...tablaDocumentos];
-      auxArrayArchivos[index].archivo = newFile;
-      auxArrayArchivos[index].nombreArchivo = "";
-      setTablaDocumentos(auxArrayArchivos);
-    } else {
-      alertaInfo("Ocurrio un error al remover el archivo");
-    }
-  }
+    useEffect(() => {
+      console.log("tablaDocumentos", tablaDocumentos);
+    }, [tablaDocumentos]);
+
+
 
   return (
     <Grid
@@ -230,13 +254,13 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                       <Grid sx={{ display: "flex", width: "120px" }}>
                         <Grid>
                           {comentario[val.descripcionTipo] &&
-                          comentario[val.descripcionTipo] !== "" ? (
+                            comentario[val.descripcionTipo] !== "" ? (
                             <Badge badgeContent={"!"} color="primary">
                               <Tooltip title="Añadir comentario a este apartado">
                                 <IconButton
                                   color={
                                     comentario[val.descripcionTipo] &&
-                                    comentario[val.descripcionTipo] !== ""
+                                      comentario[val.descripcionTipo] !== ""
                                       ? "success"
                                       : "primary"
                                   }
@@ -277,7 +301,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
 
                         <Grid>
                           {index >=
-                          catalogoTiposDocumentosObligatorios.length ? (
+                            catalogoTiposDocumentosObligatorios.length ? (
                             <IconButton
                               sx={{ ...queries.iconButtonCancelar }}
                               onClick={() => {
@@ -297,9 +321,9 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                         sx={{ width: "250px" }}
                         disabled={
                           val.archivo?.name ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           val.nombreArchivo ===
-                            "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                          "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                           (datosActualizar.length > 0 &&
                             !datosActualizar.includes(val.tipoArchivo))
                         }
@@ -312,6 +336,8 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                             .replaceAll("'", "")
                             .replaceAll('"', "")
                             .replaceAll("\n", "");
+                          console.log(" auxArrayArchivos[index].nombreArchivo", auxArrayArchivos[index])
+
                           setTablaDocumentos(auxArrayArchivos);
                         }}
                       ></TextField>
@@ -340,7 +366,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                               display: "flex",
                               fontFamily:
                                 val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                  "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                   ? "MontserratBold"
                                   : "MontserratMedium",
                               textAlign: "center",
@@ -360,7 +386,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                               },
                               border:
                                 val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                  "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                                   ? "2px dotted #af8c55"
                                   : "2px dotted black",
                             }}
@@ -393,9 +419,11 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                             <Button
                               sx={{ position: "absolute", right: 0 }}
                               onClick={() => {
-                                clearArchivo(index);
+                                // clearArchivo(index);
                                 // quitDocument(openEliminar.index);
                                 // setOpenEliminar({ ...openEliminar, open: false });
+                                setOpenEliminar({ open: true, index: index })
+
                               }}
                             >
                               <CloseIcon />
@@ -435,7 +463,7 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                               pt: 1,
                               backgroundColor:
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                tablaDocumentos[index]?.tipoArchivo ===
+                                  tablaDocumentos[index]?.tipoArchivo ===
                                   undefined
                                   ? "#ff000057"
                                   : null,
@@ -451,15 +479,15 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
                           >
                             {reestructura === "con autorizacion"
                               ? justificacionRespuesta.map((tipo) => (
-                                  <MenuItem key={tipo.Id} value={tipo.Id}>
-                                    {tipo.Descripcion}
-                                  </MenuItem>
-                                ))
+                                <MenuItem key={tipo.Id} value={tipo.Id}>
+                                  {tipo.Descripcion}
+                                </MenuItem>
+                              ))
                               : tiposDocumentos.map((tipo) => (
-                                  <MenuItem key={tipo.Id} value={tipo.Id}>
-                                    {tipo.Descripcion}
-                                  </MenuItem>
-                                ))}
+                                <MenuItem key={tipo.Id} value={tipo.Id}>
+                                  {tipo.Descripcion}
+                                </MenuItem>
+                              ))}
                           </Select>
                         </FormControl>
                       )}
@@ -576,7 +604,8 @@ export const Documentacion = ( {addDocumentDelete, }:{ addDocumentDelete: Functi
           <Button
             sx={queries.buttonContinuar}
             onClick={() => {
-              quitDocument(openEliminar.index);
+              clearArchivo(openEliminar.index);
+              //quitDocument(openEliminar.index);
               setOpenEliminar({ ...openEliminar, open: false });
             }}
           >

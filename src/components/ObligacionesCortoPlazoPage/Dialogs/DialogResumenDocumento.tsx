@@ -456,7 +456,7 @@ export function VerBorradorDocumento(props: Props) {
         {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
           <Resumen coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios} />
         ) : (
-          <ResumenLP coments={false} />
+          <ResumenLP coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios}/>
         )}
       </DialogContent>
 

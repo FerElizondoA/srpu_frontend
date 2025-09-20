@@ -27,6 +27,8 @@ import { DatosGeneralesMandato } from "../panels/DatosGeneralesMandatos";
 import { SoporteDocumentalMandato } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoMandato } from "../panels/TipoDeMovimiento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 
 export const DialogTransition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -94,9 +96,32 @@ export function AgregarMandatos({
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+    const tablaSoporteDocumentalMandato: ISoporteDocumentalFuentePago[] = useMandatoStore(
+      (state) => state.tablaSoporteDocumentalMandato
+    );
+
+    //const idMandato: Function = useMandatoStore((state) => state.idMandato);
+  
+
   useEffect(() => {
     getTipoEntePublicoObligado();
   }, []);
+
+    const [arr, setArr] = useState<any>([]);
+  
+
+    useEffect(() => {
+      if (IdMandato !== "") {
+        console.log("Entré al useEffect de IDMANDATO:");
+        listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${IdMandato}/`,
+          setArr,
+          tablaSoporteDocumentalMandato
+        ).then(() => {
+          setLoading(false);
+        });
+      }
+      console.log("idMandato:", IdMandato);
+    }, [IdMandato !== ""]);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
@@ -187,7 +212,7 @@ export function AgregarMandatos({
 
         {tabIndex === 1 && <TipoDeMovimientoMandato />}
 
-        {tabIndex === 2 && <SoporteDocumentalMandato />}
+        {tabIndex === 2 && <SoporteDocumentalMandato DocumentosBaseDatos={arr}/>}
       </Grid>
 
       <ThemeProvider theme={buttonTheme}>

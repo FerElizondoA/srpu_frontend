@@ -56,7 +56,7 @@ export interface SolicitudInscripcionSlice {
   deleteFiles: (ruta: string) => void;
 
   saveFiles: (idRegistro: string, ruta: string) => void;
-  saveFilesFuentesPago: (NombreFuentePago:string, TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading:Function) => void;
+  saveFilesFuentesPago: (NombreFuentePago: string, TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading: Function) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -73,16 +73,16 @@ export interface SolicitudInscripcionSlice {
 
 
   comentariosSolicitudInscrpcion: { [key: string]: string };
-    setComentariosSolicitudInscrpcion: (comentario: any) => void;
+  setComentariosSolicitudInscrpcion: (comentario: any) => void;
 
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-comentariosSolicitudInscrpcion:{},
+  comentariosSolicitudInscrpcion: {},
 
- setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
+  setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
     set((state) => ({
       comentariosSolicitudInscrpcion: comentariosSolicitudInscrpcion,
     }));
@@ -203,6 +203,7 @@ comentariosSolicitudInscrpcion:{},
 
         inscripcionState.setInscripcion(data.data);
         state.addComentario(data.data.Id, comentario, "Captura");
+
       });
   },
 
@@ -331,30 +332,30 @@ comentariosSolicitudInscrpcion:{},
     if (comentario === null || comentario === undefined || comentario.trim() === '') {
       comentario = ''; // Enviar un string vacío al backend para eliminarlo
     }
-      await axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
-          {
-            IdSolicitud: Id,
-            Comentario: comentario,
-            Tipo: tipo,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-            IdComentario: useCortoPlazoStore.getState().idComentario,
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
+        {
+          IdSolicitud: Id,
+          Comentario: comentario,
+          Tipo: tipo,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          IdComentario: useCortoPlazoStore.getState().idComentario,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
           },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {
-          useCortoPlazoStore.setState({
-            comentarios: {},
-            idComentario: "",
-          });
-        })
-        .catch((e) => { });
-    
+        }
+      )
+      .then(({ data }) => {
+        useCortoPlazoStore.setState({
+          comentarios: {},
+          idComentario: "",
+        });
+      })
+      .catch((e) => { });
+
   },
 
   eliminarRequerimientos: async (Id: string, setState: Function) => {
@@ -408,12 +409,18 @@ comentariosSolicitudInscrpcion:{},
       .catch((e) => { });
   },
 
-  saveFilesFuentesPago: async (NombreFuentePago:string ,TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading: Function) => {
+  saveFilesFuentesPago: async (
+    NombreFuentePago: string,
+    TablaFuentePago: ISoporteDocumentalFuentePago[],
+    idRegistro: string,
+    ruta: string,
+    setLoading: Function
+  ) => {
     const state = useFideicomisoStore.getState();
     console.log("Entre saveFiles TablaFuentePago: ", TablaFuentePago);
 
-    return await TablaFuentePago.map((file, index) => {
-      console.log(file);
+    return await TablaFuentePago.map((file) => {
+      console.log("File fuente de pago: ", NombreFuentePago, "para el FILE: ", file);
 
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
@@ -439,7 +446,6 @@ comentariosSolicitudInscrpcion:{},
             .then(({ data }) => {
               console.log("data response", data);
 
-              //HACER UN IF PARA LAS DISTINTAS FUENTES DE PAGO *******************
 
               state.savePathDocFuentePago(
                 idRegistro,
@@ -448,7 +454,7 @@ comentariosSolicitudInscrpcion:{},
                 data.RESPONSE.NOMBREARCHIVO,
                 setLoading,
                 NombreFuentePago
-                // file.tipoArchivo
+                //file.tipoArchivo
               );
               console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
 
@@ -456,7 +462,7 @@ comentariosSolicitudInscrpcion:{},
             .catch((e) => {
 
               alertaInfo("")
-             });
+            });
         } else {
           return null;
         }
@@ -537,9 +543,7 @@ comentariosSolicitudInscrpcion:{},
           }
         )
         .then(({ data }) => {
-
           //console.log("DATA guardarDocumentos", data);
-
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
@@ -581,7 +585,8 @@ comentariosSolicitudInscrpcion:{},
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          TpoDoc: TpoDoc//COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          // TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {
           headers: {

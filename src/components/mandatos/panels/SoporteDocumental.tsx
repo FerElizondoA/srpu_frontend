@@ -33,10 +33,11 @@ import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useMandatoStore } from "../../../store/Mandatos/main";
-import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso"; 
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
+import { listFile, listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { buttonTheme } from "../dialog/AgregarMandatos";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 const heads = [
   {
@@ -56,7 +57,7 @@ const heads = [
   },
 ];
 
-export function SoporteDocumentalMandato() {
+export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBaseDatos: any }) {
   const [fileSelected, setFileSelected] = useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -122,13 +123,28 @@ export function SoporteDocumentalMandato() {
 
   const [arr, setArr] = useState<any>([]);
 
-  useEffect(() => {
-    if (idMandato !== "") {
-      listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr).then(() => {
-        setLoading(false);
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (idMandato !== "") {
+  //     listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr).then(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+  // }, []);
+
+
+  // useEffect(() => {
+  //   if (idMandato !== "") {
+  //     console.log("Entré al useEffect de idFideicomiso:");
+  //     listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${idMandato}/`,
+  //       setArr,
+  //       JSON.parse(fideicomiso.SoporteDocumental)
+  //     ).then(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+  //   console.log("idMandato:", idMandato);
+  // }, [idMandato !== ""]);
+
 
   const [loading, setLoading] = useState(true);
 
@@ -345,7 +361,7 @@ export function SoporteDocumentalMandato() {
               </TableHead>
 
               <TableBody>
-                {tablaSoporteDocumentalMandato.map(
+                {DocumentosBaseDatos.map( //HAS QUE GUARDE EL ARRDATOS EN EL SET DE SOPORTE DOCUMENTAL QUE TENIAS ANTERIOREMENTE
                   (row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
@@ -371,38 +387,83 @@ export function SoporteDocumentalMandato() {
                           {row.nombreArchivo}
                         </StyledTableCell>
 
-                        <StyledTableCell>
-                          {loading && !row.archivo ? (
-                            <CircularProgress />
-                          ) : (
-                            <Tooltip
-                              title={"Mostrar vista previa del documento"}
-                            >
-                              <IconButton
-                                onClick={() => {
-                                  toBase64(row.archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.NOMBREFORMATEADO.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].FILE
-                                        }`
-                                      );
-                                    });
+                        <StyledTableCell align="center">
+
+                          <Tooltip title={"Mostrar vista previa del documento"}>
+                            <IconButton
+                              onClick={
+                                async () => {
+                                  console.log("row.archivo", row.archivo)
+
+                                  let base64String = '';
+                                  try {
+                                    if (row.archivo instanceof File) {
+                                      base64String = await convertFileToBase64(row.archivo);
+                                      console.log("base64String 1", base64String)
+
+                                    } else {
+                                      base64String = row.archivo;
+                                      console.log("base64String 2", base64String)
+
+                                    }
+
+                                    const dataUri = `data:application/pdf;base64,${base64String}`;
+                                    console.log("dataUri", dataUri)
+                                    setFileSelected(dataUri);
+                                  } catch (error) {
+                                    console.error("Error al convertir el archivo a Base64", error);
+                                  }
+
                                   setShowModalPrevia(true);
-                                }}
-                              >
-                                <FileOpenIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                                  // setFileSelected(
+                                  //   `data:application/pdf;base64,${arr.filter((td: any) =>
+                                  //     td.NOMBREFORMATEADO.includes(
+                                  //       row.nombreArchivo
+                                  //     )
+                                  //   )[0].FILE
+                                  //   }`
+                                  // );
+                                  // setShowModalPrevia(true);
+                                }
+                              }
+                            >
+                              <FileOpenIcon />
+                            </IconButton>
+                          </Tooltip>
+
                         </StyledTableCell>
+
+                        {/* <StyledTableCell>
+                        {loading && !row.archivo ? (
+                          <CircularProgress />
+                        ) : (
+                          <Tooltip
+                            title={"Mostrar vista previa del documento"}
+                          >
+                            <IconButton
+                              onClick={() => {
+                                toBase64(row.archivo)
+                                  .then((data) => {
+                                    setFileSelected(data);
+                                  })
+                                  .catch((err) => {
+                                    setFileSelected(
+                                      `data:application/pdf;base64,${arr.filter((td: any) =>
+                                        td.NOMBREFORMATEADO.includes(
+                                          row.nombreArchivo
+                                        )
+                                      )[0].FILE
+                                      }`
+                                    );
+                                  });
+                                setShowModalPrevia(true);
+                              }}
+                            >
+                              <FileOpenIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </StyledTableCell> */}
                       </StyledTableRow>
                     );
                   }

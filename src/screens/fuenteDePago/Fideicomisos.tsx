@@ -20,7 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import {
@@ -40,6 +40,7 @@ import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
+import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
 
 export interface IDatosFideicomiso {
   AcumuladoEstado: string;
@@ -116,9 +117,7 @@ const heads: Head[] = [
 
 export function Fideicomisos() {
   const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
-  const [fideicomisos, setFideicomisos] = useState<IRegistro[]>([]);
-  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
-    useState<IRegistro[]>(fideicomisos);
+
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -146,22 +145,22 @@ export function Fideicomisos() {
     (state) => state.editarFideicomisoNew
   );
 
-  const filtrarDatos = () => {
-    // eslint-disable-next-line array-callback-return
-    let ResultadoBusqueda = fideicomisos.filter((elemento) => {
-      if (
-        elemento.NumeroRegistro.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.FechaRegistro.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase())
-      ) {
-        return elemento;
-      }
-    });
-    setFideicomisoFiltrados(ResultadoBusqueda);
-  };
+  // const filtrarDatos = () => {
+  //   // eslint-disable-next-line array-callback-return
+  //   let ResultadoBusqueda = fideicomisos.filter((elemento) => {
+  //     if (
+  //       elemento.NumeroRegistro.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.FechaRegistro.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase())
+  //     ) {
+  //       return elemento;
+  //     }
+  //   });
+  //   setFideicomisoFiltrados(ResultadoBusqueda);
+  // };
 
   const catalogoTiposDeFideicomiso: ICatalogo[] = useFideicomisoStore(
     (state) => state.catalogoTiposDeFideicomiso
@@ -205,9 +204,33 @@ export function Fideicomisos() {
   );
 
 
+  const [datos, setDatos] = useState<Array<IRegistro>>([]);
 
+  const [fideicomisosFiltrados, setFideicomisoFiltrados] =
+    useState<Array<IRegistro>>([]);
 
+  useEffect(() => {
+    getMecanismosVehiculosPago("Fideicomisos", () => {}) //Ocupamos este
+    //getFideicomisos(setFideicomisos);
+    getTiposFideicomiso();
+    getInstituciones();
+    getSumaPorcentajeAcumulado("Fideicomisos");
+  }, []);
 
+  useEffect(() => {
+    setDatos(tablaMecanismoVehiculoPago);
+    setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
+    console.log("Datos", datos);
+    console.log("fideicomisosFiltrados", fideicomisosFiltrados);
+  }, [tablaMecanismoVehiculoPago]);
+
+  // useEffect(() => {
+  //   if (busqueda.length !== 0) {
+  //     setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [busqueda]);
+  
 
 
   const sumaPorcentajeAcumulado: {
@@ -216,24 +239,8 @@ export function Fideicomisos() {
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
-  useEffect(() => {
-    getMecanismosVehiculosPago("Fideicomisos", () => { })
-    //getFideicomisos(setFideicomisos);
-    getTiposFideicomiso();
-    getInstituciones();
-    getSumaPorcentajeAcumulado("Fideicomisos");
-  }, []);
 
-  useEffect(() => {
-    setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
-  }, [tablaMecanismoVehiculoPago]);
 
-  useEffect(() => {
-    if (busqueda.length !== 0) {
-      setFideicomisoFiltrados(tablaMecanismoVehiculoPago);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busqueda]);
 
   useEffect(() => {
     if (openAgregarFideicomisos === false) {
@@ -264,7 +271,7 @@ export function Fideicomisos() {
       TipoEntePublicoObligado: "",
 
       CLABE: "",
-      IdBanco:"",
+      IdBanco: "",
       NombreBanco: "",
       EntePublicoObligado: "",
 
@@ -288,8 +295,7 @@ export function Fideicomisos() {
       // Puedes agregar aquí otras propiedades opcionales con valores por defecto si existen en IRegistro
     });
 
-  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+
 
   // const [sumaAfectatoToalIngreso, setSumaAfectatoToalIngreso] = useState(0);
   // const [SumEquivalenciaCorrespondienteMunicipios, setSumEquivalenciaCorrespondienteMunicipios] = useState(0);
@@ -351,10 +357,10 @@ export function Fideicomisos() {
         </Typography>
       </Grid>
 
-      <BarraFiltros
+      <BarraFiltrosFuentesPago
         Lista={datos}
-        setStateFiltered={setDatosFiltrados}
-        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setStateFiltered={setFideicomisoFiltrados}
+        CamposFecha={["FechaRegistro"]}
         setOpenDialogAgregar={setOpenAgregarFideicomiso}
         openDialogAgregar={openAgregarFideicomisos}
         BooleaDialog={true}

@@ -36,7 +36,7 @@ import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
+import { getDocumentos, getDocumentosResumen } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
   headsComision,
@@ -57,6 +57,8 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 import { log } from "console";
 import { IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 
 interface Head {
@@ -170,7 +172,17 @@ const headsGC: Head[] = [
   },
 ];
 
-export function Resumen({ coments }: { coments: boolean }) {
+export function Resumen({
+  coments,
+  estatus,
+  arrDocsEliminados,
+  funcionFiltroComentarios,
+}: {
+  coments: boolean,
+  estatus: string,
+  arrDocsEliminados?: IDocsEliminados[],
+  funcionFiltroComentarios?: Function
+}) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -367,12 +379,15 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-    inscripcion.Id &&
-      getDocumentos(
+    console.log("inscripcion.Id en resumen", inscripcion.Id);
+    if (inscripcion.Id) {
+      getDocumentosResumen(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        setCargados,
+        "LargoPlazo"
       );
+    }
   }, []);
 
   const toBase64 = (file: any) =>
@@ -422,6 +437,9 @@ export function Resumen({ coments }: { coments: boolean }) {
   const tablaAsignarFuenteNew: IDeudorFideicomisoNew[] = useLargoPlazoStore(
     (state) => state.tablaAsignarFuenteNew
   );
+
+  const activacionComentariosRevisor = ["5", "14", "23"]
+
 
   useEffect(() => {
     console.log(tablaCondicionesFinancieras);
@@ -489,7 +507,7 @@ export function Resumen({ coments }: { coments: boolean }) {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {activaAccion && (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                   <Tooltip title="Añadir comentario a este apartado">
                     <IconButton
                       color={
@@ -581,30 +599,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -697,30 +715,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 //reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -836,30 +854,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={150} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -954,7 +972,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                           </Typography>
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">
-                          <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                          <Tooltip title={autorizacionSelect?.DocumentoSoporte.nombreArchivo}>
                             <IconButton
                               onClick={() => {
                                 setFileSelected(
@@ -1011,30 +1029,30 @@ export function Resumen({ coments }: { coments: boolean }) {
             {fuenteDePago.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* Revisar */}
-                {activaAccion &&
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                   //reestructura !== "con autorizacion" ?
-                  (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentarios[head.label] &&
-                            comentarios[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabInformaciónGeneral",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )
+
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios[head.label] &&
+                          comentarios[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabInformaciónGeneral",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )
                   //: null
                 }
 
@@ -1051,30 +1069,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={500} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 //reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 // : null
               }
             </Grid>
@@ -1166,30 +1184,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item width={"100%"} mt={3} display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Condiciones Financieras"] &&
-                          comentarios["Tabla Condiciones Financieras"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Condiciones Financieras",
-                          tab: "TabCondiciones Financieras",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Condiciones Financieras"] &&
+                        comentarios["Tabla Condiciones Financieras"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Condiciones Financieras",
+                        tab: "TabCondiciones Financieras",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -1574,30 +1592,32 @@ export function Resumen({ coments }: { coments: boolean }) {
                   {documentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        {activaAccion && reestructura !== "con autorizacion" ? (
-                          <Tooltip title="Añadir comentario a este apartado">
-                            <IconButton
-                              color={
-                                comentarios[row.descripcionTipo] &&
-                                  comentarios[row.descripcionTipo] !== ""
-                                  ? "success"
-                                  : "primary"
-                              }
-                              size="small"
-                              onClick={() => {
-                                setOpenComentarioApartado({
-                                  open: true,
-                                  apartado: row.descripcionTipo,
-                                  tab: "TabDocumentacion",
-                                });
-                              }}
-                            >
-                              <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                            </IconButton>
-                          </Tooltip>
-                        ) : (
-                          "No disponible para reestructura"
-                        )}
+                        {activaAccion && reestructura !== "con autorizacion" ||
+                          (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")
+                          ? (
+                            <Tooltip title="Añadir comentario a este apartado">
+                              <IconButton
+                                color={
+                                  comentarios[row.descripcionTipo] &&
+                                    comentarios[row.descripcionTipo] !== ""
+                                    ? "success"
+                                    : "primary"
+                                }
+                                size="small"
+                                onClick={() => {
+                                  setOpenComentarioApartado({
+                                    open: true,
+                                    apartado: row.descripcionTipo,
+                                    tab: "TabDocumentacion",
+                                  });
+                                }}
+                              >
+                                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                              </IconButton>
+                            </Tooltip>
+                          ) : (
+                            "No disponible para reestructura"
+                          )}
 
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
@@ -1633,34 +1653,23 @@ export function Resumen({ coments }: { coments: boolean }) {
                                 <CircularProgress />
                               ) : ( */}
                               <IconButton
-                                onClick={() => {
-                                  // var a = document.createElement("a"); //Create <a>
-                                  // a.href =
-                                  //   "data:application/pdf;base64," +
-                                  //   arr.filter((td: any) =>
-                                  //     td.NOMBREFORMATEADO.includes(
-                                  //       row.nombreArchivo
-                                  //     )
-                                  //   )[0].FILE; //Image Base64 Goes here
-                                  // a.download = `${"NOMBRE"}.pdf`; //File name Here
+                                onClick={async () => {
+                                  console.log("row?.archivo?.name", row?.archivo)
+                                  let base64String = '';
+                                  try {
+                                    if (row.archivo instanceof File) {
+                                      base64String = await convertFileToBase64(row.archivo);
+                                    } else {
+                                      base64String = row.archivo;
+                                    }
 
-                                  toBase64(documentos[index].archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
-                                        }`
-                                      );
-                                    });
-                                  // setFileSelected(a);
+                                    const dataUri = `data:application/pdf;base64,${base64String}`;
+                                    setFileSelected(dataUri);
+                                  } catch (error) {
+                                    console.error("Error al convertir el archivo a Base64", error);
+                                  }
+
                                   setShowModalPrevia(true);
-                                  // a.click();
                                 }}
                               >
                                 <FileOpenIcon></FileOpenIcon>
@@ -1714,6 +1723,8 @@ export function Resumen({ coments }: { coments: boolean }) {
       <ComentarioApartado
         setOpen={setOpenComentarioApartado}
         openState={openComentarioApartado}
+        filtroComentarioVolver={funcionFiltroComentarios}
+
       />
     </Grid>
   );

@@ -41,6 +41,7 @@ import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
+import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -90,9 +91,7 @@ const heads: Head[] = [
 export function InstruccionesIrrevocables() {
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
   const [instrucciones, setInstrucciones] = useState<IRegistro[]>([]);
-  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<
-    IRegistro[]
-  >([]);
+
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -116,9 +115,6 @@ export function InstruccionesIrrevocables() {
   const editarInstruccion: Function = useInstruccionesStore(
     (state) => state.editarInstruccion
   );
-
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
-  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
 
 
   // const filtrarDatos = () => {
@@ -169,9 +165,6 @@ export function InstruccionesIrrevocables() {
     (state) => state.getMecanismosVehiculosPago
   );
 
-  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
-    (state) => state.tablaMecanismoVehiculoPago
-  );
 
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -179,8 +172,16 @@ export function InstruccionesIrrevocables() {
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+
+  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<Array<IRegistro>>([]);
+  const [datos, setDatos] = useState<Array<IRegistro>>([]);
+
+
   useEffect(() => {
-    getMecanismosVehiculosPago("Instruccion Irrevocable", () => {})
+    getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
     //getInstrucciones(setInstrucciones);
     getInstituciones();
     getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
@@ -188,8 +189,11 @@ export function InstruccionesIrrevocables() {
   }, []);
 
   useEffect(() => {
+    setDatos(tablaMecanismoVehiculoPago);
     setInstruccionesFiltrados(tablaMecanismoVehiculoPago);
   }, [tablaMecanismoVehiculoPago]);
+
+
 
   useEffect(() => {
     if (busqueda.length !== 0) {
@@ -226,7 +230,7 @@ export function InstruccionesIrrevocables() {
       TipoEntePublicoObligado: "",
 
 
-    
+
       CLABE: "",
       IdBanco: "",
       NombreBanco: "",
@@ -284,10 +288,10 @@ export function InstruccionesIrrevocables() {
 
 
 
-      <BarraFiltros
+      <BarraFiltrosFuentesPago
         Lista={datos}
-        setStateFiltered={setDatosFiltrados}
-        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setStateFiltered={setInstruccionesFiltrados}
+        CamposFecha={["FechaRegistro"]}
         setOpenDialogAgregar={setOpenAgregarInstruccion}
         openDialogAgregar={openAgregarInstruccion}
         BooleaDialog={true}
@@ -406,7 +410,7 @@ export function InstruccionesIrrevocables() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tablaMecanismoVehiculoPago.map(
+                {instruccionesFiltrados.map(
                   (row: IRegistro, index: number) => {
                     return (
                       <StyledTableRow key={index}>
@@ -494,6 +498,7 @@ export function InstruccionesIrrevocables() {
                                   auxArray,
                                   JSON.parse(row.SoporteDocumental)
                                 );
+                                setIdInstruccion(row.Id);
 
                                 setOpenAgregarInstruccion(
                                   !openAgregarInstruccion
@@ -531,7 +536,6 @@ export function InstruccionesIrrevocables() {
           handler={setOpenAgregarInstruccion}
           openState={openAgregarInstruccion}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
-          
         />
       )}
 

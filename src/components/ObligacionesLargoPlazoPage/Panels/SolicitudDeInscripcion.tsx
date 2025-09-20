@@ -116,39 +116,39 @@ export function SolicitudDeInscripcion() {
         tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
-      if (!state.tablaAsignarFuenteNew || state.tablaAsignarFuenteNew.length === 0) {
-        err = 1;
-        errores.push("Sección Asignación Fuente: Debe asignar al menos una fuente de pago.");
-      } else {
-        state.tablaAsignarFuenteNew.forEach((movimiento: any, index: number) => {
-          if (
-            !movimiento.AfectadoTotal ||
-            movimiento.AfectadoTotal === "" ||
-            /^[\s]*$/.test(movimiento.AfectadoTotal)
-          ) {
-            err = 1;
-            errores.push(
-              `Sección Asignación Fuente (registro ${index + 1}): El campo Afectado Total es obligatorio.`
-            );
-          }
+      // if (!state.tablaAsignarFuenteNew || state.tablaAsignarFuenteNew.length === 0) {
+      //   err = 1;
+      //   errores.push("Sección Asignación Fuente: Debe asignar al menos una fuente de pago.");
+      // } else {
+      //   state.tablaAsignarFuenteNew.forEach((movimiento: any, index: number) => {
+      //     if (
+      //       !movimiento.AfectadoTotal ||
+      //       movimiento.AfectadoTotal === "" ||
+      //       /^[\s]*$/.test(movimiento.AfectadoTotal)
+      //     ) {
+      //       err = 1;
+      //       errores.push(
+      //         `Sección Asignación Fuente (registro ${index + 1}): El campo Afectado Total es obligatorio.`
+      //       );
+      //     }
 
-          if (
-            movimiento.tipoEntePublicoObligado?.Descripcion?.toLowerCase() ===
-            "gobierno estatal"
-          ) {
-            if (
-              !movimiento.Equivalencia ||
-              movimiento.Equivalencia === "" ||
-              /^[\s]*$/.test(movimiento.Equivalencia)
-            ) {
-              err = 1;
-              errores.push(
-                `Sección Asignación Fuente (registro ${index + 1}): El campo Equivalencia es obligatorio para Gobierno Estatal.`
-              );
-            }
-          }
-        });
-      }
+      //     if (
+      //       movimiento.tipoEntePublicoObligado?.Descripcion?.toLowerCase() ===
+      //       "gobierno estatal"
+      //     ) {
+      //       if (
+      //         !movimiento.Equivalencia ||
+      //         movimiento.Equivalencia === "" ||
+      //         /^[\s]*$/.test(movimiento.Equivalencia)
+      //       ) {
+      //         err = 1;
+      //         errores.push(
+      //           `Sección Asignación Fuente (registro ${index + 1}): El campo Equivalencia es obligatorio para Gobierno Estatal.`
+      //         );
+      //       }
+      //     }
+      //   });
+      // }
       if (
         solicitud.PlazoDias === undefined ||
         solicitud.PlazoDias === 0 ||

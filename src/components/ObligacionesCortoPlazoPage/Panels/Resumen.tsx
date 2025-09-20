@@ -30,7 +30,7 @@ import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informa
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
+import { getDocumentos, getDocumentosResumen } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { ComentarioApartado } from "../Dialogs/DialogComentarioApartado";
 import {
@@ -237,13 +237,16 @@ export function Resumen({
   const [arr, setArr] = useState<any>([]);
   const [cargados, setCargados] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
     if (inscripcion.Id)
-      getDocumentos(
+      getDocumentosResumen(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
-      );
+        setCargados,
+        "CortoPlazo"
+      ).then(() => {
+        console.log("tablaDocumentos modificados", documentos);
+      });
   }, []);
 
   const toBase64 = (file: any) =>
@@ -259,7 +262,9 @@ export function Resumen({
   const activaAccion = localStorage.getItem("IdUsuario") === inscripcion.IdEditor;
 
   // const activacionComentariosRevisor = ["4", "12", "20"]
-  const activacionComentariosRevisor = ["5", "13", "21"]
+  const activacionComentariosRevisor = ["5", "14", "23"]
+
+
 
   return (
 
@@ -952,8 +957,8 @@ export function Resumen({
                 </TableHead>
                 <TableBody>
                   {documentos.map((row, index) => {
-                    //console.log('documentos resumen:', row);
-                    console.log("dOCUMENTOS SOLICITUD", documentos)
+                    // console.log('documentos resumen:', row);
+                    // console.log("dOCUMENTOS SOLICITUD", documentos)
                     return (
                       <StyledTableRow key={index}>
                         {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (

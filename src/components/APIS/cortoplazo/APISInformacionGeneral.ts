@@ -44,6 +44,7 @@ export function getObligadoSolidarioAval(setState: Function) {
 }
 
 export function getSolicitudes(tipoListado: string, setState: Function, setStateFilter:Function) {
+  console.log("tipoListado", tipoListado);
 
   axios({
     method: "get",

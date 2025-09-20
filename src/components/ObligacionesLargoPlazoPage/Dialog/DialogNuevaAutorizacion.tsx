@@ -28,6 +28,7 @@ import {
   IGeneralAutorizado,
   IMontoAutorizado,
 } from "../../../store/CreditoLargoPlazo/autorizacion";
+import { IFileAutorizacion } from "../Panels/RegistrarNuevaAutorizacion";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -79,6 +80,8 @@ export function DialogNuevaAutorizacion(props: Props) {
     (state) => state.cleanAutorizacion
   );
 
+
+
   return (
     <>
       <Dialog
@@ -119,8 +122,8 @@ export function DialogNuevaAutorizacion(props: Props) {
                     autorizacion.fechaPublicacion === "" ||
                     autorizacion.medioPublicacion.Descripcion === "" ||
                     autorizacion.montoAutorizado === 0 ||
-                    autorizacion.documentoSoporte.nombreArchivo === "" ||
-                    autorizacion.acreditacionQuorum.nombreArchivo === "" ||
+                    autorizacion.documentoSoporte?.nombreArchivo === "" ||
+                    autorizacion.acreditacionQuorum?.nombreArchivo === "" ||
                     tablaMontoAutorizado.length === 0 ||
                     tablaDetalleDestino.length === 0
                   }
@@ -173,7 +176,7 @@ export function DialogNuevaAutorizacion(props: Props) {
               <Tab label="DETALLE DEL DESTINO" sx={queries.bold_text}></Tab>
             </Tabs>
 
-            {tabIndex === 0 && <RegistrarNuevaAutorizacion />}
+            {tabIndex === 0 && <RegistrarNuevaAutorizacion tipoAccion={props.accion} />}
 
             {tabIndex === 1 && <DestinoAutorizado />}
 

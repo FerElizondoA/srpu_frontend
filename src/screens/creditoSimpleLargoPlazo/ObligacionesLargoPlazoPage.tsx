@@ -16,7 +16,7 @@ import { queries } from "../../queries";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { DialogSolicitarReestructura } from "../../components/ObligacionesLargoPlazoPage/Dialog/DialogSolicitarReestructura";
-import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { getDocumentos, getDocumentosGastosCostos } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { SolicitudDeInscripcion } from "../../components/ObligacionesLargoPlazoPage/Panels/SolicitudDeInscripcion";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
@@ -27,6 +27,7 @@ import { DeclaratoriasReestructura } from "../../components/ObligacionesLargoPla
 import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
 import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
 import { deleteDocumentos } from "../../generics/interfaces";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -58,9 +59,6 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.inscripcion
   );
 
-
-
-
   //Reestructura
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
@@ -84,24 +82,39 @@ export function ObligacionesLargoPlazoPage() {
 
   const [borrarDoc, setBorrarDoc] = useState<deleteDocumentos[]>([]);
 
-  const addDocumentDelete = (x: deleteDocumentos) => {
-    
-    setBorrarDoc([...borrarDoc, x]);
+  // const addDocumentDelete = (x: deleteDocumentos) => {
+
+  //   setBorrarDoc([...borrarDoc, x]);
+  // };
+
+  const [arrDocsEliminados, setArrDocsEliminados] = useState<IDocsEliminados[]>([]);
+
+  const addArrDocsEliminados = (obj: IDocsEliminados) => {
+    console.log('objeto eliminado', obj);
+
+    setArrDocsEliminados([...arrDocsEliminados, obj]);
   };
+
 
   useEffect(() => {
     getTiposDocumentos();
     getDocumentos(
-      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => { },
-      () => { }
+      () => { },
+      "LargoPlazo"
     );
+    getDocumentosGastosCostos(
+      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/DOCGASTOSCOSTOS/`,
+      () => { },
+      () => { },
+    )
   }, []);
 
   const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
     (state) => state.inscripcionReestructura
   );
-  
+
 
   return (
     <>
@@ -221,7 +234,7 @@ export function ObligacionesLargoPlazoPage() {
                         Declaratorias.SalgoVigente === 0 ||
                         Declaratorias.PeriodoAdminitracion === "" ||
                         Declaratorias.PeriodoFinanciamiento === ""
-                        : 
+                        :
                         tablaDeclaratorias.length < 1 ||
                         Declaratorias.TipoConvenio.Descripcion === "" ||
                         Declaratorias.SalgoVigente === 0 ||
@@ -346,13 +359,13 @@ export function ObligacionesLargoPlazoPage() {
       }
 
       {reestructura === "sin autorizacion"
-        ? tabIndex === 4 && <Documentacion addDocumentDelete ={addDocumentDelete} />
-        : tabIndex === 5 && <Documentacion addDocumentDelete ={addDocumentDelete} />}
+        ? tabIndex === 4 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />
+        : tabIndex === 5 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
 
       {
         reestructura === "sin autorizacion"
-          ? tabIndex === 5 && <Resumen coments={true} />
-          : tabIndex === 6 && <Resumen coments={true} />
+          ? tabIndex === 5 && <Resumen coments={true} estatus={""} arrDocsEliminados={arrDocsEliminados} />
+          : tabIndex === 6 && <Resumen coments={true} estatus={""} arrDocsEliminados={arrDocsEliminados} />
       }
 
       {

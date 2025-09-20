@@ -24,7 +24,7 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { IDatosFideicomiso, IDatosFideicomisoNew } from "../../../screens/fuenteDePago/Fideicomisos";
 import {
@@ -32,11 +32,12 @@ import {
   IFideicomisario,
   ISoporteDocumentalFuentePago,
 } from "../../../store/Fideicomiso/fideicomiso";
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { listFile, listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { convertFileToBase64 } from "../../../generics/Validation";
+import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 
 
 const headsTipoMovimiento: { label: string }[] = [
@@ -93,16 +94,45 @@ export function DetalleFideicomiso({
   const idFideicomiso: string = fideicomiso.Id;
 
   const [arr, setArr] = React.useState<any>([]);
+  const [cargados, setCargados] = useState(true);
+
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/FUENTEDEPAGO/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      console.log("Entré al useEffect de idFideicomiso:");
+      listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${idFideicomiso}/`,
+        setArr,
+        JSON.parse(fideicomiso.SoporteDocumental)
+      ).then(() => {
         setLoading(false);
       });
     }
-  }, []);
+    console.log("idFideicomiso:", idFideicomiso);
+  }, [idFideicomiso !== ""]);
+
+  // useEffect(() => {
+  //     getDocumentos(
+  //       process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/FUENTEDEPAGO/FIDEICOMISOS/${idFideicomiso}/`,
+  //       setArr,
+  //       setCargados
+  //     );
+  // }, []);
+
+  useEffect(() => {
+    console.log("arr:", arr);
+    console.log("cargados:", cargados);
+
+  }, [cargados])
+
+
 
   const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+
+    console.log("fideicomiso en detalle", fideicomiso)
+  }, [])
+
 
   return (
     <Dialog
@@ -426,8 +456,9 @@ export function DetalleFideicomiso({
               </TableRow>
             </TableHead>
             <TableBody>
-              {JSON.parse(fideicomiso.SoporteDocumental).map(
+              {arr.map(
                 (row: ISoporteDocumentalFuentePago, index: number) => {
+                  console.log("row:", row);
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">

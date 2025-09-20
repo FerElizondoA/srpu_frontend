@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Tab, Tabs, ThemeProvider, Typography } from "@mui/material";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
@@ -19,12 +19,14 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { IComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
-import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { DialogSolicitarModificacion, rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelacion";
 import { DialogGuardarComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogGuardarComentarios";
 import { VerBorradorCancelacion } from "./DialogResumenCancelacion";
 import { TabJustificacionCancelacion } from "./TabJustificacionCancelacion";
 import { IDocumentosAcuses } from "../../ConsultaDeSolicitudes/AcusesSolicitudes";
+import { DialogAsignacionResumen } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogAsignacionResumen";
+import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
 export interface ICancelacionJustificaciones {
   Deleted: number;
@@ -100,6 +102,9 @@ export function TabsCancelacionArchivos({
     (state) => state.cleanSolicitudCortoPlazo
   );
 
+  const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
+
+
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
@@ -112,22 +117,24 @@ export function TabsCancelacionArchivos({
     isTittle: useMediaQuery("(min-width: 0px) and (max-width: 467px)"),
   };
   const [archivos, setArchivos] = useState<Array<ICancelacionJustificaciones>>([]);
-  
+
   const [arr, setArr] = useState<any>([]);
   const [cargados, setCargados] = useState(true);
-  
+
   useEffect(() => {
     if (inscripcion.Id)
       getDocumentos(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CANCELACIONES/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        setCargados,
+        rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? "CortoPlazo" : rowSolicitud.TipoSolicitud === "Crédito Simple a Largo Plazo" ? "LargoPlazo" : ""
       );
   }, []);
 
 
   useEffect(() => {
     getPathDocumentosCancelacion(inscripcion.Id, setArchivos);
+    console.log("inscripcion en archivos", rowSolicitud);
   }, [])
 
   return (
@@ -206,18 +213,46 @@ export function TabsCancelacionArchivos({
               alignItems: "center",
             }}
           >
-            <Tabs
-              value={tabIndex}
-              onChange={handleChange}
-              centered={query.isScrollable ? false : true}
-              variant={query.isScrollable ? "scrollable" : "standard"}
-              scrollButtons
-              allowScrollButtonsMobile
-              sx={{ width: "100%", fontSize: ".8rem" }}
-            >
-              <Tab label="Resumen Solicitud" sx={{ ...queries.bold_text_Largo_Plazo }} />
-              <Tab label="Solicitud de Cancelación" sx={{ ...queries.bold_text_Largo_Plazo }} />
-            </Tabs>
+            <Grid>
+              <Tabs
+                value={tabIndex}
+                onChange={handleChange}
+                centered={query.isScrollable ? false : true}
+                variant={query.isScrollable ? "scrollable" : "standard"}
+                scrollButtons
+                allowScrollButtonsMobile
+                sx={{ width: "100%", fontSize: ".8rem" }}
+              >
+                <Tab label="Resumen Solicitud" sx={{ ...queries.bold_text_Largo_Plazo }} />
+                <Tab label="Solicitud de Cancelación" sx={{ ...queries.bold_text_Largo_Plazo }} />
+              </Tabs>
+            </Grid>
+            <Grid>
+              {
+                (rowSolicitud.NoEstatus === "13" && (localStorage.getItem("Rol") === "Validador" || localStorage.getItem("Rol") === "Autorizador"))
+
+                  ?
+                  <ThemeProvider theme={buttonTheme}>
+                    <Button
+                      //disabled={compararComentarios(comentarios, botonVolverFiltro)}
+                      sx={{
+                        ...queries.buttonCancelar,
+                        fontSize: "50%",
+                      }}
+                      onClick={() => {
+
+                        setOpenDialogEnviar(true);
+                      }}
+                    >
+                      Asignar Revisor
+                    </Button>
+                  </ThemeProvider>
+
+                  : null
+
+
+              }
+            </Grid>
           </Grid>
           {/* 
           {inscripcion.NoEstatus === "10" && (
@@ -247,7 +282,7 @@ export function TabsCancelacionArchivos({
         </Box>
 
         {localStorage.getItem("Rol") === "Verificador" &&
-          inscripcion.NoEstatus === "10" && (
+          inscripcion.NoEstatus === "11" && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -267,11 +302,16 @@ export function TabsCancelacionArchivos({
             </Grid>
           )}
 
-        {((localStorage.getItem("IdUsuario") === inscripcion.IdEditor &&
+        {/* {((localStorage.getItem("IdUsuario") === inscripcion.IdEditor &&
           rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
           (inscripcion.NoEstatus === "12" &&
             localStorage.getItem("Rol") === "Revisor")) &&
-          ["12", "13", "14"].includes(inscripcion.NoEstatus) && (
+          ["12", "13", "14"].includes(inscripcion.NoEstatus) && ( */}
+        {((localStorage.getItem("IdUsuario") === inscripcion.IdEditor &&
+          rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+          (inscripcion.NoEstatus === "14" &&
+            localStorage.getItem("Rol") === "Revisor")) &&
+          ["14", "15", "16"].includes(inscripcion.NoEstatus) && (
             <Grid
               justifyContent={"space-evenly"}
               sx={{ width: "50rem", display: "flex" }}
@@ -371,10 +411,10 @@ export function TabsCancelacionArchivos({
 
 
         {tabIndex === 0 && <VerBorradorCancelacion rowSolicitud={rowSolicitud} />}
-        {tabIndex === 1 && <TabJustificacionCancelacion 
-        DetailPathCancelaciones={archivos} 
-        arr={arr}
-        cargados={cargados}
+        {tabIndex === 1 && <TabJustificacionCancelacion
+          DetailPathCancelaciones={archivos}
+          arr={arr}
+          cargados={cargados}
         />}
 
 
@@ -386,10 +426,15 @@ export function TabsCancelacionArchivos({
         <LateralMenu />
       </Grid> */}
 
+      {openDialogEnviar && (
+        <DialogAsignacionResumen
+          handler={setOpenDialogEnviar}
+          openState={openDialogEnviar}
+          accion={"asignacion"}
+        //arrDocsEliminados={arrDocsEliminados}
+        />
 
-
-
-
+      )}
 
       {openSolicitarCancelacion && (
         <DialogSolicitarCancelacion

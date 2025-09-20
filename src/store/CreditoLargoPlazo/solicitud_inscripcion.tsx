@@ -8,6 +8,9 @@ import { ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { CambiaEstatus } from "../SolicitudFirma/solicitudFirma";
 import { useReestructuraStore } from "../Reestructura/main";
 import { IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
+import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
 export interface IDataAgregarSolicitud {
   ControlInterno: string;
@@ -61,7 +64,9 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    //comentario: string,
+    arrDocsEliminados: IDocsEliminados[]
+
   ) => void;
 
   createAsignacionTipoSolicitud: (
@@ -69,16 +74,22 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     IdFuentePago: string,
     TablaFuentePago: IDeudorFideicomisoNew,
     TablaFuentePagoOriginal: IDeudorFideicomisoNew,
-    NombreTipoFuentePago:string
+    NombreTipoFuentePago: string
   ) => void;
 
 
 
   borrarSolicitud: (Id: string) => void;
 
+  addComentario: (
+    idSolicitud: string,
+    comentario: string,
+    tipo: string
+  ) => void;
+
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
-  saveFiles: (idRegistro: string, ruta: string) => void;
+  saveFiles: (idRegistro: string, ruta: string, esLargoPlazo: boolean) => void;
 
   guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
 
@@ -86,13 +97,25 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc: string
+
   ) => void;
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void
+  IdSolicitudBorrador: string
+
 }
 
 export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
   SolicitudInscripcionLargoPlazoSlice
 > = (set, get) => ({
+
+  setIdSolicitudBorrador: (IdSolicitudBorrador: string) => {
+    set(() => ({ IdSolicitudBorrador: IdSolicitudBorrador }))
+  },
+  IdSolicitudBorrador: "",
+
 
   IdAsignacionSolicitud: "",
 
@@ -119,7 +142,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     IdFuentePago: string,
     TablaFuentePago: any,
     TablaFuentePagoOriginal: any,
-    NombreTipoFuentePago:string,
+    NombreTipoFuentePago: string,
   ) => {
 
     console.log("TablaFuentePago", TablaFuentePago);
@@ -160,9 +183,14 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
+    setIdSolicitudCreada: Function
   ) => {
     const lpState = useLargoPlazoStore.getState();
-    
+    const inscripcionState = useInscripcionStore.getState();
+
+    console.log("SolicitudCompleta Largo Plazo", lpState);
+    console.log("lpstate gastos y costos", lpState.tablaGastosCostos);
+
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
 
@@ -265,6 +293,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         const fuente = lpState.tablaAsignarFuenteNew[0];
         const fuenteOriginal = lpState.OriginalTablaAsignarFuenteNew[0];
 
+        lpState.setIdSolicitudBorrador(DataSolicitud.Id)
+        setIdSolicitudCreada(DataSolicitud.Id);
+        console.log("IdSolicitud en inscripcion", data.data.Id);
+
         if (DataSolicitud !== undefined) {
           console.log("Si encontro data de la solicitud", DataSolicitud.Id);
           lpState.createAsignacionTipoSolicitud(DataSolicitud, lpState.mecanismoVehiculoPago.Id,
@@ -281,9 +313,13 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         //  );                            
 
         lpState.saveFiles(
-          data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`
+          DataSolicitud.Id,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${DataSolicitud.Id}`,
+          true
         );
+        inscripcionState.setInscripcion(data.data.data);
+        lpState.addComentario(DataSolicitud.Id, comentario, "Captura");
+
       });
 
   },
@@ -291,11 +327,18 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    comentario: string
+    // comentario: string,
+    arrDocsEliminados: IDocsEliminados[]
+
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
+
+    console.log('arrDocsEliminados: modisoli ', arrDocsEliminados);
+
+    console.log("lpstate en EDITAR SOLICITUD", lpState.tablaGastosCostos)
+
 
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
@@ -308,7 +351,24 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             tipoEntePublicoObligado,
           })
         ),
-        destinoGastosCostos: lpState.tablaGastosCostos,
+        //destinoGastosCostos: lpState.tablaGastosCostos,
+        destinoGastosCostos: lpState.tablaGastosCostos.map(
+          ({ destino, detalleInversion, archivoDetalleInversion, claveInscripcionFinanciamiento, descripcion, monto, gastosAdicionales, montoGastosAdicionales, saldoVigente }) => ({
+            destino,
+            detalleInversion,
+            archivoDetalleInversion: {
+              nombreArchivo: archivoDetalleInversion?.nombreArchivo || "",
+              tipoArchivo: archivoDetalleInversion?.tipoArchivo || "",
+            },
+            claveInscripcionFinanciamiento,
+            descripcion,
+            monto,
+            gastosAdicionales,
+            montoGastosAdicionales,
+            saldoVigente,
+          })
+        ),
+
       },
 
       autorizacion: {
@@ -365,6 +425,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       },
 
     };
+    console.log("solicitud formateada EDITAR", solicitud)
 
     await axios
       .put(
@@ -374,10 +435,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdTipoEntePublico: lpState.encabezado.tipoEntePublico.Id,
           IdEntePublico: lpState.encabezado.organismo.Id,
           TipoSolicitud: lpState.encabezado.tipoDocumento,
+          TipoCredito: lpState.encabezado.tipoCredito.Descripcion,
           IdInstitucionFinanciera:
             lpState.informacionGeneral.institucionFinanciera.Id,
           Estatus: estatus,
-          IdClaveInscripcion: "1",
+          //IdClaveInscripcion: "1",
           MontoOriginalContratado: lpState.informacionGeneral.monto,
           FechaContratacion: lpState.encabezado.fechaContratacion,
           Solicitud: JSON.stringify(solicitud),
@@ -391,15 +453,28 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+        console.log("modifcarsoli data: ", data.data);
+        console.log('arrDocsEliminados', arrDocsEliminados);
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
-        lpState.saveFiles(
-          data.data.Id,
 
-
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`
+         console.log("HOLA SOY EL ID DE LA SOLICITUD: ", inscripcionState.inscripcion.Id)
+       lpState.saveFiles(
+          inscripcionState.inscripcion.Id,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`,
+          true
         );
+
+       
+       
+
+        // if (arrDocsEliminados.length != 0) {
+        //   deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
+        // }
+
+      
       });
   },
+
   borrarSolicitud: async (Id: string) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -471,21 +546,26 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       .catch((e) => { });
   },
 
-  saveFiles: async (idRegistro: string, ruta: string) => {
+  saveFiles: async (idRegistro: string, ruta: string, esLargoPlazo: boolean = true) => {
     const state = useLargoPlazoStore.getState();
+    //          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${DataSolicitud.Id}`
+
     console.log("Entre saveFiles LARGO PLAZO");
+    console.log("state.tablaDocumentos LARGO PLAZO", state.tablaDocumentos);
+    console.log("tablaGastosCostos", state.tablaGastosCostos);
 
-    return await state.tablaDocumentos.map((file: any) => {
-      return setTimeout(() => {
-        const url = new File([file.archivo], file.nombreArchivo);
+    // Procesar documentos
+    const uploadsDocs = state.tablaDocumentos
+      .filter((file: any) => file.archivo && file.archivo.size > 0)
+      .map((file: any) => {
+        return new Promise<void>((resolve, reject) => {
+          const url = new File([file.archivo], file.nombreArchivo);
+          let dataArray = new FormData();
+          dataArray.append("ROUTE", `${ruta}`);
+          dataArray.append("ADDROUTE", "true");
+          dataArray.append("FILE", url);
 
-        let dataArray = new FormData();
-        dataArray.append("ROUTE", `${ruta}`);
-        dataArray.append("ADDROUTE", "true");
-        dataArray.append("FILE", url);
-
-        if (file.archivo && file.archivo.size > 0) {
-          return axios
+          axios
             .post(
               process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
               dataArray,
@@ -496,23 +576,134 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
               }
             )
             .then(({ data }) => {
-              console.log("data.RESPONSE: ", data.RESPONSE);
-              console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
-
+              console.log("Documento guardado:", data.RESPONSE);
               state.savePathDoc(
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
-                data.RESPONSE.NOMBREARCHIVO
+                data.RESPONSE.NOMBREARCHIVO,
+                file.tipoArchivo
               );
+              resolve();
             })
-            .catch((e) => { });
-        } else {
-          return null;
-        }
-      }, 1000);
-    });
+            .catch(reject);
+        });
+      });
+
+    // Procesar gastos y costos solo si es largo plazo
+    const uploadsGastos = esLargoPlazo
+      ? state.tablaGastosCostos
+        .filter((g: any) => g.archivoDetalleInversion?.archivo instanceof File && g.archivoDetalleInversion.archivo.size > 0)
+        .map((g: any) => {
+          console.log("ENTRE GUARDAR ARCHIVOS DE GASTOS Y COSTOS")
+          return new Promise<void>((resolve, reject) => {
+            console.log("gastocosto state.catalogoTiposDocumentos:", state.catalogoTiposDocumentos);
+
+
+            // ✅ Buscar el tipo de documento que coincida
+            const docEncontrado = state.catalogoTiposDocumentos.find(
+              (t) =>
+                t.Descripcion === "Gastos y Costos, inversión pública productiva"
+            );
+
+            // Si lo encontraste, reemplaza el tipoArchivo con el Id
+            let tipoDocumentoId = g.archivoDetalleInversion.tipoArchivo;
+            if (docEncontrado) {
+              console.log("Tipo de documento encontrado:", docEncontrado);
+              //tipoDocumentoId = docEncontrado.Id;
+            }
+
+
+            let rutaFinal = ruta;
+            if (esLargoPlazo) {
+              rutaFinal = `${ruta}/DOCGASTOSCOSTOS`; //Modificacion de ruta de la carpeta de la tabla de gastos y costos
+            }
+
+            const url = new File([g.archivoDetalleInversion.archivo], g.archivoDetalleInversion.nombreArchivo);
+            let dataArray = new FormData();
+            dataArray.append("ROUTE", `${rutaFinal}`);
+            dataArray.append("ADDROUTE", "true");
+            dataArray.append("FILE", url);
+
+            axios
+              .post(
+                process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+                dataArray,
+                {
+                  headers: {
+                    Authorization: localStorage.getItem("jwtToken"),
+                  },
+                }
+              )
+              .then(({ data }) => {
+                console.log("Archivo gastoCostos guardado:", data.RESPONSE);
+                state.savePathDoc(
+                  idRegistro,
+                  data.RESPONSE.RUTA,
+                  data.RESPONSE.NOMBREIDENTIFICADOR,
+                  data.RESPONSE.NOMBREARCHIVO,
+                  docEncontrado ? docEncontrado.Id : "" //Aqui iria la variable de IdDocumentoGastosCostos para guardar la ruta con el tipo de documento correcto
+                );
+
+                // Aquí podrías guardar la ruta en el estado si lo necesitas,
+                // Ejemplo: state.savePathGasto(idRegistro, data.RESPONSE.RUTA, g.claveInscripcionFinanciamiento);
+                resolve();
+              })
+              .catch(reject);
+          });
+        })
+      : [];
+
+    // Ejecutar ambos en paralelo
+    return Promise.all([...uploadsDocs, ...uploadsGastos]);
   },
+
+  // saveFiles: async (idRegistro: string, ruta: string) => {
+  //   const state = useLargoPlazoStore.getState();
+  //   console.log("Entre saveFiles LARGO PLAZO");
+
+  //   console.log("state.tablaDocumentos LARGO PLAZO", state.tablaDocumentos);
+  //   console.log("tablaGastosCostos", state.tablaGastosCostos);
+
+  //   return await state.tablaDocumentos.map((file: any) => {
+  //     return setTimeout(() => {
+  //       const url = new File([file.archivo], file.nombreArchivo);
+
+  //       let dataArray = new FormData();
+  //       dataArray.append("ROUTE", `${ruta}`);
+  //       dataArray.append("ADDROUTE", "true");
+  //       dataArray.append("FILE", url);
+
+  //       if (file.archivo && file.archivo.size > 0) {
+  //         return axios
+  //           .post(
+  //             process.env.REACT_APP_APPLICATION_FILES + "/api/ApiDoc/SaveFile",
+  //             dataArray,
+  //             {
+  //               headers: {
+  //                 Authorization: localStorage.getItem("jwtToken"),
+  //               },
+  //             }
+  //           )
+  //           .then(({ data }) => {
+  //             console.log("data.RESPONSE: ", data.RESPONSE);
+  //             console.log("data.RESPONSE.RUTA: ", data.RESPONSE.RUTA);
+
+  //             state.savePathDoc(
+  //               idRegistro,
+  //               data.RESPONSE.RUTA,
+  //               data.RESPONSE.NOMBREIDENTIFICADOR,
+  //               data.RESPONSE.NOMBREARCHIVO,
+  //               file.tipoArchivo
+  //             );
+  //           })
+  //           .catch((e) => { });
+  //       } else {
+  //         return null;
+  //       }
+  //     }, 1000);
+  //   });
+  // },
 
   guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
     const state = useLargoPlazoStore.getState();
@@ -538,7 +729,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
-            data.RESPONSE.NOMBREARCHIVO
+            data.RESPONSE.NOMBREARCHIVO,
+            ""
           );
         })
         .catch((e) => { });
@@ -547,11 +739,44 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     }
   },
 
+
+  addComentario: async (Id: string, comentario: any, tipo: string) => {
+    if (comentario === null || comentario === undefined || comentario.trim() === '') {
+      comentario = ''; // Enviar un string vacío al backend para eliminarlo
+    }
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
+        {
+          IdSolicitud: Id,
+          Comentario: comentario,
+          Tipo: tipo,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          IdComentario: useCortoPlazoStore.getState().idComentario,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
+          },
+        }
+      )
+      .then(({ data }) => {
+        useCortoPlazoStore.setState({
+          comentarios: {},
+          idComentario: "",
+        });
+      })
+      .catch((e) => { });
+
+  },
+
   savePathDoc: async (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
-    NombreArchivo: string
+    NombreArchivo: string,
+    TpoDoc: string
+
   ) => {
     const state = useLargoPlazoStore.getState();
 
@@ -565,6 +790,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
+          TpoDoc: TpoDoc  //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+
         },
         {
           headers: {
@@ -572,7 +799,11 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           },
         }
       )
-      .then((r) => { })
+      .then((r) => {
+
+        console.log("r: ", r.data);
+
+      })
       .catch((e) => { });
   },
 });

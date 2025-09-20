@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useInscripcionStore } from "../Inscripcion/main";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
+// import { useSolicitudFirmaStore } from "../SolicitudFirma/main";
 
 export interface ArchivoCancelacion {
   archivo: File;
@@ -466,6 +467,7 @@ export const createSolicitudCancelacionSlice: StateCreator<
       .catch((e) => { });
   },
 });
+// CANCELACION DE SOLICITUD NUEVA
 
 export async function CancelacionSolicitud(setUrl: Function) {
   const stateC = useCancelacionStore.getState();
@@ -473,8 +475,17 @@ export async function CancelacionSolicitud(setUrl: Function) {
 
 
   let infoSolicitud: any = JSON.parse(state.inscripcion.Solicitud);
+  const MontoALetras = useCortoPlazoStore.getState().convertirMontosAPalabras(infoSolicitud.informacionGeneral.informacionGeneral.monto);
+
+
+ // const montoOriginalPalabras = useSolicitudFirmaStore.getState().convertirMontosAPalabras(infoSolicitud.informacionGeneral.informacionGeneral.monto);
+
   let credito = state.inscripcion;
-  let cancelacion = stateC.cancelacion;
+  //let cancelacion = stateC.cancelacion;
+
+  console.log("CancelacionSolicitud ENTRO")
+
+  // console.log("montoOriginalPalabras CANCELACION", montoOriginalPalabras)
 
   await axios
     .post(
@@ -499,16 +510,17 @@ export async function CancelacionSolicitud(setUrl: Function) {
         }),
         entePublicoObligado: credito.Nombre,
         institucionFinanciera: //CORREGIDO
+
           infoSolicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+
         montoOriginalContratado: infoSolicitud.informacionGeneral.informacionGeneral.monto,
-        
+        montoOriginalPalabras: MontoALetras,
+
         causaCancelacion: stateC.justificacion,
         documentoAcreditacionCancelacion: stateC.documentacionCancelacion.find(
           doc => doc.TipoArchivoJustificacion === "Acreditacion De La Cancelacion")?.nombreArchivo,
         documentoBajaCreditoFederal: stateC.documentacionCancelacion.find(
           doc => doc.TipoArchivoJustificacion === "Baja De Credito Federal")?.nombreArchivo,
-
-
       },
       {
         headers: {
@@ -537,5 +549,3 @@ export async function CancelacionSolicitud(setUrl: Function) {
     })
     .catch((err) => { });
 }
-
-

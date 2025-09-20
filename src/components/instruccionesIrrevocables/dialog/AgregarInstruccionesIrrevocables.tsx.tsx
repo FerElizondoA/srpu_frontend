@@ -30,6 +30,7 @@ import { SoporteDocumentalInstrucciones } from "../panels/SoporteDocumentalInstr
 import { TipoDeMovimientoIntrucciones } from "../panels/TipoDeMovimientoIntrucciones";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalInstrucciones } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
+import { listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 
 export function AgregarInstruccionesIrrevocables({
   deshabilidarCamposSCLP,
@@ -106,6 +107,11 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+  
+    const idInstruccion: string = useInstruccionesStore(
+      (state) => state.idInstruccion
+    );
+
 
   const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
     useInstruccionesStore((state) => state.tablaSoporteDocumentalInstruccion);
@@ -117,7 +123,9 @@ export function AgregarInstruccionesIrrevocables({
     getTipoEntePublicoObligado();
     getFondosOIngresos();
   }, []);
+
   
+
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
       <AppBar sx={{ position: "relative" }}>
@@ -139,7 +147,7 @@ export function AgregarInstruccionesIrrevocables({
               <Typography sx={queries.bold_text}>
                 {/* {IdInstruccion === "" ? "Agregar" : "Editar"}  */}
                 {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable" ? ""
-                : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción Irrevocable
+                  : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción Irrevocable
               </Typography>
             </Grid>
           </Grid>
@@ -147,18 +155,18 @@ export function AgregarInstruccionesIrrevocables({
           <Grid item width={"4rem"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
-             // disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
+                // disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
                 disabled={
                   (tablaTipoMovimiento.length <= 0 ||
-                  numeroCuenta === "" ||
-                  parseInt(numeroCuenta) === 0 ||
-                  cuentaCLABE === "" ||
-                  parseInt(cuentaCLABE) === 0 ||
-                  banco === "" ||
-                  tablaSoporteDocumentalInstrucciones.length <= 0) ||
+                    numeroCuenta === "" ||
+                    parseInt(numeroCuenta) === 0 ||
+                    cuentaCLABE === "" ||
+                    parseInt(cuentaCLABE) === 0 ||
+                    banco === "" ||
+                    tablaSoporteDocumentalInstrucciones.length <= 0) ||
 
                   (tipoMecanismoVehiculoPago === "Mandato" ||  //Para fuente de pago->vehiculo de pago
-                  tipoMecanismoVehiculoPago === "Instrucción Irrevocable")
+                    tipoMecanismoVehiculoPago === "Instrucción Irrevocable")
                   // municipio === null
                 }
                 sx={{
@@ -187,14 +195,14 @@ export function AgregarInstruccionesIrrevocables({
                     createInstruccion(() => {
                       setLoading(false);
                       handler(false);
-                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => {})
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
                     });
                   } else if (IdInstruccion !== "") {
                     setLoading(true);
                     modificaInstruccion(() => {
                       setLoading(false);
                       handler(false);
-                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => {})
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
                     });
                   }
                   setTabIndex(0);
@@ -211,7 +219,7 @@ export function AgregarInstruccionesIrrevocables({
                 >
                   {/* {IdInstruccion === "" ? "Agregar" : "Editar"}  */}
                   {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable" ? ""
-                : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
+                    : IdInstruccion === "" ? "Agregar" : "Editar"} Instrucción
                 </Typography>
               </Button>
             </ThemeProvider>

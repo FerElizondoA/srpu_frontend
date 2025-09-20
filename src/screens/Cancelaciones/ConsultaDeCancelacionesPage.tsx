@@ -291,11 +291,13 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.getCatalogoFirmaDetalle
   );
 
-  const getDatos = () => {
+  const getDatos = (
+    rolUsuario: string
+  ) => {
     getSolicitudes(
-      !rolesAdmin.includes(localStorage.getItem("Rol")!)
+      !rolesAdmin.includes(rolUsuario!)
         ? "SolicitaCancelacion"
-        : "Revision",
+        : "Cancelacion",
       (e: IInscripcion[]) => {
         setDatos(e);
       }, setDatosFiltrados
@@ -310,11 +312,11 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.setJustificacion
   );
 
-
+  const rolUsuario = localStorage.getItem("Rol") || "";
 
   useEffect(() => {
-    getDatos();
-  }, []);
+    getDatos(rolUsuario);
+  }, [rolUsuario !== ""]);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -721,9 +723,12 @@ export function ConsultaDeCancelacionesPage() {
                               <VisibilityIcon />
                             </IconButton>
                           </Tooltip>
+                          {/* 
+                          {localStorage.getItem("Rol") === row.Control &&
+                            ["11", "15", "17"].includes(row.NoEstatus) && ( */}
 
                           {localStorage.getItem("Rol") === row.Control &&
-                            ["11", "15", "17"].includes(row.NoEstatus) && (
+                            ["12", "17", "19"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"

@@ -29,9 +29,10 @@ import {
   IDeudorInstrucciones,
   ISoporteDocumentalInstrucciones,
 } from "../../../store/InstruccionesIrrevocables/instruccionesIrrevocables";
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { listFile, listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 const headsTipoMovimiento: { label: string }[] = [
   {
@@ -85,18 +86,31 @@ export function DetalleInstruccion({
 
   const [arr, setArr] = React.useState<any>([]);
 
+  // useEffect(() => {
+  //   if (idInstruccion !== "") {
+  //     listFile(
+  //       process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
+  //       setArr
+  //     ).then(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+  // }, []);
+
+  const [loading, setLoading] = React.useState(true);
+
   useEffect(() => {
     if (idInstruccion !== "") {
-      listFile(
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/INSTRUCCIONESIRREVOCABLES/${idInstruccion}/`,
-        setArr
+      console.log("Entré al useEffect de idFideicomiso:");
+      listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${idInstruccion}/`,
+        setArr,
+        JSON.parse(instruccion.SoporteDocumental)
       ).then(() => {
         setLoading(false);
       });
     }
-  }, []);
-
-  const [loading, setLoading] = React.useState(true);
+    console.log("idInstruccion:", idInstruccion);
+  }, [idInstruccion !== ""]);
 
   return (
     <Dialog
@@ -301,7 +315,7 @@ export function DetalleInstruccion({
               </TableRow>
             </TableHead>
             <TableBody>
-              {JSON.parse(instruccion.SoporteDocumental).map(
+              {arr.map(
                 (row: ISoporteDocumentalInstrucciones, index: number) => {
                   return (
                     <StyledTableRow key={index}>
@@ -326,6 +340,52 @@ export function DetalleInstruccion({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
+
+                        <Tooltip title={"Mostrar vista previa del documento"}>
+                          <IconButton
+                            onClick={
+                              async () => {
+                                console.log("row.archivo", row.archivo)
+
+                                let base64String = '';
+                                try {
+                                  if (row.archivo instanceof File) {
+                                    base64String = await convertFileToBase64(row.archivo);
+                                    console.log("base64String 1", base64String)
+
+                                  } else {
+                                    base64String = row.archivo;
+                                    console.log("base64String 2", base64String)
+
+                                  }
+
+                                  const dataUri = `data:application/pdf;base64,${base64String}`;
+                                  console.log("dataUri", dataUri)
+                                  setFileSelected(dataUri);
+                                } catch (error) {
+                                  console.error("Error al convertir el archivo a Base64", error);
+                                }
+
+                                setShowModalPrevia(true);
+                                // setFileSelected(
+                                //   `data:application/pdf;base64,${arr.filter((td: any) =>
+                                //     td.NOMBREFORMATEADO.includes(
+                                //       row.nombreArchivo
+                                //     )
+                                //   )[0].FILE
+                                //   }`
+                                // );
+                                // setShowModalPrevia(true);
+                              }
+                            }
+                          >
+                            <FileOpenIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                      </StyledTableCell>
+
+                      {/* <StyledTableCell align="center">
                         {loading ? (
                           <CircularProgress />
                         ) : arr.filter((td: any) =>
@@ -353,7 +413,7 @@ export function DetalleInstruccion({
                             </IconButton>
                           </Tooltip>
                         )}
-                      </StyledTableCell>
+                      </StyledTableCell> */}
                     </StyledTableRow>
                   );
                 }

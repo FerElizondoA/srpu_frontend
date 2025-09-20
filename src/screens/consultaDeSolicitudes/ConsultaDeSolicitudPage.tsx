@@ -141,8 +141,9 @@ const heads: Array<{ label: string }> = [
 ];
 
 export function ConsultaDeSolicitudPage() {
-  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+
+
+
   const [busqueda, setBusqueda] = useState("");
 
   const filtrarDatos = () => {
@@ -170,7 +171,7 @@ export function ConsultaDeSolicitudPage() {
         elemento.TipoSolicitud?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase()) ||
-          elemento.TipoCredito?.toString()
+        elemento.TipoCredito?.toString()
           .toLocaleLowerCase()
           .includes(busqueda.toLocaleLowerCase())
       ) {
@@ -219,6 +220,11 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.convertirMontosAPalabras
   );
 
+  //Todo lo que necesito para la barra de filtros***********
+
+  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
+
   const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -230,12 +236,15 @@ export function ConsultaDeSolicitudPage() {
       setDatosFiltrados
     );
   };
-  
+
   useEffect(() => {
     getDatos();
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
   }, [openEliminar]);
+
+  
+  //Fin barra de filtros*************
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
 
@@ -251,7 +260,7 @@ export function ConsultaDeSolicitudPage() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
-    
+
     setProceso("actualizacion");
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
 
@@ -366,14 +375,14 @@ export function ConsultaDeSolicitudPage() {
         </Paper>
       </Grid> */}
 
-      <BarraFiltros 
+      <BarraFiltros
         Lista={datos}
         setStateFiltered={setDatosFiltrados}
         CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
       />
 
       <Grid container display={"flex"} justifyContent={"center"}
-      mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+        mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
       >
         <Paper sx={{ width: "100%" }}>
           <TableContainer
@@ -612,9 +621,9 @@ export function ConsultaDeSolicitudPage() {
                         >
                           {row.Estatus.includes("Actualización")
                             ? format(
-                                new Date(row.FechaRequerimientos),
-                                "dd/MM/yyyy"
-                              )
+                              new Date(row.FechaRequerimientos),
+                              "dd/MM/yyyy"
+                            )
                             : " "}
                         </StyledTableCell>
 
@@ -653,14 +662,15 @@ export function ConsultaDeSolicitudPage() {
                               onClick={() => {
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
-                                getCatalogoFirmaDetalle(row.Id);                              }}
+                                getCatalogoFirmaDetalle(row.Id);
+                              }}
                             >
                               <VisibilityIcon />
                             </IconButton>
                           </Tooltip>
 
                           {localStorage.getItem("Rol") === row.Control &&
-                          // ["3", "7", "9"].includes(row.NoEstatus) && (
+                            // ["3", "7", "9"].includes(row.NoEstatus) && (
                             ["3", "8", "10"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
@@ -668,7 +678,7 @@ export function ConsultaDeSolicitudPage() {
                                   onClick={() => {
                                     // console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
-                                    if (row.NoEstatus === "3") {                                      
+                                    if (row.NoEstatus === "3") {
                                       setInscripcion(row);
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");
@@ -676,7 +686,7 @@ export function ConsultaDeSolicitudPage() {
                                     } else {
                                       getComentariosSolicitudPlazo(
                                         row.Id,
-                                        () => {}
+                                        () => { }
                                       ).then((data) => {
                                         if (
                                           data.filter(
@@ -704,7 +714,7 @@ export function ConsultaDeSolicitudPage() {
                                       });
                                     }
                                   }
-                                }
+                                  }
                                 >
                                   <HistoryEduIcon />
                                 </IconButton>
@@ -712,7 +722,7 @@ export function ConsultaDeSolicitudPage() {
                             )}
 
                           {localStorage.getItem("Rol") === row.Control &&
-                          // ["1", "2", "8"].includes(row.NoEstatus) && (
+                            // ["1", "2", "8"].includes(row.NoEstatus) && (
                             ["1", "2", "9"].includes(row.NoEstatus) && (
                               <Tooltip title="Editar">
                                 <IconButton
@@ -840,7 +850,7 @@ export function ConsultaDeSolicitudPage() {
         openState={openEliminar}
         texto={"Solicitud"}
       />
-      
+
     </Grid>
   );
 }

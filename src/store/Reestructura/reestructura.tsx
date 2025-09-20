@@ -43,8 +43,8 @@ export interface IAnexoClausula {
 }
 
 export interface ReestructuraSlice {
-   SolicitudReestructura: IDatosSolicitudReestructura,
-   setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
+  SolicitudReestructura: IDatosSolicitudReestructura,
+  setSolicitudReestructura: (SolicitudReestructura: IDatosSolicitudReestructura) => void;
 
   ReestructuraDeclaratorias: ICreditoSolicitudReestructura
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => void;
@@ -87,10 +87,10 @@ export interface ReestructuraSlice {
   SolicitudReestructuraFirma: IDatosSolicitudReestructura,
 
   Declaratorias: IAnexoClausula;
-  setTablaDeclaratorias : (Declaratorias: IAnexoClausula[]) => void
+  setTablaDeclaratorias: (Declaratorias: IAnexoClausula[]) => void
 
   //Catalogo Clase Titulo
-  
+
   catalogoClaseTitulo: ICatalogo[];
 
   getClaseTitulo: () => void;
@@ -98,7 +98,7 @@ export interface ReestructuraSlice {
 
 
 export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) => ({
-  
+
   Declaratorias: {
     ClausulaOriginal: { Id: "", Descripcion: "" },
     ClausulaModificada: { Id: "", Descripcion: "" },
@@ -109,7 +109,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     set((state) => ({
       tablaDeclaratorias: Declaratorias,
     })),
-  
+
   SolicitudReestructuraFirma: {
     IdSolicitud: "",
     SolicitudReestructura: "",
@@ -142,12 +142,12 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       })
       .then(({ data }) => {
         let r = data.data;
-        setConstanciaReestructura(true)  
+        setConstanciaReestructura(true)
         set(() => ({
           SolicitudReestructuraFirma: r,
         }));
       })
-      .catch(({}) => {
+      .catch(({ }) => {
 
       })
   },
@@ -164,8 +164,16 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     DescripcionMedioPublicacion: "",
     IdMedioPublicacion: "",
     MontoAutorizado: "",
-    DocumentoSoporte: "",
-    AcreditacionQuorum: "",
+    DocumentoSoporte: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date(),
+    },
+    AcreditacionQuorum: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date(),
+    },
     DestinoAutorizado: "",
     DetalleDestino: "",
     CreadoPor: "",
@@ -234,7 +242,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     SalgoVigente: 0,
     PeriodoFinanciamiento: "",
     PeriodoAdminitracion: "",
-    ClaseTitulo:{ Id: "", Descripcion: "" }
+    ClaseTitulo: { Id: "", Descripcion: "" }
   },
 
   setCreditoSolicitudReestructura: (ReestructuraDeclaratorias: ICreditoSolicitudReestructura) => {
@@ -249,7 +257,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
     Estatus: "",
     FechaReestructura: "",
     IdEditor: "",
-    NumeroRegistro: "", 
+    NumeroRegistro: "",
     IdClaveInscripcion: ""
   },
 
@@ -364,7 +372,7 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       )
 
       .then(({ data }) => {
-       
+
         alertaExitoConfirm("La reestructura de la solicitud se completado exitosamente")
         //navigate("../ConsultaDeSolicitudes");
         // console.log("reestructura", ReesState.tablaDeclaratorias )
@@ -373,9 +381,9 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
         setState(true)
       })
       .catch(() => {
-       
+
         alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
-       // alertaEliminar(() =>{}, () =>{}, "Ha sucedido un error, inténtelo de nuevo")
+        // alertaEliminar(() =>{}, () =>{}, "Ha sucedido un error, inténtelo de nuevo")
       });
   },
 

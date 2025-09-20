@@ -135,7 +135,7 @@ export interface FideicomisoSlice {
   setTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => void;
   setBeneficiario: (beneficiario: IBeneficiarioFideicomiso) => void;
   setSoporteDocumental: (
-    soporteDocumental: ISoporteDocumentalFuentePago
+    soporteDocumental: any
   ) => void;
 
   addFideicomisario: (fideicomisario: IFideicomisario) => void;
@@ -257,7 +257,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 ) => ({
   TablaPruebaEditarFideicomiso: [],
 
-  setTablaPruebaEditarFideicomiso: (TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => {
+  setTablaPruebaEditarFideicomiso: (
+    TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => {
     set((state) => ({
       TablaPruebaEditarFideicomiso: [
         ...state.TablaPruebaEditarFideicomiso,

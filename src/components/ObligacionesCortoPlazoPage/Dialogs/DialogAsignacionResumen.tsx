@@ -113,7 +113,64 @@ export function DialogAsignacionResumen({
         });
       });
 
+    } else if (
+      inscripcion.Estatus === "Asignación" &&
+      inscripcion.NoEstatus === "13" &&
+      accion === "asignacion" &&
+      (localStorage.getItem("Rol") === "Autorizador" ||
+        localStorage.getItem("Rol") === "Validador")) {
+      CambiaEstatus(
+        "14",
+        inscripcion.Id,
+        idUsuarioAsignado
+      ).then(() => {
+        createNotification(
+          "Crédito simple a corto plazo",
+          "Se te ha asignado una solicitud para revisión",
+          [idUsuarioAsignado],
+          inscripcion.Id,
+          "revision"
+          //Aqui va el control interno
+        );
+        window.location.reload(); //HAS QUE REFRESQUE LA PAGINA DE LA LISTA
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Mensaje",
+          text: "La solicitud se ha transferido con éxito",
+        });
+      });
+    } else if (inscripcion.Estatus === "Asignación" &&
+      inscripcion.NoEstatus === "22" &&
+      accion === "asignacion" &&
+      (localStorage.getItem("Rol") === "Autorizador" ||
+        localStorage.getItem("Rol") === "Validador")) {
+      CambiaEstatus(
+        "23",
+        inscripcion.Id,
+        idUsuarioAsignado
+      ).then(() => {
+        createNotification(
+          "Crédito simple a corto plazo",
+          "Se te ha asignado una solicitud para revisión",
+          [idUsuarioAsignado],
+          inscripcion.Id,
+          "revision"
+          //Aqui va el control interno
+        );
+        window.location.reload(); //HAS QUE REFRESQUE LA PAGINA DE LA LISTA
+        Swal.fire({
+          confirmButtonColor: "#15212f",
+          cancelButtonColor: "rgb(175, 140, 85)",
+          icon: "success",
+          title: "Mensaje",
+          text: "La solicitud se ha transferido con éxito",
+        });
+      });
     }
+
+
     handler(false);
   };
 
