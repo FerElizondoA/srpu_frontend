@@ -12,7 +12,7 @@ export interface DocumentosSlice {
   idAcuse: string;
   // setIdAcuse: (idAcuse: string) => void;
 
-  getIdAcuse: (idAcuse: string) => void;
+  getIdAcuse: () => void;
 
   addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;

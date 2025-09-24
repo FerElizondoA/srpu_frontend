@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { ICatalogoClasificacion, IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
@@ -38,9 +38,14 @@ import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 interface HeadSelect {
   Label: string;
 }
+
+
 const headsNews: HeadSelect[] = [
   {
     Label: "Id",
+  },
+  {
+    Label: "Clasificación"
   },
   {
     Label: "Tipo de Fuente",
@@ -171,7 +176,7 @@ export function AsignarFuente({
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
   const [filtro, setFiltro] = useState({
-    Clasificacion: { Descripcion: "Fuente de Pago" },
+    Clasificacion: { Id: "", Descripcion: "" },
     TipoFuente: { Id: "", Descripcion: "" },
     FuentePago: { Id: "", Descripcion: "" },
     RespectoA: { Descripcion: "" },
@@ -194,6 +199,12 @@ export function AsignarFuente({
     (state) => state.updateTipoMovimientoField
   );
 
+  const getCatalogoClasificacion: Function = useLargoPlazoStore(
+    (state) => state.getCatalogoClasificacion
+  );
+
+  const [catalogoClasificacion, setCatalogoClasificacion] = useState<Array<ICatalogoClasificacion>>([])
+
 
 
 
@@ -205,6 +216,7 @@ export function AsignarFuente({
 
 
   useEffect(() => {
+    getCatalogoClasificacion(setCatalogoClasificacion)
     getTiposDeFuente();
     getFuentesPago();
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
@@ -269,7 +281,7 @@ export function AsignarFuente({
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
-            options={[{ Descripcion: "Fuente de Pago" }]}
+            options={catalogoClasificacion}
             value={filtro.Clasificacion}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -283,7 +295,7 @@ export function AsignarFuente({
               console.log("text", text);
               setFiltro({
                 Clasificacion: {
-                  Descripcion: text?.Descripcion || "",
+                  Id: text?.Id || "", Descripcion: text?.Descripcion || "",
                 },
                 TipoFuente: { Id: "", Descripcion: "" },
                 FuentePago: { Id: "", Descripcion: "" },
@@ -300,6 +312,12 @@ export function AsignarFuente({
             isOptionEqualToValue={(option, value) =>
               option.Descripcion === value.Descripcion ||
               value.Descripcion === ""
+            }
+            getOptionDisabled={(option) =>
+              option.Descripcion === "Garantía" &&
+              tablaAsignarFuenteNew.some(
+                (item) => item.Clasificacion.Descripcion === "Garantía"
+              )
             }
           />
         </Grid>
@@ -451,17 +469,29 @@ export function AsignarFuente({
             <Button
               disabled={filtro.RespectoA.Descripcion === ""}
               onClick={() => {
+                // setTablaAsignarFuenteNew(
+                //   JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
+                //     (i: IDeudorFideicomisoNew) =>
+                //       i.tipoFuente.Descripcion ===
+                //       filtro.TipoFuente.Descripcion &&
+                //       i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+                //   )
+                // );
                 setTablaAsignarFuenteNew(
-                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento).filter(
-                    (i: IDeudorFideicomisoNew) =>
-                      i.tipoFuente.Descripcion ===
-                      filtro.TipoFuente.Descripcion &&
-                      i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
-                  )
+                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento)
+                    .filter(
+                      (i: IDeudorFideicomisoNew) =>
+                        i.tipoFuente.Descripcion === filtro.TipoFuente.Descripcion &&
+                        i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+                    )
+                    .map((item: IDeudorFideicomisoNew) => ({
+                      ...item,
+                      Clasificacion: filtro.Clasificacion, // aquí agregas la clasificación del hook
+                    }))
                 );
                 setFiltro({
                   Clasificacion: {
-                    Descripcion: "Fuente de Pago",
+                    Id: "", Descripcion: "",
                   },
                   TipoFuente: { Id: "", Descripcion: "" },
                   FuentePago: { Id: "", Descripcion: "" },
@@ -537,6 +567,10 @@ export function AsignarFuente({
 
                       <StyledTableCell align="center">
                         {movimiento.id}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {movimiento?.Clasificacion?.Descripcion}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">

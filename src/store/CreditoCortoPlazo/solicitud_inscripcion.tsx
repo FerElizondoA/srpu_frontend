@@ -58,14 +58,15 @@ export interface SolicitudInscripcionSlice {
   saveFiles: (idRegistro: string, ruta: string) => void;
   saveFilesFuentesPago: (NombreFuentePago: string, TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading: Function) => void;
 
-  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
+  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File, acuse?: string) => void;
 
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc: string
+    TpoDoc: string,
+    acuse?: string
   ) => void;
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
@@ -519,11 +520,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
     });
   },
 
-  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
+  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File, acuse?: string) => {
     const state = useCortoPlazoStore.getState();
 
     console.log("Entre guardaDocumentos");
-    // console.log("ID ACUSE OBTENIDO", idAcuse);
+    console.log("IDACUSE OBTENIDO guardaDocumentos", acuse);
 
 
     let dataArray = new FormData();
@@ -549,7 +550,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
             data.RESPONSE.NOMBREARCHIVO,
-            ""
+            "",
+            acuse
           );
         })
         .catch((e) => { });
@@ -563,17 +565,19 @@ export const createSolicitudInscripcionSlice: StateCreator<
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc: string
-  ) => {
-    const state = useCortoPlazoStore.getState();
+    TpoDoc: string,
+    acuse?: string
+  ) => {   
+    if (acuse !== "" || acuse !== undefined || acuse !== null) {
+      console.log("SI ES ACUSE ESTA BIEN ")
+    } else {
+      console.log("No es acuse ESTA BIEN ")
+    }
 
-    // const idAcuse = ""
-    // state.getIdAcuse(idAcuse)
+
 
     console.log("Entre savePathDoc");
     console.log("TpoDoc:", TpoDoc);
-
-    console.log("state.idAcuse:", state.idAcuse);
 
 
 
@@ -585,7 +589,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: TpoDoc//COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          TpoDoc: acuse !== "" || acuse !== undefined ? acuse : TpoDoc //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
           // TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {

@@ -165,8 +165,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           IdFondoIngreso: TablaFuentePago?.fondoIngreso?.Id,
           PorcentajeOriginalIngreso: TablaFuentePagoOriginal.AfectadoTotalIngreso ?? 0,
           PorcentajeOriginalEquivalencia: TablaFuentePagoOriginal.EquivalenciaCorrespondienteMunicipios ?? 0,
-          PorcentajeUtilizadoIngreso: TablaFuentePago.AfectadoTotalIngreso ?? 0,
-          PorcentajeUtilizadoEquivalencia: TablaFuentePago.EquivalenciaCorrespondienteMunicipios ?? 0
+          // PorcentajeUtilizadoIngreso: TablaFuentePago.AfectadoTotalIngreso ?? 0,
+          // PorcentajeUtilizadoEquivalencia: TablaFuentePago.EquivalenciaCorrespondienteMunicipios ?? 0
+          PorcentajeUtilizadoIngreso:  0.0,
+          PorcentajeUtilizadoEquivalencia: 0.0
         },
         {
           headers: {
@@ -292,6 +294,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         const DataSolicitud = data.data.data;
         const fuente = lpState.tablaAsignarFuenteNew[0];
         const fuenteOriginal = lpState.OriginalTablaAsignarFuenteNew[0];
+        console.log("fuente", fuente);
+        console.log("fuenteOriginal", fuenteOriginal);
 
         lpState.setIdSolicitudBorrador(DataSolicitud.Id)
         setIdSolicitudCreada(DataSolicitud.Id);

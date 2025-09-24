@@ -35,6 +35,16 @@ export type garantiaPago = {
   Descripcion: string;
 };
 
+export interface ICatalogoClasificacion {
+	Id: string;
+	Descripcion: string;
+	FechaCreacion: string;
+	CreadoPor: string;
+	UltimaModificacion: string;
+	ModificadoPor: string;
+	Deleted: number;
+}
+
 export type AsignarFuenteV = {
   clasificacion: { Id: string; Descripcion: string };
   tipoFuente: { Id: string; Descripcion: string };
@@ -62,6 +72,7 @@ export interface FuenteDePagoLargoPlazoSlice {
   addPorcentaje: (tablaAsignarFuente: IDeudorFideicomiso) => void;
 
 
+  getCatalogoClasificacion: (setState: Function) => void;
 
 
   OriginalTablaAsignarFuenteNew: IDeudorFideicomisoNew[];
@@ -92,6 +103,19 @@ export interface FuenteDePagoLargoPlazoSlice {
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
+
+    getCatalogoClasificacion: async (setState: Function) => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-clasificacionAsignarFuentePago", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        setState(r)
+      });
+  },
 
   updateTipoMovimientoField: (index: number, field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>
     , value: number) => {

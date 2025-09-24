@@ -332,7 +332,7 @@ export function SoporteDocumentalInstrucciones() {
               </TableHead>
 
               <TableBody>
-                {arr.map(
+                {tablaSoporteDocumentalInstrucciones.map(
                   (row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>

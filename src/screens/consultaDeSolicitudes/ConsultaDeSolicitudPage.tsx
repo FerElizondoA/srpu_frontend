@@ -680,6 +680,7 @@ export function ConsultaDeSolicitudPage() {
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {
                                       setInscripcion(row);
+                                      console.log("INSCRIPCION", row);
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");
                                       navigate("../firmaUrl");

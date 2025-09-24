@@ -37,6 +37,7 @@ export interface IPorcentajeAcumulados {
 }
 export interface IDeudorFideicomisoNew {
   id: string;
+  Clasificacion: { Id: string, Descripcion: string }
   tipoFideicomitente: { Id: string; Descripcion: string };
   fideicomitente: { Id: string; Descripcion: string };
   tipoFuente: { Id: string; Descripcion: string };
@@ -298,6 +299,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   tipoMovimientoFideicomisoNew: {
     id: "",
+    Clasificacion: { Id: "", Descripcion: "" },
     tipoFideicomitente: { Id: "", Descripcion: "" },
     fideicomitente: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
@@ -372,6 +374,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     set(() => ({
       tipoMovimientoFideicomisoNew: {
         id: "",
+        Clasificacion: { Id: "", Descripcion: "" },
         tipoFideicomitente: { Id: "", Descripcion: "" },
         fideicomitente: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
@@ -501,6 +504,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
       tipoMovimientoFideicomisoNew: {
         id: "",
+        Clasificacion: { Id: "", Descripcion: "" },
         tipoFideicomitente: { Id: "", Descripcion: "" },
         fideicomitente: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
@@ -595,7 +599,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   },
 
   addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => {
-          
+
 
     set((state) => ({
       tablaSoporteDocumentalFideicomiso: [...state.tablaSoporteDocumentalFideicomiso, soporteDocumental,],

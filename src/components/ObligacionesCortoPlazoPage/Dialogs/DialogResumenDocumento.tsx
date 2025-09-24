@@ -288,7 +288,7 @@ export function VerBorradorDocumento(props: Props) {
           {
             // (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") ||
 
-            (["10", "11", "26"].includes(props.rowSolicitud.NoEstatus) &&
+            (["10", "19", "26"].includes(props.rowSolicitud.NoEstatus) &&
               localStorage.getItem("Rol") === "Autorizador") ||
 
               (props.rowSolicitud.NoEstatus === "5" &&

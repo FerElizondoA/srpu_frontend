@@ -407,9 +407,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       let validacionReestructura = false
       const inf = JSON.parse(info);
 
-      const stateCortoPlazo = useCortoPlazoStore.getState();
-      const idAcuse = ""
-      stateCortoPlazo.getIdAcuse(idAcuse)
+      //const stateCortoPlazo = useCortoPlazoStore.getState();
+      // const idAcuse = ""
+      // stateCortoPlazo.getIdAcuse(idAcuse)
 
       const filtro = useInscripcionStore.getState();
       let state: any;
@@ -506,7 +506,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         )
         .then((response) => {
           //Para guardar los porcentajes acumulados ya inscritos
-          if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
+          if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo" && filtro.inscripcion.NoEstatus === "10") {
 
             console.log("Entro para guardar los porcentajes acumulados");
             console.log("filtro.inscripcion.TipoSolicitud", filtro.inscripcion.TipoSolicitud);
@@ -515,10 +515,12 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             const SolicitudDatos: IDatosCompletosSolicitud = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
             console.log("SolicitudDatos", SolicitudDatos);
 
+
+            //ESTO SOLO VA CUANDO LA FIRMA SE FIRMA COMO INSCRITO Y MODIFICAR EL PORCENTAJE UTILIZADO EN EN LA SOLICITUD EN LAS FFUENTES DE PAGO
             const DatosPorcentajesAcumulados = SolicitudDatos.fuenteDePago.fuente.map((fuente: any) => ({
               id: fuente.id || "",
-              tipoFideicomitente: fuente.tipoFideicomitente,
-              fideicomitente: fuente.fideicomitente,
+              tipoFideicomitente: fuente?.tipoEntePublicoObligado || fuente?.tipoFideicomitente,
+              fideicomitente: fuente?.entePublicoObligado || fuente?.fideicomitente,
               tipoFuente: fuente.tipoFuente,
               fondoIngreso: fuente.fondoIngreso,
               AfectadoTotalIngreso: fuente.AfectadoTotalIngreso,
@@ -526,6 +528,13 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
               garantiaDePago: SolicitudDatos.fuenteDePago.garantiaDePago || "",
             }));
             createPorcentajesAcumulados(DatosPorcentajesAcumulados)
+
+
+
+            //En cambio deberia haber una bandera que te diga que la solicitud esta en procesos de inscripcion e incrita 
+          } else {
+            console.log("HOLA No entro para guardar los porcentajes acumulados");
+            console.log("filtro.inscripcion.NoEstatus", filtro.inscripcion.NoEstatus);
           }
 
 
@@ -666,6 +675,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 export async function createPorcentajesAcumulados(DatosPorcentajesAcumulados: IDatosPorcentajesAcumulados[]) {
 
   const state = useFideicomisoStore.getState();
+  console.log("DatosPorcentajesAcumulados", DatosPorcentajesAcumulados);
 
   const peticiones = DatosPorcentajesAcumulados.map(async (item) => {
 
@@ -1460,6 +1470,13 @@ export async function GeneraAcuse(
     oficio: oficio,
   }
 
+  const state = useCortoPlazoStore.getState();
+ 
+
+  state.getIdAcuse();
+  console.log("state.idAcuse en generaAcuse", state.idAcuse);
+
+
   const now = new Date();
 
   const day = String(now.getDate()).padStart(2, '0');
@@ -1496,8 +1513,8 @@ export async function GeneraAcuse(
       state.guardaDocumentos(
         idRegistro,
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
-        new File([response.data], fileName)
-        //new File([response.data], `Acuse-${oficio}.pdf`)
+        new File([response.data], fileName), //new File([response.data], `Acuse-${oficio}.pdf`)
+        state.idAcuse
       );
     })
 
