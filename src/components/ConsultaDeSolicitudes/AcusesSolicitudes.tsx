@@ -68,8 +68,6 @@ export function AcusesSolicitudes() {
 
   useEffect(() => {
     getPathAcuses(inscripcion.Id, setArchivos);
-
-    console.log("archivos", archivos)
   }, [inscripcion]);
 
   return (
@@ -145,7 +143,7 @@ export function AcusesSolicitudes() {
                             type="button"
                             onClick={() => {
                               //if (e.Tipo === "oficio") {
-                              console.log("archivos", archivos)
+                              // console.log("archivos", archivos)
                               descargaDocumentoAcuse(
                                 "/" + e.RutaDocumento,
                                 e.NombreArchivo,

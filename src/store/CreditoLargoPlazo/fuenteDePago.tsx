@@ -19,8 +19,10 @@ export interface IRegistro {
   Mandante: string;
   TipoEntePublicoObligado: string;
 
+
   CLABE: string;
-  Banco: string;
+  IdBanco: string;
+  NombreBanco: string;
   EntePublicoObligado: string;
 
   TipoMovimiento: string;
@@ -32,6 +34,16 @@ export type garantiaPago = {
   Id: string;
   Descripcion: string;
 };
+
+export interface ICatalogoClasificacion {
+	Id: string;
+	Descripcion: string;
+	FechaCreacion: string;
+	CreadoPor: string;
+	UltimaModificacion: string;
+	ModificadoPor: string;
+	Deleted: number;
+}
 
 export type AsignarFuenteV = {
   clasificacion: { Id: string; Descripcion: string };
@@ -60,7 +72,11 @@ export interface FuenteDePagoLargoPlazoSlice {
   addPorcentaje: (tablaAsignarFuente: IDeudorFideicomiso) => void;
 
 
+  getCatalogoClasificacion: (setState: Function) => void;
 
+
+  OriginalTablaAsignarFuenteNew: IDeudorFideicomisoNew[];
+  //setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
   tablaAsignarFuenteNew: IDeudorFideicomisoNew[];
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) => void;
   removeTablaAsignarFuente: (index: number) => void;
@@ -76,14 +92,43 @@ export interface FuenteDePagoLargoPlazoSlice {
   tipoMovimientoFuentesPago: IDeudorFideicomisoNew[],
   setTipoMovimientoFuentesPago: (tipoMovimientoFuentesPago: IDeudorFideicomisoNew[]) => void;
   cleanTipoMovimientoFuentesPago: () => void;
+
+  updateTipoMovimientoField: (
+    index: number,
+    field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>,
+    value: number,
+  ) => void;
 }
 
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
 
+    getCatalogoClasificacion: async (setState: Function) => {
+    await axios
+      .get(process.env.REACT_APP_APPLICATION_BACK + "/get-clasificacionAsignarFuentePago", {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      })
+      .then(({ data }) => {
+        let r = data.data;
+        setState(r)
+      });
+  },
 
-removeTablaAsignarFuente: (index: number) =>
+  updateTipoMovimientoField: (index: number, field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>
+    , value: number) => {
+    set((state) => {
+      const updatedTabla = state.tablaAsignarFuenteNew.map((row, i) =>
+        i === index ? { ...row, [field]: value } : row
+      );
+      // setState(updatedTabla);
+      return { tablaAsignarFuenteNew: updatedTabla };
+
+    });
+  },
+  removeTablaAsignarFuente: (index: number) =>
     set((state) => ({
       tablaAsignarFuenteNew: state.tablaAsignarFuenteNew.filter(
         (_, i) => i !== index
@@ -119,8 +164,10 @@ removeTablaAsignarFuente: (index: number) =>
     Mandante: "",
     TipoEntePublicoObligado: "",
 
+    NumeroCuenta: "",
     CLABE: "",
-    Banco: "",
+    IdBanco: "",
+    NombreBanco: "",
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
@@ -132,10 +179,12 @@ removeTablaAsignarFuente: (index: number) =>
   tablaAsignarFuente: [],
 
   tablaAsignarFuenteNew: [],
+  OriginalTablaAsignarFuenteNew: [],
 
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) =>
     set(() => ({
       tablaAsignarFuenteNew: fuente,
+      OriginalTablaAsignarFuenteNew: fuente
     })),
 
   cleanTablaAsignarFuenteNew: () =>
@@ -168,7 +217,7 @@ removeTablaAsignarFuente: (index: number) =>
     }));
   },
 
-  getMecanismosVehiculosPago: (tabla: string, setState: Function) => {
+  getMecanismosVehiculosPago: (tabla: string, setState: Function) => { //Es este 
     axios
       .get(process.env.REACT_APP_APPLICATION_BACK + `/listaMecanismosDePago`, {
         params: { tabla: tabla },

@@ -86,6 +86,7 @@ export function DialogDescargaArchivos({
   };
 
   useEffect(() => {
+    console.log("inscripcion", inscripcion);
     getPathDocumentos(inscripcion.Id, setArchivos);
   }, [inscripcion]);
 

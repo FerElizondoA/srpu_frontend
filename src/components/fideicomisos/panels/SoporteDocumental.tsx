@@ -34,7 +34,7 @@ import { queries } from "../../../queries";
 import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
-import { ISoporteDocumentalFideicomiso } from "../../../store/Fideicomiso/fideicomiso";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 import CircularProgress from "@mui/material/CircularProgress";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 
@@ -107,7 +107,7 @@ export function SoporteDocumentalFideicomiso() {
     (state) => state.removeSoporteDocumental
   );
 
-  const tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[] =
+  const tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFuentePago[] =
     useFideicomisoStore((state) => state.tablaSoporteDocumentalFideicomiso);
 
   const cleanSoporteDocumentalFideicomiso: Function = useFideicomisoStore(
@@ -116,6 +116,8 @@ export function SoporteDocumentalFideicomiso() {
 
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
+    console.log("EVENTO FIDEICOMISO", file)
+
 
     if (file !== undefined) {
       setSoporteDocumentalFideicomiso({
@@ -141,7 +143,7 @@ export function SoporteDocumentalFideicomiso() {
 
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
         setLoading(false);
       });
     }
@@ -246,6 +248,7 @@ export function SoporteDocumentalFideicomiso() {
               type="file"
               accept="application/pdf"
               onChange={(v) => {
+                console.log("V", v)
                 cargarArchivo(v);
               }}
               style={{
@@ -369,6 +372,7 @@ export function SoporteDocumentalFideicomiso() {
               <TableBody>
                 {tablaSoporteDocumentalFideicomiso.map(
                   (row: any, index: number) => {
+
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
@@ -410,12 +414,11 @@ export function SoporteDocumentalFideicomiso() {
                                     })
                                     .catch((err) => {
                                       setFileSelected(
-                                        `data:application/pdf;base64,${
-                                          arr.filter((td: any) =>
-                                            td.NOMBREFORMATEADO.includes(
-                                              row.nombreArchivo
-                                            )
-                                          )[0].FILE
+                                        `data:application/pdf;base64,${arr.filter((td: any) =>
+                                          td.NOMBREFORMATEADO.includes(
+                                            row.nombreArchivo
+                                          )
+                                        )[0].FILE
                                         }`
                                       );
                                     });

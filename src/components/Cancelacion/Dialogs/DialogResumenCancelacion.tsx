@@ -108,7 +108,7 @@ export function VerBorradorCancelacion({
           inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
             <Resumen coments={false}  estatus={rowSolicitud.NoEstatus}/>
           ) : (
-            <ResumenLP coments={false} />
+            <ResumenLP coments={false} estatus={""}/>
           )
         ) : (
           <DatosCancelacion />

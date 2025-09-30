@@ -217,7 +217,6 @@ export function SolicitudesReestructura() {
     idClaveInscripcion: string
   ) => {
 
-    console.log("Solicitud", Solicitud);
     let a: any = {};
 
     Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
@@ -225,9 +224,6 @@ export function SolicitudesReestructura() {
         ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
         : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
     });
-    console.log("Requerimiento solicitud", solicitud)
-    console.log("Requerimientos de reestructura", Requerimiento);
-    
 
     ConsultaRequerimientosReestructura(Solicitud, a, noRegistro, setUrl, idClaveInscripcion);
     
@@ -723,92 +719,7 @@ export function SolicitudesReestructura() {
                             <IconButton
                               type="button"
                               onClick={() => {
-                                firmaSolicitudReestructura(row)
-
-                                // getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-                                // setInscripcionRestructura(SolicitudReestructuraFirma)
-
-                                // getComentariosSolicitudPlazo(
-                                //   row.Id,
-                                //   () => { }
-                                // ).then((data) => {
-                                //   if (
-                                //     data.filter(
-                                //       (a: any) =>
-                                //         a.Tipo === "RequerimientoReestructura"
-                                //     ).length > 0
-                                //   ) {
-                                //     console.log("Si hay requerimeintos reestructura")
-                                //     requerimientos(
-                                //       SolicitudReestructuraFirma.SolicitudReestructura,
-                                //       SolicitudReestructuraFirma.NumeroRegistro,
-                                //       data.filter(
-                                //         (a: any) =>
-                                //           a.Tipo === "RequerimientoReestructura"
-                                //       )[0],
-                                //       SolicitudReestructuraFirma.IdClaveInscripcion
-                                //     );
-                                //     navigate("../firmaUrl");
-                                //   } else {
-                                //     console.log("No se hay o no se detectaron requerimientos reestructura");
-
-                                //     // ConsultaConstancia(
-                                //     //   row.Solicitud,
-                                //     //   row.NumeroRegistro,
-                                //     //   setUrl
-                                //     // );
-                                //     // navigate("../firmaUrl")
-
-                                //   }
-                                // });
-
-                                // navigate("../firmaUrl");
-
-                                //firmaSolicitudReestructura(row)
-                                // // if (row.Id !== "") {
-                                // //   getSolicitudReestructuraFirma(row.Id, setConstanciaReestructura)
-                                // //   // setProceso("solicitud")
-                                // //   //console.log("constanciaReestructura", constanciaReestructura)
-                                // //   // navigate("../firmaUrl");
-
-                                // //   if (row.NoEstatus === "19") {
-                                // //     console.log("constanciaReestructura", constanciaReestructura)
-                                // //     if (constanciaReestructura === true) {
-                                // //       setProceso("solicitud")
-                                // //       setInscripcionRestructura(SolicitudReestructuraFirma)
-                                // //       ConsultaSolicitudReestructura(setUrl);
-                                // //       navigate("../firmaUrl");
-                                // //     }
-                                // //   } else {
-                                // //     getComentariosSolicitudPlazo(
-                                // //       row.Id,
-                                // //       () => { }
-                                // //     ).then((data) => {
-                                // //       if (
-                                // //         data.filter(
-                                // //           (a: any) =>
-                                // //             a.Tipo === "RequerimientoReestructura"
-                                // //         ).length > 0
-                                // //       ) {
-                                // //         requerimientos(
-                                // //           row.Solicitud,
-                                // //           row.NumeroRegistro,
-                                // //           data.filter(
-                                // //             (a: any) =>
-                                // //               a.Tipo === "RequerimientoReestructura"
-                                // //           )[0]
-                                // //         );
-                                // //       } else {
-                                // //         ConsultaConstancia(
-                                // //           row.Solicitud,
-                                // //           row.NumeroRegistro,
-                                // //           setUrl
-                                // //         );
-                                // //         navigate("../firmaUrl");
-                                // //       }
-                                // //     });
-                                // //   }
-                                // }
+                                firmaSolicitudReestructura(row);
                               }}
                             >
                               <HistoryEduIcon />

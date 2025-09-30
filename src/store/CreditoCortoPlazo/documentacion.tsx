@@ -12,7 +12,7 @@ export interface DocumentosSlice {
   idAcuse: string;
   // setIdAcuse: (idAcuse: string) => void;
 
-  getIdAcuse: (idAcuse: string) => void;
+  getIdAcuse: () => void;
 
   addDocumento: (newDocumento: IFile) => void;
   removeDocumento: (index: number) => void;
@@ -33,9 +33,6 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
 
   getIdAcuse: async () => {
     const state = useInscripcionStore.getState();
-
-    console.log('state', state);
-
     await axios({
       method: "get",
       url:

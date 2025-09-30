@@ -169,7 +169,7 @@ export function VehiculoDePago({
         {
           numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
           cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: mecanismoVehiculoPago.Banco,
+          banco: mecanismoVehiculoPago.NombreBanco,
           fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
         },
         auxArray,
@@ -232,15 +232,6 @@ export function VehiculoDePago({
     (state) => state.catalogoTiposDeFuente
   );
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("Asingar Fuente - Tabla Asignar Fuente", filtroCampoTipoFuente);
-      filtradoOpcionesAsignarFuente();
-    }, 100); // 100ms suele ser suficiente
-
-    return () => clearTimeout(timeout);
-  }, [filtroCampoTipoFuente]);
-
 
 
   const getFuentesPago: Function = useFideicomisoStore(
@@ -270,7 +261,7 @@ export function VehiculoDePago({
   };
 
   useEffect(() => {
-    console.log("✔️ tipoMovimientoFuentesPago actualizado", filtroCampoTipoFuente);
+    console.log("✔️ mecanismoVehiculoPago", mecanismoVehiculoPago);
   }, [mecanismoVehiculoPago]);
 
   useEffect(() => {
@@ -723,7 +714,7 @@ export function VehiculoDePago({
                     },
                   }}
                   size="small"
-                  value={mecanismoVehiculoPago.Banco}
+                  value={mecanismoVehiculoPago.NombreBanco}
                 />
               </Grid>
 

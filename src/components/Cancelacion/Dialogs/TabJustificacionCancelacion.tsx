@@ -38,7 +38,7 @@ export function TabJustificacionCancelacion({
     },
     {
       label: "Usuario Solicitante",
-      value: DetailPathCancelaciones?.[0]?.Ruta || "N/A",
+      value: DetailPathCancelaciones?.[0]?.Ruta || "No iniciado el proceso",
     },
     {
       label: "Acreditación de la cancelación",
@@ -59,7 +59,7 @@ export function TabJustificacionCancelacion({
     <>
       <Grid container width={"100%"} display={"flex"} justifyContent={"center"}
         sx={{
-          height: "20rem",
+          height: "25rem",
           borderBottom: 1,
           borderColor: "#cfcfcf"
         }}>
@@ -75,13 +75,15 @@ export function TabJustificacionCancelacion({
                 {head.label.includes("Fecha") && head.value
                   ? !isNaN(new Date(head.value).getTime())
                     ? format(new Date(head.value), "dd/MM/yyyy")
-                    : "Sin Fecha Registrada"
+                    : "No iniciado el proceso"
+                  // "Sin Fecha Registrada"
                   : head.value}
               </Typography>
 
               {head.label.includes("Acreditación") ?
-                <Grid>
+                <Grid display={"flex"} sx={{ mb: 3 }}>
                   <Button
+                    disabled={head.value === "SIN ARCHIVOS"}
 
                     onClick={async () => {
 
@@ -107,7 +109,7 @@ export function TabJustificacionCancelacion({
 
                       <Typography>
                         <FileOpenIcon />
-                        {head.value}
+                        {/* {head.value} */}
                       </Typography>
                     </Tooltip>
                   </Button>
@@ -115,9 +117,9 @@ export function TabJustificacionCancelacion({
                 </Grid>
 
                 : head.label.includes("federal") ?
-                  <Grid>
+                  <Grid display={"flex"} sx={{ mb: 3 }}>
                     <Button
-
+                      disabled={head.value === "SIN ARCHIVOS"}
                       onClick={async () => {
 
 
@@ -142,7 +144,7 @@ export function TabJustificacionCancelacion({
 
                         <Typography>
                           <FileOpenIcon />
-                          {head.value}
+                          {/* {head.value} */}
                         </Typography>
                       </Tooltip>
                     </Button>

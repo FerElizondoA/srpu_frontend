@@ -15,6 +15,7 @@ import {
   TableBody,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -28,62 +29,32 @@ import {
   Transition,
 } from "../../../screens/fuenteDePago/Mandatos";
 import {
-  IDeudorMandato,
-  ISoporteDocumentalMandato,
+  IDeudorMandatoNew,
 } from "../../../store/Mandatos/mandato";
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { listFile, listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
+import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 const headsTipoMovimiento: { label: string }[] = [
   {
     label: "Id",
   },
   {
-    label: "Tipo de Mandante",
+    label: "Tipo de Fuente",
+  },
+  {
+    label: "Fondo o Ingreso",
   },
   {
     label: "Mandatario",
   },
   {
-    label: "Fuente de Pago",
+    label: "Porcentaje Afectado Sobre el Total de Ingreso",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
-  },
-  {
-    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
-  },
-  {
-    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
-  },
-  {
-    label: "% del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Afectado al Mandato del Ingreso o Fondo Correspondiente al Gobierno del Estado",
-  },
-  {
-    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
-  },
-  {
-    label:
-      "% Afectado al Mandato del Ingreso o Fondo Correspondiente al Municipio",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
-  },
-  {
-    label: "% Afectado al Mandato del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
+    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
   },
 ];
 
@@ -109,7 +80,7 @@ export function DetalleMandato({
 }: {
   open: boolean;
   setOpen: Function;
-  mandato: IDatosMandatos;
+  mandato: IRegistro;
 }) {
   const [fileSelected, setFileSelected] = React.useState<any>("");
   const [showModalPrevia, setShowModalPrevia] = React.useState(false);
@@ -118,13 +89,26 @@ export function DetalleMandato({
 
   const [arr, setArr] = React.useState<any>([]);
 
+  // useEffect(() => {
+  //   if (idMandato !== "") {
+  //     listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr).then(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (idMandato !== "") {
-      listFile(`/SRPU/MANDATOS/${idMandato}/`, setArr).then(() => {
+      console.log("Entré al useEffect de IDMANDATO:");
+      listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${idMandato}/`,
+        setArr,
+        JSON.parse(mandato.SoporteDocumental)
+      ).then(() => {
         setLoading(false);
       });
     }
-  }, []);
+    console.log("idMandato:", idMandato);
+  }, [idMandato !== ""]);
 
   const [loading, setLoading] = React.useState(true);
 
@@ -178,10 +162,10 @@ export function DetalleMandato({
         }}
       >
         <Grid
-            mt={{xs:4, sm:8, md:2}}
-            height={{xs:"20rem", sm:"20rem", md:"20rem"}}
+          mt={{ xs: 4, sm: 8, md: 2 }}
+          height={{ xs: "20rem", sm: "20rem", md: "20rem" }}
           sx={{
-           // height: "20%",
+            // height: "20%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-around",
@@ -192,12 +176,12 @@ export function DetalleMandato({
           <Divider color="lightGrey"></Divider>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong> Número de Mandato:</strong> {mandato.NumeroMandato}
+            <strong> Número de Mandato:</strong> {mandato.NumeroRegistro}
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
             <strong>Fecha de Mandato:</strong>{" "}
-            {format(new Date(mandato.FechaMandato), "PPP", {
+            {format(new Date(mandato.FechaRegistro), "PPP", {
               locale: es,
             })}
           </Typography>
@@ -208,7 +192,9 @@ export function DetalleMandato({
 
           <Typography sx={{ ...queries.medium_text }}>
             <strong>Municipio / Organismo Mandante:</strong>{" "}
-            {mandato.MunicipioOrganismoMandante}
+            {mandato.EntePublicoObligado}
+
+            {/* {mandato.MunicipioOrganismoMandante} */}
           </Typography>
 
           <Divider color="lightGrey"></Divider>
@@ -239,8 +225,8 @@ export function DetalleMandato({
             <TableHead>
               <TableRow>
                 {headsTipoMovimiento.map((head, index) => (
-                  <StyledTableCell key={index}>
-                    <Typography sx={{ fontSize: "0.7rem", fontWeight: "700" }}>
+                  <StyledTableCell key={index} align="center">
+                    <Typography sx={{ fontWeight: "700" }}>
                       {head.label}
                     </Typography>
                   </StyledTableCell>
@@ -249,114 +235,68 @@ export function DetalleMandato({
             </TableHead>
             <TableBody>
               {JSON.parse(mandato.TipoMovimiento).map(
-                (row: IDeudorMandato, index: number) => {
+                (row: IDeudorMandatoNew, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       {/* ID */}
+                      {/* ID */}
                       <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
+                        <Typography>
                           {row?.id}
                         </Typography>
                       </StyledTableCell>
 
-                      {/* TIPO fideicomitente */}
+                      {/* TIPO MANDANTE  */}
                       <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.tipoEntePublicoObligado.Descripcion}
+                        <Typography>
+                          {row?.tipoFuente.Descripcion}
+                          {/* {row?.tipoFideicomitente.Descripcion} */}
                         </Typography>
                       </StyledTableCell>
 
-                      {/* fideicomitente */}
                       <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
+                        <Typography>
+                          {row?.fondoIngreso.Descripcion}
+                        </Typography>
+                      </StyledTableCell>
+
+                      {/* fideicomitente  */}
+                      <StyledTableCell align="center">
+                        <Typography>
                           {row?.mandatario.Descripcion}
                         </Typography>
                       </StyledTableCell>
 
-                      {/* FUENTE DE PAGO */}
+
+                      {/* Porcentaje Afectado Sobre el Total de Ingreso */}
                       <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.tipoFuente.Descripcion}
-                        </Typography>
+                        {row.AfectadoTotalIngreso || ''}
+                        {/* <TextField
+                          type="number"
+                          value={row.AfectadoTotalIngreso || ''}
+                          // onChange={(e) => {
+                          //   const newValue = Number(e.target.value);
+                          //   updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                          // }}
+                          inputProps={{ min: 0 }}
+                        /> */}
                       </StyledTableCell>
 
-                      {/* FONDO INGRESO GOBIERNO ESTATAL */}
+                      {/* Equivalencia Sin incluir el monto de municipios */}
                       <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoGobiernoEstatal}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* FONDO INGRESO MUNICIPIOS */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoMunicipios}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* FONDO INGRESO MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAsignadoMunicipio}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* INGRESO ORGANISMO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.ingresoOrganismo}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* AFECTADO POR GOBIERNO ESTATAL */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAfectadoXGobiernoEstatal}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* AFECTACION GOBIERNO ESTATAL / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.afectacionGobiernoEstatalEntre100}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.acumuladoAfectacionGobiernoEstatalEntre100}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* AFECTADO POR MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.fondoIngresoAfectadoXMunicipio}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {
-                            row.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                          }
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* AFECTADO POR ORGANISMO */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.ingresoAfectadoXOrganismo}
-                        </Typography>
-                      </StyledTableCell>
-
-                      {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
-                      <StyledTableCell align="center">
-                        <Typography sx={{ fontSize: "0.8rem" }}>
-                          {row?.acumuladoAfectacionOrganismoEntre100}
-                        </Typography>
+                        {row.EquivalenciaCorrespondienteMunicipios || ''}
+                        {/* <TextField
+                          type="number"
+                          disabled={row.tipoEntePublicoObligado.Descripcion.toLowerCase() !== "gobierno estatal"}
+                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ?
+                            row.EquivalenciaCorrespondienteMunicipios || '' : 0}
+                          // onChange={(e) => {
+                          //   const newValue = Number(e.target.value);
+                          //   updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue)
+                          //     ? 0 : newValue);
+                          // }}
+                          inputProps={{ min: 0 }}
+                        /> */}
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -390,8 +330,8 @@ export function DetalleMandato({
               </TableRow>
             </TableHead>
             <TableBody>
-              {JSON.parse(mandato.SoporteDocumental).map(
-                (row: ISoporteDocumentalMandato, index: number) => {
+              {arr.map(
+                (row: ISoporteDocumentalFuentePago, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
@@ -415,11 +355,57 @@ export function DetalleMandato({
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
+
+                        <Tooltip title={"Mostrar vista previa del documento"}>
+                          <IconButton
+                            onClick={
+                              async () => {
+                                console.log("row.archivo", row.archivo)
+
+                                let base64String = '';
+                                try {
+                                  if (row.archivo instanceof File) {
+                                    base64String = await convertFileToBase64(row.archivo);
+                                    console.log("base64String 1", base64String)
+
+                                  } else {
+                                    base64String = row.archivo;
+                                    console.log("base64String 2", base64String)
+
+                                  }
+
+                                  const dataUri = `data:application/pdf;base64,${base64String}`;
+                                  console.log("dataUri", dataUri)
+                                  setFileSelected(dataUri);
+                                } catch (error) {
+                                  console.error("Error al convertir el archivo a Base64", error);
+                                }
+
+                                setShowModalPrevia(true);
+                                // setFileSelected(
+                                //   `data:application/pdf;base64,${arr.filter((td: any) =>
+                                //     td.NOMBREFORMATEADO.includes(
+                                //       row.nombreArchivo
+                                //     )
+                                //   )[0].FILE
+                                //   }`
+                                // );
+                                // setShowModalPrevia(true);
+                              }
+                            }
+                          >
+                            <FileOpenIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                      </StyledTableCell>
+
+                      {/* <StyledTableCell align="center">
                         {loading ? (
                           <CircularProgress />
                         ) : arr.filter((td: any) =>
-                            td.NOMBREFORMATEADO.includes(row.nombreArchivo)
-                          ).length === 0 ? (
+                          td.NOMBREFORMATEADO.includes(row.nombreArchivo)
+                        ).length === 0 ? (
                           <Tooltip title={"Error al Cargar el Archivo"}>
                             <SyncProblemIcon />
                           </Tooltip>
@@ -428,12 +414,11 @@ export function DetalleMandato({
                             <IconButton
                               onClick={() => {
                                 setFileSelected(
-                                  `data:application/pdf;base64,${
-                                    arr.filter((td: any) =>
-                                      td.NOMBREFORMATEADO.includes(
-                                        row.nombreArchivo
-                                      )
-                                    )[0].FILE
+                                  `data:application/pdf;base64,${arr.filter((td: any) =>
+                                    td.NOMBREFORMATEADO.includes(
+                                      row.nombreArchivo
+                                    )
+                                  )[0].FILE
                                   }`
                                 );
                                 setShowModalPrevia(true);
@@ -443,7 +428,7 @@ export function DetalleMandato({
                             </IconButton>
                           </Tooltip>
                         )}
-                      </StyledTableCell>
+                      </StyledTableCell> */}
                     </StyledTableRow>
                   );
                 }

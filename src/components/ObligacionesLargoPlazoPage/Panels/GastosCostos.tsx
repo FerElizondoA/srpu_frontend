@@ -35,6 +35,9 @@ import FileOpenIcon from "@mui/icons-material/FileOpen";
 import { IFile } from "./Documentacion";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { convertFileToBase64 } from "../../../generics/Validation";
+import { ta } from "date-fns/locale";
+import { ITiposDocumento } from "../../Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
 
 interface Head {
   label: string;
@@ -120,6 +123,7 @@ export function GastoCostos() {
 
   const addRows = () => {
     addGastosCostos(gastosCostos);
+    cleanGastosCostos();
   };
 
   const [fileSelected, setFileSelected] = useState<any>("");
@@ -142,21 +146,39 @@ export function GastoCostos() {
     (state) => state.tablaDocumentos
   );
 
-  function cargarArchivo(event: any, index: number) {
-    let file = event.target.files[0];
+    // despliega la lista de tipos de documentos
+    const tiposDocumentos: ITiposDocumento[] = useLargoPlazoStore(
+      (state) => state.catalogoTiposDocumentos
+    );
+
+  function cargarTablaGastosYCostos(event: any, index: number) {
+    let file = event;
 
     if (file !== undefined) {
-      let auxArrayArchivos = [...tablaDocumentos];
-      auxArrayArchivos[index].archivo = file;
-      auxArrayArchivos[index].nombreArchivo = file.name;
-      setGastosCostos({
-        ...gastosCostos,
-        archivoDetalleInversion: {
-          archivo: file,
-          nombreArchivo: `DIPP-${file.name}`,
-        },
-      });
-    } else {
+
+      // let auxArrayArchivos = [...tablaGastosCostos];
+      // auxArrayArchivos[index].archivoDetalleInversion.archivo = file;
+      // auxArrayArchivos[index].archivoDetalleInversion.nombreArchivo = file.name;
+
+      addRows();                                                                //TE QUEDASTE AQUIIII***********
+      if (gastosCostos.archivoDetalleInversion.nombreArchivo !== "") {
+        addDocumento({
+          archivo: gastosCostos.archivoDetalleInversion.archivo,
+          nombreArchivo:
+            gastosCostos.archivoDetalleInversion.nombreArchivo,
+          tipoArchivo: "",
+          descripcionTipo: "",
+        });
+      }
+      cleanGastosCostos();
+      // setGastosCostos({
+      //   ...gastosCostos,
+      //   archivoDetalleInversion: {
+      //     tipo: "Detalle de la inversión pública productiva",
+      //     archivo: file,
+      //     nombreArchivo: `DIPP-${file.name}`,
+      //   },
+      // });
     }
   }
 
@@ -188,6 +210,13 @@ export function GastoCostos() {
   const gridItemStyle = {
     marginBottom: 2, // Esto añade un margen inferior para separar los grids
   };
+
+  useEffect(() => {
+
+
+    console.log("tablaGastosCostos", tablaGastosCostos);
+  }, [tablaGastosCostos])
+
 
   return (
     <Grid
@@ -345,13 +374,63 @@ export function GastoCostos() {
                   xl={4.8}
                   sx={isSmallScreen ? gridItemStyle : {}}
                 >
-                  <InputLabel sx={{
-                    ...queries.medium_text,
-                    // justifyContent: "center",
-                    // display: "flex"
-                  }}>
-                    Adjuntar detalle de la inversión pública productiva
-                  </InputLabel>
+                  <Grid display={"flex"} justifyContent={"space-between"}>
+                    <InputLabel sx={{
+                      ...queries.medium_text,
+                      // justifyContent: "center",
+                      // display: "flex"
+                    }}>
+                      Adjuntar detalle de la inversión pública productiva
+                    </InputLabel>
+
+                    <Tooltip title={gastosCostos.archivoDetalleInversion.nombreArchivo || "Archivo no encontrado"}>
+                      <IconButton sx={{ width: "4rem", display: "flex", justifyContent: "center" }}
+                        onClick={async () => {
+
+
+                          console.log("row.archivo", gastosCostos.archivoDetalleInversion.archivo)
+
+                          let base64String = '';
+                          try {
+                            if (gastosCostos.archivoDetalleInversion.archivo instanceof File) {
+                              base64String = await convertFileToBase64(gastosCostos.archivoDetalleInversion.archivo);
+                              console.log("base64String 1", base64String)
+
+                            } else {
+                              base64String = gastosCostos.archivoDetalleInversion.archivo ?? "";
+                              console.log("base64String 2", base64String)
+
+                            }
+
+                            const dataUri = `data:application/pdf;base64,${base64String}`;
+                            console.log("dataUri", dataUri)
+                            setFileSelected(dataUri);
+                          } catch (error) {
+                            console.error("Error al convertir el archivo a Base64", error);
+                          }
+
+                          setShowModalPrevia(true);
+                        }
+
+
+                          // setFileSelected(
+                          //   `data:application/pdf;base64,${
+                          //     arrDocs.filter((td: any) =>
+                          //       td.nombre.includes(
+                          //         autorizacionSelect?.DocumentoSoporte
+                          //       )
+                          //     )[0].file
+                          //   }`
+                          // );
+
+                          // setShowModalPrevia(true);
+                        }
+                      >
+                        <FileOpenIcon></FileOpenIcon>
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+
 
                   <Grid
                     mt={1}
@@ -382,8 +461,18 @@ export function GastoCostos() {
                         }
                         type="file"
                         accept="application/pdf"
-                        onChange={(v) => {
-                          cargarArchivo(v, tablaGastosCostos.length);
+                        onChange={(v: any) => {
+                          //cargarArchivo(v, tablaGastosCostos.length);
+
+                          console.log("v.target.files[0]", v);
+                          setGastosCostos({
+                            ...gastosCostos,
+                            archivoDetalleInversion: {
+                              tipoArchivo: "Detalle de la inversión pública productiva",
+                              archivo: v.target.files[0],
+                              nombreArchivo: `DIPP-${v.target.files[0].name}`,
+                            },
+                          });
                         }}
                         style={{
                           opacity: 0,
@@ -394,7 +483,7 @@ export function GastoCostos() {
                       />
                     </Grid>
 
-                    <Grid display={"flex"} justifyContent={"end"} sx={{width:"10%"}}>
+                    <Grid display={"flex"} justifyContent={"end"} sx={{ width: "10%" }}>
                       <Tooltip title={"Remover Archivo"}>
                         <Button
                           onClick={() => {
@@ -402,6 +491,7 @@ export function GastoCostos() {
                             setGastosCostos({
                               ...gastosCostos,
                               archivoDetalleInversion: {
+                                tipoArchivo: "",
                                 archivo: new File([], ""),
                                 nombreArchivo: ``,
                               },
@@ -720,8 +810,8 @@ export function GastoCostos() {
 
       {gastosCostos.destino.Descripcion && (
         <Grid
-        mt={2}
-        mb={2}
+          mt={2}
+          mb={2}
           width={"94%"}
           sx={{
             display: "flex",
@@ -738,17 +828,11 @@ export function GastoCostos() {
                 gastosCostos.monto === "$ 0.00"
               }
               onClick={() => {
+                console.log("tablaGastosCostos.length", tablaGastosCostos.length);
+
+                console.log("gastosCostos.archivoDetalleInversion.archivo", gastosCostos.archivoDetalleInversion.archivo);
                 addRows();
-                if (gastosCostos.archivoDetalleInversion.nombreArchivo !== "") {
-                  addDocumento({
-                    archivo: gastosCostos.archivoDetalleInversion.archivo,
-                    nombreArchivo:
-                      gastosCostos.archivoDetalleInversion.nombreArchivo,
-                    tipoArchivo: "",
-                    descripcionTipo: "",
-                  });
-                }
-                cleanGastosCostos();
+                //cargarTablaGastosYCostos(gastosCostos.archivoDetalleInversion.archivo, tablaGastosCostos.length);
               }}
             >
               Agregar
@@ -834,24 +918,53 @@ export function GastoCostos() {
                       <StyledTableCell align="center" component="th">
                         <Tooltip title={"Ver Documento"}>
                           <IconButton
-                            onClick={() => {
-                              toBase64(documentos[index].archivo)
-                                .then((data) => {
-                                  setFileSelected(data);
-                                })
-                                .catch((err) => {
-                                  setFileSelected(
-                                    `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                      td.NOMBREFORMATEADO.includes(
-                                        row?.detalleInversion.Descripcion
-                                      )
-                                    )[0].FILE
-                                    }`
-                                  );
-                                });
+                            onClick={
 
-                              setShowModalPrevia(true);
-                            }}
+                              async () => {
+
+
+                                console.log("row.archivo", row.archivoDetalleInversion.archivo)
+
+                                let base64String = '';
+                                try {
+                                  if (row.archivoDetalleInversion.archivo instanceof File) {
+                                    base64String = await convertFileToBase64(row.archivoDetalleInversion.archivo);
+                                    console.log("base64String 1", base64String)
+
+                                  } else {
+                                    base64String = row.archivoDetalleInversion.archivo || "";
+                                    console.log("base64String 2", base64String)
+
+                                  }
+
+                                  const dataUri = `data:application/pdf;base64,${base64String}`;
+                                  console.log("dataUri", dataUri)
+                                  setFileSelected(dataUri);
+                                } catch (error) {
+                                  console.error("Error al convertir el archivo a Base64", error);
+                                }
+
+                                setShowModalPrevia(true);
+
+
+
+                                // toBase64(documentos[index].archivo)
+                                //   .then((data) => {
+                                //     setFileSelected(data);
+                                //   })
+                                //   .catch((err) => {
+                                //     setFileSelected(
+                                //       `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                //         td.NOMBREFORMATEADO.includes(
+                                //           row?.detalleInversion.Descripcion
+                                //         )
+                                //       )[0].FILE
+                                //       }`
+                                //     );
+                                //   });
+
+                                // setShowModalPrevia(true);
+                              }}
                           >
                             <FileOpenIcon></FileOpenIcon>
                           </IconButton>

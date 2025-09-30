@@ -25,8 +25,19 @@ export interface IFideicomisario {
   ordenFideicomisario: { Id: string; Descripcion: string };
 }
 
+
+export interface IPorcentajeAcumulados {
+  IdTipoEntePublicoObligado: string;
+  IdEntePublicoObligado: string;
+  NombreEntePublico: string;
+  IdFondoOIngreso: string;
+  NombreFondoOIngreso: string;
+  AfectadoTotalIngreso: number;
+  EquivalenciaCorrespondienteMunicipios: number;
+}
 export interface IDeudorFideicomisoNew {
   id: string;
+  Clasificacion: { Id: string, Descripcion: string }
   tipoFideicomitente: { Id: string; Descripcion: string };
   fideicomitente: { Id: string; Descripcion: string };
   tipoFuente: { Id: string; Descripcion: string };
@@ -39,15 +50,6 @@ export interface IDeudorFideicomisoNew {
   // SumEquivalenciaCorrespondienteMunicipios:number
 }
 
-export interface IPorcentajeAcumulados {
-  IdTipoEntePublicoObligado: string;
-  IdEntePublicoObligado: string;
-  NombreEntePublico: string;
-  IdFondoOIngreso: string;
-  NombreFondoOIngreso: string;
-  AfectadoTotalIngreso: number;
-  EquivalenciaCorrespondienteMunicipios: number;
-}
 
 export interface IDeudorFideicomiso {
   id: string;
@@ -76,7 +78,8 @@ export interface IBeneficiarioFideicomiso {
   fechaAlta: Date;
 }
 
-export interface ISoporteDocumentalFideicomiso {
+// export interface ISoporteDocumentalFideicomiso {
+export interface ISoporteDocumentalFuentePago {
   tipo: string;
   archivo: File;
   nombreArchivo: string;
@@ -87,7 +90,7 @@ export type IFideicomiso = {
   id: string;
   datosGenerales: IDatosGeneralesFideicomiso;
   tipoMovimientoFideicomiso: IDeudorFideicomiso[];
-  soporteDocumental: ISoporteDocumentalFideicomiso;
+  soporteDocumental: ISoporteDocumentalFuentePago;
 };
 
 export interface FideicomisoSlice {
@@ -115,8 +118,8 @@ export interface FideicomisoSlice {
   idTipoMovimientoSelect: string;
   setIdTipoMovimientoSelect: (id: string) => void;
 
-  soporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso;
-  tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFideicomiso[];
+  soporteDocumentalFideicomiso: ISoporteDocumentalFuentePago;
+  tablaSoporteDocumentalFideicomiso: ISoporteDocumentalFuentePago[];
 
   cleanFideicomiso: () => void;
 
@@ -125,7 +128,7 @@ export interface FideicomisoSlice {
     datosGenerales: IDatosGeneralesFideicomiso,
     fideicomisario: IFideicomisario[],
     tipoMovimiento: IDeudorFideicomiso[],
-    soporteDocumental: ISoporteDocumentalFideicomiso[]
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => void;
 
   setDatosGenerales: (datosGenerales: IDatosGeneralesFideicomiso) => void;
@@ -133,13 +136,13 @@ export interface FideicomisoSlice {
   setTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => void;
   setBeneficiario: (beneficiario: IBeneficiarioFideicomiso) => void;
   setSoporteDocumental: (
-    soporteDocumental: ISoporteDocumentalFideicomiso
+    soporteDocumental: any
   ) => void;
 
   addFideicomisario: (fideicomisario: IFideicomisario) => void;
   addTipoMovimiento: (tipoMovimiento: IDeudorFideicomiso) => void;
   addSoporteDocumental: (
-    soporteDocumental: ISoporteDocumentalFideicomiso
+    soporteDocumental: ISoporteDocumentalFuentePago
   ) => void;
 
   removeFideicomisario: (index: number) => void;
@@ -153,7 +156,7 @@ export interface FideicomisoSlice {
   cleanSoporteDocumental: () => void;
 
   getFideicomisos: (setState: Function) => void;
-  createFideicomiso: (stateOpen: Function) => void;
+  createFideicomiso: (stateOpen: Function, setLoading: Function) => void;
   modificaFideicomiso: (setLoading: Function) => void;
   deleteFideicomiso: (Id: string) => void;
 
@@ -161,16 +164,17 @@ export interface FideicomisoSlice {
   saveFilesFideicomiso: (
     idRegistro: string,
     ruta: string,
-    //setLoading: Function,
+    setLoading: Function,
     archivo: File
   ) => void;
 
-  savePathDocFideicomiso: (
+  savePathDocFuentePago: (
     id: string,
     ruta: string,
     nombreIdentificador: string,
     nombreArchivo: string,
-    //setLoading: Function
+    setLoading: Function,
+    NombreTipoFuentePago: string,
   ) => void;
 
   catalogoTiposDeFideicomiso: ICatalogo[];
@@ -202,7 +206,7 @@ export interface FideicomisoSlice {
     datosGenerales: IDatosGeneralesFideicomiso,
     fideicomisario: IFideicomisario[],
     tipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[],
-    soporteDocumental: ISoporteDocumentalFideicomiso[]
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => void;
 
   cleanFideicomisoNew: () => void;
@@ -244,6 +248,8 @@ export interface FideicomisoSlice {
 
   beneficiarioNew: IBeneficiarioFideicomiso;
   setBeneficiarioNew: (beneficiarioNew: IBeneficiarioFideicomiso) => void;
+
+  DetalleAsignacionTipoMoviSolicitudes: (Id: string, state: Function) => void
 }
 
 export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
@@ -252,7 +258,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 ) => ({
   TablaPruebaEditarFideicomiso: [],
 
-  setTablaPruebaEditarFideicomiso: (TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => {
+  setTablaPruebaEditarFideicomiso: (
+    TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => {
     set((state) => ({
       TablaPruebaEditarFideicomiso: [
         ...state.TablaPruebaEditarFideicomiso,
@@ -292,6 +299,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   tipoMovimientoFideicomisoNew: {
     id: "",
+    Clasificacion: { Id: "", Descripcion: "" },
     tipoFideicomitente: { Id: "", Descripcion: "" },
     fideicomitente: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
@@ -366,6 +374,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     set(() => ({
       tipoMovimientoFideicomisoNew: {
         id: "",
+        Clasificacion: { Id: "", Descripcion: "" },
         tipoFideicomitente: { Id: "", Descripcion: "" },
         fideicomitente: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
@@ -495,14 +504,13 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
       tipoMovimientoFideicomisoNew: {
         id: "",
+        Clasificacion: { Id: "", Descripcion: "" },
         tipoFideicomitente: { Id: "", Descripcion: "" },
         fideicomitente: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
         AfectadoTotalIngreso: 0,
-        // SumAfectadoTotalIngreso: 0,
         EquivalenciaCorrespondienteMunicipios: 0,
-        // SumEquivalenciaCorrespondienteMunicipios: 0,
       },
       tablaTipoMovimientoFideicomisoNew: [],
 
@@ -523,7 +531,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     datosGenerales: IDatosGeneralesFideicomiso,
     fideicomisario: IFideicomisario[],
     tipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[],
-    soporteDocumental: ISoporteDocumentalFideicomiso[]
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => {
     set(() => ({
       idFideicomiso: id,
@@ -539,7 +547,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     datosGenerales: IDatosGeneralesFideicomiso,
     fideicomisario: IFideicomisario[],
     tipoMovimiento: IDeudorFideicomiso[],
-    soporteDocumental: ISoporteDocumentalFideicomiso[]
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => {
     set(() => ({
       idFideicomiso: id,
@@ -570,7 +578,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       beneficiario: beneficiario,
     }));
   },
-  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalFideicomiso) => {
+  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => {
     set(() => ({
       soporteDocumentalFideicomiso: soporteDocumental,
     }));
@@ -590,7 +598,9 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     }));
   },
 
-  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFideicomiso) => {
+  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => {
+
+
     set((state) => ({
       tablaSoporteDocumentalFideicomiso: [...state.tablaSoporteDocumentalFideicomiso, soporteDocumental,],
     }));
@@ -796,12 +806,12 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       console.log("✅ Todos los porcentajes acumulados fueron creados");
 
       if (state.idFideicomiso === "") {
-        state.createFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+        //state.createFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
       }
 
       //quitar
       else if (state.idFideicomiso !== "") {
-        state.modificaFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+        //state.modificaFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
       }
 
     } catch (error) {
@@ -934,7 +944,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   //   //   });
   // },
 
-  createFideicomiso: async (stateOpen: Function) => {
+  createFideicomiso: async (stateOpen: Function, setLoading: Function) => {
     const state = useFideicomisoStore.getState();
     const stateSaveFiles = useCortoPlazoStore.getState();
 
@@ -972,21 +982,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     })
     );
 
-    // Calcula la suma de AfectadoTotalIngreso
-    const SumAfectadoTotalIngreso = state.tablaTipoMovimientoFideicomisoNew.reduce(
-      (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-    );
-
-    // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-    const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoFideicomisoNew.reduce(
-      (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-    );
-
-    setTimeout(() => {
-      console.log("SUMA AfectadoTotalIngreso", SumAfectadoTotalIngreso);
-      console.log("SUMA EquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
-    }, 2000);
-
 
     const soporteDocumentalPrueba = state.tablaSoporteDocumentalFideicomiso.map(({
       tipo, archivo, nombreArchivo, fechaArchivo }) => ({
@@ -1006,17 +1001,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           FechaFideicomiso: state.datosGenerales.fechaFideicomiso,
           TipoFideicomiso: state.datosGenerales.tipoFideicomiso.Descripcion,
           Fiduciario: state.datosGenerales.fiduciario.Descripcion,
-
           Fideicomisario: JSON.stringify(state.tablaFideicomisario),
           TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
-
-          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
-          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
-
-
-          // AcumuladoEstado: acumuladoEstado,
-          // AcumuladoMunicipios: acumuladoMunicipio,
-          // AcumuladoOrganismos: acumuladoOrganismo,
           SoporteDocumental: JSON.stringify(
             soporteDocumentalPrueba
           ),
@@ -1032,11 +1018,16 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         //const stateNew = useCortoPlazoStore.getState();
         //state.createPorcentajeAcumualdo();
         state.setIdFideicomiso(data.data.Id);
-        console.log("ID FIDEICOMISO", state.idFideicomiso);
+        console.log("dATOS FIDEICOMISO CREADO", data.data);
+
+        console.log("ID FIDEICOMISO: ", data.data.Id)
 
         stateSaveFiles.saveFilesFuentesPago(
+          "Fideicomiso",
+          soporteDocumentalPrueba,
           data.data.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${data.data.Id}`
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${data.data.Id}`,
+          setLoading,
         );
 
         stateOpen(false);
@@ -1108,20 +1099,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     })
     );
 
-    // Calcula la suma de AfectadoTotalIngreso
-    const SumAfectadoTotalIngreso = state.tablaTipoMovimientoFideicomisoNew.reduce(
-      (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-    );
-
-    // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-    const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoFideicomisoNew.reduce(
-      (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-    );
-
-    setTimeout(() => {
-      console.log("SUMA AfectadoTotalIngreso", SumAfectadoTotalIngreso);
-      console.log("SUMA EquivalenciaCorrespondienteMunicipios", SumEquivalenciaCorrespondienteMunicipios);
-    }, 2000);
 
     await axios
       .put(
@@ -1134,10 +1111,6 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
           Fideicomisario: JSON.stringify(state.tablaFideicomisario),
           TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
-
-          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
-          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
-
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalFideicomiso
           ),
@@ -1157,7 +1130,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           data.result.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${data.result.Id}`,
           //`/SRPU/FIDEICOMISOS/${data.result.Id}`,
-          //setLoading,
+          setLoading,
           new File([data.data], "PRUEBA DE FIDEICOMISO.pdf")
         );
         // Swal.fire({
@@ -1221,7 +1194,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
   saveFilesFideicomiso: async (
     idRegistro: string,
     ruta: string,
-    //setLoading: Function,
+    setLoading: Function,
     archivo: File,
   ) => {
     const state = useFideicomisoStore.getState();
@@ -1248,12 +1221,13 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
             )
             .then(({ data }) => {
               console.log("DATA guardarDocumentosFideicomisos", data);
-              state.savePathDocFideicomiso(
+              state.savePathDocFuentePago(
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO,
-                //setLoading
+                setLoading,
+                "" //AQUI VA EL NOMBRE DE LA TIPO DE FUENTE DE PAGO PARA GUARDARLO EN LA TABLA DE LA BASE DE DATOS QUE ES.
               );
             })
             .catch((e) => { });
@@ -1264,19 +1238,30 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     });
   },
 
-  savePathDocFideicomiso: async (
+  // savePathDocFideicomiso: async (
+  savePathDocFuentePago: async (
     id: string,
     ruta: string,
     nombreIdentificador: string,
     nombreArchivo: string,
-    //setLoading: Function
+    setLoading: Function,
+    NombreTipoFuentePago: string,
   ) => {
+
+    const idFieldMap: Record<typeof NombreTipoFuentePago, string> = {
+      Fideicomiso: "IdFideicomiso",
+      Mandato: "IdMandato",
+      Instruccion: "IdInstruccion",
+    };
+
+    const idField = idFieldMap[NombreTipoFuentePago];
+
     return await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK +
-        "/create-addPathDocFideicomiso",
+        `/create-addPathDoc${NombreTipoFuentePago}`,
         {
-          IdFideicomiso: id,
+          [idField]: id,
           Ruta: ruta,
           NombreIdentificador: nombreIdentificador,
           NombreArchivo: nombreArchivo,
@@ -1289,7 +1274,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       )
       .then((r) => {
         console.log("r ENTRO: ", r.data);
-        //setLoading(false);
+        setLoading(false);
       })
       .catch((e) => { });
   },
@@ -1448,4 +1433,23 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       }
     }));
   },
+
+  DetalleAsignacionTipoMoviSolicitudes: async (Id: string, state: Function) => {
+    //const state = useLargoPlazoStore.getState();
+
+    return await axios({
+      method: "get",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/detail-DetalleAsignacionTipoMovSolicitudes",
+      params: { IdFuentePago: Id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+
+      console.log("DATA DETALLE ASIGNACION TIPO MOVI SOLICITUDES", data.data);
+      state(data.data);
+    });
+  },
+
 });

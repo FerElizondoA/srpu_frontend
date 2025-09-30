@@ -5,6 +5,8 @@ import { IDatosMandatos } from "../../screens/fuenteDePago/Mandatos";
 import { useMandatoStore } from "./main";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../generics/Alertas";
+import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
+import { useFideicomisoStore } from "../Fideicomiso/main";
 
 export interface IDatosGeneralesMandato {
   numeroMandato: string;
@@ -15,45 +17,32 @@ export interface IDatosGeneralesMandato {
 
 export interface IDeudorMandatoNew {
   id: string;
-  tipoEntePublicoObligado: { Id: string; Descripcion: string };
-  mandatario: { Id: string; Descripcion: string };
+  tipoEntePublicoObligado: { Id: string; Descripcion: string }; //tipoFideicomitente
+  mandatario: { Id: string; Descripcion: string }; //fideicomitente
   tipoFuente: { Id: string; Descripcion: string };
   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
-
   AfectadoTotalIngreso: number;
   EquivalenciaCorrespondienteMunicipios: number;
-
-  // fondoIngresoGobiernoEstatal: string;
-  // fondoIngresoMunicipios: string;
-  // fondoIngresoAsignadoMunicipio: string;
-  // ingresoOrganismo: string;
-  // fondoIngresoAfectadoXGobiernoEstatal: string;
-  // afectacionGobiernoEstatalEntre100: string;
-  // acumuladoAfectacionGobiernoEstatalEntre100: string;
-  // fondoIngresoAfectadoXMunicipio: string;
-  // acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
-  // ingresoAfectadoXOrganismo: string;
-  // acumuladoAfectacionOrganismoEntre100: string;
 }
 
-export interface IDeudorMandato {
-  id: string;
-  tipoEntePublicoObligado: { Id: string; Descripcion: string };
-  mandatario: { Id: string; Descripcion: string };
-  tipoFuente: { Id: string; Descripcion: string };
-  fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
-  fondoIngresoGobiernoEstatal: string;
-  fondoIngresoMunicipios: string;
-  fondoIngresoAsignadoMunicipio: string;
-  ingresoOrganismo: string;
-  fondoIngresoAfectadoXGobiernoEstatal: string;
-  afectacionGobiernoEstatalEntre100: string;
-  acumuladoAfectacionGobiernoEstatalEntre100: string;
-  fondoIngresoAfectadoXMunicipio: string;
-  acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
-  ingresoAfectadoXOrganismo: string;
-  acumuladoAfectacionOrganismoEntre100: string;
-}
+// export interface IDeudorMandato {
+//   id: string;
+//   tipoEntePublicoObligado: { Id: string; Descripcion: string };
+//   mandatario: { Id: string; Descripcion: string };
+//   tipoFuente: { Id: string; Descripcion: string };
+//   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
+//   fondoIngresoGobiernoEstatal: string;
+//   fondoIngresoMunicipios: string;
+//   fondoIngresoAsignadoMunicipio: string;
+//   ingresoOrganismo: string;
+//   fondoIngresoAfectadoXGobiernoEstatal: string;
+//   afectacionGobiernoEstatalEntre100: string;
+//   acumuladoAfectacionGobiernoEstatalEntre100: string;
+//   fondoIngresoAfectadoXMunicipio: string;
+//   acumuladoAfectacionMunicipioEntreAsignadoMunicipio: string;
+//   ingresoAfectadoXOrganismo: string;
+//   acumuladoAfectacionOrganismoEntre100: string;
+// }
 
 export interface IBeneficiarioMandato {
   tipoBeneficiario: { Id: string; Descripcion: string };
@@ -61,18 +50,18 @@ export interface IBeneficiarioMandato {
   fechaAlta: Date;
 }
 
-export interface ISoporteDocumentalMandato {
-  tipo: string;
-  archivo: File;
-  nombreArchivo: string;
-  fechaArchivo: string;
-}
+// export interface ISoporteDocumentalMandato {
+//   tipo: string;
+//   archivo: File;
+//   nombreArchivo: string;
+//   fechaArchivo: Date;
+// }
 
 export interface IMandato {
   id: string;
   datosGenerales: IDatosGeneralesMandato;
-  tipoMovimientoDeudor: IDeudorMandato[];
-  soporteDocumental: ISoporteDocumentalMandato[];
+  tipoMovimientoDeudor: IDeudorMandatoNew[];
+  soporteDocumental: ISoporteDocumentalFuentePago[];
 }
 
 export interface MandatoSlice {
@@ -82,43 +71,45 @@ export interface MandatoSlice {
   setIdMandato: (Id: string) => void;
 
   datosGenerales: IDatosGeneralesMandato;
-  tipoMovimiento: IDeudorMandato;
+  tipoMovimiento: IDeudorMandatoNew;
   beneficiario: IBeneficiarioMandato;
-  soporteDocumental: ISoporteDocumentalMandato;
+  soporteDocumental: ISoporteDocumentalFuentePago;
 
   idTipoMovimientoSelect: string;
   setIdTipoMovimientoSelect: (id: string) => void;
 
-  tablaTipoMovimientoMandato: IDeudorMandato[];
-  tablaSoporteDocumentalMandato: ISoporteDocumentalMandato[];
+  tablaTipoMovimientoMandato: IDeudorMandatoNew[];
+  tablaSoporteDocumentalMandato: ISoporteDocumentalFuentePago[];
 
   cleanMandato: () => void;
 
   editarMandato: (
     id: string,
     datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandato[],
-    soporteDocumental: ISoporteDocumentalMandato[]
+    tipoMovimiento: IDeudorMandatoNew[],
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => void;
 
   setDatosGenerales: (datosGenerales: IDatosGeneralesMandato) => void;
-  setTipoMovimiento: (tipoMovimiento: IDeudorMandato) => void;
+  setTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => void;
   setBeneficiario: (beneficiario: IBeneficiarioMandato) => void;
-  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => void;
+  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => void;
 
-  addTipoMovimiento: (tipoMovimiento: IDeudorMandato) => void;
-  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => void;
+  addTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => void;
+  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => void;
 
   removeTipoMovimiento: (index: number) => void;
   removeSoporteDocumental: (index: number) => void;
 
-  addPorcentaje: (tipoMovimiento: IDeudorMandato) => void;
+  addPorcentaje: (tipoMovimiento: IDeudorMandatoNew) => void;
 
   cleanTipoMovimiento: () => void;
   cleanSoporteDocumental: () => void;
 
   getMandatos: (setState: Function) => void;
-  createMandato: (setLoading: Function) => void;
+  createMandato: (
+    setLoading: Function
+  ) => void;
   modificaMandato: (setLoading: Function) => void;
   deleteMandato: (Id: string) => void;
 
@@ -139,19 +130,19 @@ export interface MandatoSlice {
 
 
 
-  tipoMovimientoMandatoNew: IDeudorMandatoNew;
-  tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[];
-  setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
-  addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
-  removeTipoMovimientoNew: (index: number) => void;
-  cleanTipoMovimientoNew: () => void;
+  // tipoMovimientoMandatoNew: IDeudorMandatoNew;
+  // tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[];
+  // setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
+  // addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => void;
+  // removeTipoMovimientoNew: (index: number) => void;
+  // cleanTipoMovimientoNew: () => void;
 
-  editarMandatoNew: (
-    id: string,
-    datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandatoNew[],
-    soporteDocumental: ISoporteDocumentalMandato[]
-  ) => void;
+  // editarMandatoNew: (
+  //   id: string,
+  //   datosGenerales: IDatosGeneralesMandato,
+  //   tipoMovimiento: IDeudorMandatoNew[],
+  //   soporteDocumental: ISoporteDocumentalMandato[]
+  // ) => void;
 
   updateTipoMovimientoField: (
     index: number,
@@ -188,17 +179,9 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     mandatario: { Id: "", Descripcion: "" },
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-    fondoIngresoGobiernoEstatal: "",
-    fondoIngresoMunicipios: "",
-    fondoIngresoAsignadoMunicipio: "",
-    ingresoOrganismo: "",
-    fondoIngresoAfectadoXGobiernoEstatal: "",
-    afectacionGobiernoEstatalEntre100: "",
-    acumuladoAfectacionGobiernoEstatalEntre100: "",
-    fondoIngresoAfectadoXMunicipio: "",
-    acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-    ingresoAfectadoXOrganismo: "",
-    acumuladoAfectacionOrganismoEntre100: "",
+    AfectadoTotalIngreso: 0,
+    EquivalenciaCorrespondienteMunicipios: 0
+
   },
   tablaTipoMovimientoMandato: [],
 
@@ -219,7 +202,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     tipo: "",
     archivo: new File([], ""),
     nombreArchivo: "",
-    fechaArchivo: new Date().toString(),
+    fechaArchivo: new Date(),
   },
   tablaSoporteDocumentalMandato: [],
 
@@ -243,17 +226,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-        fondoIngresoGobiernoEstatal: "",
-        fondoIngresoMunicipios: "",
-        fondoIngresoAsignadoMunicipio: "",
-        ingresoOrganismo: "",
-        fondoIngresoAfectadoXGobiernoEstatal: "",
-        afectacionGobiernoEstatalEntre100: "",
-        acumuladoAfectacionGobiernoEstatalEntre100: "",
-        fondoIngresoAfectadoXMunicipio: "",
-        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-        ingresoAfectadoXOrganismo: "",
-        acumuladoAfectacionOrganismoEntre100: "",
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
       },
       tablaTipoMovimientoMandato: [],
 
@@ -261,7 +235,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         tipo: "",
         archivo: new File([], ""),
         nombreArchivo: "",
-        fechaArchivo: new Date().toString(),
+        fechaArchivo: new Date(),
       },
       tablaSoporteDocumentalMandato: [],
     }));
@@ -270,8 +244,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   editarMandato: (
     id: string,
     datosGenerales: IDatosGeneralesMandato,
-    tipoMovimiento: IDeudorMandato[],
-    soporteDocumental: ISoporteDocumentalMandato[]
+    tipoMovimiento: IDeudorMandatoNew[],
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => {
     set((state) => ({
       idMandato: id,
@@ -286,7 +260,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       datosGenerales: datosGenerales,
     }));
   },
-  setTipoMovimiento: (tipoMovimiento: IDeudorMandato) => {
+  setTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => {
     set(() => ({
       tipoMovimiento: tipoMovimiento,
     }));
@@ -296,13 +270,13 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       beneficiario: beneficiario,
     }));
   },
-  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => {
+  setSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => {
     set(() => ({
       soporteDocumental: soporteDocumental,
     }));
   },
 
-  addTipoMovimiento: (tipoMovimiento: IDeudorMandato) => {
+  addTipoMovimiento: (tipoMovimiento: IDeudorMandatoNew) => {
     set((state) => ({
       tablaTipoMovimientoMandato: [
         ...state.tablaTipoMovimientoMandato,
@@ -310,7 +284,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       ],
     }));
   },
-  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalMandato) => {
+  addSoporteDocumental: (soporteDocumental: ISoporteDocumentalFuentePago) => {
     set((state) => ({
       tablaSoporteDocumentalMandato: [
         ...state.tablaSoporteDocumentalMandato,
@@ -346,17 +320,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         mandatario: { Id: "", Descripcion: "" },
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
-        fondoIngresoGobiernoEstatal: "",
-        fondoIngresoMunicipios: "",
-        fondoIngresoAsignadoMunicipio: "",
-        ingresoOrganismo: "",
-        fondoIngresoAfectadoXGobiernoEstatal: "",
-        afectacionGobiernoEstatalEntre100: "",
-        acumuladoAfectacionGobiernoEstatalEntre100: "",
-        fondoIngresoAfectadoXMunicipio: "",
-        acumuladoAfectacionMunicipioEntreAsignadoMunicipio: "",
-        ingresoAfectadoXOrganismo: "",
-        acumuladoAfectacionOrganismoEntre100: "",
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
       },
     }));
   },
@@ -367,7 +332,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         tipo: "",
         archivo: new File([], ""),
         nombreArchivo: "",
-        fechaArchivo: new Date().toString(),
+        fechaArchivo: new Date(),
       },
     }));
   },
@@ -389,8 +354,11 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       });
   },
 
-  createMandato: async (setLoading: Function) => {
+  createMandato: async (
+    setLoading: Function
+  ) => {
     const state = useMandatoStore.getState();
+    const SaveFile = useCortoPlazoStore.getState();
 
     // let acumuladoEstado = 0;
     // let acumuladoMunicipio = 0;
@@ -405,7 +373,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
     // });
 
-    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandato.map(({
       id,
       tipoEntePublicoObligado,
       mandatario,
@@ -423,17 +391,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       EquivalenciaCorrespondienteMunicipios,
     })
     );
-        // Calcula la suma de AfectadoTotalIngreso
-        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-        );
-    
-        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-        );
-    
 
+    console.log("ENDPOINT CREAR MANDATO: ")
     await axios
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-mandato",
@@ -447,14 +406,6 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           MecanismoPago: "Mandato",
           TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
 
-          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
-          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
-
-
-          // AcumuladoEstado: acumuladoEstado,
-          // AcumuladoMunicipios: acumuladoMunicipio,
-          // AcumuladoOrganismos: acumuladoOrganismo,
-
           SoporteDocumental: JSON.stringify(
             state.tablaSoporteDocumentalMandato
           ),
@@ -467,12 +418,21 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         }
       )
       .then(({ data }) => {
+
+        console.log("ENDPOINT CREO MANDATO: ", data.data)
         state.setIdMandato(data.data.Id);
-        state.saveFilesMandato(
+        SaveFile.saveFilesFuentesPago(
+          "Mandato",
+          state.tablaSoporteDocumentalMandato,
           data.data.Id,
-          `/SRPU/MANDATOS/${data.data.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${data.data.Id}`,
           setLoading
         );
+        // state.saveFilesMandato(
+        //   data.data.Id,
+        //   `/SRPU/MANDATOS/${data.data.Id}`,
+        //   setLoading
+        // );
 
 
 
@@ -487,7 +447,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
 
   modificaMandato: async (setLoading: Function) => {
     const state = useMandatoStore.getState();
-    const cpState = useCortoPlazoStore.getState();
+    const SaveFile = useCortoPlazoStore.getState();
+    // const SaveFile = useFideicomisoStore.getState();
 
     // let acumuladoEstado = 0;
     // let acumuladoMunicipio = 0;
@@ -502,8 +463,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
     // });
 
-    
-    const tipoMovimeintoNew = state.tablaTipoMovimientoMandatoNew.map(({
+
+    const tipoMovimeintoNew = state.tablaTipoMovimientoMandato.map(({
       id,
       tipoEntePublicoObligado,
       mandatario,
@@ -521,16 +482,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       EquivalenciaCorrespondienteMunicipios,
     })
     );
-        // Calcula la suma de AfectadoTotalIngreso
-        const SumAfectadoTotalIngreso = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.AfectadoTotalIngreso || 0), 0
-        );
-    
-        // Calcula la suma de EquivalenciaCorrespondienteMunicipios
-        const SumEquivalenciaCorrespondienteMunicipios = state.tablaTipoMovimientoMandatoNew.reduce(
-          (acumulador, item) => acumulador + (item.EquivalenciaCorrespondienteMunicipios || 0), 0
-        );
-    
+
+    const soporteDocumentalPrueba = state.tablaSoporteDocumentalMandato.map(({
+      tipo, archivo, nombreArchivo, fechaArchivo }) => ({
+        tipo,
+        archivo,
+        nombreArchivo,
+        fechaArchivo,
+      })
+    );
+
 
     await axios
       .put(
@@ -542,16 +503,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           Mandatario: state.datosGenerales.mandatario.Descripcion,
           MunicipioOrganismoMandante: state.datosGenerales.mandante.Descripcion,
           TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
-
-
-          SumAfectadoTotalIngreso: SumAfectadoTotalIngreso,
-          SumEquivalenciaCorrespondienteMunicipios: SumEquivalenciaCorrespondienteMunicipios,
-
-          // AcumuladoEstado: acumuladoEstado,
-          // AcumuladoMunicipios: acumuladoMunicipio,
-          // AcumuladoOrganismos: acumuladoOrganismo,
           SoporteDocumental: JSON.stringify(
-            state.tablaSoporteDocumentalMandato
+            soporteDocumentalPrueba
           ),
         },
         {
@@ -563,10 +516,16 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       .then(({ data }) => {
         state.setIdMandato(data.result.Id);
         //cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
-        state.saveFilesMandato(
+
+        console.log("data.result.id", data.result.id)
+        console.log("data.data.id", data.data.id)
+
+        SaveFile.saveFilesFuentesPago(
+          "Mandato",
+          soporteDocumentalPrueba,
           data.result.Id,
-          `/SRPU/MANDATOS/${data.result.Id}`,
-          setLoading
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${data.result.Id}`,
+          setLoading,
         );
         alertaConfirmCancelar("El mandato se ha creado exitosamente")
 
@@ -715,47 +674,47 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
   //     beneficiarioNew: beneficiarioNew,
   //   }));
   // },
-  setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
-    set(() => ({
-      tipoMovimientoMandatoNew: tipoMovimientoNew,
-    }));
-  },
+  // setTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
+  //   set(() => ({
+  //     tipoMovimientoMandatoNew: tipoMovimientoNew,
+  //   }));
+  // },
 
-  addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
-    set((state) => ({
-      tablaTipoMovimientoMandatoNew: [
-        ...state.tablaTipoMovimientoMandatoNew,
-        tipoMovimientoNew,
-      ],
-    }));
-  },
+  // addTipoMovimientoNew: (tipoMovimientoNew: IDeudorMandatoNew) => {
+  //   set((state) => ({
+  //     tablaTipoMovimientoMandatoNew: [
+  //       ...state.tablaTipoMovimientoMandatoNew,
+  //       tipoMovimientoNew,
+  //     ],
+  //   }));
+  // },
 
-  removeTipoMovimientoNew: (index: number) => {
-    set((state) => ({
-      tablaTipoMovimientoMandatoNew:
-        state.tablaTipoMovimientoMandatoNew.filter((_, i) => i !== index),
-    }));
-  },
-  cleanTipoMovimientoNew: () => {
-    set(() => ({
-      tipoMovimientoMandatoNew: {
-        id: "",
-        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
-        mandatario: { Id: "", Descripcion: "" },
-        tipoFuente: { Id: "", Descripcion: "" },
-        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+  // removeTipoMovimientoNew: (index: number) => {
+  //   set((state) => ({
+  //     tablaTipoMovimientoMandatoNew:
+  //       state.tablaTipoMovimientoMandatoNew.filter((_, i) => i !== index),
+  //   }));
+  // },
+  // cleanTipoMovimientoNew: () => {
+  //   set(() => ({
+  //     tipoMovimientoMandatoNew: {
+  //       id: "",
+  //       tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+  //       mandatario: { Id: "", Descripcion: "" },
+  //       tipoFuente: { Id: "", Descripcion: "" },
+  //       fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
 
-        AfectadoTotalIngreso: 0,
-        EquivalenciaCorrespondienteMunicipios: 0,
-      },
-    }));
-  },
+  //       AfectadoTotalIngreso: 0,
+  //       EquivalenciaCorrespondienteMunicipios: 0,
+  //     },
+  //   }));
+  // },
 
   editarMandatoNew: (
     id: string,
     datosGenerales: IDatosGeneralesMandato,
     tipoMovimiento: IDeudorMandatoNew[],
-    soporteDocumental: ISoporteDocumentalMandato[]
+    soporteDocumental: ISoporteDocumentalFuentePago[]
   ) => {
     set((state) => ({
       idMandato: id,
@@ -767,10 +726,10 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
 
   updateTipoMovimientoField: (index, field, value) => {
     set((state) => {
-      const updatedTabla = state.tablaTipoMovimientoMandatoNew.map((row, i) =>
+      const updatedTabla = state.tablaTipoMovimientoMandato.map((row, i) =>
         i === index ? { ...row, [field]: value } : row
       );
-      return { tablaTipoMovimientoMandatoNew: updatedTabla };
+      return { tablaTipoMovimientoMandato: updatedTabla };
     });
   },
 

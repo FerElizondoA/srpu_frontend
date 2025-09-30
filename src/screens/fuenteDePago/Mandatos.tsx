@@ -42,6 +42,10 @@ import { BarraFiltros } from "../../generics/BarraFiltros";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { getSolicitudes } from "../../components/APIS/cortoplazo/APISInformacionGeneral";
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
+import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
+import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
+import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -99,16 +103,17 @@ const heads: Head[] = [
 
 export function Mandatos() {
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
-  const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
-  const [mandatosFiltrados, setMandatosFiltrados] = useState<IDatosMandatos[]>(
-    []
-  );
+
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
   const idMandato: string = useMandatoStore((state) => state.idMandato);
 
-  const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+  // const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+
+  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
+    (state) => state.getMecanismosVehiculosPago
+  );
   const cleanMandato: Function = useMandatoStore((state) => state.cleanMandato);
   const deleteMandato: Function = useMandatoStore(
     (state) => state.deleteMandato
@@ -119,30 +124,58 @@ export function Mandatos() {
     (state) => state.editarMandato
   );
 
-  const filtrarDatos = () => {
-    let ResultadoBusqueda = mandatos.filter((elemento) => {
-      if (
-        elemento.NumeroMandato.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.FechaCreacion.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.Mandatario.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.MunicipioOrganismoMandante.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.TipoEntePublicoObligado.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase())
-      ) {
-        return elemento;
-      } else return null;
-    });
-    setMandatosFiltrados(ResultadoBusqueda);
-  };
+  //Todo lo que necesito para la barra de filtros***********
+
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+  const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
+
+
+  const [datos, setDatos] = useState<Array<IRegistro>>([]);
+  const [mandatosFiltrados, setMandatosFiltrados] = useState<Array<IRegistro>>([]);
+
+
+  useEffect(() => {
+    getMecanismosVehiculosPago("Mandato", () => { })
+    getOrganismos();
+    //getMandatos(setMandatos);
+  }, []);
+
+
+  useEffect(() => {
+    setDatos(tablaMecanismoVehiculoPago);
+    setMandatosFiltrados(tablaMecanismoVehiculoPago);
+  }, [tablaMecanismoVehiculoPago]);
+
+  //Fin barra de filtros*************
+
+
+
+  // const filtrarDatos = () => {
+  //   let ResultadoBusqueda = mandatos.filter((elemento) => {
+  //     if (
+  //       elemento.NumeroMandato.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.FechaCreacion.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.Mandatario.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.MunicipioOrganismoMandante.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.TipoEntePublicoObligado.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase())
+  //     ) {
+  //       return elemento;
+  //     } else return null;
+  //   });
+  //   setMandatosFiltrados(ResultadoBusqueda);
+  // };
 
   const catalogoOrganismos: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoOrganismos
@@ -160,11 +193,12 @@ export function Mandatos() {
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
-  useEffect(() => {
-    getMandatos(setMandatos);
-    getOrganismos();
-    getSumaPorcentajeAcumulado("Mandatos");
-  }, []);
+  // useEffect(() => {
+  //   getMecanismosVehiculosPago("Mandato", () => { })
+  //   //getMandatos(setMandatos);
+  //   getOrganismos();
+  //   // getSumaPorcentajeAcumulado("Mandatos");
+  // }, []);
 
   useEffect(() => {
     if (busqueda.length !== 0) {
@@ -173,57 +207,64 @@ export function Mandatos() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
 
-  useEffect(() => {
-    setMandatosFiltrados(mandatos);
-  }, [mandatos]);
+  // useEffect(() => {
+  //   setMandatosFiltrados(mandatos);
+  // }, [mandatos]);
 
   useEffect(() => {
     if (openAgregarMandato === false) {
       cleanMandato();
     }
     if (!openDialogEliminar) {
-      getMandatos(setMandatos);
+      getMecanismosVehiculosPago("Mandato", () => { });
+      // getMandatos(setMandatos);
     }
   }, [openAgregarMandato]);
 
   const [openDetalle, setOpenDetalle] = useState(false);
-  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
-  const getDatos = () => {
-    getSolicitudes(
-      !rolesAdmin.includes(localStorage.getItem("Rol")!)
-        ? "Inscripcion"
-        : "Revision",
-      (e: IInscripcion[]) => {
-        setDatos(e);
-      },
-      setDatosFiltrados
-    );
-  };
-  useEffect(() => {
-    getMandatos(setMandatos);
-  }, []);
 
+  // const getDatos = () => {
+  //   getSolicitudes(
+  //     !rolesAdmin.includes(localStorage.getItem("Rol")!)
+  //       ? "Inscripcion"
+  //       : "Revision",
+  //     (e: IInscripcion[]) => {
+  //       setDatos(e);
+  //     },
+  //     setDatosFiltrados
+  //   );
+  // };
 
-  const [detalleMandato, setDetalleMandato] = useState<IDatosMandatos>({
-    AcumuladoEstado: "",
-    AcumuladoMunicipios: "",
-    AcumuladoOrganismos: "",
-    CreadoPor: "",
-    Deleted: "",
-    FechaCreacion: "",
-    FechaMandato: "",
-    Id: "",
-    Mandatario: "",
+  const [detalleMandato, setDetalleMandato] = useState<IRegistro>({
+
     MecanismoPago: "",
-    ModificadoPor: "",
-    MunicipioOrganismoMandante: "",
-    NumeroMandato: "",
-    SoporteDocumental: "",
+    Id: "",
+    NumeroRegistro: "",
+    FechaRegistro: "",
+
+    TipoFideicomiso: "",
+    Fiduciario: "",
+    Fideicomisario: "",
+
+    Mandatario: "",
+    Mandante: "",
     TipoEntePublicoObligado: "",
+
+    CLABE: "",
+    IdBanco: "",
+    NombreBanco: "",
+    EntePublicoObligado: "",
+
     TipoMovimiento: "",
-    UltimaModificacion: "",
+    SoporteDocumental: "",
   });
+
+  const DetalleAsignacionTipoMoviSolicitudes: Function = useFideicomisoStore(
+    (state) => state.DetalleAsignacionTipoMoviSolicitudes
+  );
+
+
+  const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
 
 
@@ -259,10 +300,10 @@ export function Mandatos() {
 
 
 
-      <BarraFiltros
-        Lista={mandatos}
-        setStateFiltered={setDatosFiltrados}
-        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+      <BarraFiltrosFuentesPago
+        Lista={datos}
+        setStateFiltered={setMandatosFiltrados}
+        CamposFecha={["FechaRegistro"]}
         setOpenDialogAgregar={setOpenAgregarMandato}
         openDialogAgregar={openAgregarMandato}
         BooleaDialog={true}
@@ -362,15 +403,15 @@ export function Mandatos() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mandatosFiltrados.map((row: IDatosMandatos, index: number) => {
+                {mandatosFiltrados.map((row: IRegistro, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
-                        {row.NumeroMandato}
+                        {row.NumeroRegistro}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {format(new Date(row.FechaMandato), "PPP", {
+                        {format(new Date(row.FechaRegistro), "PPP", {
                           locale: es,
                         })}
                       </StyledTableCell>
@@ -384,7 +425,7 @@ export function Mandatos() {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {row.MunicipioOrganismoMandante}
+                        {row.Mandante}
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
@@ -405,29 +446,11 @@ export function Mandatos() {
                             type="button"
                             onClick={() => {
                               let auxArray = JSON.parse(row.TipoMovimiento);
-
-                              auxArray.map((column: any) => {
-                                return (
-                                  (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                    ).toString()),
-                                  (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                    ).toString()),
-                                  (column.acumuladoAfectacionOrganismoEntre100 =
-                                    Number(
-                                      sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                    ).toString())
-                                );
-                              });
-
                               editarMandato(
                                 row.Id,
                                 {
-                                  numeroMandato: row.NumeroMandato,
-                                  fechaMandato: new Date(row.FechaMandato),
+                                  numeroMandato: row.NumeroRegistro,
+                                  fechaMandato: new Date(row.FechaRegistro),
                                   mandatario: catalogoOrganismos.filter(
                                     (v, index) =>
                                       v.Descripcion === row.Mandatario
@@ -435,13 +458,13 @@ export function Mandatos() {
                                   mandante: catalogoOrganismos.filter(
                                     (v, index) =>
                                       v.Descripcion ===
-                                      row.MunicipioOrganismoMandante
+                                      row.Mandante
                                   )[0],
                                 },
                                 auxArray,
                                 JSON.parse(row.SoporteDocumental)
                               );
-
+                              setIdMandato(row?.Id || "");
                               setOpenAgregarMandato(!openAgregarMandato);
                             }}
                           >
@@ -455,6 +478,8 @@ export function Mandatos() {
                             onClick={() => {
                               setIdMandato(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
+                              DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
+
                             }}
                           >
                             <DeleteIcon />
@@ -474,6 +499,7 @@ export function Mandatos() {
         <AgregarMandatos
           handler={setOpenAgregarMandato}
           openState={openAgregarMandato}
+          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
         />
       )}
 

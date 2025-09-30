@@ -70,8 +70,6 @@ export function VerBorradorDocumento(props: Props) {
 
     setBotonVolverFiltro(a);
     setComentarios(a);
-    //console.log("comentarios", comentarios)
-
     useCortoPlazoStore.setState({
       idComentario: datosComentario.filter((r) => r.Tipo === "Requerimiento")[0]
         ?.Id,
@@ -142,8 +140,6 @@ export function VerBorradorDocumento(props: Props) {
 
     // Comparar valores clave por clave
     const prueba = claves1.every(clave => obj2.hasOwnProperty(clave) && obj1[clave] === obj2[clave]);
-    console.log("prueba comparacion", prueba);
-
     return prueba
   }
 
@@ -292,7 +288,7 @@ export function VerBorradorDocumento(props: Props) {
           {
             // (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") ||
 
-            (["10", "11", "26"].includes(props.rowSolicitud.NoEstatus) &&
+            (["10", "19", "26"].includes(props.rowSolicitud.NoEstatus) &&
               localStorage.getItem("Rol") === "Autorizador") ||
 
               (props.rowSolicitud.NoEstatus === "5" &&
@@ -460,7 +456,7 @@ export function VerBorradorDocumento(props: Props) {
         {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
           <Resumen coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios} />
         ) : (
-          <ResumenLP coments={false} />
+          <ResumenLP coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios}/>
         )}
       </DialogContent>
 

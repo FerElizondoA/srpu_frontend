@@ -11,8 +11,16 @@ export type IGeneralAutorizado = {
   medioPublicacion: { Id: string; Descripcion: string };
   fechaPublicacion: string;
   montoAutorizado: number;
-  documentoSoporte: { archivo: File; nombreArchivo: string };
-  acreditacionQuorum: { archivo: File; nombreArchivo: string };
+  documentoSoporte: {
+    archivo: File;
+    nombreArchivo: string;
+    fechaArchivo: Date;
+  },
+  acreditacionQuorum: {
+    archivo: File;
+    nombreArchivo: string;
+    fechaArchivo: Date;
+  },
 };
 
 export type IMontoAutorizado = {
@@ -40,8 +48,16 @@ export type IAutorizaciones = {
   DescripcionMedioPublicacion: string;
   IdMedioPublicacion: string;
   MontoAutorizado: string;
-  DocumentoSoporte: string;
-  AcreditacionQuorum: string;
+  DocumentoSoporte: {
+    archivo: File;
+    nombreArchivo: string;
+    fechaArchivo: Date;
+  }
+  AcreditacionQuorum: {
+    archivo: File;
+    nombreArchivo: string;
+    fechaArchivo: Date;
+  },
   DestinoAutorizado: string;
   DetalleDestino: string;
   CreadoPor: string;
@@ -122,10 +138,12 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
     documentoSoporte: {
       archivo: new File([], ""),
       nombreArchivo: "",
+      fechaArchivo: new Date(),
     },
     acreditacionQuorum: {
       archivo: new File([], ""),
       nombreArchivo: "",
+      fechaArchivo: new Date(),
     },
   },
   montoAutorizado: {
@@ -213,10 +231,12 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         documentoSoporte: {
           archivo: new File([], ""),
           nombreArchivo: "",
+          fechaArchivo: new Date(),
         },
         acreditacionQuorum: {
           archivo: new File([], ""),
           nombreArchivo: "",
+          fechaArchivo: new Date(),
         },
       },
       montoAutorizado: {
@@ -309,8 +329,8 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           FechaPublicacion: formatDateToMexican(String(state.autorizacion.fechaPublicacion)),
           MedioPublicacion: state.autorizacion.medioPublicacion.Id,
           MontoAutorizado: state.autorizacion.montoAutorizado,
-          DocumentoSoporte: state.autorizacion.documentoSoporte,
-          AcreditacionQuorum: state.autorizacion.acreditacionQuorum,
+          DocumentoSoporte: JSON.stringify(state.autorizacion.documentoSoporte),
+          AcreditacionQuorum: JSON.stringify(state.autorizacion.acreditacionQuorum),
           DestinoAutorizado: JSON.stringify(state.tablaMontoAutorizado),
           DetalleDestino: JSON.stringify(state.tablaDetalleDestino),
         },
@@ -324,15 +344,16 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         state.setAutorizacionSelect(data.data);
         state.saveFilesAutorizacion(
           data.data.Id,
-          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/AUTORIZACIONES/${data.data.Id}`,
           state.autorizacion.documentoSoporte
         );
         state.saveFilesAutorizacion(
           data.data.Id,
-          `/SRPU/AUTORIZACIONES/${data.data.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/AUTORIZACIONES/${data.data.Id}`,
           state.autorizacion.acreditacionQuorum
         );
       })
+
       .catch(() => {
         Swal.fire({
           confirmButtonColor: "#15212f",
@@ -373,15 +394,17 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-        state.setAutorizacionSelect(data.result);
+        console.log("data Crear Autorizacion", data.data);
+        state.setAutorizacionSelect(data.data);
+
         state.saveFilesAutorizacion(
           data.result.Id,
-          `/SRPU/AUTORIZACIONES/${data.result.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/AUTORIZACIONES/${data.data.Id}`,
           state.autorizacion.documentoSoporte
         );
         state.saveFilesAutorizacion(
           data.result.Id,
-          `/SRPU/AUTORIZACIONES/${data.result.Id}`,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/AUTORIZACIONES/${data.data.Id}`,
           state.autorizacion.acreditacionQuorum
         );
       })
@@ -423,8 +446,19 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
           DescripcionMedioPublicacion: "",
           IdMedioPublicacion: "",
           MontoAutorizado: "",
-          DocumentoSoporte: "",
-          AcreditacionQuorum: "",
+
+          DocumentoSoporte: {
+            archivo: new File([], ""),
+            nombreArchivo: "",
+            fechaArchivo: new Date(),
+          },
+
+          AcreditacionQuorum: {
+            archivo: new File([], ""),
+            nombreArchivo: "",
+            fechaArchivo: new Date(),
+          },
+
           DestinoAutorizado: "",
           DetalleDestino: "",
           CreadoPor: "",
@@ -479,6 +513,11 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
   ) => {
     const state = useLargoPlazoStore.getState();
 
+    console.log("Entre a saveFilesAutorizacion");
+    console.log("idRegistro", idRegistro);
+    console.log("ruta", ruta);
+    console.log("archivo", archivo);
+
     return setTimeout(() => {
       const url = new File([archivo.archivo], archivo.nombreArchivo);
 
@@ -499,6 +538,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
             }
           )
           .then(({ data }) => {
+            console.log("data saveFilesAutorizacion", data);
             state.savePathDocAut(
               idRegistro,
               data.RESPONSE.RUTA,
@@ -524,7 +564,7 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
         Authorization: localStorage.getItem("jwtToken") || "",
       },
     }).then(({ data }) => {
-      console.log("autorizaciones", data,data)
+      console.log("autorizaciones", data, data)
       set((state) => ({
         autorizaciones: data.data,
       }));
@@ -540,8 +580,19 @@ export const createAutorizacionLargoPlazoSlice: StateCreator<
     DescripcionMedioPublicacion: "",
     IdMedioPublicacion: "",
     MontoAutorizado: "",
-    DocumentoSoporte: "",
-    AcreditacionQuorum: "",
+
+    DocumentoSoporte: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date(),
+    },
+
+    AcreditacionQuorum: {
+      archivo: new File([], ""),
+      nombreArchivo: "",
+      fechaArchivo: new Date(),
+    },
+
     DestinoAutorizado: "",
     DetalleDestino: "",
     CreadoPor: "",

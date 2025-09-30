@@ -32,7 +32,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import {
   IBeneficiarioMandato,
-  IDeudorMandato,
   IDeudorMandatoNew,
 } from "../../../store/Mandatos/mandato";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -127,7 +126,7 @@ const headsNews: HeadLabels[] = [
 ];
 
 export function TipoDeMovimientoMandato() {
-  const tipoMovimiento: IDeudorMandato = useMandatoStore(
+  const tipoMovimiento: IDeudorMandatoNew = useMandatoStore(
     (state) => state.tipoMovimiento
   );
 
@@ -135,7 +134,7 @@ export function TipoDeMovimientoMandato() {
     (state) => state.beneficiario
   );
 
-  const tablaTipoMovimiento: IDeudorMandato[] = useMandatoStore(
+  const tablaTipoMovimiento: IDeudorMandatoNew[] = useMandatoStore(
     (state) => state.tablaTipoMovimientoMandato
   );
 
@@ -195,30 +194,30 @@ export function TipoDeMovimientoMandato() {
 
 
 
-  const tipoMovimientoMandatoNew: IDeudorMandatoNew = useMandatoStore(
-    (state) => state.tipoMovimientoMandatoNew
-  );
+  // const tipoMovimientoMandatoNew: IDeudorMandatoNew = useMandatoStore(
+  //   (state) => state.tipoMovimientoMandatoNew
+  // );
 
-  const tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[] = useMandatoStore(
-    (state) => state.tablaTipoMovimientoMandatoNew
-  );
+  // const tablaTipoMovimientoMandatoNew: IDeudorMandatoNew[] = useMandatoStore(
+  //   (state) => state.tablaTipoMovimientoMandatoNew
+  // );
 
 
-  const removeTipoMovimientoNew: Function = useMandatoStore(
-    (state) => state.removeTipoMovimientoNew
-  );
+  // const removeTipoMovimientoNew: Function = useMandatoStore(
+  //   (state) => state.removeTipoMovimientoNew
+  // );
 
-  const cleanTipoMovimientoNew: Function = useMandatoStore(
-    (state) => state.cleanTipoMovimientoNew
-  );
+  // const cleanTipoMovimientoNew: Function = useMandatoStore(
+  //   (state) => state.cleanTipoMovimientoNew
+  // );
 
-  const addTipoMovimientoNew: Function = useMandatoStore(
-    (state) => state.addTipoMovimientoNew
-  );
+  // const addTipoMovimientoNew: Function = useMandatoStore(
+  //   (state) => state.addTipoMovimientoNew
+  // );
 
-  const setTipoMovimientoNew: Function = useMandatoStore(
-    (state) => state.setTipoMovimientoNew
-  );
+  // const setTipoMovimientoNew: Function = useMandatoStore(
+  //   (state) => state.setTipoMovimientoNew
+  // );
 
   const updateTipoMovimientoField: Function = useMandatoStore(
     (state) => state.updateTipoMovimientoField
@@ -237,7 +236,7 @@ export function TipoDeMovimientoMandato() {
     (state) => state.addPorcentaje
   );
 
-  const ids: string[] = tablaTipoMovimientoMandatoNew.map((row) => {
+  const ids: string[] = tablaTipoMovimiento.map((row) => {
     return row.id;
   });
 
@@ -252,100 +251,26 @@ export function TipoDeMovimientoMandato() {
       <ThemeProvider theme={buttonTheme}>
         <Button
           disabled={
-            tipoMovimientoMandatoNew.tipoEntePublicoObligado.Id === "" ||
-            tipoMovimientoMandatoNew.mandatario.Id === "" ||
-            tipoMovimientoMandatoNew.tipoFuente.Id === "" ||
-            tipoMovimientoMandatoNew.fondoIngreso.Id === ""
+            tipoMovimiento.tipoEntePublicoObligado.Id === "" ||
+            tipoMovimiento.mandatario.Id === "" ||
+            tipoMovimiento.tipoFuente.Id === "" ||
+            tipoMovimiento.fondoIngreso.Id === ""
           }
           sx={{
             ...queries.buttonContinuar,
             width: "15vh",
           }}
           onClick={() => {
-            addTipoMovimientoNew({
-              id: tipoMovimientoMandatoNew.id,
-              tipoEntePublicoObligado: tipoMovimientoMandatoNew.tipoEntePublicoObligado,
-              mandatario: tipoMovimientoMandatoNew.mandatario,
-              tipoFuente: tipoMovimientoMandatoNew.tipoFuente,
-              fondoIngreso: tipoMovimientoMandatoNew.fondoIngreso,
-
-              AfectadoTotalIngreso: tipoMovimientoMandatoNew.AfectadoTotalIngreso,
-              EquivalenciaCorrespondienteMunicipios: tipoMovimientoMandatoNew.EquivalenciaCorrespondienteMunicipios,
+            addTipoMovimiento({
+              id: tipoMovimiento.id,
+              tipoEntePublicoObligado: tipoMovimiento.tipoEntePublicoObligado,
+              mandatario: tipoMovimiento.mandatario,
+              tipoFuente: tipoMovimiento.tipoFuente,
+              fondoIngreso: tipoMovimiento.fondoIngreso,
+              AfectadoTotalIngreso: tipoMovimiento.AfectadoTotalIngreso,
+              EquivalenciaCorrespondienteMunicipios: tipoMovimiento.EquivalenciaCorrespondienteMunicipios,
             })
-
-            // addTipoMovimiento({
-            //   id: tipoMovimiento.id,
-            //   tipoEntePublicoObligado: tipoMovimiento.tipoEntePublicoObligado,
-            //   mandatario: tipoMovimiento.mandatario,
-            //   tipoFuente: tipoMovimiento.tipoFuente,
-            //   fondoIngreso: tipoMovimiento.fondoIngreso,
-            //   fondoIngresoGobiernoEstatal:
-            //     tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
-            //       "participaciones"
-            //       ? "80.00"
-            //       : "100.00",
-            //   fondoIngresoMunicipios:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? tipoMovimiento.tipoFuente.Descripcion.toLowerCase() ===
-            //         "participaciones"
-            //         ? "20.00"
-            //         : "0.00"
-            //       : "0.00",
-            //   fondoIngresoAsignadoMunicipio:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? "100.00"
-            //       : "0.00",
-            //   ingresoOrganismo:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? "0.00"
-            //       : "0.00",
-            //   fondoIngresoAfectadoXGobiernoEstatal:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? ""
-            //       : "",
-            //   afectacionGobiernoEstatalEntre100:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? "0.00"
-            //       : "",
-            //   acumuladoAfectacionGobiernoEstatalEntre100:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
-            //       : "",
-            //   fondoIngresoAfectadoXMunicipio:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? "0"
-            //       : "0",
-            //   acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-            //       : "",
-
-            //   ingresoAfectadoXOrganismo:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? ""
-            //       : "",
-            //   acumuladoAfectacionOrganismoEntre100:
-            //     tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimiento.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-            //       : "",
-            // });
-             cleanTipoMovimientoNew();
+             cleanTipoMovimiento();
           }}
         >
           Agregar
@@ -460,10 +385,10 @@ export function TipoDeMovimientoMandato() {
               }}
               value={idTipoMovimientoSelect}
               onChange={(event, text) => {
-                let row = tablaTipoMovimientoMandatoNew.filter((_) => _.id === text)[0];
+                let row = tablaTipoMovimiento.filter((_) => _.id === text)[0];
 
                 setIdTipoMovimientoSelect(text);
-                setTipoMovimientoNew(row);
+                setTipoMovimiento(row);
               }}
               renderInput={(params) => (
                 <TextField
@@ -514,9 +439,9 @@ export function TipoDeMovimientoMandato() {
                 </li>
               );
             }}
-            value={tipoMovimientoMandatoNew.tipoEntePublicoObligado}
+            value={tipoMovimiento.tipoEntePublicoObligado}
             onChange={(event, text) => {
-              setTipoMovimientoNew({
+              setTipoMovimiento({
                 ...tipoMovimiento,
                 tipoEntePublicoObligado: {
                   Id: text.Id,
@@ -557,15 +482,15 @@ export function TipoDeMovimientoMandato() {
             closeText="Cerrar"
             openText="Abrir"
             disabled={
-              tipoMovimientoMandatoNew.tipoEntePublicoObligado.Descripcion ===
+              tipoMovimiento.tipoEntePublicoObligado.Descripcion ===
               "No Aplica" ||
-              /^[\s]*$/.test(tipoMovimientoMandatoNew.tipoEntePublicoObligado.Descripcion)
+              /^[\s]*$/.test(tipoMovimiento.tipoEntePublicoObligado.Descripcion)
             }
             fullWidth
             options={catalogoOrganismos.filter(
               (td: any) =>
                 td.IdTipoEntePublico ===
-              tipoMovimientoMandatoNew.tipoEntePublicoObligado.Id
+              tipoMovimiento.tipoEntePublicoObligado.Id
             )}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -576,15 +501,15 @@ export function TipoDeMovimientoMandato() {
               );
             }}
             onChange={(event, text) => {
-              setTipoMovimientoNew({
-                ...tipoMovimientoMandatoNew,
+              setTipoMovimiento({
+                ...tipoMovimiento,
                 mandatario: {
                   Id: text.Id,
                   Descripcion: text.Descripcion,
                 },
               });
             }}
-            value={tipoMovimientoMandatoNew.mandatario}
+            value={tipoMovimiento.mandatario}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -642,8 +567,8 @@ export function TipoDeMovimientoMandato() {
               );
             }}
             onChange={(event, text) => {
-              setTipoMovimientoNew({
-                ...tipoMovimientoMandatoNew,
+              setTipoMovimiento({
+                ...tipoMovimiento,
                 tipoFuente: {
                   Id: text.Id,
                   Descripcion: text.Descripcion,
@@ -679,16 +604,16 @@ export function TipoDeMovimientoMandato() {
             Fondo o Ingreso
           </InputLabel>
           <Autocomplete
-            disabled={tipoMovimientoMandatoNew.tipoFuente?.Id === ""}
+            disabled={tipoMovimiento.tipoFuente?.Id === ""}
             disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
             openText="Abrir"
             options={catalogoFondosOIngresos?.filter(
-              (td) => td.TipoDeFuente === tipoMovimientoMandatoNew.tipoFuente?.Id
+              (td) => td.TipoDeFuente === tipoMovimiento.tipoFuente?.Id
             )}
-            value={tipoMovimientoMandatoNew.fondoIngreso}
+            value={tipoMovimiento.fondoIngreso}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
               return (
@@ -698,16 +623,16 @@ export function TipoDeMovimientoMandato() {
               );
             }}
             onChange={(event, text) => {
-              setTipoMovimientoNew({
-                ...tipoMovimientoMandatoNew,
-                id: `${tipoMovimientoMandatoNew.tipoFuente?.Descripcion
+              setTipoMovimiento({
+                ...tipoMovimiento,
+                id: `${tipoMovimiento.tipoFuente?.Descripcion
                   }/${text.Descripcion.split(" ")
                     .map((word) =>
                       word.charAt(0) === word.charAt(0).toUpperCase()
                         ? word.charAt(0)
                         : ""
                     )
-                    .join("")}/${tablaTipoMovimientoMandatoNew?.length + 1}`,
+                    .join("")}/${tablaTipoMovimiento?.length + 1}`,
                 fondoIngreso: {
                   Id: text.Id,
                   Descripcion: text.Descripcion,
@@ -945,7 +870,7 @@ export function TipoDeMovimientoMandato() {
               </TableHead>
 
               <TableBody>
-                {tablaTipoMovimientoMandatoNew.map((row: any, index: number) => {
+                {tablaTipoMovimiento.map((row: any, index: number) => {
                   return (
                     <StyledTableRow key={index}>
                       {/* ID */}
@@ -995,10 +920,12 @@ export function TipoDeMovimientoMandato() {
                         <TextField
                           type="number"
                           disabled={row.tipoEntePublicoObligado.Descripcion.toLowerCase() !== "gobierno estatal"}
-                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
+                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? 
+                            row.EquivalenciaCorrespondienteMunicipios || '' : 0}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
-                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) 
+                            ? 0 : newValue);
                           }}
                           inputProps={{ min: 0 }}
                         />
@@ -1013,7 +940,7 @@ export function TipoDeMovimientoMandato() {
                               //let auxArray = [...tablaTipoMovimientoFideicomisoNew];
 
                               //addPorcentaje(auxArray);
-                              removeTipoMovimientoNew(index);
+                              removeTipoMovimiento(index);
                             }}
                           >
                             <DeleteIcon />

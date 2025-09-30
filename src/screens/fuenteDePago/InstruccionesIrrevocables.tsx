@@ -40,6 +40,8 @@ import { useFideicomisoStore } from "../../store/Fideicomiso/main";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
+import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -88,10 +90,8 @@ const heads: Head[] = [
 
 export function InstruccionesIrrevocables() {
   const [openAgregarInstruccion, setOpenAgregarInstruccion] = useState(false);
-  const [instrucciones, setInstrucciones] = useState<IDatosInstrucciones[]>([]);
-  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<
-    IDatosInstrucciones[]
-  >([]);
+  const [instrucciones, setInstrucciones] = useState<IRegistro[]>([]);
+
   const [busqueda, setBusqueda] = useState("");
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
 
@@ -116,33 +116,30 @@ export function InstruccionesIrrevocables() {
     (state) => state.editarInstruccion
   );
 
-  const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
-  const [datos, setDatos] = useState<Array<IInscripcion>>([]);
 
-
-  const filtrarDatos = () => {
-    let ResultadoBusqueda = instrucciones.filter((elemento) => {
-      if (
-        elemento.NumeroCuenta.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.CLABE.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.DescripcionBanco.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase()) ||
-        elemento.TipoEntePublicoObligado.toString()
-          .toLocaleLowerCase()
-          .includes(busqueda.toLocaleLowerCase())
-      ) {
-        return elemento;
-      } else {
-        return null;
-      }
-    });
-    return setInstruccionesFiltrados(ResultadoBusqueda);
-  };
+  // const filtrarDatos = () => {
+  //   let ResultadoBusqueda = instrucciones.filter((elemento) => {
+  //     if (
+  //       elemento.NumeroCuenta.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.CLABE.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.DescripcionBanco.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase()) ||
+  //       elemento.TipoEntePublicoObligado.toString()
+  //         .toLocaleLowerCase()
+  //         .includes(busqueda.toLocaleLowerCase())
+  //     ) {
+  //       return elemento;
+  //     } else {
+  //       return null;
+  //     }
+  //   });
+  //   return setInstruccionesFiltrados(ResultadoBusqueda);
+  // };
 
   const catalogoInstituciones: ICatalogo[] = useCortoPlazoStore(
     (state) => state.catalogoInstituciones
@@ -164,6 +161,9 @@ export function InstruccionesIrrevocables() {
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+  const getMecanismosVehiculosPago: Function = useLargoPlazoStore(
+    (state) => state.getMecanismosVehiculosPago
+  );
 
 
   const sumaPorcentajeAcumulado: {
@@ -172,20 +172,32 @@ export function InstruccionesIrrevocables() {
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
 
+  const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
+    (state) => state.tablaMecanismoVehiculoPago
+  );
+
+  const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<Array<IRegistro>>([]);
+  const [datos, setDatos] = useState<Array<IRegistro>>([]);
+
+
   useEffect(() => {
-    getInstrucciones(setInstrucciones);
+    getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
+    //getInstrucciones(setInstrucciones);
     getInstituciones();
     getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
     setTipoMecanismoVehiculoPago("")
   }, []);
 
   useEffect(() => {
-    setInstruccionesFiltrados(instrucciones);
-  }, [instrucciones]);
+    setDatos(tablaMecanismoVehiculoPago);
+    setInstruccionesFiltrados(tablaMecanismoVehiculoPago);
+  }, [tablaMecanismoVehiculoPago]);
+
+
 
   useEffect(() => {
     if (busqueda.length !== 0) {
-      setInstrucciones(instrucciones);
+      setInstrucciones(tablaMecanismoVehiculoPago);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busqueda]);
@@ -202,21 +214,45 @@ export function InstruccionesIrrevocables() {
   const [openDetalle, setOpenDetalle] = useState(false);
 
   const [detalleInstruccion, setDetalleInstruccion] =
-    useState<IDatosInstrucciones>({
+    useState<IRegistro>({
+
+      MecanismoPago: "",
       Id: "",
-      NumeroCuenta: "",
-      CLABE: "",
-      FechaInstruccion: "",
-      DescripcionBanco: "",
+      NumeroRegistro: "",
+      FechaRegistro: "",
+
+      TipoFideicomiso: "",
+      Fiduciario: "",
+      Fideicomisario: "",
+
+      Mandatario: "",
+      Mandante: "",
       TipoEntePublicoObligado: "",
+
+
+
+      CLABE: "",
+      IdBanco: "",
+      NombreBanco: "",
       EntePublicoObligado: "",
+
       TipoMovimiento: "",
-      AcumuladoEstado: "",
-      AcumuladoMunicipios: "",
-      AcumuladoOrganismos: "",
       SoporteDocumental: "",
-      FechaCreacion: "",
-      CreadoPor: "",
+
+      // Id: "",
+      // NumeroCuenta: "",
+      // CLABE: "",
+      // FechaInstruccion: "",
+      // DescripcionBanco: "",
+      // TipoEntePublicoObligado: "",
+      // EntePublicoObligado: "",
+      // TipoMovimiento: "",
+      // AcumuladoEstado: "",
+      // AcumuladoMunicipios: "",
+      // AcumuladoOrganismos: "",
+      // SoporteDocumental: "",
+      // FechaCreacion: "",
+      // CreadoPor: "",
     });
 
   return (
@@ -252,10 +288,10 @@ export function InstruccionesIrrevocables() {
 
 
 
-      <BarraFiltros
+      <BarraFiltrosFuentesPago
         Lista={datos}
-        setStateFiltered={setDatosFiltrados}
-        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        setStateFiltered={setInstruccionesFiltrados}
+        CamposFecha={["FechaRegistro"]}
         setOpenDialogAgregar={setOpenAgregarInstruccion}
         openDialogAgregar={openAgregarInstruccion}
         BooleaDialog={true}
@@ -375,15 +411,15 @@ export function InstruccionesIrrevocables() {
               </TableHead>
               <TableBody>
                 {instruccionesFiltrados.map(
-                  (row: IDatosInstrucciones, index: number) => {
+                  (row: IRegistro, index: number) => {
                     return (
                       <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          {row.NumeroCuenta}
+                          {row.NumeroRegistro}
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {format(new Date(row.FechaInstruccion), "PPP", {
+                          {format(new Date(row.FechaRegistro), "PPP", {
                             locale: es,
                           })}
                         </StyledTableCell>
@@ -398,7 +434,7 @@ export function InstruccionesIrrevocables() {
                             fontFamily: "MontserratRegular",
                             fontSize: "1.6ch"
                           }}>
-                            {row.DescripcionBanco}
+                            {row.NombreBanco}
                           </Typography>
                         </StyledTableCell>
 
@@ -429,39 +465,40 @@ export function InstruccionesIrrevocables() {
                               onClick={() => {
                                 let auxArray = JSON.parse(row.TipoMovimiento);
 
-                                auxArray.map((column: any) => {
-                                  return (
-                                    (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                      ).toString()),
-                                    (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                      ).toString()),
-                                    (column.acumuladoAfectacionOrganismoEntre100 =
-                                      Number(
-                                        sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                      ).toString())
-                                  );
-                                });
+                                // auxArray.map((column: any) => {
+                                //   return (
+                                //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoEstado
+                                //       ).toString()),
+                                //     (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+                                //       ).toString()),
+                                //     (column.acumuladoAfectacionOrganismoEntre100 =
+                                //       Number(
+                                //         sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+                                //       ).toString())
+                                //   );
+                                // });
 
                                 editarInstruccion(
                                   row.Id,
                                   {
-                                    numeroCuenta: row.NumeroCuenta,
+                                    numeroCuenta: row.NumeroRegistro,
                                     cuentaCLABE: row.CLABE,
                                     banco: catalogoInstituciones.filter(
                                       (i: ICatalogo) =>
-                                        i.Descripcion === row.DescripcionBanco
+                                        i.Descripcion === row.NombreBanco
                                     )[0],
                                     fechaInstruccion: new Date(
-                                      row.FechaInstruccion
+                                      row.FechaRegistro
                                     ),
                                   },
                                   auxArray,
                                   JSON.parse(row.SoporteDocumental)
                                 );
+                                setIdInstruccion(row.Id);
 
                                 setOpenAgregarInstruccion(
                                   !openAgregarInstruccion
@@ -498,6 +535,7 @@ export function InstruccionesIrrevocables() {
         <AgregarInstruccionesIrrevocables
           handler={setOpenAgregarInstruccion}
           openState={openAgregarInstruccion}
+          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
         />
       )}
 

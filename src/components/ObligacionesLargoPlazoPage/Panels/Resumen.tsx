@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CommentIcon from "@mui/icons-material/Comment";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Dialog,
@@ -35,7 +36,7 @@ import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
-import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
+import { getDocumentos, getDocumentosResumen } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
   headsComision,
@@ -55,6 +56,9 @@ import { IDatosGeneralesInstrucciones, IDeudorInstrucciones, ISoporteDocumentalI
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
 import { log } from "console";
+import { IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 
 interface Head {
@@ -122,52 +126,19 @@ const headsTipoMovimiento: Head[] = [
     label: "Id",
   },
   {
-    label: "Tipo de Ente Público Obligado",
+    label: "Tipo de Fuente",
   },
   {
-    label: "Ente Público Obligado",
+    label: "Fuente de Pago",// Label: "Fondo o Ingreso",
   },
   {
-    label: "Fuente de Pago",
+    label: "Ente Publico Obligado",//Label: "Fideicomitente",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente al Gobierno del Estado",
+    label: "Porcentaje Afectado Sobre el Total de Ingreso",
   },
   {
-    label: "% del Ingreso o Fondo Correspondiente a los Municipios",
-  },
-  {
-    label: "% de Asignación del Fondo o Ingreso Correspondiente al Municipio",
-  },
-  {
-    label: "% del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Gobierno del Estado",
-  },
-  {
-    label: "% de Afectación del Gobierno del Estado /100 del Fondo o Ingreso",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Gobierno del Estado a los Mecanismos de Pago /100",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso o Fondo Correspondiente al Municipio",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Municipio a los Mecanismos de Pago /% Asignado al Municipio",
-  },
-  {
-    label:
-      "% Afectado a la Instrucción del Ingreso Correspondiente al Organismo",
-  },
-  {
-    label:
-      "% Acumulado de Afectación del Organismo a los Mecanismos de Pago /100 del Ingreso",
+    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
   },
 ];
 
@@ -201,7 +172,17 @@ const headsGC: Head[] = [
   },
 ];
 
-export function Resumen({ coments }: { coments: boolean }) {
+export function Resumen({
+  coments,
+  estatus,
+  arrDocsEliminados,
+  funcionFiltroComentarios,
+}: {
+  coments: boolean,
+  estatus: string,
+  arrDocsEliminados?: IDocsEliminados[],
+  funcionFiltroComentarios?: Function
+}) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
   const inscripcion: IInscripcion = useInscripcionStore(
@@ -398,12 +379,15 @@ export function Resumen({ coments }: { coments: boolean }) {
   const [cargados, setCargados] = useState(true);
 
   useEffect(() => {
-    inscripcion.Id &&
-      getDocumentos(
-        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS+`/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
+    console.log("inscripcion.Id en resumen", inscripcion.Id);
+    if (inscripcion.Id) {
+      getDocumentosResumen(
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/`,
         setArr,
-        setCargados
+        setCargados,
+        "LargoPlazo"
       );
+    }
   }, []);
 
   const toBase64 = (file: any) =>
@@ -448,6 +432,14 @@ export function Resumen({ coments }: { coments: boolean }) {
   const tablaResumenMecanismoPago: IDeudorInstrucciones[] = useLargoPlazoStore(
     (state) => state.tablaResumenMecanismoPago
   )
+
+
+  const tablaAsignarFuenteNew: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+    (state) => state.tablaAsignarFuenteNew
+  );
+
+  const activacionComentariosRevisor = ["5", "14", "23"]
+
 
   useEffect(() => {
     console.log(tablaCondicionesFinancieras);
@@ -515,30 +507,30 @@ export function Resumen({ coments }: { coments: boolean }) {
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {activaAccion && (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentarios[head.label] &&
-                            comentarios[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          console.log("Hola Informacion General");
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios[head.label] &&
+                          comentarios[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        console.log("Hola Informacion General");
 
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabEncabezado",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabEncabezado",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )
                 }
                 <Typography sx={{ ...queries.medium_text, mb: 2 }}>
                   <strong>{head.label}: </strong>
@@ -607,30 +599,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -723,30 +715,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 //reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -862,30 +854,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={150} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -922,137 +914,95 @@ export function Resumen({ coments }: { coments: boolean }) {
                     </TableRow>
                   </TableHead>
 
-                  <TableBody>
-                    <StyledTableRow>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.NumeroAutorizacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.FechaPublicacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="center"
-                        component="th"
-                        sx={{ width: 200 }}
-                      >
-                        <Typography>
-                          {autorizacionSelect?.MontoAutorizado}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.DescripcionMedioPublicacion}
-                        </Typography>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
-                          <IconButton
-                            onClick={() => {
-                              setFileSelected(
-                                `data:application/pdf;base64,${arrDocs.filter((td: any) =>
-                                  td.nombre.includes(
-                                    autorizacionSelect?.DocumentoSoporte
-                                  )
-                                )[0].file
-                                }`
-                              );
-                              setShowModalPrevia(true);
-                            }}
-                          >
-                            <FileOpenIcon></FileOpenIcon>
-                          </IconButton>
-                        </Tooltip>
-                      </StyledTableCell>
-                      <StyledTableCell align="center" component="th">
-                        <Typography>
-                          {autorizacionSelect?.DetalleDestino &&
-                            JSON.parse(autorizacionSelect?.DetalleDestino)[0]
-                              .detalleDestino}
-                        </Typography>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-
-            {/* <Paper sx={{ width: "96%" }}>
-              <TableContainer
-                sx={{
-                  maxHeight: "100%",
-                  width: "95%",
-                  overflow: "auto",
-                  "&::-webkit-scrollbar": {
-                    width: ".5vw",
-                    height: ".5vh",
-                    mt: 1,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AF8C55",
-                    outline: "1px solid slategrey",
-                    borderRadius: 1,
-                  },
-                }}
-              >
-                {tablaObligados.length > 0 ? (
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        {heads.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            {head.label}
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {tablaObligados.map((row: any, index: number) => {
-                        return (
-                          <StyledTableRow key={index}>
-                            <StyledTableCell component="th">
-                              {row.tipoEntePublicoObligado}
-                            </StyledTableCell>
-                            <StyledTableCell component="th">
-                              {row.entePublicoObligado}
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        {heads.map((head, index) => (
-                          <StyledTableCell key={index}>
-                            {head.label}
-                          </StyledTableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-
+                  {autorizacionSelect?.NumeroAutorizacion === "" ?
                     <TableBody>
                       <StyledTableRow>
-                        <StyledTableCell component="th" align="left">
-                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
-                            NO APLICA
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          sx={{ width: 200 }}
+                        >
+                          <Typography>
+                            Sin seleccionar
                           </Typography>
                         </StyledTableCell>
 
-                        <StyledTableCell component="th"></StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                        </StyledTableCell>
+
                       </StyledTableRow>
                     </TableBody>
-                  </Table>
-                )}
+                    :
+                    <TableBody>
+                      <StyledTableRow>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.NumeroAutorizacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.FechaPublicacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell
+                          align="center"
+                          component="th"
+                          sx={{ width: 200 }}
+                        >
+                          <Typography>
+                            {autorizacionSelect?.MontoAutorizado}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.DescripcionMedioPublicacion}
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Tooltip title={autorizacionSelect?.DocumentoSoporte.nombreArchivo}>
+                            <IconButton
+                              onClick={() => {
+                                setFileSelected(
+                                  `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                                    td.nombre.includes(
+                                      autorizacionSelect?.DocumentoSoporte
+                                    )
+                                  )[0].file
+                                  }`
+                                );
+                                setShowModalPrevia(true);
+                              }}
+                            >
+                              <FileOpenIcon></FileOpenIcon>
+                            </IconButton>
+                          </Tooltip>
+                        </StyledTableCell>
+                        <StyledTableCell align="center" component="th">
+                          <Typography>
+                            {autorizacionSelect?.DetalleDestino &&
+                              JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                                .detalleDestino}
+                          </Typography>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    </TableBody>
+                  }
+                </Table>
               </TableContainer>
-            </Paper> */}
-
+            </Paper>
           </Grid>
         </Grid>
 
@@ -1079,30 +1029,30 @@ export function Resumen({ coments }: { coments: boolean }) {
             {fuenteDePago.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
                 {/* Revisar */}
-                {activaAccion &&
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                   //reestructura !== "con autorizacion" ?
-                  (
-                    <Tooltip title="Añadir comentario a este apartado">
-                      <IconButton
-                        color={
-                          comentarios[head.label] &&
-                            comentarios[head.label] !== ""
-                            ? "success"
-                            : "primary"
-                        }
-                        size="small"
-                        onClick={() => {
-                          setOpenComentarioApartado({
-                            open: true,
-                            apartado: head.label,
-                            tab: "TabInformaciónGeneral",
-                          });
-                        }}
-                      >
-                        <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                      </IconButton>
-                    </Tooltip>
-                  )
+
+                  <Tooltip title="Añadir comentario a este apartado">
+                    <IconButton
+                      color={
+                        comentarios[head.label] &&
+                          comentarios[head.label] !== ""
+                          ? "success"
+                          : "primary"
+                      }
+                      size="small"
+                      onClick={() => {
+                        setOpenComentarioApartado({
+                          open: true,
+                          apartado: head.label,
+                          tab: "TabInformaciónGeneral",
+                        });
+                      }}
+                    >
+                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                    </IconButton>
+                  </Tooltip>
+                )
                   //: null
                 }
 
@@ -1119,30 +1069,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item display="flex" height={500} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 //reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Obligado Solidario / Aval"] &&
-                          comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Obligado Solidario / Aval",
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Obligado Solidario / Aval"] &&
+                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Obligado Solidario / Aval",
+                        tab: "TabInformaciónGeneral",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 // : null
               }
             </Grid>
@@ -1154,7 +1104,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                   overflow: "auto",
                   "&::-webkit-scrollbar": {
                     width: ".5vw",
-                    height: "1vh",
+                    // height: "1vh",
                     mt: 1,
                   },
                   "&::-webkit-scrollbar-thumb": {
@@ -1169,7 +1119,7 @@ export function Resumen({ coments }: { coments: boolean }) {
                     <TableRow>
                       {headsTipoMovimiento.map((head, index) => (
                         <StyledTableCell align="center" key={index}>
-                          <Typography sx={{ fontSize: "0.7rem" }}>
+                          <Typography sx={{ fontWeight: "bold" }}>
                             {head.label}
                           </Typography>
                         </StyledTableCell>
@@ -1178,275 +1128,40 @@ export function Resumen({ coments }: { coments: boolean }) {
                   </TableHead>
 
                   <TableBody>
-                    {tablaResumenMecanismoPago.length > 0
+                    {tablaAsignarFuenteNew.length > 0
                       ?
-                      tablaResumenMecanismoPago.map(
-                        (row: IDeudorInstrucciones, index: number) => {
+                      tablaAsignarFuenteNew.map(
+                        (movimiento: any, index: number) => {
                           return (
                             <StyledTableRow key={index}>
-                              {/* ID */}
+
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.id}
-                                </Typography>
+                                {movimiento.id}
                               </StyledTableCell>
 
-                              {/* TIPO MANDANTE */}
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.tipoEntePublicoObligado.Descripcion}
-                                </Typography>
+                                {movimiento.tipoFuente.Descripcion}
                               </StyledTableCell>
 
-
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.entePublicoObligado.Descripcion}
-                                </Typography>
+                                {movimiento.fondoIngreso.Descripcion}
                               </StyledTableCell>
 
-                              {/* FUENTE DE PAGO */}
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.tipoFuente.Descripcion}
-                                </Typography>
+                                {movimiento?.fideicomitente?.Descripcion ||
+                                  movimiento?.mandatario?.Descripcion ||
+                                  movimiento?.entePublicoObligado?.Descripcion}
                               </StyledTableCell>
 
-                              {/* FONDO INGRESO GOBIERNO ESTATAL */}
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.fondoIngresoGobiernoEstatal}
-                                </Typography>
+                                {/* Poner la funcion updateTipoMovimientoField en cada fuente de pago*/}
+                                {movimiento.AfectadoTotalIngreso}
+
                               </StyledTableCell>
 
-                              {/* FONDO INGRESO MUNICIPIOS */}
                               <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.fondoIngresoMunicipios}
-                                </Typography>
-                              </StyledTableCell>
+                                {movimiento?.EquivalenciaCorrespondienteMunicipios || "No Aplica"}
 
-                              {/* FONDO INGRESO MUNICIPIO */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.fondoIngresoAsignadoMunicipio}
-                                </Typography>
-                              </StyledTableCell>
-
-                              {/* INGRESO ORGANISMO */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.ingresoOrganismo}
-                                </Typography>
-                              </StyledTableCell>
-
-                              {/* AFECTADO POR GOBIERNO ESTATAL */}
-                              <StyledTableCell align="center">
-                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                                  "gobierno estatal" && (
-                                    <TextField
-                                      inputProps={{
-                                        sx: {
-                                          fontSize: "0.7rem",
-                                        },
-                                      }}
-                                      size="small"
-                                      value={row?.fondoIngresoAfectadoXGobiernoEstatal}
-                                      onChange={(v) => {
-                                        let auxArray = [...tablaTipoMovimiento];
-                                        let val = Number(v.target.value);
-
-                                        if (
-                                          val <= 100 &&
-                                          Number(
-                                            sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                          ) +
-                                          val <=
-                                          Number(
-                                            tablaTipoMovimiento[index]
-                                              .fondoIngresoGobiernoEstatal
-                                          )
-                                        ) {
-                                          let suma = 0;
-
-                                          tablaTipoMovimiento.map((column) => {
-                                            return (suma += Number(
-                                              column.fondoIngresoAfectadoXGobiernoEstatal
-                                            ));
-                                          });
-
-                                          auxArray.map((column) => {
-                                            return (column.acumuladoAfectacionGobiernoEstatalEntre100 =
-                                              (
-                                                suma +
-                                                val +
-                                                Number(
-                                                  sumaPorcentajeAcumulado.SumaAcumuladoEstado
-                                                )
-                                              ).toString());
-                                          });
-
-                                          auxArray[
-                                            index
-                                          ].fondoIngresoAfectadoXGobiernoEstatal =
-                                            val.toString();
-
-                                          addPorcentaje(auxArray);
-                                        }
-                                      }}
-                                    />
-                                  )}
-                              </StyledTableCell>
-
-                              {/* AFECTACION GOBIERNO ESTATAL / 100 */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.afectacionGobiernoEstatalEntre100}
-                                </Typography>
-                              </StyledTableCell>
-
-                              {/* ACUMULADO AFECTACION GOBIERNO ESTATAL / 100 */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.acumuladoAfectacionGobiernoEstatalEntre100}
-                                </Typography>
-                              </StyledTableCell>
-
-                              {/* AFECTADO POR MUNICIPIO */}
-                              <StyledTableCell align="center">
-                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                                  "municipio" && (
-                                    <TextField
-                                      type="number"
-                                      inputProps={{
-                                        sx: {
-                                          fontSize: "0.7rem",
-                                        },
-                                      }}
-                                      size="small"
-                                      value={row?.fondoIngresoAfectadoXMunicipio}
-                                      onChange={(v) => {
-                                        let auxArray = [...tablaTipoMovimiento];
-                                        let val = Number(v.target.value);
-
-                                        if (
-                                          val <= 100 &&
-                                          Number(
-                                            sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                          ) +
-                                          val <=
-                                          Number(
-                                            tablaTipoMovimiento[index]
-                                              .fondoIngresoAsignadoMunicipio
-                                          )
-                                        ) {
-                                          let suma = 0;
-
-                                          tablaTipoMovimiento.map((column) => {
-                                            return (suma += Number(
-                                              column.fondoIngresoAfectadoXMunicipio
-                                            ));
-                                          });
-
-                                          auxArray.map((column) => {
-                                            return (column.acumuladoAfectacionMunicipioEntreAsignadoMunicipio =
-                                              (
-                                                suma +
-                                                val +
-                                                Number(
-                                                  sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-                                                )
-                                              ).toString());
-                                          });
-
-                                          auxArray[
-                                            index
-                                          ].fondoIngresoAfectadoXMunicipio =
-                                            val.toString();
-
-                                          addPorcentaje(auxArray);
-                                        }
-                                      }}
-                                    />
-                                  )}
-                              </StyledTableCell>
-
-                              {/* ACUMULADO AFECTACION MUNICIPIOS / ASIGNADO AL MUNICIPIO */}
-                              <StyledTableCell align="center">
-                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() ===
-                                  "municipio" && (
-                                    <Typography sx={{ fontSize: "0.7rem" }}>
-                                      {
-                                        row?.acumuladoAfectacionMunicipioEntreAsignadoMunicipio
-                                      }
-                                    </Typography>
-                                  )}
-                              </StyledTableCell>
-
-                              {/* AFECTADO POR ORGANISMO */}
-                              <StyledTableCell align="center">
-                                {row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                                  "gobierno estatal" &&
-                                  row?.tipoEntePublicoObligado.Descripcion.toLowerCase() !==
-                                  "municipio" && (
-                                    <TextField
-                                      type="number"
-                                      inputProps={{
-                                        sx: {
-                                          fontSize: "0.7rem",
-                                        },
-                                      }}
-                                      size="small"
-                                      value={row?.ingresoAfectadoXOrganismo}
-                                      onChange={(v) => {
-                                        let auxArray = [...tablaTipoMovimiento];
-                                        let val = Number(v.target.value);
-
-                                        if (
-                                          val <= 100 &&
-                                          Number(
-                                            sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                          ) +
-                                          val <=
-                                          Number(
-                                            tablaTipoMovimiento[index]
-                                              .ingresoOrganismo
-                                          )
-                                        ) {
-                                          let suma = 0;
-
-                                          tablaTipoMovimiento.map((column) => {
-                                            return (suma += Number(
-                                              column.ingresoAfectadoXOrganismo
-                                            ));
-                                          });
-
-                                          auxArray.map((column) => {
-                                            return (column.acumuladoAfectacionOrganismoEntre100 =
-                                              (
-                                                suma +
-                                                val +
-                                                Number(
-                                                  sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-                                                )
-                                              ).toString());
-                                          });
-
-                                          auxArray[index].ingresoAfectadoXOrganismo =
-                                            val.toString();
-
-                                          addPorcentaje(auxArray);
-                                        }
-                                      }}
-                                    />
-                                  )}
-                              </StyledTableCell>
-
-                              {/* ACUMULADO AFECTACION ORGANISMO / 100 */}
-                              <StyledTableCell align="center">
-                                <Typography sx={{ fontSize: "0.7rem" }}>
-                                  {row?.acumuladoAfectacionOrganismoEntre100}
-                                </Typography>
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -1469,30 +1184,30 @@ export function Resumen({ coments }: { coments: boolean }) {
           <Grid item width={"100%"} mt={3} display={"flex"} height={350}>
             <Grid mt={4}>
               {/* Revisar */}
-              {activaAccion &&
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                 // reestructura !== "con autorizacion" ?
-                (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios["Tabla Condiciones Financieras"] &&
-                          comentarios["Tabla Condiciones Financieras"] !== ""
-                          ? "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: "Tabla Condiciones Financieras",
-                          tab: "TabCondiciones Financieras",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )
+
+                <Tooltip title="Añadir comentario a este apartado">
+                  <IconButton
+                    color={
+                      comentarios["Tabla Condiciones Financieras"] &&
+                        comentarios["Tabla Condiciones Financieras"] !== ""
+                        ? "success"
+                        : "primary"
+                    }
+                    size="small"
+                    onClick={() => {
+                      setOpenComentarioApartado({
+                        open: true,
+                        apartado: "Tabla Condiciones Financieras",
+                        tab: "TabCondiciones Financieras",
+                      });
+                    }}
+                  >
+                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
+                  </IconButton>
+                </Tooltip>
+              )
                 //: null
               }
             </Grid>
@@ -1877,30 +1592,32 @@ export function Resumen({ coments }: { coments: boolean }) {
                   {documentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        {activaAccion && reestructura !== "con autorizacion" ? (
-                          <Tooltip title="Añadir comentario a este apartado">
-                            <IconButton
-                              color={
-                                comentarios[row.descripcionTipo] &&
-                                  comentarios[row.descripcionTipo] !== ""
-                                  ? "success"
-                                  : "primary"
-                              }
-                              size="small"
-                              onClick={() => {
-                                setOpenComentarioApartado({
-                                  open: true,
-                                  apartado: row.descripcionTipo,
-                                  tab: "TabDocumentacion",
-                                });
-                              }}
-                            >
-                              <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                            </IconButton>
-                          </Tooltip>
-                        ) : (
-                          "No disponible para reestructura"
-                        )}
+                        {activaAccion && reestructura !== "con autorizacion" ||
+                          (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")
+                          ? (
+                            <Tooltip title="Añadir comentario a este apartado">
+                              <IconButton
+                                color={
+                                  comentarios[row.descripcionTipo] &&
+                                    comentarios[row.descripcionTipo] !== ""
+                                    ? "success"
+                                    : "primary"
+                                }
+                                size="small"
+                                onClick={() => {
+                                  setOpenComentarioApartado({
+                                    open: true,
+                                    apartado: row.descripcionTipo,
+                                    tab: "TabDocumentacion",
+                                  });
+                                }}
+                              >
+                                <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                              </IconButton>
+                            </Tooltip>
+                          ) : (
+                            "No disponible para reestructura"
+                          )}
 
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
@@ -1936,34 +1653,23 @@ export function Resumen({ coments }: { coments: boolean }) {
                                 <CircularProgress />
                               ) : ( */}
                               <IconButton
-                                onClick={() => {
-                                  // var a = document.createElement("a"); //Create <a>
-                                  // a.href =
-                                  //   "data:application/pdf;base64," +
-                                  //   arr.filter((td: any) =>
-                                  //     td.NOMBREFORMATEADO.includes(
-                                  //       row.nombreArchivo
-                                  //     )
-                                  //   )[0].FILE; //Image Base64 Goes here
-                                  // a.download = `${"NOMBRE"}.pdf`; //File name Here
+                                onClick={async () => {
+                                  console.log("row?.archivo?.name", row?.archivo)
+                                  let base64String = '';
+                                  try {
+                                    if (row.archivo instanceof File) {
+                                      base64String = await convertFileToBase64(row.archivo);
+                                    } else {
+                                      base64String = row.archivo;
+                                    }
 
-                                  toBase64(documentos[index].archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
-                                        }`
-                                      );
-                                    });
-                                  // setFileSelected(a);
+                                    const dataUri = `data:application/pdf;base64,${base64String}`;
+                                    setFileSelected(dataUri);
+                                  } catch (error) {
+                                    console.error("Error al convertir el archivo a Base64", error);
+                                  }
+
                                   setShowModalPrevia(true);
-                                  // a.click();
                                 }}
                               >
                                 <FileOpenIcon></FileOpenIcon>
@@ -2017,6 +1723,8 @@ export function Resumen({ coments }: { coments: boolean }) {
       <ComentarioApartado
         setOpen={setOpenComentarioApartado}
         openState={openComentarioApartado}
+        filtroComentarioVolver={funcionFiltroComentarios}
+
       />
     </Grid>
   );

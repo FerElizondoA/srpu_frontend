@@ -15,6 +15,9 @@ import { useInstruccionesStore } from "../../../store/InstruccionesIrrevocables/
 import { AgregarFideicomisos } from "../../fideicomisos/dialog/AgregarFideicomisos";
 import { AgregarInstruccionesIrrevocables } from "../../instruccionesIrrevocables/dialog/AgregarInstruccionesIrrevocables.tsx";
 import { IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
+import { DetalleFideicomiso } from "../../fideicomisos/dialog/DetalleFideicomiso";
+import { DetalleMandato } from "../../mandatos/dialog/DetalleMandato";
+import { DetalleInstruccion } from "../../instruccionesIrrevocables/dialog/DetalleInstrucciones";
 
 export function FuentePagoSecciones() {
   const query = {
@@ -102,12 +105,8 @@ export function FuentePagoSecciones() {
         {
           numeroMandato: mecanismoVehiculoPago.NumeroRegistro,
           fechaMandato: new Date(mecanismoVehiculoPago.FechaRegistro),
-          mandatario: catalogoOrganismos.filter(
-            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandatario
-          )[0],
-          mandante: catalogoOrganismos.filter(
-            (v, index) => v.Descripcion === mecanismoVehiculoPago.Mandante
-          )[0],
+          mandatario: { id: "", Descripcion: mecanismoVehiculoPago.Mandatario },
+          mandante: { id: "", Descripcion: mecanismoVehiculoPago.Mandante },
         },
         auxArray,
         JSON.parse(mecanismoVehiculoPago.SoporteDocumental)
@@ -120,7 +119,7 @@ export function FuentePagoSecciones() {
         {
           numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
           cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: mecanismoVehiculoPago.Banco,
+          banco: { id: "", Descripcion: mecanismoVehiculoPago.NombreBanco },
           fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
         },
         auxArray,
@@ -153,6 +152,7 @@ export function FuentePagoSecciones() {
       );
       setPruebaAbrirFuente(!pruebaAbrirFuente);
     }
+    setDeshabilidarCamposSCLP(true);
   };
 
   //Para el Filtro y agregado de la tabla
@@ -167,6 +167,9 @@ export function FuentePagoSecciones() {
   const cleanTipoMovimientoFuentesPago: Function = useLargoPlazoStore(
     (state) => state.cleanTipoMovimientoFuentesPago
   );
+
+
+  const [deshabilidarCamposSCLP, setDeshabilidarCamposSCLP] = useState(false);
 
   const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
   const [openAgregarMandato, setOpenAgregarMandato] = useState(false);
@@ -242,21 +245,41 @@ export function FuentePagoSecciones() {
 
 
       {tipoMecanismoVehiculoPago === "Instrucción Irrevocable" && pruebaAbrirFuente === true ?
-        <AgregarInstruccionesIrrevocables
-          handler={setPruebaAbrirFuente}
-          openState={pruebaAbrirFuente}
+        <DetalleInstruccion
+          open={pruebaAbrirFuente}
+          setOpen={setPruebaAbrirFuente}
+          instruccion={mecanismoVehiculoPago}
         />
-        : tipoMecanismoVehiculoPago === "Mandato" && pruebaAbrirFuente === true ?
-          <AgregarMandatos
-            handler={setPruebaAbrirFuente}
-            openState={pruebaAbrirFuente}
-          />
-          : tipoMecanismoVehiculoPago === "Fideicomiso" && pruebaAbrirFuente === true ?
-            <AgregarFideicomisos
 
-              handler={setPruebaAbrirFuente}
-              openState={pruebaAbrirFuente}
+        // <AgregarInstruccionesIrrevocables
+        //   deshabilidarCamposSCLP={deshabilidarCamposSCLP}
+        //   handler={setPruebaAbrirFuente}
+        //   openState={pruebaAbrirFuente}
+        // />
+        : tipoMecanismoVehiculoPago === "Mandato" && pruebaAbrirFuente === true ?
+          <DetalleMandato
+            open={pruebaAbrirFuente}
+            setOpen={setPruebaAbrirFuente}
+            mandato={mecanismoVehiculoPago}
+          />
+          // <AgregarMandatos
+          //   //deshabilidarCamposSCLP={deshabilidarCamposSCLP}
+          //   handler={setPruebaAbrirFuente}
+          //   openState={pruebaAbrirFuente}
+          // />
+          : tipoMecanismoVehiculoPago === "Fideicomiso" && pruebaAbrirFuente === true ?
+
+            <DetalleFideicomiso
+              open={pruebaAbrirFuente}
+              setOpen={setPruebaAbrirFuente}
+              fideicomiso={mecanismoVehiculoPago}
             />
+
+            // <AgregarFideicomisos
+            //   //deshabilidarCamposSCLP={deshabilidarCamposSCLP}
+            //   handler={setPruebaAbrirFuente}
+            //   openState={pruebaAbrirFuente}
+            // />
             : null
       }
     </Grid>

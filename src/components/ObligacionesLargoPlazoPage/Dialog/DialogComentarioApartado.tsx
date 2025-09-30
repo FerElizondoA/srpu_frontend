@@ -27,9 +27,12 @@ const theme = createTheme({
 export function ComentarioApartado({
   setOpen,
   openState,
+  filtroComentarioVolver
 }: {
   setOpen: Function;
   openState: { open: boolean; apartado: string; tab: string };
+  filtroComentarioVolver?: Function
+
 }) {
   const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
 
@@ -129,22 +132,22 @@ export function ComentarioApartado({
             setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
           }}
-        > 
+        >
           Cancelar
         </Button>
         <ThemeProvider theme={theme}>
-        <Button
-          sx={queries.buttonContinuar}
-         // disabled={coment.Comentario==="" || coment.Comentario===undefined}
-          onClick={() => {
-             newComentario(coment, openState.tab);
-             setComent({ Comentario: "", Apartado: "" });
-             setOpen(false);
-            console.log("coment.comentario", coment)
-          }}
-        >
-          Aceptar
-        </Button>
+          <Button
+            sx={queries.buttonContinuar}
+            // disabled={coment.Comentario==="" || coment.Comentario===undefined}
+            onClick={() => {
+              newComentario(coment, openState.tab);
+              setComent({ Comentario: "", Apartado: "" });
+              setOpen(false);
+              console.log("coment.comentario", coment)
+            }}
+          >
+            Aceptar
+          </Button>
         </ThemeProvider>
       </DialogActions>
     </Dialog>

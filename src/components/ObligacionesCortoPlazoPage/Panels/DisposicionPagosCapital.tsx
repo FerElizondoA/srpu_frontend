@@ -249,89 +249,33 @@ export function DisposicionPagosCapital() {
     }
   }, [monto, disposicionesParciales]);
 
+  const [restante, setRestante] = useState(0); // en pesos
 
-  const [restante, setRestante] = useState(0);
+  const parseMoney = (v: string | number): number => {
+    if (typeof v === "number") return v;
+    // quita $ y comas en una sola pasada
+    const num = Number(String(v).replace(/[$,]/g, ""));
+    return Number.isFinite(num) ? num : 0;
+  };
+
+  const toCents = (n: number) => Math.round(n * 100);
 
   useEffect(() => {
-    let totalImporte = 0;
+    const totalImporteCents = tablaDisposicion.reduce((acc, it) => {
+      const importePesos = parseMoney(it.importe);
+      return acc + toCents(importePesos);
+    }, 0);
 
-    // Sumar los importes de la tabla
-    tablaDisposicion.forEach((value) => {
-      totalImporte += Number(
-        value.importe.toString().replaceAll("$", "").replaceAll(",", "")
-      );
-    });
+    const montoCents = toCents(parseMoney(monto));
+    const nuevoRestanteCents = montoCents - totalImporteCents;
 
-    // Asegurarnos de que `monto` está en la escala correcta
-    let montoSinFormato = monto;
-
-    if (typeof monto === "string") {
-      montoSinFormato = Number((monto as string).replaceAll("$", "").replaceAll(",", ""));
-    }
-
-    // Si `moneyMask` ya dividió por 100 antes, multiplicamos nuevamente por 100 para restaurar el valor original
-    if (montoSinFormato < 100000000) {
-      montoSinFormato *= 100;
-    }
-
-    const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
-
-    console.log("Monto Original sin Formato:", montoSinFormato);
-    console.log("Total Importe:", totalImporte);
-    console.log("Nuevo Restante:", nuevoRestante);
-
-    // Actualizar el estado restante correctamente
-    setRestante(Number(nuevoRestante));
+    setRestante(nuevoRestanteCents / 100); // guardas en pesos
   }, [tablaDisposicion, monto]);
 
-  //   useEffect(() => {
-  //     let totalImporte = 0;
-
-  //     // Sumar los importes de la tabla
-  //     tablaDisposicion.forEach((value) => {
-  //       totalImporte += Number(
-  //         value.importe.toString().replaceAll("$", "").replaceAll(",", "")
-  //       );
-  //     });
-
-  //     // Calcular el restante sin formateo
-  //     const montoSinFormato = Number(
-  //       monto.toString().replaceAll("$", "").replaceAll(",", "")
-  //     );
-
-  //     const nuevoRestante = (montoSinFormato - totalImporte).toFixed(2);
-
-  // console.log("nuevoRestante", nuevoRestante);
-
-  //     // Actualizar el estado restante (como número)
-  //     setRestante(Number(nuevoRestante));
-  //   }, [tablaDisposicion]);
-
-  // useEffect(() => {
-  //   let loc = 0.0;
-  //   tablaDisposicion.map((value: any, index: number) => {
-  //     loc += parseFloat(
-  //       value.importe.toString().replaceAll("$", "").replaceAll(",", "")
-  //     );
-  //   });
-
-  //   let res = 0.0;
-  //   res =
-  //     parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
-  //     parseFloat(loc.toFixed(2));
-  //     setRestante(res);
-  // }, [tablaDisposicion]);
-
-  const query = {
-    isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
-  };
 
   const validacionBotonAgregar = (valorFormateado: string) => {
     // Remueve cualquier carácter que no sea número o punto decimal
     const valorNumerico = valorFormateado.replace(/[^\d.-]/g, "");
-
-    console.log("valorNumerico", valorNumerico);
-
     return (parseFloat(valorNumerico)); // Convierte la cadena a número flotante
   };
 
@@ -384,8 +328,8 @@ export function DisposicionPagosCapital() {
           sm: "10rem",
           md: "10rem",
           lg: "10rem",
-          xl: "10rem" /* */
-        }} //MOVER EL HEIGHT
+          xl: "10rem"
+        }}
       >
         <Grid item >
           <Divider sx={{ marginBottom: 2 }}>
@@ -600,65 +544,10 @@ export function DisposicionPagosCapital() {
             <Grid item xs={10} sm={6} md={6} lg={3} xl={3}
               mb={{
                 xs: 3,
-                // sm: ,
-                // md: ,
-                // lg: ,
-                // xl:  /* */
               }}
             >
 
-              {/* <TextField
-                disabled={!disposicionesParciales}
-                helperText={
-                  disposicionesParciales
-                    ? "Monto Original Contratado: " +
-                    monto +
-                    "; Monto restante: " +
-                   moneyMask(restante.toString())
-                    : ""
-                }
-                value={disposicion.importe}
-                onChange={(v) => {
-                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
-                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
-                  console.log("");
-                  
-
-                  // Verificamos que sea numérico y aplicamos las validaciones
-                  if (
-                    validator.isNumeric(valorNumerico) &&
-                    disposicionesParciales &&
-                    Number(valorNumerico) < restante // Comparamos directamente con 'restante'
-                  ) {
-                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
-                    setDisposicion({
-                      ...disposicion,
-                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
-                    });
-                  } else if (v.target.value === "") {
-                    // Si está vacío, seteamos a "0"
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
-                  }
-                }}
-                error={
-                  Number(disposicion.importe.replace(/[^\d.]/g, "")) >
-                  Number(monto.toString().replace(/[^\d.]/g, ""))
-                }
-                fullWidth
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                variant="standard"
-              /> */}
               <Grid justifyContent={"space-between"}>
-
 
                 {validacionBotonAgregar(
                   disposicion.importe.toString()
@@ -680,10 +569,8 @@ export function DisposicionPagosCapital() {
                     disabled={!disposicionesParciales}
                     helperText={
                       (disposicionesParciales
-                        ? "Monto Original Contratado: " +
-                        moneyMask(monto.toString()) +  // Formatear el monto
-                        "; Monto restante: " +
-                        moneyMask((restante * 100).toString()) // Formatear el restante
+                        ? `Monto Original Contratado: ${moneyMask(String(monto))}; 
+                        Monto restante: ${moneyMask(String(restante * 100))}`
                         : ""
                       )
                     }
@@ -713,77 +600,8 @@ export function DisposicionPagosCapital() {
                     }}
                     variant="standard"
                   />
-                  {/* <Tooltip title={validacionBotonAgregar(
-                    disposicion.importe.toString()
-                  ) >
-                    restante ? "Favor de ingresar un numero menor" : null}>
-                    <Button
-                      disabled={validacionBotonAgregar(
-                        disposicion.importe.toString()
-                      ) <=
-                        restante}
-                      onClick={() => {
-
-                      }}
-                    >
-                      < NewReleasesIcon />
-                    </Button>
-                  </Tooltip> */}
                 </Grid>
-
               </Grid>
-
-              {/* <TextField
-                disabled={!disposicionesParciales}
-                helperText={
-                  disposicionesParciales
-                    ? "Monto Original Contratado: " +
-                    monto +
-                    "; Monto restante: " +
-                    moneyMask(restante.toFixed(2))
-                    : ""
-                }
-                value={disposicion.importe}
-                onChange={(v) => {
-                  // Limpiamos el valor: quitamos todos los caracteres no numéricos excepto el punto decimal
-                  const valorNumerico = v.target.value.replace(/[^\d.]/g, "");
-
-                  // Verificamos que sea numérico y aplicamos las validaciones
-                  if (
-                    // validator.isNumeric(valorNumerico) &&
-                    //disposicion.importe.length < monto.toString().length &&
-                    disposicionesParciales &&
-                    parseFloat(valorNumerico) <= restante &&
-                    parseFloat(valorNumerico) < 9999999999999999
-
-                  ) {
-                    // Formatear el importe a formato de dinero, pero manteniendo el valor limpio
-                    setDisposicion({
-                      ...disposicion,
-                      importe: moneyMask(valorNumerico), // Aplicamos el formato adecuado
-                    });
-                  } else if (v.target.value === "") {
-                    // Si está vacío, seteamos a "0"
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
-                  }
-                }}
-                error={
-                  parseFloat(disposicion.importe.toString().replace(/[^\d.]/g, "")) >
-                  parseFloat(monto.toString().replace(/[^\d.]/g, ""))
-                }
-                fullWidth
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                variant="standard"
-              /> */}
             </Grid>
           </Grid>
 

@@ -33,6 +33,7 @@ import {
   getDocumentos,
   getPathDocumentosAut,
   listFile,
+  listFileAutorizaciones,
 } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { IPathDocumentos } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
@@ -41,7 +42,7 @@ import { DialogNuevaAutorizacion } from "../Dialog/DialogNuevaAutorizacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
-import { formatDateToMexican } from "../../../generics/Validation";
+import { convertFileToBase64, formatDateToMexican } from "../../../generics/Validation";
 
 interface Head {
   label: string;
@@ -109,14 +110,11 @@ export function Autorizacion() {
 
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
-  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>(
-    []
-  );
+  const [pathDocumentos, setPathDocumentos] = useState<Array<IPathDocumentos>>([]);
 
   const [dialogNumAutorizacion, setDialogNumAutorizacion] = useState("");
 
-  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] =
-    useState(false);
+  const [openDialogEliminarAutorizacion, setOpenDialogEliminarAutorizacion] = useState(false);
 
   const [arrDocs, setArrDocs] = useState<any>([]);
 
@@ -125,7 +123,7 @@ export function Autorizacion() {
   useEffect(() => {
     getAutorizaciones();
     console.log("autorizaciones", autorizaciones);
-    
+
   }, [openDialogNuevaAutorizacion, openDialogEliminarAutorizacion]);
 
   const [fileSelected, setFileSelected] = useState<any>("");
@@ -133,25 +131,25 @@ export function Autorizacion() {
   useEffect(() => {
     if (autorizacionSelect?.Id !== "") {
       getPathDocumentosAut(autorizacionSelect?.Id, setPathDocumentos);
-      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => {});
+      listFile(`/Autorizaciones/${autorizacionSelect?.Id}`, () => { });
     }
   }, [autorizacionSelect, openDialogNuevaAutorizacion]);
 
-  useEffect(() => {
-    if (pathDocumentos.length > 0) {
-      let loc: any = [...arrDocs];
-      pathDocumentos?.map((val: any) => {
-        return getDocumentos(
-          val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
-          val?.NombreIdentificador,
-          (res: any, index: number) => {
-            loc.push({ file: res, nombre: val.NombreArchivo });
-          }
-        );
-      });
-      setArrDocs(loc);
-    }
-  }, [pathDocumentos]);
+  // useEffect(() => {
+  //   if (pathDocumentos.length > 0) {
+  //     let loc: any = [...arrDocs];
+  //     pathDocumentos?.map((val: any) => {
+  //       return getDocumentos(
+  //         val?.Ruta?.replaceAll(`${val?.NombreIdentificador}`, "/"),
+  //         val?.NombreIdentificador,
+  //         (res: any, index: number) => {
+  //           loc.push({ file: res, nombre: val.NombreArchivo });
+  //         }
+  //       );
+  //     });
+  //     setArrDocs(loc);
+  //   }
+  // }, [pathDocumentos]);
 
   const Autorizacion = (FiltroReestructura: string) => {
     if (FiltroReestructura === "") {
@@ -250,6 +248,42 @@ export function Autorizacion() {
       );
     }
   };
+  const [loading, setLoading] = useState(true);
+
+  const [arr, setArr] = useState<IAutorizaciones>();
+
+  const [tipoMovAutorizacion, setTipoMovAutorizacion] = useState<IAutorizaciones>();
+
+  useEffect(() => {
+
+    console.log("autorizacionSelect", autorizacionSelect);
+    console.log("autorizacionSelectReestructura", autorizacionSelectReestructura);
+
+
+    if (tipoMovAutorizacion && tipoMovAutorizacion.Id) {
+      listFileAutorizaciones(
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/AUTORIZACIONES/${tipoMovAutorizacion.Id}/`,
+        setArr,
+        reestructura === ""
+          ? autorizacionSelect
+          : autorizacionSelectReestructura
+
+      ).then(() => {
+        console.log("arr", arr)
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
+
+  }, [autorizacionSelect, autorizacionSelectReestructura]);
+
+  useEffect(() => {
+console.log("arr", arr)
+
+
+  }, [arr])
+
 
   return (
     <Grid
@@ -322,6 +356,7 @@ export function Autorizacion() {
               );
             }}
             onChange={(event, text: IAutorizaciones) => {
+              setTipoMovAutorizacion(text)
               if (reestructura === "") {
                 setAutorizacionSelect(text);
               } else {
@@ -449,22 +484,56 @@ export function Autorizacion() {
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Tooltip
-                        title={autorizacionSelectReestructura?.DocumentoSoporte}
+                        title={autorizacionSelectReestructura?.DocumentoSoporte.nombreArchivo}
                       >
                         <IconButton
-                          onClick={() => {
-                            setFileSelected(
-                              `data:application/pdf;base64,${
-                                arrDocs.filter((td: any) =>
-                                  td.nombre.includes(
-                                    autorizacionSelectReestructura?.DocumentoSoporte
-                                  )
-                                )[0].file
-                              }`
-                            );
+                          onClick={async () => {
 
-                            setShowModalPrevia(true);
-                          }}
+                           
+                              // console.log("row.archivo", arr.archivo)
+
+                              // let base64String = '';
+                              // try {
+                              //   if (arr.archivo instanceof File) {
+                              //     base64String = await convertFileToBase64(arr.archivo);
+                              //     console.log("base64String 1", base64String)
+
+                              //   } else {
+                              //     base64String = arr.archivo;
+                              //     console.log("base64String 2", base64String)
+
+                              //   }
+
+                              //   const dataUri = `data:application/pdf;base64,${base64String}`;
+                              //   console.log("dataUri", dataUri)
+                              //   setFileSelected(dataUri);
+                              // } catch (error) {
+                              //   console.error("Error al convertir el archivo a Base64", error);
+                              // }
+
+                              // setShowModalPrevia(true);
+                              // setFileSelected(
+                              //   `data:application/pdf;base64,${arr.filter((td: any) =>
+                              //     td.NOMBREFORMATEADO.includes(
+                              //       row.nombreArchivo
+                              //     )
+                              //   )[0].FILE
+                              //   }`
+                              // );
+                              // setShowModalPrevia(true);
+                            }
+
+                            // setFileSelected(
+                            //   `data:application/pdf;base64,${arrDocs.filter((td: any) =>
+                            //     td.nombre.includes(
+                            //       arr?.DocumentoSoporte
+                            //     )
+                            //   )[0].file
+                            //   }`
+                            // );
+
+                            // setShowModalPrevia(true);
+                          }
                         >
                           <FileOpenIcon></FileOpenIcon>
                         </IconButton>
@@ -554,7 +623,7 @@ export function Autorizacion() {
         </Grid>
       )}
 
-      {autorizacionSelect?.NumeroAutorizacion && (
+      {arr?.NumeroAutorizacion && (
         <Grid sx={{ width: "100%" }} display={"flex"} justifyContent={"center"}>
           <Paper
             sx={{
@@ -592,12 +661,12 @@ export function Autorizacion() {
                   <StyledTableRow>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.NumeroAutorizacion}
+                        {arr?.NumeroAutorizacion}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.FechaPublicacion}
+                        {arr?.FechaPublicacion}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell
@@ -606,41 +675,72 @@ export function Autorizacion() {
                       sx={{ width: 200 }}
                     >
                       <Typography>
-                        {autorizacionSelect?.MontoAutorizado}
+                        {arr?.MontoAutorizado}
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.DescripcionMedioPublicacion}
+                        {arr?.DescripcionMedioPublicacion}
                       </Typography>
                     </StyledTableCell>
+
                     <StyledTableCell align="center" component="th">
-                      <Tooltip title={autorizacionSelect?.DocumentoSoporte}>
+                      <Tooltip title={arr?.DocumentoSoporte.nombreArchivo}>
                         <IconButton
-                          onClick={() => {
-                            setFileSelected(
-                              `data:application/pdf;base64,${
-                                arrDocs.filter((td: any) =>
-                                  td.nombre.includes(
-                                    autorizacionSelect?.DocumentoSoporte
-                                  )
-                                )[0].file
-                              }`
-                            );
+                          onClick={async () => {
+
+
+                            console.log("row.archivo", arr.DocumentoSoporte)
+
+                            let base64String = '';
+                            try {
+                              if (arr.DocumentoSoporte.archivo instanceof File) {
+                                base64String = await convertFileToBase64(arr.DocumentoSoporte.archivo);
+                                console.log("base64String 1", base64String)
+
+                              } else {
+                                base64String = arr.DocumentoSoporte.archivo;
+                                console.log("base64String 2", base64String)
+
+                              }
+
+                              const dataUri = `data:application/pdf;base64,${base64String}`;
+                              console.log("dataUri", dataUri)
+                              setFileSelected(dataUri);
+                            } catch (error) {
+                              console.error("Error al convertir el archivo a Base64", error);
+                            }
 
                             setShowModalPrevia(true);
-                          }}
+                          }
+
+
+                            // setFileSelected(
+                            //   `data:application/pdf;base64,${
+                            //     arrDocs.filter((td: any) =>
+                            //       td.nombre.includes(
+                            //         autorizacionSelect?.DocumentoSoporte
+                            //       )
+                            //     )[0].file
+                            //   }`
+                            // );
+
+                            // setShowModalPrevia(true);
+                          }
                         >
                           <FileOpenIcon></FileOpenIcon>
                         </IconButton>
                       </Tooltip>
                     </StyledTableCell>
+
+
                     <StyledTableCell align="center" component="th">
                       <Typography>
-                        {autorizacionSelect?.DetalleDestino &&
-                          JSON.parse(autorizacionSelect?.DetalleDestino)[0]
+                        {arr?.DetalleDestino &&
+                          JSON.parse(arr?.DetalleDestino)[0]
                             .detalleDestino}
                       </Typography>
+
                     </StyledTableCell>
 
                     <StyledTableCell
@@ -672,31 +772,33 @@ export function Autorizacion() {
                           disabled={reestructura === "con autorizacion"}
                           type="button"
                           onClick={() => {
+                            console.log("arr EDITAR", arr)
                             setAccion("Editar");
                             setAutorizacion(
                               {
                                 entidad: {
-                                  Id: autorizacionSelect?.IdEntidad,
-                                  Organismo: autorizacionSelect?.Entidad,
+                                  Id: arr?.IdEntidad,
+                                  Organismo: arr?.Entidad,
                                 },
                                 numeroAutorizacion:
-                                  autorizacionSelect?.NumeroAutorizacion,
+                                  arr?.NumeroAutorizacion,
                                 fechaPublicacion:
-                                  autorizacionSelect?.FechaPublicacion,
+                                  arr?.FechaPublicacion,
                                 medioPublicacion: {
-                                  Id: autorizacionSelect?.IdMedioPublicacion,
+                                  Id: arr?.IdMedioPublicacion,
                                   Descripcion:
-                                    autorizacionSelect?.DescripcionMedioPublicacion,
+                                    arr?.DescripcionMedioPublicacion,
                                 },
                                 montoAutorizado:
-                                  autorizacionSelect?.MontoAutorizado,
+                                  arr?.MontoAutorizado,
                                 documentoSoporte:
-                                  autorizacionSelect?.DocumentoSoporte,
+                                  arr?.DocumentoSoporte,
+
                                 acreditacionQuorum:
-                                  autorizacionSelect?.AcreditacionQuorum,
+                                  arr?.AcreditacionQuorum,
                               },
-                              JSON.parse(autorizacionSelect?.DestinoAutorizado),
-                              JSON.parse(autorizacionSelect?.DetalleDestino)
+                              JSON.parse(arr?.DestinoAutorizado),
+                              JSON.parse(arr?.DetalleDestino)
                             );
                             setOpenNuevaAutorizacion(
                               !openDialogNuevaAutorizacion

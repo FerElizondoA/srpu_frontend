@@ -2,7 +2,11 @@
 import {
   Autocomplete,
   Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Grid,
+  IconButton,
   InputLabel,
   TextField,
   Tooltip,
@@ -13,15 +17,29 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { IGeneralAutorizado } from "../../../store/CreditoLargoPlazo/autorizacion";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
+import { convertFileToBase64 } from "../../../generics/Validation";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
+import CloseIcon from "@mui/icons-material/Close";
 
-export function RegistrarNuevaAutorizacion() {
+
+
+export interface IFileAutorizacion {
+  archivo: string;
+  nombreArchivo: string;
+}
+
+export function RegistrarNuevaAutorizacion({
+  tipoAccion
+}: {
+  tipoAccion?: string
+}) {
   const autorizacion: IGeneralAutorizado = useLargoPlazoStore(
     (state) => state.autorizacion
   );
@@ -44,6 +62,7 @@ export function RegistrarNuevaAutorizacion() {
         setRegistrarAutorizacion({
           ...autorizacion,
           documentoSoporte: {
+            tipo: tipoDocumento,
             archivo: file,
             nombreArchivo: file.name,
           },
@@ -54,6 +73,7 @@ export function RegistrarNuevaAutorizacion() {
         setRegistrarAutorizacion({
           ...autorizacion,
           acreditacionQuorum: {
+            tipo: tipoDocumento,
             archivo: file,
             nombreArchivo: file.name,
           },
@@ -61,6 +81,10 @@ export function RegistrarNuevaAutorizacion() {
       }
     }
   }
+  const [showModalPrevia, setShowModalPrevia] = useState(false);
+
+  const [fileSelected, setFileSelected] = useState<any>("");
+
 
   useEffect(() => {
     getMediosDePublicacion();
@@ -85,6 +109,32 @@ export function RegistrarNuevaAutorizacion() {
       });
     }
   };
+
+  const [arrayDocumentosCargados, setArrayDocumentosCargados] = useState<Array<IFileAutorizacion>>([]);
+
+
+  // useEffect(() => {
+
+  //   console.log("autorizacion EDITAR", autorizacion);
+  //   setArrayDocumentosCargados([
+  //     {
+  //       ...autorizacion.documentoSoporte,
+  //       archivo: autorizacion.documentoSoporte.archivo,
+  //     },
+  //     {
+  //       ...autorizacion.acreditacionQuorum,
+  //       archivo: autorizacion.acreditacionQuorum.archivo,
+  //     },
+  //   ]);
+
+
+  // }, [tipoAccion === "Editar"])
+
+  useEffect(() => {
+    console.log("autorizacion EDITAR", autorizacion);
+  }, [])
+
+
 
   return (
     <>
@@ -258,16 +308,55 @@ export function RegistrarNuevaAutorizacion() {
           </Grid>
 
           <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
-            <InputLabel
-              sx={{
-                ...queries.medium_text,
-                width: "82%",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              Documento Soporte
-            </InputLabel>
+            <Grid sx={{ display: "flex", justifyContent: "space-evenly" }}>
+              <InputLabel
+                sx={{
+                  ...queries.medium_text,
+                  width: "82%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                Documento Soporte
+              </InputLabel>
+              <Button
+                sx={{ display: "flex", justifyContent: "end" }}
+                onClick={async () => {
+                  try {
+                    console.log("autorizacion.DocumentoSoporte", autorizacion.documentoSoporte);
+
+                    let base64String = "";
+
+                    if (autorizacion.documentoSoporte && autorizacion.documentoSoporte.archivo) {
+                      if (autorizacion.documentoSoporte.archivo instanceof File) {
+                        base64String = await convertFileToBase64(autorizacion.documentoSoporte.archivo);
+                      } else {
+                        base64String = autorizacion.documentoSoporte.archivo; // string base64 desde backend
+                      }
+                    } else {
+                      console.warn("DocumentoSoporte vacío o sin archivo");
+                    }
+
+                    if (base64String) {
+                      const dataUri = `data:application/pdf;base64,${base64String}`;
+                      setFileSelected(dataUri);
+                      setShowModalPrevia(true);
+                    } else {
+                      console.error("El archivo no contiene datos en base64");
+                    }
+                  } catch (error) {
+                    // 🔹 Aquí ya no deberías llegar salvo error inesperado (axios, etc.)
+                    console.error("Error inesperado al convertir el archivo a Base64:", error);
+                  }
+                }}
+              >
+                <Tooltip title="Ver archivo">
+                  <Typography>
+                    <FileOpenIcon />
+                  </Typography>
+                </Tooltip>
+              </Button>
+            </Grid>
 
             <Grid mt={1} display={"flex"} justifyContent={"center"}>
               <Grid sx={{ position: "relative", width: "100%" }}>
@@ -276,13 +365,13 @@ export function RegistrarNuevaAutorizacion() {
                   sx={{
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
-                      autorizacion.documentoSoporte.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                      autorizacion.documentoSoporte?.nombreArchivo !==
+                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
-                        : "2x dotted black",
+                        : "2px dotted black", // Ojo, aquí estaba "2x", debería ser "2px"
                   }}
                 >
-                  {autorizacion.documentoSoporte.nombreArchivo ||
+                  {autorizacion.documentoSoporte?.nombreArchivo ||
                     "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
                 </Typography>
                 <input
@@ -310,39 +399,57 @@ export function RegistrarNuevaAutorizacion() {
           </Grid>
 
           <Grid item xs={10} sm={5} md={4} lg={4} xl={4}>
-            <Grid
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "end",
-                height: "3rem",
-                "@media (min-width: 480px)": {
-                  height: "5rem",
-                  width: "100%",
-                },
 
-                "@media (min-width: 768px)": {
-                  height: "5rem",
-                  width: "100%",
-                  mb: 0,
-                },
+              <Grid sx={{ display: "flex", justifyContent: "space-evenly" }}>
 
-                "@media (min-width: 900px)": {
-                  alignItems: "start",
-                  height: "1.6rem",
-                  width: "100%",
-                },
-              }}
-            >
-              <InputLabel
-                sx={{
-                  ...queries.medium_text,
-                  width: "100%",
-                }}
-              >
-                Acreditación del quórum y el sentido de la votación
-              </InputLabel>
-            </Grid>
+                <InputLabel
+                  sx={{
+                    ...queries.medium_text,
+                    width: "100%",
+                  }}
+                >
+                  Acreditación del quórum y el sentido de la votación
+                </InputLabel>
+
+                <Button
+                  sx={{ display: "flex", justifyContent: "center" }}
+                  onClick={async () => {
+                    try {
+                      console.log("autorizacion.DocumentoSoporte", autorizacion.acreditacionQuorum);
+
+                      let base64String = "";
+
+                      if (autorizacion.acreditacionQuorum && autorizacion.acreditacionQuorum.archivo) {
+                        if (autorizacion.acreditacionQuorum.archivo instanceof File) {
+                          base64String = await convertFileToBase64(autorizacion.acreditacionQuorum.archivo);
+                        } else {
+                          base64String = autorizacion.acreditacionQuorum.archivo; // string base64 desde backend
+                        }
+                      } else {
+                        console.warn("DocumentoSoporte vacío o sin archivo");
+                      }
+
+                      if (base64String) {
+                        const dataUri = `data:application/pdf;base64,${base64String}`;
+                        setFileSelected(dataUri);
+                        setShowModalPrevia(true);
+                      } else {
+                        console.error("El archivo no contiene datos en base64");
+                      }
+                    } catch (error) {
+                      // 🔹 Aquí ya no deberías llegar salvo error inesperado (axios, etc.)
+                      console.error("Error inesperado al convertir el archivo a Base64:", error);
+                    }
+                  }}
+                >
+                  <Tooltip title="Ver archivo">
+                    <Typography>
+                      <FileOpenIcon />
+                    </Typography>
+                  </Tooltip>
+                </Button>
+              </Grid>
+
 
             <Grid
               display={"flex"}
@@ -357,7 +464,7 @@ export function RegistrarNuevaAutorizacion() {
                     ...queries.documentosAgregarNuevaAutorizacion,
                     border:
                       autorizacion.acreditacionQuorum.nombreArchivo !==
-                      "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                        "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
                         ? "2px dotted #af8c55"
                         : "2x dotted black",
                   }}
@@ -389,6 +496,40 @@ export function RegistrarNuevaAutorizacion() {
             </Grid>
           </Grid>
         </Grid>
+        <Dialog
+          open={showModalPrevia}
+          onClose={() => {
+            setShowModalPrevia(false);
+          }}
+          fullWidth
+          maxWidth={"lg"}
+        >
+          <DialogTitle sx={{ mb: 2 }}>
+            <IconButton
+              onClick={() => {
+                setShowModalPrevia(false);
+              }}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "black",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ height: "100vh" }}>
+            <iframe
+              style={{
+                width: "100%",
+                height: "85vh",
+              }}
+              src={`${fileSelected}`}
+              title="description"
+            ></iframe>
+          </DialogContent>
+        </Dialog>
       </Grid>
     </>
   );

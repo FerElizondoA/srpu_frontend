@@ -266,7 +266,21 @@ export function Encabezado() {
           <InputLabel sx={queries.medium_text}>
             Solicitante Autorizado
           </InputLabel>
-          <Select
+          <TextField sx={queries.medium_text}
+            fullWidth
+
+            value={
+              listadoUsuarios.length <= 0
+                ? ""
+                : encabezado.solicitanteAutorizado.Nombre
+            }
+            variant="standard"
+
+          >
+
+          </TextField>
+          
+          {/* <Select
             disabled={
               datosActualizar.length > 0 &&
               !datosActualizar.includes("Solicitante Autorizado")
@@ -302,7 +316,7 @@ export function Encabezado() {
                 {`${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno}`}
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
         </Grid>
 
         <Grid item xs={10} md={3} lg={3}>
@@ -422,8 +436,6 @@ export function Encabezado() {
 
       </Grid>
       {/* <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
-
-        
 
       </Grid> */}
     </Grid>

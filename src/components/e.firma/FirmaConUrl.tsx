@@ -12,6 +12,7 @@ import {
   IUsuariosAsignables,
   rolesAdmin,
 } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
+import { useInscripcionStore } from "../../store/Inscripcion/main";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -117,6 +118,12 @@ export const FirmaConUrl = () => {
     //REVISA EL ESTATUS!
   };
 
+  const SolicitudDatos = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
+
+  // useEffect(() => {
+  //   console.log("Inscripcion Firma", SolicitudDatos);
+  // }, [])
+  
   return (
     <Grid container direction="column" sx={{ overflow: "hidden" }}>
       <Grid item>
@@ -135,7 +142,7 @@ export const FirmaConUrl = () => {
             AsuntoDoc: "asd",
           })}
           setState={(v: any) => {
-           console.log("FIRMADOCONURL", v);
+           //console.log("FIRMADOCONURL", v);
            
             changeInfoDoc(v, enviaNotificacion);
           }}

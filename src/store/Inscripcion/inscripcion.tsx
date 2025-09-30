@@ -8,7 +8,7 @@ import {
 import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
-import { IDeudorFideicomiso } from "../Fideicomiso/fideicomiso";
+import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
 import { IAnexoClausula, IDatosSolicitudReestructura } from "../Reestructura/reestructura";
 
 export interface IInscripcion {
@@ -62,7 +62,7 @@ export interface ISolicitudLargoPlazo {
     NumeroAutorizacion: string;
   };
   fuenteDePago: {
-    fuente: IDeudorFideicomiso[];
+    fuente: IDeudorFideicomisoNew[];
     garantiaDePago: string;
     mecanismoVehiculoDePago: {
       Tipo: string;
@@ -85,7 +85,7 @@ export interface ISolicitudLargoPlazo {
   };
 
   SolicitudReestructuracion: {
-    autorizacionReestructura:{
+    autorizacionReestructura: {
       Id: string
       MontoAutorizado: string
       NumeroAutorizacion: string
@@ -115,7 +115,7 @@ export interface ISolicitudCortoPlazo {
   condicionesFinancieras: ICondicionFinanciera[];
   documentacion: {
     descripcionTipo: string;
-    nombreArchivo: string; 
+    nombreArchivo: string;
     tipoArchivo: string;
   }[];
   inscripcion: {
@@ -130,7 +130,7 @@ export interface InscripcionSlice {
   setInscripcion: (solicitud: IInscripcion) => void;
 
   cleanInscripcion: () => void;
-  
+
   inscripcionReestructura: IDatosSolicitudReestructura;
   //PASAR LOS DATOS NECESRIOS PARA EL LLENADO DE LA SOLICITUD! ******************************** 
   setInscripcionRestructura: (solicitud: IDatosSolicitudReestructura) => void;
@@ -189,50 +189,50 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
 
   setInscripcionRestructura: (inscripcionReestructura: IDatosSolicitudReestructura) => {
     const lpState = useLargoPlazoStore.getState();
-    
+
     let aux: ISolicitudLargoPlazo = JSON.parse(inscripcionReestructura.SolicitudReestructura);
 
     lpState.changeEncabezado(aux?.encabezado);
 
-      lpState.setInformacionGeneral(
-        aux?.informacionGeneral?.informacionGeneral
-      );
-      lpState.setTablaObligadoSolidarioAval(
-        aux?.informacionGeneral?.obligadosSolidarios
-      );
-      lpState.setTablaGastosCostos(
-        aux?.informacionGeneral?.destinoGastosCostos
-      );
+    lpState.setInformacionGeneral(
+      aux?.informacionGeneral?.informacionGeneral
+    );
+    lpState.setTablaObligadoSolidarioAval(
+      aux?.informacionGeneral?.obligadosSolidarios
+    );
+    lpState.setTablaGastosCostos(
+      aux?.informacionGeneral?.destinoGastosCostos
+    );
 
-      lpState.getDetalleAutorizacion(aux?.autorizacion?.Id);
+    lpState.getDetalleAutorizacion(aux?.autorizacion?.Id);
 
-      lpState.setTipoMecanismoVehiculoPago(
-        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo
-      );
-      lpState.getDetalleFuenteDePago(
-        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
-        aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
-      );
-      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
+    lpState.setTipoMecanismoVehiculoPago(
+      aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo
+    );
+    lpState.getDetalleFuenteDePago(
+      aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
+      aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
+    );
+    lpState.setTablaAsignarFuenteNew(aux?.fuenteDePago?.fuente);
 
-      aux?.condicionesFinancieras.map((v: any, index: number) => {
-        return lpState.addCondicionFinanciera(v);
-      });
-      aux?.documentacion.map((v: any, index: number) => {
-        return lpState.addDocumento(v);
-      });
-      lpState.setReglasAplicables(aux?.inscripcion.declaratorias);
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      return lpState.addCondicionFinanciera(v);
+    });
+    aux?.documentacion.map((v: any, index: number) => {
+      return lpState.addDocumento(v);
+    });
+    lpState.setReglasAplicables(aux?.inscripcion.declaratorias);
 
-      //Reestructura
-      lpState.setTablaDeclaratorias(
-        aux?.SolicitudReestructuracion?.tablaDeclaratorias
-      );
+    //Reestructura
+    lpState.setTablaDeclaratorias(
+      aux?.SolicitudReestructuracion?.tablaDeclaratorias
+    );
 
-      lpState.setCreditoSolicitudReestructura(
-        aux?.SolicitudReestructuracion?.ReestructuraDeclaratorias
-      );
+    lpState.setCreditoSolicitudReestructura(
+      aux?.SolicitudReestructuracion?.ReestructuraDeclaratorias
+    );
 
-      lpState.getDetalleAutorizacion(aux?.SolicitudReestructuracion?.autorizacionReestructura?.Id);
+    lpState.getDetalleAutorizacion(aux?.SolicitudReestructuracion?.autorizacionReestructura?.Id);
 
 
     set(() => ({
@@ -286,7 +286,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       cpState.setTablaDocumentos(aux?.documentacion);
 
       cpState.setReglasAplicables(aux?.inscripcion.declaratorias);
-      
+
     } else if (inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo") {
       lpState.changeEncabezado(aux?.encabezado);
 
@@ -309,7 +309,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Tipo,
         aux?.fuenteDePago?.mecanismoVehiculoDePago?.Id
       );
-      lpState.setTablaAsignarFuente(aux?.fuenteDePago?.fuente);
+
+      console.log("aux?.fuenteDePago?.fuente", aux?.fuenteDePago?.fuente)
+      lpState.setTablaAsignarFuenteNew(aux?.fuenteDePago?.fuente);
 
       aux?.condicionesFinancieras.map((v: any, index: number) => {
         return lpState.addCondicionFinanciera(v);
@@ -332,7 +334,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     let state = useCortoPlazoStore.getState();
 
     state.changeEncabezado({
-      tipoDocumento: "",
+      tipoCredito: { Id: "", Descripcion: "" },
+
+      tipoDocumento: "Crédito Simple a Corto Plazo",
       solicitanteAutorizado: {
         IdSolicitante: localStorage.getItem("IdCentral") || "",
         Cargo: localStorage.getItem("Puesto") || "",
@@ -368,7 +372,8 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     let state = useLargoPlazoStore.getState();
 
     state.changeEncabezado({
-      tipoDocumento: "Crédito Simple a Corto Plazo",
+      tipoCredito: { Id: "", Descripcion: "" },
+      tipoDocumento: "Crédito Simple a Largo Plazo",
       solicitanteAutorizado: {
         IdSolicitante: localStorage.getItem("IdCentral") || "",
         Cargo: localStorage.getItem("Puesto") || "",
@@ -406,8 +411,16 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       DescripcionMedioPublicacion: "",
       IdMedioPublicacion: "",
       MontoAutorizado: "",
-      DocumentoSoporte: "",
-      AcreditacionQuorum: "",
+      DocumentoSoporte: {
+        archivo: new File([], ""),
+        nombreArchivo: "",
+        fechaArchivo: new Date(),
+      },
+      AcreditacionQuorum: {
+        archivo: new File([], ""),
+        nombreArchivo: "",
+        fechaArchivo: new Date(),
+      },
       DestinoAutorizado: "",
       DetalleDestino: "",
       CreadoPor: "",
@@ -428,7 +441,8 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       TipoEntePublicoObligado: "",
 
       CLABE: "",
-      Banco: "",
+      IdBanco: "",
+      NombreBanco: "",
       EntePublicoObligado: "",
 
       TipoMovimiento: "",

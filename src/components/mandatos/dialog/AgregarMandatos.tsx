@@ -27,6 +27,8 @@ import { DatosGeneralesMandato } from "../panels/DatosGeneralesMandatos";
 import { SoporteDocumentalMandato } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoMandato } from "../panels/TipoDeMovimiento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
+import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 
 export const DialogTransition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -55,9 +57,11 @@ export const buttonTheme = createTheme({
 export function AgregarMandatos({
   handler,
   openState,
+  getMecanismosVehiculosPago,
 }: {
   handler: Function;
   openState: boolean;
+  getMecanismosVehiculosPago: Function;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -79,6 +83,9 @@ export function AgregarMandatos({
     (state) => state.modificaMandato
   );
 
+  const getMandatos: Function = useMandatoStore((state) => state.getMandatos);
+
+
   const [loading, setLoading] = useState(false);
 
   const getTipoEntePublicoObligado: Function = useCortoPlazoStore(
@@ -89,9 +96,32 @@ export function AgregarMandatos({
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+    const tablaSoporteDocumentalMandato: ISoporteDocumentalFuentePago[] = useMandatoStore(
+      (state) => state.tablaSoporteDocumentalMandato
+    );
+
+    //const idMandato: Function = useMandatoStore((state) => state.idMandato);
+  
+
   useEffect(() => {
     getTipoEntePublicoObligado();
   }, []);
+
+    const [arr, setArr] = useState<any>([]);
+  
+
+    useEffect(() => {
+      if (IdMandato !== "") {
+        console.log("Entré al useEffect de IDMANDATO:");
+        listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${IdMandato}/`,
+          setArr,
+          tablaSoporteDocumentalMandato
+        ).then(() => {
+          setLoading(false);
+        });
+      }
+      console.log("idMandato:", IdMandato);
+    }, [IdMandato !== ""]);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
@@ -122,20 +152,24 @@ export function AgregarMandatos({
           <Grid item>
             <ThemeProvider theme={buttonTheme}>
               <Button
-              disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
+                disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   if (IdMandato === "") {
+                    //console.log("CREA MANDATO")
                     setLoading(true);
                     createMandato(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
                     });
                   } else if (IdMandato !== "") {
+                   // console.log("EDITA MANDATO")
                     setLoading(true);
                     modificaMandato(() => {
                       setLoading(false);
                       handler(false);
+                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
                     });
                   }
                   setTabIndex(0);
@@ -150,8 +184,8 @@ export function AgregarMandatos({
                     },
                   }}
                 >
-                    {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
-                : IdMandato === "" ? "Agregar" : "Editar"} Mandato
+                  {tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable" ? ""
+                    : IdMandato === "" ? "Agregar" : "Editar"} Mandato
                   {/* {IdMandato === "" ? "Agregar" : "Editar"} Mandato */}
                 </Typography>
               </Button>
@@ -178,7 +212,7 @@ export function AgregarMandatos({
 
         {tabIndex === 1 && <TipoDeMovimientoMandato />}
 
-        {tabIndex === 2 && <SoporteDocumentalMandato />}
+        {tabIndex === 2 && <SoporteDocumentalMandato DocumentosBaseDatos={arr}/>}
       </Grid>
 
       <ThemeProvider theme={buttonTheme}>

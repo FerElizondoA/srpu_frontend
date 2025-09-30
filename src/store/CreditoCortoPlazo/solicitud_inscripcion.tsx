@@ -11,6 +11,7 @@ import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Pan
 import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import { alertaInfo } from "../../avisosPAUA/componentes/Alertas";
+import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -55,16 +56,17 @@ export interface SolicitudInscripcionSlice {
   deleteFiles: (ruta: string) => void;
 
   saveFiles: (idRegistro: string, ruta: string) => void;
-  saveFilesFuentesPago: (idRegistro: string, ruta: string) => void;
+  saveFilesFuentesPago: (NombreFuentePago: string, TablaFuentePago: ISoporteDocumentalFuentePago[], idRegistro: string, ruta: string, setLoading: Function) => void;
 
-  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File) => void;
+  guardaDocumentos: (idRegistro: string, ruta: string, archivo: File, acuse?: string) => void;
 
   savePathDoc: (
     idSolicitud: string,
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc: string
+    TpoDoc: string,
+    acuse?: string
   ) => void;
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
@@ -72,16 +74,16 @@ export interface SolicitudInscripcionSlice {
 
 
   comentariosSolicitudInscrpcion: { [key: string]: string };
-    setComentariosSolicitudInscrpcion: (comentario: any) => void;
+  setComentariosSolicitudInscrpcion: (comentario: any) => void;
 
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-comentariosSolicitudInscrpcion:{},
+  comentariosSolicitudInscrpcion: {},
 
- setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
+  setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
     set((state) => ({
       comentariosSolicitudInscrpcion: comentariosSolicitudInscrpcion,
     }));
@@ -189,8 +191,6 @@ comentariosSolicitudInscrpcion:{},
         }
       )
       .then(({ data }) => {
-        console.log("data.data.Id", data.data.Id)
-        console.log("data.data", data.data)
 
         state.setIdSolicitudBorrador(data.data.Id)
         setIdSolicitudCreada(data.data.Id)
@@ -202,8 +202,9 @@ comentariosSolicitudInscrpcion:{},
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
-        //inscripcionState.setInscripcion(data.data);
-        //state.addComentario(data.data.Id, comentario, "Captura");
+        inscripcionState.setInscripcion(data.data);
+        state.addComentario(data.data.Id, comentario, "Captura");
+
       });
   },
 
@@ -251,7 +252,7 @@ comentariosSolicitudInscrpcion:{},
       .put(
         process.env.REACT_APP_APPLICATION_BACK + "/modify-solicitud",
         {
-          IdSolicitud: inscripcionState.inscripcion.Id,
+          IdSolicitud: inscripcionState.inscripcion.Id || state.IdSolicitudBorrador,
           IdTipoEntePublico: state.encabezado.tipoEntePublico.Id,
           IdEntePublico: state.encabezado.organismo.Id,
           TipoSolicitud: state.encabezado.tipoDocumento,
@@ -332,30 +333,30 @@ comentariosSolicitudInscrpcion:{},
     if (comentario === null || comentario === undefined || comentario.trim() === '') {
       comentario = ''; // Enviar un string vacío al backend para eliminarlo
     }
-      await axios
-        .post(
-          process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
-          {
-            IdSolicitud: Id,
-            Comentario: comentario,
-            Tipo: tipo,
-            IdUsuario: localStorage.getItem("IdUsuario"),
-            IdComentario: useCortoPlazoStore.getState().idComentario,
+    await axios
+      .post(
+        process.env.REACT_APP_APPLICATION_BACK + "/create-comentario",
+        {
+          IdSolicitud: Id,
+          Comentario: comentario,
+          Tipo: tipo,
+          IdUsuario: localStorage.getItem("IdUsuario"),
+          IdComentario: useCortoPlazoStore.getState().idComentario,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("jwtToken"),
           },
-          {
-            headers: {
-              Authorization: localStorage.getItem("jwtToken"),
-            },
-          }
-        )
-        .then(({ data }) => {
-          useCortoPlazoStore.setState({
-            comentarios: {},
-            idComentario: "",
-          });
-        })
-        .catch((e) => { });
-    
+        }
+      )
+      .then(({ data }) => {
+        useCortoPlazoStore.setState({
+          comentarios: {},
+          idComentario: "",
+        });
+      })
+      .catch((e) => { });
+
   },
 
   eliminarRequerimientos: async (Id: string, setState: Function) => {
@@ -409,12 +410,18 @@ comentariosSolicitudInscrpcion:{},
       .catch((e) => { });
   },
 
-  saveFilesFuentesPago: async (idRegistro: string, ruta: string) => {
+  saveFilesFuentesPago: async (
+    NombreFuentePago: string,
+    TablaFuentePago: ISoporteDocumentalFuentePago[],
+    idRegistro: string,
+    ruta: string,
+    setLoading: Function
+  ) => {
     const state = useFideicomisoStore.getState();
-    console.log("Entre saveFiles");
+    console.log("Entre saveFiles TablaFuentePago: ", TablaFuentePago);
 
-    return await state.tablaSoporteDocumentalFideicomiso.map((file, index) => {
-      console.log(file);
+    return await TablaFuentePago.map((file) => {
+      console.log("File fuente de pago: ", NombreFuentePago, "para el FILE: ", file);
 
       return setTimeout(() => {
         const url = new File([file.archivo], file.nombreArchivo);
@@ -440,12 +447,15 @@ comentariosSolicitudInscrpcion:{},
             .then(({ data }) => {
               console.log("data response", data);
 
-              state.savePathDocFideicomiso(
+
+              state.savePathDocFuentePago(
                 idRegistro,
                 data.RESPONSE.RUTA,
                 data.RESPONSE.NOMBREIDENTIFICADOR,
                 data.RESPONSE.NOMBREARCHIVO,
-                // file.tipoArchivo
+                setLoading,
+                NombreFuentePago
+                //file.tipoArchivo
               );
               console.log('Ruta 1 nombre:', data.RESPONSE.NOMBREIDENTIFICADOR);
 
@@ -453,7 +463,7 @@ comentariosSolicitudInscrpcion:{},
             .catch((e) => {
 
               alertaInfo("")
-             });
+            });
         } else {
           return null;
         }
@@ -510,11 +520,11 @@ comentariosSolicitudInscrpcion:{},
     });
   },
 
-  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File) => {
+  guardaDocumentos: async (idRegistro: string, ruta: string, archivo: File, acuse?: string) => {
     const state = useCortoPlazoStore.getState();
 
     console.log("Entre guardaDocumentos");
-    // console.log("ID ACUSE OBTENIDO", idAcuse);
+    console.log("IDACUSE OBTENIDO guardaDocumentos", acuse);
 
 
     let dataArray = new FormData();
@@ -534,15 +544,14 @@ comentariosSolicitudInscrpcion:{},
           }
         )
         .then(({ data }) => {
-
           //console.log("DATA guardarDocumentos", data);
-
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
             data.RESPONSE.NOMBREIDENTIFICADOR,
             data.RESPONSE.NOMBREARCHIVO,
-            ""
+            "",
+            acuse
           );
         })
         .catch((e) => { });
@@ -556,17 +565,19 @@ comentariosSolicitudInscrpcion:{},
     Ruta: string,
     NombreIdentificador: string,
     NombreArchivo: string,
-    TpoDoc: string
-  ) => {
-    const state = useCortoPlazoStore.getState();
+    TpoDoc: string,
+    acuse?: string
+  ) => {   
+    if (acuse !== "" || acuse !== undefined || acuse !== null) {
+      console.log("SI ES ACUSE ESTA BIEN ")
+    } else {
+      console.log("No es acuse ESTA BIEN ")
+    }
 
-    // const idAcuse = ""
-    // state.getIdAcuse(idAcuse)
+
 
     console.log("Entre savePathDoc");
     console.log("TpoDoc:", TpoDoc);
-
-    console.log("state.idAcuse:", state.idAcuse);
 
 
 
@@ -578,7 +589,8 @@ comentariosSolicitudInscrpcion:{},
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: state.idAcuse
+          TpoDoc: acuse !== "" || acuse !== undefined ? acuse : TpoDoc //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          // TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {
           headers: {

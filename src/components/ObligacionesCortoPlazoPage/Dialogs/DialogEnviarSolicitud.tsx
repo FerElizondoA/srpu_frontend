@@ -167,7 +167,7 @@ export function ConfirmacionEnviarSolicitud({
                     );
 
                     alertaExito(() => { }, "La solicitud se envió con éxito")
-                    cleanSolicitud();
+                   // cleanSolicitud();
                     // navigate("../ConsultaDeSolicitudes");
                     // createNotification(
                     //   "Crédito simple a corto plazo",
@@ -192,8 +192,8 @@ export function ConfirmacionEnviarSolicitud({
 
                     );
                     alertaExito(() => { }, "La solicitud se envió con éxito")
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    //cleanSolicitud();
+                    //navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
                       "Se te ha asignado una solicitud de inscripción",
@@ -223,7 +223,7 @@ export function ConfirmacionEnviarSolicitud({
                       "Captura"
                     );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
-                    cleanSolicitud();
+                    //cleanSolicitud();
                     createNotification(
                       "Crédito simple a corto plazo",
                       "La solicitud de inscripción está lista para firmar",
@@ -231,7 +231,7 @@ export function ConfirmacionEnviarSolicitud({
                       idSolicitudCreada,
                       "inscripcion"
                     );
-                    navigate("../ConsultaDeSolicitudes");
+                    //("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
@@ -259,8 +259,8 @@ export function ConfirmacionEnviarSolicitud({
                       "inscripcion"
                     );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
-                    cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    //cleanSolicitud();
+                    //navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")

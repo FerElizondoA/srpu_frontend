@@ -73,23 +73,23 @@ export function DialogGuardarBorrador({
       montoOriginal.toString() === "$ 0.00";
 
     const isMissingTipoCredito =
-    tipoCredito.Descripcion === "" || 
-    tipoCredito.Descripcion === undefined ||
-    tipoCredito.Descripcion === null;
-    
+      tipoCredito.Descripcion === "" ||
+      tipoCredito.Descripcion === undefined ||
+      tipoCredito.Descripcion === null;
 
-    if (isMissingInstitution && isMissingOriginalAmount ) {
+
+    if (isMissingInstitution && isMissingOriginalAmount) {
       setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera, monto original contratado");
-    } else if (isMissingInstitution ) {
+    } else if (isMissingInstitution) {
       setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
-    } 
+    }
     // else if (isMissingInstitution) {
     //   setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
-     else if (isMissingOriginalAmount) {
+    else if (isMissingOriginalAmount) {
       setInfo(
         "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
       );
-    }else {
+    } else {
       setInfo("La solicitud se guardará como borrador.");
     }
   };
@@ -120,27 +120,20 @@ export function DialogGuardarBorrador({
   const setProceso: Function = useInscripcionStore(
     (state) => state.setProceso
   );
-  
+
   const monto: number = useCortoPlazoStore(
     (state) => state.informacionGeneral.monto
   );
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
-    const fn = (v: any) => {
-      console.log("v", v);
-      return setIdSolicitudCreada(v)
-    } 
+  const fn = (v: any) => {
+    console.log("v", v);
+    return setIdSolicitudCreada(v)
+  }
 
-    const IdSolicitudBorrador: string = useCortoPlazoStore(
-      (state) => state.IdSolicitudBorrador
-    );
-
-  // useEffect(() => {
-  //   console.log("SOLICITUD: ", solicitud);
-  //   console.log("idSolicitudCreada", idSolicitudCreada);
-  //   console.log("IdSolicitudBorrador", IdSolicitudBorrador)
-  // }, [openState])
-
+  const IdSolicitudBorrador: string = useCortoPlazoStore(
+    (state) => state.IdSolicitudBorrador
+  );
 
   return (
     <Dialog
@@ -183,7 +176,6 @@ export function DialogGuardarBorrador({
           variant="text"
           onClick={() => {
             handler(false)
-            console.log("SOLICITUD: ", solicitud);
           }}
           sx={queries.buttonCancelar}
         >
@@ -196,8 +188,7 @@ export function DialogGuardarBorrador({
               handler(false);
               const state = useCortoPlazoStore.getState();
 
-              if (solicitud.Id !== "") {
-
+              if (IdSolicitudBorrador !== "") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
@@ -207,7 +198,7 @@ export function DialogGuardarBorrador({
                 )
                   .then(() => {
                     addComentario(
-                      solicitud.Id,
+                      IdSolicitudBorrador,
                       JSON.stringify(comentario),
                       "Captura"
                     );
@@ -223,11 +214,11 @@ export function DialogGuardarBorrador({
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                   JSON.stringify(comentario),
-                  setIdSolicitudCreada
+                  setIdSolicitudCreada 
                 )
                   .then(() => {
                     addComentario(
-                      solicitud.Id,
+                      IdSolicitudBorrador,
                       JSON.stringify(comentario),
                       "Captura"
                     );
@@ -263,7 +254,9 @@ export function DialogGuardarBorrador({
             disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
             onClick={() => {
               handler(false);
-              if (solicitud.Id !== "" || idSolicitudCreada !== "") {
+              if (
+                // solicitud.Id !== "" ||
+                IdSolicitudBorrador !== "") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
@@ -284,16 +277,16 @@ export function DialogGuardarBorrador({
                   JSON.stringify(comentario),
                   setIdSolicitudCreada
                 )
-                  // .then((r: any) => {
-                    
-                  //   console.log("RRRR", r);
-                  //   console.log("solicitud.Id : 2", solicitud.Id );
-                    
-                  //   alertaConfirmCancelar("La solicitud se guardó con éxito")
-                  // })
-                  // .catch(() => {
-                  //   alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
-                  // });
+                // .then((r: any) => {
+
+                //   console.log("RRRR", r);
+                //   console.log("solicitud.Id : 2", solicitud.Id );
+
+                //   alertaConfirmCancelar("La solicitud se guardó con éxito")
+                // })
+                // .catch(() => {
+                //   alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+                // });
               }
             }}
             sx={{

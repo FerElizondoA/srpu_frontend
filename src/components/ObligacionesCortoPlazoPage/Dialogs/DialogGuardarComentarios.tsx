@@ -78,9 +78,7 @@ export function DialogGuardarComentarios({
     (state) => state.filtroComentarios
   );
 
-  React.useEffect(() => {
-    console.log("comentarios", comentarios);
-  }, [])
+
   
   return (
     <Dialog open={open} fullWidth maxWidth={"md"}>

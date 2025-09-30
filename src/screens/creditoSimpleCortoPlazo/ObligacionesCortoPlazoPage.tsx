@@ -74,7 +74,8 @@ export function ObligacionesCortoPlazoPage() {
     if(inscripcion.Id){getDocumentos(
       process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
       () => {},
-      () => {}
+      () => {},
+      "CortoPlazo"
     );}
   }, []);
 
@@ -106,7 +107,7 @@ export function ObligacionesCortoPlazoPage() {
                   ...queries.bold_text,
                 }}
               >
-                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
+                <strong>{`Número de Registro: ${inscripcion.NumeroRegistro || IdSolicitudBorrador}`}</strong>
               </Typography>
             </Grid>
           )}

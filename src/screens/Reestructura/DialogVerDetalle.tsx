@@ -499,7 +499,7 @@ export function DialogVerDetalle(props: Props) {
           },
         }}
       >
-        <ResumenLP coments={false} />
+        <ResumenLP coments={false} estatus={""} />
       </DialogContent>
 
 
