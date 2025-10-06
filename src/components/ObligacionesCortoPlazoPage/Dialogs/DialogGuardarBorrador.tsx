@@ -104,6 +104,16 @@ export function DialogGuardarBorrador({
     (state) => state.cleanSolicitudCortoPlazo
   );
 
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
+
+
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
@@ -126,6 +136,9 @@ export function DialogGuardarBorrador({
   );
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
+  const [filtroTipoGuardado, setFiltroTipoGuardado] = useState(1);
+
+
   const fn = (v: any) => {
     console.log("v", v);
     return setIdSolicitudCreada(v)
@@ -134,6 +147,13 @@ export function DialogGuardarBorrador({
   const IdSolicitudBorrador: string = useCortoPlazoStore(
     (state) => state.IdSolicitudBorrador
   );
+
+  useEffect(() => {
+
+
+    console.log("filtroTipoGuardado", filtroTipoGuardado);
+  }, [])
+
 
   return (
     <Dialog
@@ -187,43 +207,61 @@ export function DialogGuardarBorrador({
             onClick={() => {
               handler(false);
               const state = useCortoPlazoStore.getState();
-
               if (IdSolicitudBorrador !== "") {
+                console.log("Esto es el ID de la solicitud en MODIFICACION : ", IdSolicitudBorrador);
+                console.log("GUARDAR CERRAR, TODOS LOS COMENTARIOS: ", comentario);
+
+                console.log("filtroTipoGuardado al guardar y cerrar", filtroTipoGuardado);
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                  JSON.stringify(comentario),
-                  arrDocsEliminados
+                  //JSON.stringify(comentario),
+                  arrDocsEliminados,
+                  1,
+                  //VERIFICA QUE PEX CON ESTO
                 )
                   .then(() => {
-                    addComentario(
-                      IdSolicitudBorrador,
-                      JSON.stringify(comentario),
-                      "Captura"
-                    );
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
                     cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    cleanInscripcion();
+                    cleanInscripcionModify();
+                    setTimeout(() => {
+                      navigate("../ConsultaDeSolicitudes");
+                    }, 2000);
+
                   })
                   .catch(() => {
                     alertaConfirmCancelar("Ocurrió un error, inténtelo de nuevo")
                   });
               } else {
+                console.log("Esto es el ID de la solicitud en MODIFICACION : ", IdSolicitudBorrador);
+
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
                   JSON.stringify(comentario),
-                  setIdSolicitudCreada 
+                  setIdSolicitudCreada
                 )
                   .then(() => {
-                    addComentario(
-                      IdSolicitudBorrador,
-                      JSON.stringify(comentario),
-                      "Captura"
-                    );
+                    console.log("Object.keys(comentario).length > 0", Object.keys(comentario).length > 0)
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
-
+                    cleanInscripcion();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -261,13 +299,26 @@ export function DialogGuardarBorrador({
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                  JSON.stringify(comentario),
-                  arrDocsEliminados
+                  //JSON.stringify(comentario),
+                  arrDocsEliminados,
+                  1,
                 )
                   .then(() => {
+                    console.log("GUARDAR CONTINUAR, TODOS LOS COMENTARIOS: ", comentario);
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
+                    // cleanSolicitud();
+                    // cleanInscripcion
+                    //navigate("../ConsultaDeSolicitudes");
                   })
-                  .catch(() => {
+                  .catch((data: any) => {
+                    console.log("data catch", data);
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else {
@@ -277,16 +328,21 @@ export function DialogGuardarBorrador({
                   JSON.stringify(comentario),
                   setIdSolicitudCreada
                 )
-                // .then((r: any) => {
+                  .then(() => {
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
 
-                //   console.log("RRRR", r);
-                //   console.log("solicitud.Id : 2", solicitud.Id );
-
-                //   alertaConfirmCancelar("La solicitud se guardó con éxito")
-                // })
-                // .catch(() => {
-                //   alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
-                // });
+                    //navigate("../ConsultaDeSolicitudes");
+                  })
+                  .catch(() => {
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+                  });
               }
             }}
             sx={{

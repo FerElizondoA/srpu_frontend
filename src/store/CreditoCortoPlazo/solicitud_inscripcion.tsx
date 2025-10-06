@@ -39,8 +39,9 @@ export interface SolicitudInscripcionSlice {
     idCreador: string,
     idEditor: string,
     estatus: string,
-    // comentario: string,
-    arrDocsEliminados: IDocsEliminados[]
+    //comentario: string,
+    arrDocsEliminados: IDocsEliminados[],
+    guardadoBorrador: number
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -191,19 +192,25 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
-
-        state.setIdSolicitudBorrador(data.data.Id)
-        setIdSolicitudCreada(data.data.Id)
-
-        //inscripcionState.setInscripcion(data.data.)
-        alertaConfirmCancelar("La solicitud se guardó con éxito")
         state.saveFiles(
           data.data.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
-        inscripcionState.setInscripcion(data.data);
-        state.addComentario(data.data.Id, comentario, "Captura");
+        setTimeout(() => {
+          inscripcionState.cleanSolicitudCortoPlazo();
+          state.setIdSolicitudBorrador(data.data.Id)
+          setIdSolicitudCreada(data.data.Id)
+
+          //inscripcionState.setInscripcion(data.data.)
+          alertaConfirmCancelar("La solicitud se guardó con éxito")
+
+          inscripcionState.setInscripcion(data.data);
+
+          //state.addComentario(data.data.Id, comentario, "Captura");
+        }, 3000);
+
+
 
       });
   },
@@ -212,12 +219,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idCreador: string,
     idEditor: string,
     estatus: string,
-    // comentario: string,
-    arrDocsEliminados: IDocsEliminados[]
+    //comentario: string,
+    arrDocsEliminados: IDocsEliminados[],
+    guardadoBorrador: number = 0
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
     console.log('arrDocsEliminados: modisoli ', arrDocsEliminados);
+
+    console.log("guardadoBorrador SOLICITUD MODIFICAR: ", guardadoBorrador);
 
     const solicitud: ISolicitudCortoPlazo = {
       encabezado: state.encabezado,
@@ -264,6 +274,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
           IdUsuario: idCreador,
+          guardadoBorrador: guardadoBorrador,
         },
         {
           headers: {
@@ -272,11 +283,9 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
       )
       .then(({ data }) => {
+
         console.log("modifcarsoli data: ", data.data);
         console.log('arrDocsEliminados', arrDocsEliminados);
-        if (arrDocsEliminados.length != 0) {
-          deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
-        }
 
         state.saveFiles(
           data.data.Id,
@@ -284,7 +293,15 @@ export const createSolicitudInscripcionSlice: StateCreator<
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
+        if (Array.isArray(arrDocsEliminados) && arrDocsEliminados.length !== 0) {
+          deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
+        }
 
+        setTimeout(() => {
+          inscripcionState.cleanSolicitudCortoPlazo();
+          inscripcionState.setInscripcionModifyCP(data.data);
+
+        }, 2000);
       });
   },
 
@@ -545,6 +562,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         )
         .then(({ data }) => {
           //console.log("DATA guardarDocumentos", data);
+          console.log("GuardarDocumentos, Esto es una prueba de saber si el ACUSE tiene ID o no: ", acuse)
           state.savePathDoc(
             idRegistro,
             data.RESPONSE.RUTA,
@@ -567,11 +585,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
     NombreArchivo: string,
     TpoDoc: string,
     acuse?: string
-  ) => {   
-    if (acuse !== "" || acuse !== undefined || acuse !== null) {
-      console.log("SI ES ACUSE ESTA BIEN ")
+  ) => {
+    if (acuse === undefined) {
+      console.log("SI ES ACUSE undefined ESTA BIEN: ", acuse)
     } else {
-      console.log("No es acuse ESTA BIEN ")
+      console.log("No es acuse  undefined ESTA BIEN: ", acuse)
     }
 
 
@@ -589,7 +607,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: acuse !== "" || acuse !== undefined ? acuse : TpoDoc //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          TpoDoc: TpoDoc //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
           // TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {

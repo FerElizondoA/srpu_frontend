@@ -115,6 +115,10 @@ export function Resumen({
   const TipodeDocumento: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoDocumento
   );
+
+    const tipoCredito: string = useCortoPlazoStore(
+    (state) => state.encabezado.tipoCredito.Descripcion
+  );
   const solicitanteAutorizado: {
     IdSolicitante: string;
     Cargo: string;
@@ -177,7 +181,7 @@ export function Resumen({
   const encabezado: HeadLabels[] = [
     {
       label: "Tipo de Documento",
-      value: TipodeDocumento,
+      value: tipoCredito !== "" ? tipoCredito : "No definido",
     },
     {
       label: "Tipo de Ente Público",

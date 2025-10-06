@@ -617,7 +617,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                     ? "11" // Antes 10
                     : estatusPrevio.NoEstatus === "11" && //Antes 10
                       state.proceso === "cancelacion"
-                      ? "13" //AQUI SE ASIGNA PROCESO CANCELACION //Antes 12
+                      ? "13" //actualizacion: era 13 pero se cambiara  //AQUI SE ASIGNA PROCESO CANCELACION //Antes 12
                       : estatusPrevio.ControlInterno === "cancelacion" &&
                         state.proceso === "actualizacion"
                         ? "18" // Antes 17 // Antes 16
@@ -629,7 +629,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                               ? "27" // Antes 25 Se agrego 2 por las 2 asignaciones nuevas // Antes 24
                               : estatusPrevio.NoEstatus === "28"  // Antes 26 Se agrego 2 por las 2 asignaciones nuevas // Antes 25
                                 ? "11" // Antes 10
-                                : "12", // Antes 11
+                                : "13", // Antes 11
             estatusPrevio.Id,
             inf.IdUsuario,
             //oficio

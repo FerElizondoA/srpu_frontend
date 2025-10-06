@@ -149,8 +149,10 @@ export function DialogTrazabilidad(props: Props) {
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      <Typography>10:35</Typography>
-                    </StyledTableCell>
+                      <Typography>
+                        {format(new Date(row.FechaModificacion), "hh:mm a", { locale: es })}
+                      </Typography>                    
+                      </StyledTableCell>
                   </StyledTableRow>
                 ))
               )}

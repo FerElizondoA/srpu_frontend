@@ -22,6 +22,7 @@ import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../../generics/Alertas";
+import { clear } from "@testing-library/user-event/dist/clear";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -74,13 +75,31 @@ export function DialogSolicitarModificacion({
     (state) => state.cleanSolicitudCortoPlazo
   );
 
+  const [filtroTipoGuardado, setFiltroTipoGuardado] = useState(0);
+  
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
+
+    console.log("HOLA ESTOY EN DIALOG SOLICITAR MODIFICACION");
     console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
   }, [openState]);
 
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
+      //console.log()
       addComentario(
         inscripcion.Id,
         JSON.stringify(comentarios),
@@ -139,21 +158,32 @@ export function DialogSolicitarModificacion({
       if (inscripcion.Id !== "") {
         console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
 
-        console.log("ENTRO AQUI AL SI HABER ID DE LA SOLICITUD");
-
         modificaSolicitud(
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1",
-          arrDocsEliminados
+          arrDocsEliminados,
+          0, //filtroTipoGuardado
         )
           .then(() => {
-            !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
+
+            if (!rolesAdmin.includes(localStorage.getItem("Rol")!) && (comentarios && Object.keys(comentarios).length > 0)) {
+              console.log("AGREGAR COMENTARIO");
               addComentario(
                 inscripcion.Id,
                 JSON.stringify(comentarios),
                 "Captura"
               );
+            } else {
+              console.log("NO AGREGAR COMENTARIO");
+            }
+            cleanSolicitudCortoPlazo();
+            cleanSolicitudCortoPlazo();
+            cleanInscripcion();
+            cleanInscripcionModify();
+            // !rolesAdmin.includes(localStorage.getItem("Rol")!) && comentarios && Object.keys(comentarios).length > 0 &&
+
+
             Swal.fire({
               confirmButtonColor: "#15212f",
               cancelButtonColor: "rgb(175, 140, 85)",
@@ -161,6 +191,9 @@ export function DialogSolicitarModificacion({
               title: "Mensaje",
               text: "La solicitud se envió con éxito",
             });
+
+            navigate("../ConsultaDeSolicitudes");
+            cleanSolicitud();
           })
           .catch(() => {
             Swal.fire({
@@ -180,7 +213,6 @@ export function DialogSolicitarModificacion({
         );
         navigate("../ConsultaDeSolicitudes");
       } else {
-        console.log("ENTRO AQUI AL NO HABER ID DE LA SOLICITUD");
 
         crearSolicitud(
           idUsuarioAsignado,
@@ -342,7 +374,7 @@ export function DialogSolicitarModificacion({
         )}
 
         {Object.values(comentarios).every(val => val === "") ? (
-          <Typography sx={{...queries.text, fontSize: "1.5ch", display : "flex", justifyContent: "center"}}>
+          <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
             {rolesAdmin.includes(localStorage.getItem("Rol")!)
               ? " Sin Requerimientos"
               : "Sin Comentarios"}

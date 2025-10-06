@@ -23,6 +23,7 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelarError, alertaConfirmCancelar, alertaError, alertaExito } from "../../../generics/Alertas";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { useEffect, useState } from "react";
+import { rolesAdmin } from "./DialogSolicitarModificacion";  // Importa el arreglo de roles de administrador
 
 export function ConfirmacionEnviarSolicitud({
   handler,
@@ -63,8 +64,17 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.inscripcion
   );
 
-  const cleanSolicitud: Function = useInscripcionStore(
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
+  );
+
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
   );
 
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
@@ -160,14 +170,24 @@ export function ConfirmacionEnviarSolicitud({
                   arrDocsEliminados
                 )
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      console.log("AGREGAR COMENTARIO");
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    } else {
+                      console.log("NO AGREGAR COMENTARIO");
+                    }
 
                     alertaExito(() => { }, "La solicitud se envió con éxito")
-                   // cleanSolicitud();
+                    cleanSolicitudCortoPlazo();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
+                    setTimeout(() => {
+                      navigate("../ConsultaDeSolicitudes");
+                    }, 2000);
                     // navigate("../ConsultaDeSolicitudes");
                     // createNotification(
                     //   "Crédito simple a corto plazo",
@@ -185,15 +205,19 @@ export function ConfirmacionEnviarSolicitud({
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2", arrDocsEliminados)
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura",
-
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      console.log("AGREGAR COMENTARIO");
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    } else {
+                      console.log("NO AGREGAR COMENTARIO");
+                    }
                     alertaExito(() => { }, "La solicitud se envió con éxito")
-                    //cleanSolicitud();
-                    //navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitudCortoPlazo();
+                    navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a corto plazo",
                       "Se te ha asignado una solicitud de inscripción",
@@ -217,13 +241,23 @@ export function ConfirmacionEnviarSolicitud({
                 )
                   .then(() => {
 
-                    addComentario(
-                      idSolicitudCreada,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      console.log("AGREGAR COMENTARIO");
+                      addComentario(
+                        idSolicitudCreada,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    } else {
+                      console.log("NO AGREGAR COMENTARIO");
+                    }
+                    // addComentario(
+                    //   idSolicitudCreada,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
-                    //cleanSolicitud();
+                    cleanSolicitudCortoPlazo();
                     createNotification(
                       "Crédito simple a corto plazo",
                       "La solicitud de inscripción está lista para firmar",
@@ -231,7 +265,7 @@ export function ConfirmacionEnviarSolicitud({
                       idSolicitudCreada,
                       "inscripcion"
                     );
-                    //("../ConsultaDeSolicitudes");
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
@@ -246,11 +280,22 @@ export function ConfirmacionEnviarSolicitud({
 
                 )
                   .then(() => {
-                    addComentario(
-                      idSolicitudCreada,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      console.log("AGREGAR COMENTARIO");
+                      addComentario(
+                        idSolicitudCreada,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    } else {
+                      console.log("NO AGREGAR COMENTARIO");
+                    }
+
+                    // addComentario(
+                    //   idSolicitudCreada,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     createNotification(
                       "Crédito simple a corto plazo",
                       "Se te ha asignado una solicitud de Credito a Corto Plazo",
@@ -259,8 +304,8 @@ export function ConfirmacionEnviarSolicitud({
                       "inscripcion"
                     );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
-                    //cleanSolicitud();
-                    //navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitudCortoPlazo();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")

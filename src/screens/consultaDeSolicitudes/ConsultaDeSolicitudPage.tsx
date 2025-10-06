@@ -205,7 +205,9 @@ export function ConsultaDeSolicitudPage() {
   );
   const setInscripcion: Function = useInscripcionStore(
     (state) => state.setInscripcion
+
   );
+
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);
 
   const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
@@ -214,6 +216,15 @@ export function ConsultaDeSolicitudPage() {
   const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudLargoPlazo
   );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
+    const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
 
 
   const convertirMontosAPalabras: Function = useSolicitudFirmaStore(
@@ -243,7 +254,15 @@ export function ConsultaDeSolicitudPage() {
     cleanSolicitudLargoPlazo();
   }, [openEliminar]);
 
-  
+  useEffect(() => {
+    getDatos();
+    cleanSolicitudCortoPlazo();
+    cleanSolicitudLargoPlazo();
+    cleanInscripcion();
+    console.log("HOLA ESTOY EN CONSULTA DE SOLICITUDES");
+  }, []);
+
+
   //Fin barra de filtros*************
 
   const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
@@ -275,6 +294,12 @@ export function ConsultaDeSolicitudPage() {
   const getCatalogoFirmaDetalle: Function = useSolicitudFirmaStore(
     (state) => state.getCatalogoFirmaDetalle
   );
+
+  const setIdSolicitudBorrador: Function = useCortoPlazoStore(
+    (state) => state.setIdSolicitudBorrador
+  );
+
+
 
   const [accion, setAccion] = useState("");
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
@@ -729,8 +754,14 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    cleanSolicitudCortoPlazo();
+                                    cleanSolicitudLargoPlazo();
+                                    cleanInscripcion();
+                                    cleanInscripcionModify();
+
                                     setInscripcion(row);
                                     editarSolicitud(row.TipoSolicitud);
+                                    setIdSolicitudBorrador(row.Id)
                                   }}
                                 >
                                   <EditIcon />

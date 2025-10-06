@@ -125,9 +125,22 @@ export interface ISolicitudCortoPlazo {
   };
 }
 
+export interface IRespuestaInscripcionModify {
+  Id: string;
+  NumeroRegistro: number,
+  ControlInterno: string;
+  MSG: string;
+  Solicitud: string;
+}
+
 export interface InscripcionSlice {
   inscripcion: IInscripcion;
   setInscripcion: (solicitud: IInscripcion) => void;
+
+
+  inscripcionModify: IRespuestaInscripcionModify;
+  setInscripcionModifyCP: (solicitud: IRespuestaInscripcionModify) => void;
+  cleanInscripcionModify: () => void;
 
   cleanInscripcion: () => void;
 
@@ -147,6 +160,18 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   set,
   get
 ) => ({
+
+  cleanInscripcionModify: () => {
+    set(() => ({
+      inscripcionModify: {
+        Id: "",
+        NumeroRegistro: 0,
+        ControlInterno: "",
+        MSG: "",
+        Solicitud: ""
+      }
+    }))
+  },
   cleanInscripcion: () => {
     set(() => ({
       inscripcion: {
@@ -325,6 +350,38 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     set(() => ({ inscripcion: inscripcion }));
   },
 
+  inscripcionModify: {
+    Id: "",
+    NumeroRegistro: 0,
+    ControlInterno: "",
+    MSG: "",
+    Solicitud: ""
+  },
+
+
+  setInscripcionModifyCP: (inscripcionModify: IRespuestaInscripcionModify) => {
+    const cpState = useCortoPlazoStore.getState();
+
+    let aux: ISolicitudLargoPlazo = JSON.parse(inscripcionModify.Solicitud);
+
+    cpState.changeEncabezado(aux?.encabezado);
+
+    cpState.setInformacionGeneral(
+      aux?.informacionGeneral?.informacionGeneral
+    );
+    cpState.setTablaObligadoSolidarioAval(
+      aux?.informacionGeneral?.obligadosSolidarios
+    );
+    aux?.condicionesFinancieras.map((v: any, index: number) => {
+      return cpState.addCondicionFinanciera(v);
+    });
+    cpState.setTablaDocumentos(aux?.documentacion);
+
+    cpState.setReglasAplicables(aux?.inscripcion.declaratorias);
+
+    set(() => ({ inscripcionModify: inscripcionModify }));
+  },
+
   proceso: "",
   setProceso: (proceso: string) => {
     set(() => ({ proceso: proceso }));
@@ -362,8 +419,8 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       denominacion: "Pesos",
       institucionFinanciera: { Id: "", Descripcion: "" },
     });
-    state.setTablaObligadoSolidarioAval([]);
     state.setTablaCondicionesFinancieras([]);
+    state.setTablaObligadoSolidarioAval([]);
     state.setTablaDocumentos([]);
     state.setReglasAplicables([]);
   },
