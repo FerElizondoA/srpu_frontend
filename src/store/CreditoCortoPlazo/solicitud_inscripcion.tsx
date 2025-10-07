@@ -297,11 +297,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
           deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
         }
 
-        setTimeout(() => {
-          inscripcionState.cleanSolicitudCortoPlazo();
-          inscripcionState.setInscripcionModifyCP(data.data);
+        // setTimeout(() => {
+        //   inscripcionState.cleanSolicitudCortoPlazo();
+        //   inscripcionState.setInscripcionModifyCP(data.data);
 
-        }, 2000);
+        // }, 2000);
       });
   },
 

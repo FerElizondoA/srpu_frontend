@@ -77,6 +77,10 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.cleanInscripcion
   );
 
+    const cleanTablaCondicionesFinancieras: Function = useCortoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
   return (
@@ -185,6 +189,8 @@ export function ConfirmacionEnviarSolicitud({
                     cleanSolicitudCortoPlazo();
                     cleanInscripcion();
                     cleanInscripcionModify();
+                    cleanTablaCondicionesFinancieras();
+                    
                     setTimeout(() => {
                       navigate("../ConsultaDeSolicitudes");
                     }, 2000);

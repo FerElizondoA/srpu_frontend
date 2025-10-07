@@ -55,6 +55,7 @@ import { BarraFiltros } from "../../generics/BarraFiltros";
 import { DialogVerRestrucuturas } from "../Reestructura/DialogVerRestructuras";
 import BuildIcon from "@mui/icons-material/Build";
 import { log } from "console";
+import { ICondicionFinanciera } from "../../store/CreditoCortoPlazo/condicion_financiera";
 
 export interface IData {
   Id: string;
@@ -221,7 +222,7 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.cleanInscripcion
   );
 
-    const cleanInscripcionModify: Function = useInscripcionStore(
+  const cleanInscripcionModify: Function = useInscripcionStore(
     (state) => state.cleanInscripcionModify
   );
 
@@ -236,6 +237,9 @@ export function ConsultaDeSolicitudPage() {
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
+  const tablaCondicionesFinancieras: ICondicionFinanciera[] = useCortoPlazoStore(
+    (state) => state.tablaCondicionesFinancieras
+  );
   const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -256,6 +260,7 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     getDatos();
+    console.log("tablaCondicionesFinancieras en consulta de solicitudes:", tablaCondicionesFinancieras);
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
     cleanInscripcion();

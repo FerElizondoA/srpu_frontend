@@ -76,7 +76,7 @@ export function DialogSolicitarModificacion({
   );
 
   const [filtroTipoGuardado, setFiltroTipoGuardado] = useState(0);
-  
+
   const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
@@ -89,6 +89,11 @@ export function DialogSolicitarModificacion({
   const cleanInscripcion: Function = useInscripcionStore(
     (state) => state.cleanInscripcion
   );
+
+  const cleanTablaCondicionesFinancieras: Function = useCortoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -177,10 +182,7 @@ export function DialogSolicitarModificacion({
             } else {
               console.log("NO AGREGAR COMENTARIO");
             }
-            cleanSolicitudCortoPlazo();
-            cleanSolicitudCortoPlazo();
-            cleanInscripcion();
-            cleanInscripcionModify();
+
             // !rolesAdmin.includes(localStorage.getItem("Rol")!) && comentarios && Object.keys(comentarios).length > 0 &&
 
 
@@ -191,9 +193,15 @@ export function DialogSolicitarModificacion({
               title: "Mensaje",
               text: "La solicitud se envió con éxito",
             });
+            cleanSolicitud();
+            cleanSolicitudCortoPlazo();
+            cleanInscripcion();
+            cleanInscripcionModify();
+            cleanTablaCondicionesFinancieras();
+
 
             navigate("../ConsultaDeSolicitudes");
-            cleanSolicitud();
+
           })
           .catch(() => {
             Swal.fire({
