@@ -115,10 +115,10 @@ export const FirmaConUrl = () => {
     
 
     CambiaEstatus(estatus, id, editor);  
-    //REVISA EL ESTATUS!
+    //REVISA EL ESTATU
   };
 
-  const SolicitudDatos = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
+  // const SolicitudDatos = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
 
   // useEffect(() => {
   //   console.log("Inscripcion Firma", SolicitudDatos);

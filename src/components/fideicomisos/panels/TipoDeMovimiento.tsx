@@ -385,7 +385,9 @@ export function TipoDeMovimientoFideicomiso() {
               fondoIngreso: tipoMovimientoFideicomisoNew.fondoIngreso,
 
             })
-            addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
+
+            console.log("arregloPorcetajesAcumuladosRegistros BUTTON", arregloPorcetajesAcumuladosRegistros)
+            //addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
             cleanTipoMovimientoNew();
           }}
         >
@@ -398,24 +400,24 @@ export function TipoDeMovimientoFideicomiso() {
 
 
 
+  // useEffect(() => {
+  //   //1* primero va y busca los porcentajes acumulados
+  //   console.log("Entro a buscar el porcentajes acumulados")
+
+  //   DetallePorcentajesAcumulados(tipoMovimientoFideicomisoNew.fideicomitente.Id,
+  //      tipoMovimientoFideicomisoNew.fondoIngreso.Id )
+
+  // }, [tipoMovimientoFideicomisoNew.fondoIngreso.Id !== ""])
+
+
   useEffect(() => {
-    //1* primero va y busca los porcentajes acumulados
-    console.log("Entro a buscar el porcentajes acumulados")
-
-    DetallePorcentajesAcumulados(tipoMovimientoFideicomisoNew.fideicomitente.Id,
-       tipoMovimientoFideicomisoNew.fondoIngreso.Id )
-
-  }, [tipoMovimientoFideicomisoNew.fondoIngreso.Id !== ""])
-
-
-  useEffect(() => {
-    console.log("GUARDO EL REGISTRO DEL % ACUMULADO EN EL ARRAY QUE VIENE DE LA BASE DE DATOS", );
+    console.log("GUARDO EL REGISTRO DEL % ACUMULADO EN EL ARRAY QUE VIENE DE LA BASE DE DATOS",);
     console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros);
-  
-    
+
+
   }, [arregloPorcetajesAcumuladosRegistros])
-  
-  
+
+
 
   return (
     <Grid
@@ -795,8 +797,8 @@ export function TipoDeMovimientoFideicomiso() {
                 },
               });
 
-              
-//Poner un useeffect para que busque en la base de datos si ya existe el id
+
+              //Poner un useeffect para que busque en la base de datos si ya existe el id
             }}
             renderInput={(params) => (
               <TextField
@@ -1072,7 +1074,10 @@ export function TipoDeMovimientoFideicomiso() {
                           value={row.AfectadoTotalIngreso || ''}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
-                            updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                            if (newValue <= 100) {
+                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                            }
+
                           }}
                           inputProps={{ min: 0 }}
                         />
@@ -1086,7 +1091,10 @@ export function TipoDeMovimientoFideicomiso() {
                           value={row.tipoFideicomitente.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
-                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                            if (newValue <= 100) {
+                              updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+
+                            }
                           }}
                           inputProps={{ min: 0 }}
                         />

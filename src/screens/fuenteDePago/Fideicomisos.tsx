@@ -83,7 +83,7 @@ export interface IDataAsignacionTipoMoviSolicitudes {
   Id: string,
   IdSolicitud: string,
   IdFuentePago: string,
-  TipoMoviRelacionado: string,
+  TipoMovRelacionado: string,
   NombreTipoFuentePago: string,
   IdEntePublicoObligado: string,
   IdFondoIngreso: string,
@@ -210,7 +210,7 @@ export function Fideicomisos() {
     useState<Array<IRegistro>>([]);
 
   useEffect(() => {
-    getMecanismosVehiculosPago("Fideicomisos", () => {}) //Ocupamos este
+    getMecanismosVehiculosPago("Fideicomisos", () => { }) //Ocupamos este
     //getFideicomisos(setFideicomisos);
     getTiposFideicomiso();
     getInstituciones();
@@ -230,7 +230,7 @@ export function Fideicomisos() {
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [busqueda]);
-  
+
 
 
   const sumaPorcentajeAcumulado: {
@@ -476,10 +476,16 @@ export function Fideicomisos() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
+                          {row.FechaRegistro && !isNaN(new Date(row.FechaRegistro).getTime())
+                            ? format(new Date(row.FechaRegistro), "dd/MM/yyyy", { locale: es })
+                            : "—"}
+                        </StyledTableCell>
+
+                        {/* <StyledTableCell align="center">
                           {format(new Date(row.FechaRegistro), "PPP", {
                             locale: es,
                           })}
-                        </StyledTableCell>
+                        </StyledTableCell> */}
 
                         <StyledTableCell align="center">
                           {row.TipoFideicomiso}
@@ -509,6 +515,7 @@ export function Fideicomisos() {
                                 console.log("ROWFIDEICOMISO", row);
                                 let auxArray = JSON.parse(row.TipoMovimiento);
                                 console.log("auxArray", auxArray);
+                                DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
 
                                 editarFideicomisoNew(
                                   row.Id,
@@ -576,6 +583,7 @@ export function Fideicomisos() {
           handler={setOpenAgregarFideicomiso}
           openState={openAgregarFideicomisos}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+          DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
 
         />
       )}
@@ -596,13 +604,12 @@ export function Fideicomisos() {
         </DialogContent>
 
         <DialogActions>
-          {dataAsignacionTipoMoviSolicitudes.length < 0 ? (
+          {dataAsignacionTipoMoviSolicitudes.length <= 0 ? (
             <Button
               sx={queries.buttonContinuar}
               onClick={() => {
                 setOpenDialogEliminar(!openDialogEliminar);
                 deleteFideicomiso(idFideicomiso);
-
               }}
             >
               Aceptar

@@ -263,7 +263,6 @@ export function Mandatos() {
     (state) => state.DetalleAsignacionTipoMoviSolicitudes
   );
 
-
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
 
@@ -446,6 +445,8 @@ export function Mandatos() {
                             type="button"
                             onClick={() => {
                               let auxArray = JSON.parse(row.TipoMovimiento);
+                              DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
+
                               editarMandato(
                                 row.Id,
                                 {
@@ -500,6 +501,8 @@ export function Mandatos() {
           handler={setOpenAgregarMandato}
           openState={openAgregarMandato}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+          DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
+
         />
       )}
 
@@ -508,13 +511,31 @@ export function Mandatos() {
         keepMounted
         TransitionComponent={Transition}
       >
-        <DialogTitle sx={queries.bold_text}>Advertencia </DialogTitle>
+        <DialogTitle sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>Advertencia </DialogTitle>
         <DialogContent>
-          <Typography>¿Seguro que desea eliminar este mandato?</Typography>
+          <Typography sx={{ ...queries.text }}>
+            {dataAsignacionTipoMoviSolicitudes.length > 0
+              ? "No es posible eliminar este Mandato, ya que tiene al menos una asignación vinculada a una solicitud."
+              : "¿Seguro que desea eliminar este Mandato?"}
+
+          </Typography>
         </DialogContent>
 
         <DialogActions>
-          <Button
+          {dataAsignacionTipoMoviSolicitudes.length <= 0 ? (
+            <Button
+              sx={queries.buttonContinuar}
+              onClick={() => {
+                setOpenDialogEliminar(!openDialogEliminar);
+                deleteMandato(idMandato);
+              }}
+            >
+              Aceptar
+            </Button>
+          ) : null}
+
+
+          {/* <Button
             sx={queries.buttonContinuar}
             onClick={() => {
               setOpenDialogEliminar(!openDialogEliminar);
@@ -522,11 +543,13 @@ export function Mandatos() {
             }}
           >
             Aceptar
-          </Button>
+          </Button> */}
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
               setOpenDialogEliminar(!openDialogEliminar);
+              setDataAsignacionTipoMoviSolicitudes([]);
+
             }}
           >
             Cancelar

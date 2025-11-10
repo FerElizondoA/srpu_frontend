@@ -35,6 +35,8 @@ export interface IInscripcion {
   FechaRequerimientos: string;
   IdPathDoc?: string;
   CountReestructuras?: string;
+  CancelacionInciadoPor?: string;
+
 }
 
 export interface ICredito {

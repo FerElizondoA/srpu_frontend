@@ -251,22 +251,12 @@ export function FuentePagoSecciones() {
           instruccion={mecanismoVehiculoPago}
         />
 
-        // <AgregarInstruccionesIrrevocables
-        //   deshabilidarCamposSCLP={deshabilidarCamposSCLP}
-        //   handler={setPruebaAbrirFuente}
-        //   openState={pruebaAbrirFuente}
-        // />
         : tipoMecanismoVehiculoPago === "Mandato" && pruebaAbrirFuente === true ?
           <DetalleMandato
             open={pruebaAbrirFuente}
             setOpen={setPruebaAbrirFuente}
             mandato={mecanismoVehiculoPago}
           />
-          // <AgregarMandatos
-          //   //deshabilidarCamposSCLP={deshabilidarCamposSCLP}
-          //   handler={setPruebaAbrirFuente}
-          //   openState={pruebaAbrirFuente}
-          // />
           : tipoMecanismoVehiculoPago === "Fideicomiso" && pruebaAbrirFuente === true ?
 
             <DetalleFideicomiso
@@ -274,12 +264,6 @@ export function FuentePagoSecciones() {
               setOpen={setPruebaAbrirFuente}
               fideicomiso={mecanismoVehiculoPago}
             />
-
-            // <AgregarFideicomisos
-            //   //deshabilidarCamposSCLP={deshabilidarCamposSCLP}
-            //   handler={setPruebaAbrirFuente}
-            //   openState={pruebaAbrirFuente}
-            // />
             : null
       }
     </Grid>

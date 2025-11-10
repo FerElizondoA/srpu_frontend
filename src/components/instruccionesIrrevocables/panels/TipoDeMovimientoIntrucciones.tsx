@@ -827,7 +827,7 @@ export function TipoDeMovimientoIntrucciones() {
                           </Typography>
                         </StyledTableCell>
 
-                          {/* FUENTE DE PAGO */}
+                        {/* FUENTE DE PAGO */}
                         <StyledTableCell align="center">
                           <Typography >
                             {row?.tipoFuente.Descripcion}
@@ -862,7 +862,9 @@ export function TipoDeMovimientoIntrucciones() {
                             value={row.AfectadoTotalIngreso || ''}
                             onChange={(e) => {
                               const newValue = Number(e.target.value);
-                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                              if (newValue < 100) {
+                                updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                              }
                             }}
                             inputProps={{ min: 0 }}
                           />
@@ -876,7 +878,10 @@ export function TipoDeMovimientoIntrucciones() {
                             value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? row.EquivalenciaCorrespondienteMunicipios || '' : 0}
                             onChange={(e) => {
                               const newValue = Number(e.target.value);
-                              updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                              if (newValue < 100) {
+                                updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) ? 0 : newValue);
+                              }
+
                             }}
                             inputProps={{ min: 0 }}
                           />

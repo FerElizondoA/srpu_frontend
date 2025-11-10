@@ -3,6 +3,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   InputBase,
   Table,
@@ -40,6 +44,7 @@ import { DialogDescargaArchivos } from "../../components/ConsultaDeSolicitudes/D
 import { rolesAdmin } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useSolicitudFirmaStore } from "../../store/SolicitudFirma/main";
 import {
+  CambiaEstatus,
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
@@ -51,6 +56,11 @@ import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { DialogTrazabilidad } from "../consultaDeSolicitudes/DialogTrazabilidad";
 import { BarraFiltros } from "../../generics/BarraFiltros";
 import { TabsCancelacionArchivos } from "../../components/Cancelacion/Dialogs/DialogTabsCancelacionArchivos";
+import BlockIcon from '@mui/icons-material/Block';
+import { queries } from "../../queries";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Swal from "sweetalert2";
+
 
 const heads: Array<{ label: string }> = [
   {
@@ -210,6 +220,7 @@ export function ConsultaDeCancelacionesPage() {
 
       setTablaDocumentos(aux?.documentacion);
     } else if (solicitud.TipoSolicitud === "Crédito Simple a Largo Plazo") {
+      console.log("Solicitud FIRMA CANCELACION", JSON.parse(solicitud.Solicitud))
       let aux: any = JSON.parse(solicitud.Solicitud!);
 
       setReglasAplicablesLP(aux?.inscripcion.declaratorias);
@@ -223,7 +234,11 @@ export function ConsultaDeCancelacionesPage() {
         }
       );
 
-      aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
+      // aux?.GastosCostos.gastosCostos.map((v: any, index: number) => {
+      //   return addGeneralGastosCostos(v);
+      // });
+
+      aux?.informacionGeneral.destinoGastosCostos.map((v: any, index: number) => {
         return addGeneralGastosCostos(v);
       });
 
@@ -242,6 +257,8 @@ export function ConsultaDeCancelacionesPage() {
   const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
   const [openDescargar, setOpenDescargar] = useState(false);
+
+  const [openDialogConfirmDecistir, setOpenDialogConfirmDecistir] = useState(false);
 
   const cleanSolicitud: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
@@ -314,9 +331,19 @@ export function ConsultaDeCancelacionesPage() {
 
   const rolUsuario = localStorage.getItem("Rol") || "";
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-right",
+    showConfirmButton: false,
+    //confirmButtonColor: "#15212f",
+    //cancelButtonColor: "rgb(175, 140, 85)",
+    timer: 3000,
+    timerProgressBar: true,
+  });
+
   useEffect(() => {
     getDatos(rolUsuario);
-  }, [rolUsuario !== ""]);
+  }, [rolUsuario !== "" || openDialogConfirmDecistir === false]);
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -733,6 +760,7 @@ export function ConsultaDeCancelacionesPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    setInscripcion(row);
                                     llenaSolicitud(row);
                                     getComentariosSolicitudPlazo(
                                       row.Id,
@@ -803,6 +831,22 @@ export function ConsultaDeCancelacionesPage() {
                               </IconButton>
                             </Tooltip>
                           )}
+
+                          {localStorage.getItem("IdUsuario") === row.CancelacionInciadoPor && (parseFloat(row.NoEstatus) > 11 && parseFloat(row.NoEstatus) < 20) ?
+                            <Tooltip title="Decistir cancelación">
+                              <IconButton
+                                onClick={() => {
+                                  setOpenDialogConfirmDecistir(true);
+                                  setInscripcion(row)
+                                }}
+                              >
+                                <BlockIcon />
+                              </IconButton>
+                            </Tooltip>
+                            :
+                            null
+                          }
+
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -813,6 +857,71 @@ export function ConsultaDeCancelacionesPage() {
           </TableContainer>
         </Paper>
       </Grid>
+
+      <Dialog
+        open={openDialogConfirmDecistir}
+        onClose={setOpenDialogConfirmDecistir}
+        maxWidth="sm" fullWidth
+      >
+        <DialogTitle>
+          <HelpOutlineIcon sx={{ color: "grey", display: "flex", justifyContent: "center", width: "100%", fontSize: "6rem" }} />
+        </DialogTitle>
+
+        <DialogContent>
+          <Typography sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>
+            ¿Seguro que desea decistir en la cancelación de la solicitud? <br />
+          </Typography>
+          <Grid container sx={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Typography sx={{ ...queries.text }}>
+              <br />Numero de registro: <b>{inscripcion.NumeroRegistro}</b>
+            </Typography>
+
+            <Typography sx={{ ...queries.text }}>
+              <br />Con clave: <b>{inscripcion.IdClaveInscripcion}</b>?
+            </Typography>
+          </Grid>
+        </DialogContent>
+
+
+        <DialogActions>
+          <Button sx={{ ...queries.buttonContinuar }}
+            onClick={() => {
+              CambiaEstatus("11", inscripcion.Id, localStorage.getItem("IdUsuario") || "", "").then(() => {
+                console.log("HOLA AQUI ANDO")
+
+                Toast.fire({
+                  icon: "success",
+                  title: "Se ha desistido la cancelación correctamente.",
+                })
+                // Toast.fire({
+                //   position: "top-right",
+                //   timer: 1500,
+                //   confirmButtonText: "Cerrar",
+                //   confirmButtonColor: "rgb(175, 140, 85)",
+                //   //cancelButtonColor: "rgb(175, 140, 85)",
+                //   icon: "success",
+                //   title: "Completado",
+                //   text: "Se ha desistido en la cancelación de la solicitud correctamente.",
+                // });
+
+                getDatos(rolUsuario);
+                setOpenDialogConfirmDecistir(false);
+              })
+
+            }}
+          >
+            Aceptar
+          </Button>
+
+          <Button sx={{ ...queries.buttonCancelar }}
+            onClick={() => {
+              setOpenDialogConfirmDecistir(false);
+            }}>
+            Cancelar
+          </Button>
+
+        </DialogActions>
+      </Dialog>
 
       <DialogTrazabilidad
         handler={setOpenTrazabilidad}

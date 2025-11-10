@@ -110,7 +110,7 @@ export interface MandatoSlice {
   createMandato: (
     setLoading: Function
   ) => void;
-  modificaMandato: (setLoading: Function) => void;
+  modificaMandato: (stateOpen: Function, setLoading: Function) => void;
   deleteMandato: (Id: string) => void;
 
   saveFilesMandato: (
@@ -434,8 +434,6 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         //   setLoading
         // );
 
-
-
         alertaConfirmCancelar("El mandato se ha creado exitosamente")
 
       })
@@ -445,7 +443,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       });
   },
 
-  modificaMandato: async (setLoading: Function) => {
+  modificaMandato: async (stateOpen: Function, setLoading: Function) => {
     const state = useMandatoStore.getState();
     const SaveFile = useCortoPlazoStore.getState();
     // const SaveFile = useFideicomisoStore.getState();
@@ -517,8 +515,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         state.setIdMandato(data.result.Id);
         //cpState.deleteFiles(`/SRPU/MANDATOS/${data.result.Id}`);
 
-        console.log("data.result.id", data.result.id)
-        console.log("data.data.id", data.data.id)
+        console.log("data.result.id", data.result.Id)
+        //console.log("data.data.id", data.data.id)
 
         SaveFile.saveFilesFuentesPago(
           "Mandato",
@@ -527,11 +525,11 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${data.result.Id}`,
           setLoading,
         );
-        alertaConfirmCancelar("El mandato se ha creado exitosamente")
+        alertaConfirmCancelar("El mandato se ha modificado exitosamente")
 
       })
       .catch(function (error) {
-
+        console.log(error);
 
         alertaConfirmCancelarError("Se encontró un error, verifique la información.")
       });

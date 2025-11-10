@@ -421,6 +421,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
         IdClaveInscripcion: ""
       };
 
+
       if (filtro.inscripcionReestructura?.IdSolicitud === "" ||
         filtro.inscripcionReestructura?.IdSolicitud === null ||
         filtro.inscripcionReestructura?.IdSolicitud === undefined) {
@@ -476,7 +477,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       //     EquivalenciaCorrespondienteMunicipios: SolicitudDatos?.fuenteDePago?.fuente[0]?.EquivalenciaCorrespondienteMunicipios,
       //   }
       // }
-
+      const stateLP = useLargoPlazoStore.getState();
       axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/create-firmaDetalle",
@@ -508,30 +509,61 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //Para guardar los porcentajes acumulados ya inscritos
           if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo" && filtro.inscripcion.NoEstatus === "10") {
 
-            console.log("Entro para guardar los porcentajes acumulados");
-            console.log("filtro.inscripcion.TipoSolicitud", filtro.inscripcion.TipoSolicitud);
+            //console.log("Entro para guardar los porcentajes acumulados");
+            //console.log("filtro.inscripcion.TipoSolicitud", filtro.inscripcion.TipoSolicitud);
 
 
             const SolicitudDatos: IDatosCompletosSolicitud = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
-            console.log("SolicitudDatos", SolicitudDatos);
+            //console.log("SolicitudDatos", SolicitudDatos);
 
 
             //ESTO SOLO VA CUANDO LA FIRMA SE FIRMA COMO INSCRITO Y MODIFICAR EL PORCENTAJE UTILIZADO EN EN LA SOLICITUD EN LAS FFUENTES DE PAGO
             const DatosPorcentajesAcumulados = SolicitudDatos.fuenteDePago.fuente.map((fuente: any) => ({
               id: fuente.id || "",
               tipoFideicomitente: fuente?.tipoEntePublicoObligado || fuente?.tipoFideicomitente,
-              fideicomitente: fuente?.entePublicoObligado || fuente?.fideicomitente,
+              fideicomitente: fuente?.entePublicoObligado || fuente?.fideicomitente || fuente?.mandatario,
               tipoFuente: fuente.tipoFuente,
               fondoIngreso: fuente.fondoIngreso,
               AfectadoTotalIngreso: fuente.AfectadoTotalIngreso,
               EquivalenciaCorrespondienteMunicipios: fuente.EquivalenciaCorrespondienteMunicipios,
               garantiaDePago: SolicitudDatos.fuenteDePago.garantiaDePago || "",
             }));
-            createPorcentajesAcumulados(DatosPorcentajesAcumulados)
-
+            createPorcentajesAcumulados(DatosPorcentajesAcumulados, 1).then((data) => stateLP.modificaAsignacionUtilizadoTipoSolicitud(
+              // filtro.inscripcion.Id,
+              SolicitudDatos.fuenteDePago.mecanismoVehiculoDePago.Id,
+              DatosPorcentajesAcumulados,
+              SolicitudDatos.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+              1
+            ));
 
 
             //En cambio deberia haber una bandera que te diga que la solicitud esta en procesos de inscripcion e incrita 
+          } else if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo" && filtro.inscripcion.NoEstatus === "19") {
+
+            console.log("HOLA SI ENTRE A MODIFICAR LOS PORCENTAJES ACUMULADOS PARA LIBERAR ESPACIO");
+            const SolicitudDatos: IDatosCompletosSolicitud = JSON.parse(useInscripcionStore.getState().inscripcion.Solicitud)
+
+            const DatosPorcentajesAcumulados = SolicitudDatos.fuenteDePago.fuente.map((fuente: any) => ({
+              id: fuente.id || "",
+              tipoFideicomitente: fuente?.tipoEntePublicoObligado || fuente?.tipoFideicomitente,
+              fideicomitente: fuente?.entePublicoObligado || fuente?.fideicomitente || fuente?.mandatario,
+              tipoFuente: fuente.tipoFuente,
+              fondoIngreso: fuente.fondoIngreso,
+              AfectadoTotalIngreso: fuente.AfectadoTotalIngreso,
+              EquivalenciaCorrespondienteMunicipios: fuente.EquivalenciaCorrespondienteMunicipios,
+              garantiaDePago: SolicitudDatos.fuenteDePago.garantiaDePago || "",
+            }));
+
+            console.log("DatosPorcentajesAcumulados RESTAR PORCENTAJES ACUMULADOS", DatosPorcentajesAcumulados)
+            createPorcentajesAcumulados(DatosPorcentajesAcumulados, 0).then((data) => stateLP.modificaAsignacionUtilizadoTipoSolicitud(
+              // filtro.inscripcion.Id,
+              SolicitudDatos.fuenteDePago.mecanismoVehiculoDePago.Id,
+              DatosPorcentajesAcumulados,
+              SolicitudDatos.fuenteDePago.mecanismoVehiculoDePago.Tipo,
+              0
+            ));
+
+
           } else {
             console.log("HOLA No entro para guardar los porcentajes acumulados");
             console.log("filtro.inscripcion.NoEstatus", filtro.inscripcion.NoEstatus);
@@ -604,7 +636,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
-
+/////////REVISA ESTO FERNANDO///////// ****************
+          console.log("Estatusprevio.ControlInterno", estatusPrevio.ControlInterno)
+          console.log("estatusPrevio.NoEstatus", estatusPrevio.NoEstatus)
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -632,7 +666,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
                                 : "13", // Antes 11
             estatusPrevio.Id,
             inf.IdUsuario,
-            //oficio
+            estatusPrevio.NoEstatus === "12" ? localStorage.getItem("IdUsuario") : ""
           );
 
           // cambiaEstatus(
@@ -672,11 +706,12 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   setUrl: (url: any) => set(() => ({ url: url })),
 });
 
-export async function createPorcentajesAcumulados(DatosPorcentajesAcumulados: IDatosPorcentajesAcumulados[]) {
+export async function createPorcentajesAcumulados(DatosPorcentajesAcumulados: any[], boo_Sumar: number) {
 
   const state = useFideicomisoStore.getState();
   console.log("DatosPorcentajesAcumulados", DatosPorcentajesAcumulados);
 
+  console.log("Hola soy boo_Sumar:", boo_Sumar)
   const peticiones = DatosPorcentajesAcumulados.map(async (item) => {
 
     console.log("ITEM", item)
@@ -691,6 +726,7 @@ export async function createPorcentajesAcumulados(DatosPorcentajesAcumulados: ID
           NombreFondoOIngreso: item.fondoIngreso.Descripcion,
           AfectadoTotalIngreso: item.AfectadoTotalIngreso || 0,
           EquivalenciaCorrespondienteMunicipios: item.EquivalenciaCorrespondienteMunicipios || 0,
+          boo_Sumar: boo_Sumar,
         },
         {
           headers: {
@@ -1471,7 +1507,7 @@ export async function GeneraAcuse(
   }
 
   const state = useCortoPlazoStore.getState();
- 
+
 
   state.getIdAcuse();
   console.log("state.idAcuse en generaAcuse", state.idAcuse);
@@ -1524,7 +1560,8 @@ export async function GeneraAcuse(
 export const CambiaEstatus = (
   Estatus: string,
   IdSolicitud: string,
-  IdEditor: string
+  IdEditor: string,
+  IdCancelacionInciaiado?: string
 ) => {
 
   return axios
@@ -1535,6 +1572,7 @@ export const CambiaEstatus = (
         Estatus: Estatus,
         ModificadoPor: localStorage.getItem("IdCentral"),
         IdEditor: IdEditor === "" ? "N/A" : IdEditor,
+        IdCancelacionInciaiado: IdCancelacionInciaiado || "Sin Registro"
       },
       {
         headers: {

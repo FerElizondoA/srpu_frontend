@@ -260,6 +260,10 @@ export function VehiculoDePago({
     return [opcionesFiltradasTipoFuente];
   };
 
+    const setTablaAsignarFuenteNew: Function = useLargoPlazoStore(
+      (state) => state.setTablaAsignarFuenteNew
+    );
+  
   useEffect(() => {
     console.log("✔️ mecanismoVehiculoPago", mecanismoVehiculoPago);
   }, [mecanismoVehiculoPago]);
@@ -348,6 +352,7 @@ export function VehiculoDePago({
               );
             }}
             onChange={(event, text) => {
+              // setTablaAsignarFuenteNew([]); // Limpia la tabla de asignar fuente al cambiar el mecanismo de pago
 
               console.log("Vehiculo de pago seleccionado", text);
               setMecanismoVehiculoPago(text);

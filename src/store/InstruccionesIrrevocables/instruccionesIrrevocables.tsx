@@ -360,7 +360,7 @@ export const createInstruccionesIrrevocables: StateCreator<
     //   acumuladoOrganismo += parseFloat(v.ingresoAfectadoXOrganismo || 0);
     // });
 
-    
+
     const soporteDocumentalPrueba = state.tablaSoporteDocumentalInstruccion.map(({
       tipo, archivo, nombreArchivo, fechaArchivo }) => ({
         tipo,
@@ -423,6 +423,35 @@ export const createInstruccionesIrrevocables: StateCreator<
   modificaInstruccion: async (setLoading: Function) => {
     const state = useInstruccionesStore.getState();
     const cpState = useCortoPlazoStore.getState();
+    const SaveFile = useCortoPlazoStore.getState();
+
+    const tipoMovimeintoNew = state.tablaTipoMovimiento.map(({
+      id,
+      tipoEntePublicoObligado,
+      entePublicoObligado,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    }) => ({
+      id,
+      tipoEntePublicoObligado,
+      entePublicoObligado,
+      tipoFuente,
+      fondoIngreso,
+      AfectadoTotalIngreso,
+      EquivalenciaCorrespondienteMunicipios,
+    })
+    );
+
+    const soporteDocumentalPrueba = state.tablaSoporteDocumentalInstruccion.map(({
+      tipo, archivo, nombreArchivo, fechaArchivo }) => ({
+        tipo,
+        archivo,
+        nombreArchivo,
+        fechaArchivo,
+      })
+    );
 
     await axios
       .post(
@@ -435,15 +464,11 @@ export const createInstruccionesIrrevocables: StateCreator<
           FechaInstruccion: state.datosGenerales.fechaInstruccion,
           TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
           EntePublicoObligado: state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
-          TipoMovimiento: JSON.stringify(state.tablaTipoMovimiento),
-          SoporteDocumental: JSON.stringify(
-            state.tablaSoporteDocumentalInstruccion
-          ),
+          TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
+          SoporteDocumental: JSON.stringify(soporteDocumentalPrueba),
           ModificadoPor: localStorage.getItem("IdUsuario"),
           //NumeroCuenta: state.datosGenerales.numeroCuenta, //Posiblemente no se puede editar
           //MecanismoPago: "Instrucciones Irrevocables",
-
-
           // CreadoPor: localStorage.getItem("IdUsuario"),
         },
         {
@@ -453,22 +478,31 @@ export const createInstruccionesIrrevocables: StateCreator<
         }
       )
       .then(({ data }) => {
+
+        console.log("data.result.Id", data.result.Id)
         state.setIdInstruccion(data.result.Id);
         // cpState.deleteFiles(
         //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`
         // );
-        
-        state.saveFilesInstruccion(
+
+        // state.saveFilesInstruccion(
+        //   data.result.Id,
+        //   `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
+        //   setLoading
+        // );
+
+        SaveFile.saveFilesFuentesPago(
+          "Instruccion",
+          soporteDocumentalPrueba,
           data.result.Id,
-          `/SRPU/INSTRUCCIONESIRREVOCABLES/${data.result.Id}`,
-          setLoading
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${data.result.Id}`,
+          setLoading,
         );
 
-        alertaConfirmCancelar("La instruccion se ha creado exitosamente")
+        alertaConfirmCancelar("La instruccion se ha modificado exitosamente")
       })
-      .catch((error) => {
-
-
+      .catch(function (error) {
+        console.log(error)
         alertaConfirmCancelarError("Ha sucedido un error, inténtelo de nuevo")
       });
   },

@@ -42,6 +42,7 @@ import { BarraFiltros } from "../../generics/BarraFiltros";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
+import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
 
 export interface IDatosInstrucciones {
   Id: string;
@@ -166,6 +167,15 @@ export function InstruccionesIrrevocables() {
   );
 
 
+
+  const DetalleAsignacionTipoMoviSolicitudes: Function = useFideicomisoStore(
+    (state) => state.DetalleAsignacionTipoMoviSolicitudes
+  );
+
+  const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
+
+
+
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
     SumaAcumuladoMunicipios: number;
@@ -207,7 +217,8 @@ export function InstruccionesIrrevocables() {
       cleanInstruccion();
     }
     if (!openDialogEliminar) {
-      getInstrucciones(setInstrucciones);
+       getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
+      //getInstrucciones(setInstrucciones);
     }
   }, [openAgregarInstruccion]);
 
@@ -464,7 +475,7 @@ export function InstruccionesIrrevocables() {
                               type="button"
                               onClick={() => {
                                 let auxArray = JSON.parse(row.TipoMovimiento);
-
+                                DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
                                 // auxArray.map((column: any) => {
                                 //   return (
                                 //     (column.acumuladoAfectacionGobiernoEstatalEntre100 =
@@ -513,6 +524,10 @@ export function InstruccionesIrrevocables() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                console.log("row", row);
+                                DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
+                                //setIdFideicomiso(row?.Id || "");
+                                // setOpenDialogEliminar(!openDialogEliminar);
                                 setIdInstruccion(row?.Id || "");
                                 setOpenDialogEliminar(!openDialogEliminar);
                               }}
@@ -536,10 +551,54 @@ export function InstruccionesIrrevocables() {
           handler={setOpenAgregarInstruccion}
           openState={openAgregarInstruccion}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+          DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
+
         />
       )}
 
       <Dialog
+        open={openDialogEliminar}
+        keepMounted
+        TransitionComponent={Transition}
+      >
+        <DialogTitle sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>Advertencia </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ ...queries.text }}>
+            {dataAsignacionTipoMoviSolicitudes.length > 0
+              ? "No es posible eliminar esta Instruccion Irrevocable, ya que tiene al menos una asignación vinculada a una solicitud."
+              : "¿Seguro que desea eliminar esta instruccion irrevocable?"}
+
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          {dataAsignacionTipoMoviSolicitudes.length <= 0 ? (
+            <Button
+              sx={queries.buttonContinuar}
+              onClick={() => {
+                setOpenDialogEliminar(!openDialogEliminar);
+                //deleteFideicomiso(idFideicomiso);
+                deleteInstruccion(idInstruccion);
+              }}
+            >
+              Aceptar
+            </Button>
+          ) : null}
+
+          <Button
+            sx={queries.buttonCancelar}
+            onClick={() => {
+              setOpenDialogEliminar(!openDialogEliminar);
+              setDataAsignacionTipoMoviSolicitudes([]);
+
+            }}
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* <Dialog
         open={openDialogEliminar}
         keepMounted
         TransitionComponent={Transition}
@@ -570,7 +629,7 @@ export function InstruccionesIrrevocables() {
             Cancelar
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       {openDetalle && (
         <DetalleInstruccion

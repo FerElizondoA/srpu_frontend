@@ -12,6 +12,7 @@ import {
   Grid,
 } from "@mui/material";
 import { queries } from "../../../queries";
+import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
@@ -19,11 +20,9 @@ import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
-import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../../generics/Alertas";
-import { IGastosCostos } from "../../../store/CreditoLargoPlazo/informacion_general";
+import { clear } from "@testing-library/user-event/dist/clear";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -35,32 +34,29 @@ export interface IUsuariosAsignables {
 
 export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 
-export function DialogSolicitarModificacion({
+export function DialogSolicitarModificacionCancelacion({
   handler,
   openState,
   accion,
-  arrDocsEliminados,
+  arrDocsEliminados
 }: {
   handler: Function;
   openState: boolean;
   accion: string;
   arrDocsEliminados?: IDocsEliminados[]
-
 }) {
   const navigate = useNavigate();
+
+  const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
   const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
-  const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
-
-
-
-  const crearSolicitud: Function = useLargoPlazoStore(
+  const crearSolicitud: Function = useCortoPlazoStore(
     (state) => state.crearSolicitud
   );
 
-  const modificaSolicitud: Function = useLargoPlazoStore(
+  const modificaSolicitud: Function = useCortoPlazoStore(
     (state) => state.modificaSolicitud
   );
 
@@ -68,7 +64,7 @@ export function DialogSolicitarModificacion({
     (state) => state.addComentario
   );
 
-  const comentarios: {} = useLargoPlazoStore((state) => state.comentarios);
+  const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
@@ -76,56 +72,66 @@ export function DialogSolicitarModificacion({
 
 
   const cleanSolicitud: Function = useInscripcionStore(
-    (state) => state.cleanSolicitudLargoPlazo
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+
+  const [filtroTipoGuardado, setFiltroTipoGuardado] = useState(0);
+
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
   );
 
 
-
-  const tablaGastosCostos: IGastosCostos[] = useLargoPlazoStore(
-    (state) => state.tablaGastosCostos
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
   );
 
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
 
+  const cleanTablaCondicionesFinancieras: Function = useCortoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
 
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
+
+    console.log("HOLA ESTOY EN cancelaciones DIALOG SOLICITAR MODIFICACION");
     console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
-    console.log("tablaGastos y costos en dialog", tablaGastosCostos);
   }, [openState]);
 
-
-  const checkform = () => { //Falta revisar los estatus
+  const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
-      console.log("Entro por los roles");
+      //console.log()
       addComentario(
         inscripcion.Id,
         JSON.stringify(comentarios),
-        "RequerimientoReestructura"
+        "Requerimiento"
       );
       CambiaEstatus(
-        localStorage.getItem("Rol") === "Autorizador"
-          ? accion === "enviar"
-            ? Object.keys(comentarios).length > 0
-              ? "23"
-              : "25"
-            : "21"
-          : localStorage.getItem("Rol") === "Validador"
-            ? accion === "enviar"
-              ? "22"
-              : "20"
-            : "21",
+        (localStorage.getItem("Rol") === "Autorizador" && accion === "enviar")
+          ? Object.keys(comentarios).length > 0
+            ? "17"
+            : "19"
+          : (localStorage.getItem("Rol") === "Revisor" && accion === "enviar")
+            ? "15"
+            : (localStorage.getItem("Rol") === "Validador" && accion === "enviar")
+              ? "16"
+              : "", //////Revisarlo alv fer
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a largo plazo",
-          `Se te ha asignado una solicitud para  ${localStorage.getItem("Rol") === "Autorizador"
-            ? accion === "enviar"
-              ? "firmar"
-              : "validación"
+          "Crédito simple a corto plazo cancelación",
+          `Se te ha asignado una solicitud para  
+          ${localStorage.getItem("Rol") === "Autorizador" ?
+            accion === "enviar" ?
+              "firmar" :
+              "validación"
             : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
                 ? "autorización"
@@ -136,7 +142,11 @@ export function DialogSolicitarModificacion({
             localStorage.getItem("Rol") === "Autorizador"
               ? localStorage.getItem("IdUsuario")!
               : idUsuarioAsignado,
-          ]
+          ],
+          inscripcion.Id,
+          "Cancelacion"
+          //Aqui va el control interno
+
         );
         window.location.reload();
         Swal.fire({
@@ -148,86 +158,117 @@ export function DialogSolicitarModificacion({
         });
       });
     } else {
-      if (inscripcion.Id !== "") {
-        console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
 
-        console.log("ENTRO AQUI AL SI HABER ID DE LA SOLICITUD");
-        modificaSolicitud(
-          inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
-          idUsuarioAsignado,
-          "1",
-          arrDocsEliminados
-        )
-          .then(() => {
-            !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
-              addComentario(
-                inscripcion.Id,
-                JSON.stringify(comentarios),
-                "Captura"
-              );
-            Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "success",
-              title: "Mensaje",
-              text: "La solicitud se envió con éxito",
-            });
-          })
-          .catch(() => {
-            Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "error",
-              title: "Mensaje",
-              text: "Ocurrió un error, inténtelo de nuevo",
-            });
-          });
-        createNotification(
-          "Crédito simple a corto plazo",
-          "Se te ha asignado una solicitud para modificación",
-          [idUsuarioAsignado]
-        );
-        //navigate("../ConsultaDeSolicitudes");
-      } else {
-        console.log("ENTRO AQUI POR QUE NO HAY ID DE LA SOLICITUD LOS CREA");
-        console.log('tablaGastosCostos dentro del IF: ', tablaGastosCostos);
-        crearSolicitud(
-          idUsuarioAsignado,
-          "1",
-          "",
-          //JSON.stringify(comentarios),
-          setIdSolicitudCreada
-        ).then(() => {
-          addComentario(
-            idSolicitudCreada,
-            JSON.stringify(comentarios),
-            "Captura"
-          );
-          alertaConfirmCancelar("La solicitud se envió con éxito")
-          cleanSolicitud();
-          navigate("../ConsultaDeSolicitudes");
-        }).catch(() => {
-          Swal.fire({
-            confirmButtonColor: "#15212f",
-            cancelButtonColor: "rgb(175, 140, 85)",
-            icon: "error",
-            title: "Mensaje",
-            text: "Ocurrió un error, inténtelo de nuevo",
-          });
-        });
-        createNotification(
-          "Crédito simple a corto plazo",
-          `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado]
-        );
-        //navigate("../ConsultaDeSolicitudes");
-      }
+      console.log("Console no paso asi que todo bien ")
     }
+    //   if (inscripcion.Id !== "") {
+    //     console.log('arrDocsEliminados dialog: ', arrDocsEliminados);
+
+    //     modificaSolicitud(
+    //       inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
+    //       idUsuarioAsignado,
+    //       "1",
+    //       arrDocsEliminados,
+    //       0, //filtroTipoGuardado
+    //     )
+    //       .then(() => {
+
+    //         if (!rolesAdmin.includes(localStorage.getItem("Rol")!) && (comentarios && Object.keys(comentarios).length > 0)) {
+    //           console.log("AGREGAR COMENTARIO");
+    //           addComentario(
+    //             inscripcion.Id,
+    //             JSON.stringify(comentarios),
+    //             "Captura"
+    //           );
+    //         } else {
+    //           console.log("NO AGREGAR COMENTARIO");
+    //         }
+
+    //         // !rolesAdmin.includes(localStorage.getItem("Rol")!) && comentarios && Object.keys(comentarios).length > 0 &&
+
+
+    //         Swal.fire({
+    //           confirmButtonColor: "#15212f",
+    //           cancelButtonColor: "rgb(175, 140, 85)",
+    //           icon: "success",
+    //           title: "Mensaje",
+    //           text: "La solicitud se envió con éxito",
+    //         });
+    //         cleanSolicitud();
+    //         cleanSolicitudCortoPlazo();
+    //         cleanInscripcion();
+    //         cleanInscripcionModify();
+    //         cleanTablaCondicionesFinancieras();
+
+
+    //         navigate("../ConsultaDeSolicitudes");
+
+    //       })
+    //       .catch(() => {
+    //         Swal.fire({
+    //           confirmButtonColor: "#15212f",
+    //           cancelButtonColor: "rgb(175, 140, 85)",
+    //           icon: "error",
+    //           title: "Mensaje",
+    //           text: "Ocurrió un error, inténtelo de nuevo",
+    //         });
+    //       });
+    //     createNotification(
+    //       "Crédito simple a corto plazo",
+    //       "Se te ha asignado una solicitud para modificación",
+    //       [idUsuarioAsignado],
+    //       inscripcion.Id,
+    //       "inscripcion"
+    //     );
+    //     navigate("../ConsultaDeSolicitudes");
+    //   } else {
+
+    //     crearSolicitud(
+    //       idUsuarioAsignado,
+    //       "1",
+    //       "",
+    //       //JSON.stringify(comentarios),
+    //       setIdSolicitudCreada
+    //     ).then(() => {
+    //       addComentario(
+    //         idSolicitudCreada,
+    //         JSON.stringify(comentarios),
+    //         "Captura"
+    //       );
+    //       alertaConfirmCancelar("La solicitud se envió con éxito")
+    //       cleanSolicitud();
+    //       navigate("../ConsultaDeSolicitudes");
+    //     })
+
+    //       .catch(() => {
+    //         Swal.fire({
+    //           confirmButtonColor: "#15212f",
+    //           cancelButtonColor: "rgb(175, 140, 85)",
+    //           icon: "error",
+    //           title: "Mensaje",
+    //           text: "Ocurrió un error, inténtelo de nuevo",
+    //         });
+    //       });
+    //     // createNotification(
+    //     //   "Crédito simple a corto plazo",
+    //     //   `Se te ha asignado una solicitud para modificación`,
+    //     //   [idUsuarioAsignado],
+    //     //   idSolicitudCreada,
+    //     //   "inscripcion"
+    //     // );
+
+    //   }
+    // }
 
     handler(false);
   };
 
 
+  useEffect(() => {
+
+    console.log("COMENTARIOS", comentarios)
+
+  }, [])
 
   return (
     <Dialog
@@ -259,6 +300,8 @@ export function DialogSolicitarModificacion({
                 select
                 value={idUsuarioAsignado}
                 onChange={(e) => {
+                  console.log("VALOR USUARIO", e.target.value);
+
                   setidUsuarioAsignado(e.target.value);
                 }}
               >
@@ -338,7 +381,23 @@ export function DialogSolicitarModificacion({
               : "Comentarios"}
           </Typography>
         )}
-        {Object.entries(comentarios).map(([key, val], index) =>
+
+        {Object.values(comentarios).every(val => val === "") ? (
+          <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
+            {rolesAdmin.includes(localStorage.getItem("Rol")!)
+              ? " Sin Requerimientos"
+              : "Sin Comentarios"}
+          </Typography>
+        ) : (
+          Object.entries(comentarios).map(([key, val], index) =>
+            val === "" ? null : (
+              <Typography sx={{ fontSize: "1.5ch" }} key={index}>
+                <strong>{key}:</strong> {val as string}
+              </Typography>
+            )
+          )
+        )}
+        {/* {Object.entries(comentarios).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography
               sx={{
@@ -350,7 +409,7 @@ export function DialogSolicitarModificacion({
               {val as string}
             </Typography>
           )
-        )}
+        )} */}
       </DialogContent>
 
       <DialogActions>

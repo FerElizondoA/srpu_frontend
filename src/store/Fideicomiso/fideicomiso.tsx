@@ -157,7 +157,7 @@ export interface FideicomisoSlice {
 
   getFideicomisos: (setState: Function) => void;
   createFideicomiso: (stateOpen: Function, setLoading: Function) => void;
-  modificaFideicomiso: (setLoading: Function) => void;
+  modificaFideicomiso: (stateOpen: Function, setLoading: Function) => void;
   deleteFideicomiso: (Id: string) => void;
 
 
@@ -218,8 +218,8 @@ export interface FideicomisoSlice {
   ) => void;
 
 
-  createPorcentajesAcumulados: (stateOpen: Function) => void;
-  modificaPorcentajesAcumulados: (stateOpen: Function) => void;
+  createPorcentajesAcumulados: (stateOpen: Function, setLoading: Function) => void;
+  modificaPorcentajesAcumulados: (stateOpen: Function, setLoading: Function) => void;
 
   /*Busca individualmente el porcentaje acumulado de un ente publico obligado y su 
   fondo o ingreso cuando se esta llenando En tipo de movimiento del fideicomiso*/
@@ -334,13 +334,40 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   arregloPorcetajesAcumuladosRegistros: [],
 
-  addArregloPorcetajesAcumuladosRegistros: (arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados) => {
-    set((state) => ({
-      arregloPorcetajesAcumuladosRegistros: [
-        ...state.arregloPorcetajesAcumuladosRegistros,
-        arregloPorcetajesAcumuladosRegistros,
-      ],
-    }));
+  // addArregloPorcetajesAcumuladosRegistros: (arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados) => {
+  //   set((state) => ({
+  //     arregloPorcetajesAcumuladosRegistros: [
+  //       ...state.arregloPorcetajesAcumuladosRegistros,
+  //       arregloPorcetajesAcumuladosRegistros,
+  //     ],
+  //   }));
+  // },
+  addArregloPorcetajesAcumuladosRegistros: (nuevosRegistros: IPorcentajeAcumulados | IPorcentajeAcumulados[]) => {
+    set((state) => {
+      // Aseguramos que siempre trabajemos con un arreglo
+      const registrosArray = Array.isArray(nuevosRegistros) ? nuevosRegistros : [nuevosRegistros];
+
+      // Filtramos los que ya existen para evitar duplicados
+      const nuevosUnicos = registrosArray.filter(
+        (nuevo) =>
+          !state.arregloPorcetajesAcumuladosRegistros.some(
+            (existente) =>
+              existente.IdFondoOIngreso === nuevo.IdFondoOIngreso &&
+              existente.IdEntePublicoObligado === nuevo.IdEntePublicoObligado
+          )
+      );
+
+      // Si no hay nuevos, devolvemos el estado igual
+      if (nuevosUnicos.length === 0) return state;
+
+      // Si hay nuevos, los agregamos
+      return {
+        arregloPorcetajesAcumuladosRegistros: [
+          ...state.arregloPorcetajesAcumuladosRegistros,
+          ...nuevosUnicos,
+        ],
+      };
+    });
   },
   tablaTipoMovimientoFideicomisoNew: [],
 
@@ -757,7 +784,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       });
   },
 
-  createPorcentajesAcumulados: async (stateOpen: Function) => {
+  createPorcentajesAcumulados: async (stateOpen: Function, setLoading: Function) => {
     const state = useFideicomisoStore.getState();
 
     const peticiones = state.tablaTipoMovimientoFideicomisoNew.map((item) => {
@@ -806,12 +833,12 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       console.log("✅ Todos los porcentajes acumulados fueron creados");
 
       if (state.idFideicomiso === "") {
-        //state.createFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+        state.createFideicomiso(stateOpen, setLoading); // Ahora sí lo puedes ejecutar
       }
 
       //quitar
       else if (state.idFideicomiso !== "") {
-        //state.modificaFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+        state.modificaFideicomiso(stateOpen, setLoading); // Ahora sí lo puedes ejecutar
       }
 
     } catch (error) {
@@ -822,7 +849,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
 
 
-  modificaPorcentajesAcumulados: async (stateOpen: Function) => {
+  modificaPorcentajesAcumulados: async (setLoading:Function, stateOpen: Function ) => {
     const state = useFideicomisoStore.getState();
 
     const peticiones = state.tablaTipoMovimientoFideicomisoNew.map((item) => {
@@ -871,7 +898,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     try {
       await Promise.all(peticiones); // Espera que todas las peticiones terminen
       console.log("✅ Todos los porcentajes acumulados fueron creados");
-      state.modificaFideicomiso(stateOpen); // Ahora sí lo puedes ejecutar
+      state.modificaFideicomiso(stateOpen, setLoading); // Ahora sí lo puedes ejecutar
     } catch (error) {
       console.error("❌ Error al crear uno o más porcentajes acumulados:", error);
       // Puedes mostrar un mensaje al usuario si quieres
@@ -1013,8 +1040,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
             Authorization: localStorage.getItem("jwtToken"),
           },
         }
-      )
-      .then(({ data }) => {
+      ).then(({ data }) => {
         //const stateNew = useCortoPlazoStore.getState();
         //state.createPorcentajeAcumualdo();
         state.setIdFideicomiso(data.data.Id);
@@ -1074,7 +1100,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       });
   },
 
-  modificaFideicomiso: async (setLoading: Function) => {
+  modificaFideicomiso: async ( stateOpen: Function, setLoading: Function,) => {
     const state = useFideicomisoStore.getState();
     const cpState = useCortoPlazoStore.getState();
 
@@ -1132,14 +1158,8 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           //`/SRPU/FIDEICOMISOS/${data.result.Id}`,
           setLoading,
           new File([data.data], "PRUEBA DE FIDEICOMISO.pdf")
-        );
-        // Swal.fire({
-        //   confirmButtonColor: "#15212f",
-        //   cancelButtonColor: "rgb(175, 140, 85)",
-        //   icon: "success",
-        //   title: "Éxito",
-        //   text: "El fideicomiso se ha modificado exitosamente",
-        // });
+        )
+
       })
       .catch(function (error) {
         // Swal.fire({
@@ -1273,8 +1293,9 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         }
       )
       .then((r) => {
-        console.log("r ENTRO: ", r.data);
         setLoading(false);
+        console.log("r ENTRO: ", r.data);
+       
       })
       .catch((e) => { });
   },

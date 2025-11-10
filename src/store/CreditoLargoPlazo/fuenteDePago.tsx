@@ -36,13 +36,13 @@ export type garantiaPago = {
 };
 
 export interface ICatalogoClasificacion {
-	Id: string;
-	Descripcion: string;
-	FechaCreacion: string;
-	CreadoPor: string;
-	UltimaModificacion: string;
-	ModificadoPor: string;
-	Deleted: number;
+  Id: string;
+  Descripcion: string;
+  FechaCreacion: string;
+  CreadoPor: string;
+  UltimaModificacion: string;
+  ModificadoPor: string;
+  Deleted: number;
 }
 
 export type AsignarFuenteV = {
@@ -104,7 +104,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
 
-    getCatalogoClasificacion: async (setState: Function) => {
+  getCatalogoClasificacion: async (setState: Function) => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-clasificacionAsignarFuentePago", {
         headers: {
@@ -117,14 +117,25 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       });
   },
 
-  updateTipoMovimientoField: (index: number, field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>
-    , value: number) => {
+  updateTipoMovimientoField: (index: number,
+    field: keyof Pick<IDeudorFideicomisoNew, 'AfectadoTotalIngreso' | 'EquivalenciaCorrespondienteMunicipios'>,
+    value: number,
+    tablaActual?: IDeudorFideicomisoNew[]
+  ) => {
     set((state) => {
-      const updatedTabla = state.tablaAsignarFuenteNew.map((row, i) =>
+      // Usa la tabla pasada, o si no, la del estado
+      const baseTabla = tablaActual || state.tablaAsignarFuenteNew;
+
+      const updatedTabla = baseTabla.map((row, i) =>
         i === index ? { ...row, [field]: value } : row
       );
-      // setState(updatedTabla);
+
       return { tablaAsignarFuenteNew: updatedTabla };
+      // const updatedTabla = state.tablaAsignarFuenteNew.map((row, i) =>
+      //   i === index ? { ...row, [field]: value } : row
+      // );
+      // // setState(updatedTabla);
+      // return { tablaAsignarFuenteNew: updatedTabla };
 
     });
   },
@@ -183,10 +194,14 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
 
   setTablaAsignarFuenteNew: (fuente: IDeudorFideicomisoNew[]) =>
     set(() => ({
-      tablaAsignarFuenteNew: fuente,
-      OriginalTablaAsignarFuenteNew: fuente
+      tablaAsignarFuenteNew: fuente.map(r => ({
+        ...r,
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0,
+      })),
+      OriginalTablaAsignarFuenteNew: fuente,
     })),
-
+    
   cleanTablaAsignarFuenteNew: () =>
     set(() => ({
       tablaAsignarFuente: [],
@@ -227,13 +242,17 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       })
       .then(({ data }) => {
         let r = data.data;
+        console.log("Mecanismos de pago fetched:", r);
 
         set(() => ({
           tablaMecanismoVehiculoPago: r,
         }));
 
         setState(r);
-      });
+      })
+      .catch((error) => {
+        console.log("Error fetching mecanismos de pago:", error);
+      })
   },
 
   getDetalleFuenteDePago: async (Tabla: string, Id: string) => {

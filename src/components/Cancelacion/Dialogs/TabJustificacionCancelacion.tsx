@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogTitle, Grid, IconButton, TextField, Tooltip, Typography } from "@mui/material";
 import { HeadLabels } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
 import { format, lightFormat } from "date-fns";
 import { queries } from "../../../queries";
@@ -38,7 +38,8 @@ export function TabJustificacionCancelacion({
     },
     {
       label: "Usuario Solicitante",
-      value: DetailPathCancelaciones?.[0]?.Ruta || "No iniciado el proceso",
+      value:"JOSÉ V. PÉREZ ALONSO"
+      // value: DetailPathCancelaciones?.[0]?.NombreIdentificador || "No iniciado el proceso",
     },
     {
       label: "Acreditación de la cancelación",
@@ -53,6 +54,7 @@ export function TabJustificacionCancelacion({
         doc => doc.TipoArchivoJustificacion === "Baja De Credito Federal")?.NombreArchivo
         || "SIN ARCHIVOS"
     },
+
   ];
 
   return (
@@ -157,6 +159,23 @@ export function TabJustificacionCancelacion({
 
             </Grid>
           ))}
+        </Grid>
+
+
+        <Grid container ml={19} height={"5rem"}>
+          <Grid sx={{ height: "3rem", display:"flex",justifyContent: "center", alignItems: "center"}}>
+          <Typography sx={{ ...queries.bold_text }}>Justificacion Escrita</Typography>
+
+          </Grid>
+
+          <TextField
+            id="outlined-error-helper-text"
+            sx={{...queries.medium_text, width: "70%", ml: 2 }}
+            fullWidth
+           value={DetailPathCancelaciones?.[0]?.Justificacion || "Sin justificación de cancelación"}
+          >
+            
+          </TextField>
         </Grid>
       </Grid>
 

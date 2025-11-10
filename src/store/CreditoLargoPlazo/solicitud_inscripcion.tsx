@@ -11,6 +11,9 @@ import { IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { deleteDocPathSol } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/documentacion/IListTipoDocumento";
+import { useFideicomisoStore } from "../Fideicomiso/main";
+import { useInstruccionesStore } from "../InstruccionesIrrevocables/main";
+import { useMandatoStore } from "../Mandatos/main";
 
 export interface IDataAgregarSolicitud {
   ControlInterno: string;
@@ -29,6 +32,44 @@ export interface IDataAgregarSolicitud {
   Solicitud: string;
   TipoCredito: string;
   TipoSolicitud: string;
+}
+
+export interface IDatosModificaAsignacionTipoSolicitud {
+  IdSolicitud: string,
+  IdFuentePago: string,
+  IipoMovRelacionado: string,
+  NombreTipoFuentePago: string,
+  IdEntePublicoObligado: string,
+  IdFondoIngreso: string,
+  PorcentajeOriginalIngreso: number,
+  PorcentajeOriginalEquivalencia: number,
+  PorcentajeUtilizadoIngreso: number,
+  PorcentajeUtilizadoEquivalencia: number
+}
+
+
+export interface INewDatosModificaAsignacionTipoSolicitud {
+  id: string;
+  tipoFideicomitente: {
+    Id: string;
+    Descripcion: string;
+  };
+  fideicomitente: {
+    Id: string;
+    Descripcion: string;
+  };
+  tipoFuente: {
+    Id: string;
+    Descripcion: string;
+  },
+  fondoIngreso: {
+    Id: string;
+    Descripcion: string;
+    TipoDeFuente: string;
+  };
+  AfectadoTotalIngreso: number;
+  EquivalenciaCorrespondienteMunicipios: number;
+  garantiaDePago: string;
 }
 
 
@@ -75,6 +116,21 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     TablaFuentePago: IDeudorFideicomisoNew,
     TablaFuentePagoOriginal: IDeudorFideicomisoNew,
     NombreTipoFuentePago: string
+  ) => void;
+
+  modificaAsignacionUtilizadoTipoSolicitud: (
+    IdFuentePago: string,
+    DatosAsignacionTipoSolicitud: INewDatosModificaAsignacionTipoSolicitud[],
+    TipoFuentePago: string,
+    bool_Suma: number,
+  ) => void;
+
+  modificaAsignacionOriginalTipoSolicitud: (
+    IdFuentePago: string,
+    DatosAsignacionTipoSolicitud: INewDatosModificaAsignacionTipoSolicitud[],
+    TipoFuentePago: string,
+    stateOpen: Function,
+    setLoading: Function
   ) => void;
 
 
@@ -167,7 +223,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           PorcentajeOriginalEquivalencia: TablaFuentePagoOriginal.EquivalenciaCorrespondienteMunicipios ?? 0,
           // PorcentajeUtilizadoIngreso: TablaFuentePago.AfectadoTotalIngreso ?? 0,
           // PorcentajeUtilizadoEquivalencia: TablaFuentePago.EquivalenciaCorrespondienteMunicipios ?? 0
-          PorcentajeUtilizadoIngreso:  0.0,
+          PorcentajeUtilizadoIngreso: 0.0,
           PorcentajeUtilizadoEquivalencia: 0.0
         },
         {
@@ -180,6 +236,159 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         console.log("data ASIGNACIONTIPOMOVISOLICITUDES ", data);
       });
   },
+
+  modificaAsignacionUtilizadoTipoSolicitud: async (
+    IdFuentePago: string, //Este es el id que tiene de la tipomovimiento de las fuentes de pago
+    DatosAsignacionTipoSolicitud: any[],
+    TipoFuentePago: string,
+    bool_Suma: number
+  ) => {
+
+    console.log("modificaAsignacionTipoSolicitud");
+    console.log("IdFuentePago", IdFuentePago)
+    console.log("TipoFuentePago", TipoFuentePago)
+
+    console.log("DatosAsignacionTipoSolicitud: string", DatosAsignacionTipoSolicitud)
+
+
+    try {
+      const promesas = DatosAsignacionTipoSolicitud.map(async (item) => {
+        return axios.put(
+          process.env.REACT_APP_APPLICATION_BACK + "/modifica-AsignacionTipoMovUtilizadoSolicitudes",
+          {
+            IdFuentePago: IdFuentePago,
+            TipoMovRelacionado: item.id,
+            NombreTipoFuentePago: TipoFuentePago,
+            //IdEntePublicoObligado: item.fideicomitente.Id,
+            //IdFondoIngreso: item.fondoIngreso.Id,
+            PorcentajeUtilizadoIngreso: item.AfectadoTotalIngreso,
+            PorcentajeUtilizadoEquivalencia: item.EquivalenciaCorrespondienteMunicipios,
+            bool_Suma: bool_Suma
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+
+        );
+
+      });
+      await Promise.all(promesas);
+
+      console.log("✅ Todas las modificaciones se realizaron correctamente.");
+      //stateFuentePago(()=>{}, ()=>{})
+
+    } catch (error: any) {
+      console.error("❌ Error en alguna de las modificaciones:", error);
+
+    }
+
+
+
+
+
+
+    // .then((data) => {
+    //   console.log("data ASIGNACIONTIPOMOVISOLICITUDES ", data);
+    // });
+  },
+  modificaAsignacionOriginalTipoSolicitud: async (
+    IdFuentePago: string,
+    DatosAsignacionTipoSolicitud: any[],
+    TipoFuentePago: string,
+    stateOpen: Function,
+    setLoading: Function
+  ) => {
+
+    console.log("▶️ modificaAsignacionTipoSolicitud");
+    console.log("IdFuentePago:", IdFuentePago);
+    console.log("TipoFuentePago:", TipoFuentePago);
+    console.log("DatosAsignacionTipoSolicitud:", DatosAsignacionTipoSolicitud);
+
+    const stateFuentePago = TipoFuentePago === "Fideicomiso" ? useFideicomisoStore.getState().modificaFideicomiso :
+      TipoFuentePago === "Mandato" ? useMandatoStore.getState().modificaMandato : useInstruccionesStore.getState().modificaInstruccion;
+
+    try {
+      // Genera todas las promesas de modificación
+      const promesas = DatosAsignacionTipoSolicitud.map((item) => {
+        return axios.put(
+          process.env.REACT_APP_APPLICATION_BACK + "/modifica-AsignacionTipoMovOriginalSolicitudes",
+          {
+            IdFuentePago: IdFuentePago,
+            TipoMovRelacionado: item.id,
+            NombreTipoFuentePago: TipoFuentePago,
+            PorcentajeOriginalIngreso: item.AfectadoTotalIngreso,
+            PorcentajeOriginalEquivalencia: item.EquivalenciaCorrespondienteMunicipios || 0.0,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("jwtToken"),
+            },
+          }
+        );
+      });
+
+      // Espera a que todas las peticiones terminen antes de continuar
+      await Promise.all(promesas);
+
+      console.log("✅ Todas las modificaciones se realizaron correctamente.");
+      // Llama la función del store SOLO cuando todo terminó correctamente
+
+      console.log("HOLA",stateFuentePago)
+      stateFuentePago(stateOpen, setLoading);
+
+    } catch (error: any) {
+      console.error("❌ Error en alguna de las modificaciones:", error);
+
+    }
+  },
+
+  // modificaAsignacionOriginalTipoSolicitud: async (
+  //   IdFuentePago: string, //Este es el id que tiene de la tipomovimiento de las fuentes de pago
+  //   // DatosAsignacionTipoSolicitud: INewDatosModificaAsignacionTipoSolicitud[],
+  //   DatosAsignacionTipoSolicitud: any[],
+  //   TipoFuentePago: string,
+  //   stateOpen: Function,
+  //   setLoading: Function
+  // ) => {
+  //   const stateFideicomisos = useFideicomisoStore.getState();
+
+
+  //   console.log("modificaAsignacionTipoSolicitud");
+  //   console.log("IdFuentePago", IdFuentePago)
+  //   console.log("TipoFuentePago", TipoFuentePago)
+
+  //   console.log("DatosAsignacionTipoSolicitud: string", DatosAsignacionTipoSolicitud)
+
+  //   const registros = DatosAsignacionTipoSolicitud.map(async (item) => {
+
+  //     const { data } = await axios.put(
+  //       process.env.REACT_APP_APPLICATION_BACK + "/modifica-AsignacionTipoMovOriginalSolicitudes",
+  //       {
+  //         IdFuentePago: IdFuentePago,
+  //         TipoMovRelacionado: item.id, // AQUI
+  //         NombreTipoFuentePago: TipoFuentePago,
+  //         //IdEntePublicoObligado: item.fideicomitente.Id || item.entePublicoObligado.Id || item.mandatario.Id, //AQUI
+  //         //IdFondoIngreso: item.fondoIngreso.Id, //AQUI
+  //         PorcentajeOriginalIngreso: item.AfectadoTotalIngreso, //AQUI
+  //         PorcentajeOriginalEquivalencia: item.EquivalenciaCorrespondienteMunicipios || 0.0//AQUI
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: localStorage.getItem("jwtToken"),
+  //         },
+  //       }
+  //     )
+  //     try {
+  //       await Promise.all(registros); // Espera que todas las peticiones terminen
+  //       stateFideicomisos.modificaFideicomiso(stateOpen, setLoading)
+  //     } catch (error: any) {
+  //     }
+  //   })
+  // },
+
+
 
   crearSolicitud: async (
     idEditor: string,
@@ -461,21 +670,21 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         console.log('arrDocsEliminados', arrDocsEliminados);
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
 
-         console.log("HOLA SOY EL ID DE LA SOLICITUD: ", inscripcionState.inscripcion.Id)
-       lpState.saveFiles(
+        console.log("HOLA SOY EL ID DE LA SOLICITUD: ", inscripcionState.inscripcion.Id)
+        lpState.saveFiles(
           inscripcionState.inscripcion.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`,
           true
         );
 
-       
-       
+
+
 
         // if (arrDocsEliminados.length != 0) {
         //   deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
         // }
 
-      
+
       });
   },
 

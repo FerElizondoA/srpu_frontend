@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Tab, Tabs, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Tab, Tabs, ThemeProvider, Typography } from "@mui/material";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { SyntheticEvent, useCallback, useEffect, useState } from "react";
@@ -27,6 +27,8 @@ import { TabJustificacionCancelacion } from "./TabJustificacionCancelacion";
 import { IDocumentosAcuses } from "../../ConsultaDeSolicitudes/AcusesSolicitudes";
 import { DialogAsignacionResumen } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogAsignacionResumen";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { DialogSolicitarModificacionCancelacion } from "../../ObligacionesLargoPlazoPage/Dialog/DialogSolicitarModificacionCancelacion";
 
 export interface ICancelacionJustificaciones {
   Deleted: number;
@@ -49,6 +51,48 @@ export function TabsCancelacionArchivos({
   openState: boolean;
   rowSolicitud: IInscripcion
 }) {
+  const [openDialogConfirmacionVolver, setOpenDialogConfirmacionVolver] = useState(false);
+  const [confirmBotonAccionComentario, setConfirmBotonAccionComentario] = useState(false);
+  const [botonVolverFiltro, setBotonVolverFiltro] = useState({});
+  const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
+  const [accion, setAccion] = useState("");
+
+  function tieneComentarios(
+    comentarios: Record<string, string | undefined>,
+    comentariosAuxOriginal: Record<string, string | undefined>
+  ): boolean {
+    return JSON.stringify(comentarios) !== JSON.stringify(comentariosAuxOriginal);
+  }
+
+  function compararComentarios(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
+    const claves1 = Object.keys(obj1);
+    const claves2 = Object.keys(obj2);
+
+    // Comparar longitud de las claves
+    if (claves1.length !== claves2.length) {
+      return false;
+    }
+
+    // Comparar valores clave por clave
+    const prueba = claves1.every(clave => obj2.hasOwnProperty(clave) && obj1[clave] === obj2[clave]);
+    return prueba
+  }
+
+
+  const cleanSolicitudCortoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudCortoPlazo
+  );
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+
+
+
+
   const [openSolicitarCancelacion, setOpenSolicitarCancelacion] =
     useState(false);
 
@@ -84,7 +128,7 @@ export function TabsCancelacionArchivos({
             : (a = { ...a, [v]: JSON.parse(_?.Comentarios)[v] });
         });
       });
-
+    setBotonVolverFiltro(a);
     setComentarios(a);
 
     useCortoPlazoStore.setState({
@@ -194,12 +238,34 @@ export function TabsCancelacionArchivos({
               },
             }}
             onClick={() => {
-              handler(false);
-              useCortoPlazoStore.setState({
-                comentarios: {},
-                idComentario: "",
-              });
-              cleanSolicitud();
+              setConfirmBotonAccionComentario(false)
+              if (compararComentarios(comentarios, botonVolverFiltro)) {
+                console.log("No ha habido modificaciones en los comentarios.");
+
+
+                handler(false);
+                useCortoPlazoStore.setState({
+                  comentarios: {},
+                  idComentario: "",
+                });
+                cleanSolicitudCortoPlazo();
+                cleanSolicitudLargoPlazo();
+                cleanCondicionFinanciera();
+              }
+              else {
+                // console.log("Hubo modificaciones en los comentarios.");
+                // console.log("COMENTARIOS", comentarios)
+                // console.log("botonVolverFiltro", botonVolverFiltro)
+
+                setOpenDialogConfirmacionVolver(true)
+
+              }
+              // handler(false);
+              // useCortoPlazoStore.setState({
+              //   comentarios: {},
+              //   idComentario: "",
+              // });
+              // cleanSolicitud();
             }}
           >
             Volver
@@ -317,6 +383,8 @@ export function TabsCancelacionArchivos({
               sx={{ width: "50rem", display: "flex" }}
             >
               <Button
+                disabled={compararComentarios(comentarios, botonVolverFiltro)}
+
                 sx={{
                   ...queries.buttonCancelar,
                   fontSize: "50%",
@@ -351,8 +419,21 @@ export function TabsCancelacionArchivos({
                   fontSize: "50%",
                 }}
                 onClick={() => {
-                  //   setOpenDialogRegresar(true);
-                  //   setAccion("enviar");
+                  console.log("Aqui ando compi")
+                  if (compararComentarios(comentarios, botonVolverFiltro) === false) {
+                    setOpenDialogConfirmacionVolver(true)
+                    setConfirmBotonAccionComentario(true)
+                    console.log("Aqui ando compi x2")
+
+                  } else {
+                    setOpenDialogRegresar(true);
+                    setAccion("enviar");
+                    console.log("Aqui ando compi x3")
+
+                  }
+
+                  // setOpenDialogRegresar(true);
+                  // setAccion("enviar");
                 }}
               >
                 Confirmar{" "}
@@ -420,6 +501,57 @@ export function TabsCancelacionArchivos({
 
       </DialogContent>
 
+      <Dialog open={openDialogConfirmacionVolver}>
+        <DialogTitle sx={{ ...queries.bold_text, display: "flex", justifyContent: "center" }}>
+          ADVERTENCIA
+        </DialogTitle>
+
+        <DialogContent>
+          <Typography>
+            Se agregaron o modificaron comentarios en distintos campos, si desea enviarlos o guardar los cambios, porfavor oprimir el boton de <strong>"Guardar Comentarios"</strong>
+            {confirmBotonAccionComentario === true ? (
+              <span> para continuar</span>
+            ) : (
+              <span>, de lo contrario precione <strong>"Aceptar"</strong> para continuar y borrar las modificaciones.</span>
+            )}
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button
+            sx={{ ...queries.buttonCancelar }}
+            onClick={() => {
+              setOpenDialogConfirmacionVolver(false)
+            }}
+          >
+            Cerrar
+          </Button>
+
+          {confirmBotonAccionComentario === true
+            ? null
+            : (<Button
+              sx={{ ...queries.buttonContinuar }}
+              onClick={() => {
+                setOpenDialogConfirmacionVolver(false)
+                handler(false);
+                useCortoPlazoStore.setState({
+                  comentarios: {},
+                  idComentario: "",
+                });
+                cleanSolicitudCortoPlazo();
+                cleanSolicitudLargoPlazo();
+                cleanCondicionFinanciera();
+              }}
+            >
+              Aceptar
+            </Button>)}
+
+
+
+        </DialogActions>
+
+      </Dialog>
+
 
 
       {/* <Grid width={"100%"}>
@@ -443,11 +575,19 @@ export function TabsCancelacionArchivos({
         />
       )}
 
-      {openGuardaComentarios && (
+      {/* {openGuardaComentarios && (
         <DialogGuardarComentarios
           open={openGuardaComentarios}
           handler={setOpenGuardaComentarios}
 
+        />
+      )} */}
+
+      {openDialogRegresar && (
+        <DialogSolicitarModificacionCancelacion
+          handler={setOpenDialogRegresar}
+          openState={openDialogRegresar}
+          accion={accion}
         />
       )}
 

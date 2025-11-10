@@ -81,6 +81,7 @@ export interface IData {
   FechaRequerimientos: string;
   IdPathDoc?: string;
   CountReestructuras?: string;
+  CancelacionInciadoPor?: string;
   // Id: string;
   // NumeroRegistro: string;
   // Nombre: string;
@@ -264,7 +265,6 @@ export function ConsultaDeSolicitudPage() {
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
     cleanInscripcion();
-    console.log("HOLA ESTOY EN CONSULTA DE SOLICITUDES");
   }, []);
 
 

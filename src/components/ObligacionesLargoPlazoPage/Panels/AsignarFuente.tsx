@@ -11,6 +11,7 @@ import {
   IconButton,
   InputLabel,
   Paper,
+  Slide,
   Table,
   TableBody,
   TableContainer,
@@ -20,11 +21,11 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { ICatalogoClasificacion, IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
-import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../../../store/Fideicomiso/fideicomiso";
+import { IDeudorFideicomiso, IDeudorFideicomisoNew, IPorcentajeAcumulados } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import {
@@ -33,10 +34,26 @@ import {
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { TransitionProps } from '@mui/material/transitions';
+import HighlightOffSharpIcon from '@mui/icons-material/HighlightOff';
 
 
 interface HeadSelect {
   Label: string;
+}
+
+interface IDataAsignacionTipoMoviSolicitudes {
+  Id: string;
+  IdSolicitud: string;
+  IdFuentePago: string;
+  TipoMovRelacionado: string;
+  NombreTipoFuentePago: string;
+  IdEntePublicoObligado: string;
+  IdFondoIngreso: string;
+  PorcentajeOriginalIngreso: number;
+  PorcentajeOriginalEquivalencia: number;
+  PorcentajeUtilizadoIngreso: number;
+  PorcentajeUtilizadoEquivalenci: number;
 }
 
 
@@ -113,6 +130,16 @@ export function AsignarFuente({
   filtroCampoTipoFuente: IDeudorFideicomisoNew[],
   setFiltroCampoTipoFuente: Function
 }) {
+
+  const Transition = forwardRef(function Transition(
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
   const mecanismoVehiculoPago: IRegistro = useLargoPlazoStore(
     (state) => state.mecanismoVehiculoPago
   );
@@ -140,11 +167,16 @@ export function AsignarFuente({
   const catalogoFuentesDePago: IFondoOIngreso[] = useFideicomisoStore(
     (state) => state.catalogoFondosOIngresos
   );
+
+  const DetalleAsignacionTipoMoviSolicitudes: Function = useFideicomisoStore(
+    (state) => state.DetalleAsignacionTipoMoviSolicitudes
+  );
+
   const tablaAsignarFuente: IDeudorFideicomiso[] = useLargoPlazoStore(
     (state) => state.tablaAsignarFuente
   );
 
-  const tablaAsignarFuenteNew: IDeudorFideicomisoNew[] = useLargoPlazoStore(
+  const tablaAsignarFuenteNew: any[] = useLargoPlazoStore(
     (state) => state.tablaAsignarFuenteNew
   );
 
@@ -203,16 +235,122 @@ export function AsignarFuente({
     (state) => state.getCatalogoClasificacion
   );
 
+  const setPorcentajeAcumulado: Function = useFideicomisoStore(
+    (state) => state.setPorcentajeAcumulado
+  );
+
+  const porcentajeAcumuladoRegistros: IPorcentajeAcumulados = useFideicomisoStore(
+    (state) => state.porcentajeAcumuladoRegistros
+  );
+
+
+  const DetallePorcentajesAcumuladosMultiples: Function = useFideicomisoStore(
+    (state) => state.DetallePorcentajesAcumuladosMultiples
+  );
+
+  const arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[] = useFideicomisoStore(
+    (state) => state.arregloPorcetajesAcumuladosRegistros
+  );
+
   const [catalogoClasificacion, setCatalogoClasificacion] = useState<Array<ICatalogoClasificacion>>([])
 
+  useEffect(() => {
+    console.log("Entre a el useEffect de DetallePorcentajesAcumuladosMultiples")
+
+    if (tablaAsignarFuenteNew.length > 0) {
+      console.log("Entre la validacion de DetallePorcentajesAcumuladosMultiples", tablaAsignarFuenteNew)
+      DetallePorcentajesAcumuladosMultiples(
+        tablaAsignarFuenteNew.map((reg) => ({
+          IdEntePublicoObligado: reg?.fideicomitente?.Id || reg?.entePublicoObligado?.Id || reg?.mandatario?.Id,
+          IdFondoOIngreso: reg.fondoIngreso.Id,
+        })),
+        // (datos: any) => {
+        //   // Guardarlos en zustand o estado local:
+        //   addArregloPorcetajesAcumuladosRegistros(datos);
+        // }
+      );
+    }
+  }, [tablaAsignarFuenteNew]);
+
+  useEffect(() => {
+
+    console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros)
+  }, [arregloPorcetajesAcumuladosRegistros])
 
 
 
-  const [validacionDialogAsignarFuente, setValidacioDialogAsignarFuente] = useState({
+
+  const [validacionDialogAsignarFuente, setValidacionDialogAsignarFuente] = useState({
     openDialog: false,
+    registroPrevio: "",
     message: "",
-    montoOriginal: 0
+    montoOriginal: 0,
+    montoUtilizado: 0,
+    nombreEntePublicoObligado: "",
+    nombreFondoOIngreso: "",
   });
+
+  // const ChceckAsignacionYPorcentajeAcumulado = () => {
+  //   //Aqui validar que no se pase del 100% de asignacion en porcentaje y en la fuente de pago
+
+
+  //   setTablaAsignarFuenteNew(
+  //     JSON.parse(mecanismoVehiculoPago.TipoMovimiento)
+  //       .filter(
+  //         (i: IDeudorFideicomisoNew) =>
+  //           i.tipoFuente.Descripcion === filtro.TipoFuente.Descripcion &&
+  //           i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+  //       )
+  //       .map((item: IDeudorFideicomisoNew) => ({
+  //         ...item,
+  //         Clasificacion: filtro.Clasificacion, // aquí agregas la clasificación del hook
+  //       }))
+  //   );
+  //   setFiltro({
+  //     Clasificacion: {
+  //       Id: "", Descripcion: "",
+  //     },
+  //     TipoFuente: { Id: "", Descripcion: "" },
+  //     FuentePago: { Id: "", Descripcion: "" },
+  //     RespectoA: { Descripcion: "" },
+  //   });
+  // }
+  const ChceckAsignacionYPorcentajeAcumulado = () => {
+    // 1️⃣ Parseamos los movimientos
+    const movimientos = JSON.parse(mecanismoVehiculoPago.TipoMovimiento) as IDeudorFideicomisoNew[];
+
+    // 2️⃣ Filtramos solo los que concuerdan con el filtro actual
+    const nuevosFiltrados = movimientos
+      .filter(
+        (i) =>
+          i.tipoFuente.Descripcion === filtro.TipoFuente.Descripcion &&
+          i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
+      )
+      .map((item) => ({
+        ...item,
+        Clasificacion: filtro.Clasificacion, // agrega la clasificación actual
+      }));
+
+    // 3️⃣ Quitamos duplicados con base en el id
+    const idsExistentes = new Set(tablaAsignarFuenteNew.map((m) => m.id));
+    const nuevosSinDuplicar = nuevosFiltrados.filter((n) => !idsExistentes.has(n.id));
+
+    // 4️⃣ Unimos los nuevos con los anteriores
+    const merged: IDeudorFideicomisoNew[] = [...tablaAsignarFuenteNew, ...nuevosSinDuplicar];
+
+    // 5️⃣ Actualizamos el estado en el store
+    setTablaAsignarFuenteNew(merged);
+
+    // 6️⃣ Limpiamos el filtro como antes
+    setFiltro({
+      Clasificacion: { Id: "", Descripcion: "" },
+      TipoFuente: { Id: "", Descripcion: "" },
+      FuentePago: { Id: "", Descripcion: "" },
+      RespectoA: { Descripcion: "" },
+    });
+  };
+  const [asignacionRegistrosPrevios, setAsignacionRegistrosPrevios] = useState<Array<IDataAsignacionTipoMoviSolicitudes>>([])
+
 
 
   useEffect(() => {
@@ -220,7 +358,15 @@ export function AsignarFuente({
     getTiposDeFuente();
     getFuentesPago();
     getSumaPorcentajeAcumulado(mecanismoVehiculoPago.MecanismoPago);
+    DetalleAsignacionTipoMoviSolicitudes(mecanismoVehiculoPago.Id, setAsignacionRegistrosPrevios)
   }, []);
+
+  useEffect(() => {
+    console.log("asignacionRegistrosPrevios DATOS", asignacionRegistrosPrevios)
+  }, [asignacionRegistrosPrevios])
+
+
+
 
 
 
@@ -250,6 +396,41 @@ export function AsignarFuente({
   //   }
   // }, [tablaAsignarFuenteNew]);
 
+
+  const tablaConValoresAjustados = tablaAsignarFuenteNew.map((mov) => {
+    const registroPrevio = asignacionRegistrosPrevios.find(
+      (r) => r.TipoMovRelacionado === mov.id
+    );
+
+    if (registroPrevio) {
+      return {
+        ...mov,
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0,
+      };
+    }
+    return mov;
+  });
+
+  const handleChange = (index: number, field: "AfectadoTotalIngreso" | "EquivalenciaCorrespondienteMunicipios", value: number) => {
+    updateTipoMovimientoField(
+      index,
+      field,
+      value,
+      asignacionRegistrosPrevios,
+      () => setValidacionDialogAsignarFuente(
+        {
+          openDialog: true,
+          registroPrevio: "",
+          message: "",
+          montoOriginal: 0,
+          montoUtilizado: 0,
+          nombreEntePublicoObligado: "",
+          nombreFondoOIngreso: "",
+        }
+      ) // 👈 callback cuando hay error
+    );
+  };
 
 
   return (
@@ -477,26 +658,9 @@ export function AsignarFuente({
                 //       i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
                 //   )
                 // );
-                setTablaAsignarFuenteNew(
-                  JSON.parse(mecanismoVehiculoPago.TipoMovimiento)
-                    .filter(
-                      (i: IDeudorFideicomisoNew) =>
-                        i.tipoFuente.Descripcion === filtro.TipoFuente.Descripcion &&
-                        i.fondoIngreso.Descripcion === filtro.FuentePago.Descripcion
-                    )
-                    .map((item: IDeudorFideicomisoNew) => ({
-                      ...item,
-                      Clasificacion: filtro.Clasificacion, // aquí agregas la clasificación del hook
-                    }))
-                );
-                setFiltro({
-                  Clasificacion: {
-                    Id: "", Descripcion: "",
-                  },
-                  TipoFuente: { Id: "", Descripcion: "" },
-                  FuentePago: { Id: "", Descripcion: "" },
-                  RespectoA: { Descripcion: "" },
-                });
+
+                ChceckAsignacionYPorcentajeAcumulado()
+
               }}
               sx={queries.buttonContinuar}
             >
@@ -549,18 +713,9 @@ export function AsignarFuente({
                 </TableRow>
               </TableHead>
               <TableBody>
+
                 {tablaAsignarFuenteNew.map((movimiento: any, index: number) => {
-
-                  // const agregarRegistrosAFideicomiso = (registro: any) => {
-                  //   const registrosParaTabla = tablaAsignarFuenteNew.map((reg) => ({
-                  //     ...reg,
-                  //     AfectadoTotalIngreso: 0, // o ""
-                  //     EquivalenciaCorrespondienteMunicipios: 0, // o ""
-                  //   }));
-                  //   setPorcentajesTablaEnCeros(registrosParaTabla);
                   console.log("movimiento", movimiento)
-                  // };
-
                   return (
 
                     <StyledTableRow key={index}>
@@ -587,25 +742,61 @@ export function AsignarFuente({
                           movimiento?.entePublicoObligado?.Descripcion}
                       </StyledTableCell>
 
+
                       <StyledTableCell align="center">
-                        {/* Poner la funcion updateTipoMovimientoField en cada fuente de pago*/}
                         <TextField
                           type="number"
                           value={
-                            movimiento.AfectadoTotalIngreso === 0 || movimiento.AfectadoTotalIngreso
-                              ? movimiento.AfectadoTotalIngreso
-                              : ""
+                            movimiento.AfectadoTotalIngreso
                           }
                           onChange={(e) => {
                             const newValue = e.target.value;
-                            if (parseFloat(newValue) > OriginalTablaAsignarFuenteNew[index].AfectadoTotalIngreso) {
-                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', "" as any);
-                              setValidacioDialogAsignarFuente({
-                                openDialog: true,
-                                message: "AfectadoTotalIngreso",
-                                montoOriginal: OriginalTablaAsignarFuenteNew[index].AfectadoTotalIngreso
-                              });
 
+                            const registroPrevio = asignacionRegistrosPrevios.find(
+                              (r) => r.TipoMovRelacionado === movimiento.id
+                            );
+                            const registroPrevioPorcentajeAcumulado = arregloPorcetajesAcumuladosRegistros.find(
+                              (R) => R.IdEntePublicoObligado === (movimiento?.fideicomitente?.Id
+                                || movimiento?.entePublicoObligado?.Id || movimiento.mandatario?.Id))
+
+                            console.log("registroPrevioPorcentajeAcumulado", registroPrevioPorcentajeAcumulado)
+
+                            console.log("registroPrevio", registroPrevio)
+
+
+                            if (registroPrevioPorcentajeAcumulado && (parseFloat(newValue) > 100 - registroPrevioPorcentajeAcumulado.AfectadoTotalIngreso)) {
+                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', "" as any);
+                              setValidacionDialogAsignarFuente({
+                                openDialog: true,
+                                registroPrevio: "PorcentajeAcumulado",
+                                message: "AfectadoTotalIngreso",
+                                montoOriginal: 100,
+                                montoUtilizado: registroPrevioPorcentajeAcumulado.AfectadoTotalIngreso,
+                                nombreEntePublicoObligado: registroPrevioPorcentajeAcumulado.NombreEntePublico,
+                                nombreFondoOIngreso: registroPrevioPorcentajeAcumulado.NombreFondoOIngreso,
+                              });
+                            } else if (registroPrevio && (parseFloat(newValue) > registroPrevio?.PorcentajeOriginalIngreso - registroPrevio.PorcentajeUtilizadoIngreso)) {
+                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', "" as any);
+                              setValidacionDialogAsignarFuente({
+                                openDialog: true,
+                                registroPrevio: "Asignacion",
+                                message: "AfectadoTotalIngreso",
+                                montoOriginal: OriginalTablaAsignarFuenteNew[index].AfectadoTotalIngreso,
+                                montoUtilizado: registroPrevio?.PorcentajeOriginalIngreso - registroPrevio.PorcentajeUtilizadoIngreso,
+                                nombreEntePublicoObligado: "",
+                                nombreFondoOIngreso: "",
+                              });
+                            } else if (parseFloat(newValue) > OriginalTablaAsignarFuenteNew[index].AfectadoTotalIngreso) {
+                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', "" as any);
+                              setValidacionDialogAsignarFuente({
+                                openDialog: true,
+                                registroPrevio: "SinRegistro",
+                                message: "AfectadoTotalIngreso",
+                                montoOriginal: OriginalTablaAsignarFuenteNew[index].AfectadoTotalIngreso,
+                                montoUtilizado: 0,
+                                nombreEntePublicoObligado: "",
+                                nombreFondoOIngreso: "",
+                              });
                             } else {
                               // Permitimos vacío (input en blanco) temporalmente
                               if (newValue === "") {
@@ -623,26 +814,54 @@ export function AsignarFuente({
                       <StyledTableCell align="center">
                         <TextField
                           type="number"
-                          disabled={movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() !== "gobierno estatal"}
-                          value={movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() === "gobierno estatal"
-                            ? (movimiento?.EquivalenciaCorrespondienteMunicipios || '')
-                            : movimiento?.tipoFideicomitente?.Descripcion?.toLowerCase() === "gobierno estatal"
-                              ? (movimiento?.EquivalenciaCorrespondienteMunicipios || '') : 0}
+                          disabled={
+                            movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() !==
+                            "gobierno estatal"
+                          }
+                          value={
+                            movimiento?.tipoEntePublicoObligado?.Descripcion?.toLowerCase() ===
+                              "gobierno estatal"
+                              ? movimiento.EquivalenciaCorrespondienteMunicipios
+                              : movimiento?.tipoFideicomitente?.Descripcion?.toLowerCase() ===
+                                "gobierno estatal"
+                                ? movimiento.EquivalenciaCorrespondienteMunicipios
+                                : 0
+                          }
                           onChange={(e) => {
                             const newValue = e.target.value;
-                            if (parseFloat(newValue) > OriginalTablaAsignarFuenteNew[index].EquivalenciaCorrespondienteMunicipios) {
-                              updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', "" as any);
-                              setValidacioDialogAsignarFuente({
-                                openDialog: true,
-                                message: "EquivalenciaCorrespondienteMunicipios",
-                                montoOriginal: OriginalTablaAsignarFuenteNew[index].EquivalenciaCorrespondienteMunicipios
-                              });
+                            const registroPrevio = asignacionRegistrosPrevios.find(
+                              (r) => r.TipoMovRelacionado === movimiento.id
+                            );
+
+                            let maxPermitido = 0;
+                            if (registroPrevio) {
+                              maxPermitido =
+                                registroPrevio.PorcentajeOriginalEquivalencia -
+                                registroPrevio.PorcentajeUtilizadoEquivalenci;
                             } else {
-                              if (newValue === "") {
-                                updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', "" as any);
-                              } else {
-                                updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', Number(newValue));
-                              }
+                              maxPermitido =
+                                OriginalTablaAsignarFuenteNew[index].EquivalenciaCorrespondienteMunicipios;
+                            }
+
+                            if (parseFloat(newValue) > maxPermitido) {
+                              updateTipoMovimientoField(index, "EquivalenciaCorrespondienteMunicipios", "" as any);
+                              setValidacionDialogAsignarFuente({
+                                openDialog: true,
+                                registroPrevio: "NoPrevio",
+                                message: "EquivalenciaCorrespondienteMunicipios",
+                                montoOriginal: maxPermitido,
+                                montoUtilizado: 0,
+                                nombreEntePublicoObligado: "",
+                                nombreFondoOIngreso: "",
+                              });
+                              console.log("validacionDialogAsignarFuente.montoOriginal", validacionDialogAsignarFuente.montoOriginal)
+                              return;
+                            }
+
+                            if (newValue === "") {
+                              updateTipoMovimientoField(index, "EquivalenciaCorrespondienteMunicipios", "" as any);
+                            } else {
+                              updateTipoMovimientoField(index, "EquivalenciaCorrespondienteMunicipios", Number(newValue));
                             }
                           }}
                           inputProps={{ min: 0 }}
@@ -663,40 +882,8 @@ export function AsignarFuente({
                           <DeleteIcon />
                         </IconButton>
                       </StyledTableCell>
-                      {/* <StyledTableCell align="center">
-                        {sumaPorcentajeAcumulado.SumaAcumuladoEstado}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">0.00</StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        <TextField
-                          disabled={
-                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
-                            "mandato" ||
-                            mecanismoVehiculoPago.MecanismoPago.toLowerCase() ===
-                            "instruccion irrevocable"
-                          }
-                          type="number"
-                          inputProps={{
-                            sx: {
-                              fontSize: "0.7rem",
-                            },
-                          }}
-                          size="small"
-                          value={movimiento.fondoIngresoAfectadoXMunicipio}
-                          onChange={(v) => {
-                            let auxArray = [...tablaAsignarFuente];
-                            let val = Number(v.target.value);
 
-                            auxArray[index].fondoIngresoAfectadoXMunicipio =
-                              val.toString();
-
-                            addPorcentaje(auxArray);
-                          }}
-                        />
-                      </StyledTableCell> */}
-                      <StyledTableCell />
-                      <StyledTableCell />
                     </StyledTableRow>
                   )
                 })}
@@ -752,34 +939,85 @@ export function AsignarFuente({
       </Grid>
 
       <Dialog open={validacionDialogAsignarFuente.openDialog}
-        onClose={() => setValidacioDialogAsignarFuente({
+        maxWidth='lg'
+        fullWidth
+        keepMounted
+        onClose={() => setValidacionDialogAsignarFuente({
           ...validacionDialogAsignarFuente,
           openDialog: !validacionDialogAsignarFuente.openDialog
         })}
       >
-        <DialogTitle>
-          <Typography sx={queries.bold_text_Largo_Plazo}>
-            {validacionDialogAsignarFuente.message === "AfectadoTotalIngreso"
-              ? "Se Excedio el Porcentaje Afectado Sobre el Total de Ingreso"
-              : "Se Excedio la Equivalencia Sobre Sin incluir el Monto que Corresponde a los Municipios"}
+        <DialogTitle sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
+          <Typography sx={{
+            fontSize: "1.2rem", fontWeight: "bold", fontFamily: "MontserratBold",
+          }}>
+            {validacionDialogAsignarFuente.registroPrevio === "Asingacion" ?
+              validacionDialogAsignarFuente.message === "AfectadoTotalIngreso"
+                ? "Se Excedio el Porcentaje Disponible en Afectado Sobre el Total de Ingreso"
+                : "Se Excedio la Porcentaje Disponible en Equivalencia Sobre Sin incluir el Monto que Corresponde a los Municipios"
+              : validacionDialogAsignarFuente.message === "AfectadoTotalIngreso"
+                ? "Se Excedio el Porcentaje Afectado Sobre el Total de Ingreso"
+                : "Se Excedio la Equivalencia Sobre Sin incluir el Monto que Corresponde a los Municipios"}
           </Typography>
         </DialogTitle>
 
-        <DialogContent>
-          <Typography sx={queries.medium_text}>
-            Por favor, verifica el monto ingresado o modifique el registro de la fuente de pago para aumentar el porcentaje.
-          </Typography>
 
-          <Typography sx={{ ...queries.medium_text }}>
-            <br /> Porcentaje Original del Registro:  <strong>{validacionDialogAsignarFuente.montoOriginal}%</strong>
-          </Typography>
+        <DialogContent>
+          <HighlightOffSharpIcon sx={{ width: "100%", fontSize: "5rem", color: "red", display: "flex", justifyContent: "center" }} />
+
+
+          {validacionDialogAsignarFuente.registroPrevio === "Asignacion" || validacionDialogAsignarFuente.registroPrevio === "SinRegistro" ?
+
+            <Typography sx={{ ...queries.medium_text, justifyContent: "center", display: "flex" }}>
+              Por favor, verifica el monto ingresado o modifique el registro de la fuente de pago para aumentar el porcentaje.
+            </Typography>
+            : validacionDialogAsignarFuente.registroPrevio === "PorcentajeAcumulado" ?
+              <Typography sx={queries.medium_text}>
+                Se ha excedido el porcentaje acumulado disponible de la fuente de pago seleccionada
+              </Typography>
+
+              : null
+          }
+
+
+
+          {validacionDialogAsignarFuente.registroPrevio === "Asignacion" ?
+            <Grid sx={{ display: "flex", justifyContent: "space-evenly" }}>
+              <Typography sx={{ ...queries.medium_text }}>
+                <br /> Porcentaje Original del Registro:  <strong>{validacionDialogAsignarFuente.montoOriginal}%</strong>
+              </Typography>
+              <Typography sx={{ ...queries.medium_text }}>
+                <br /> Porcentaje Disponible del Registro:  <strong>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
+              </Typography>
+            </Grid>
+            : validacionDialogAsignarFuente.registroPrevio === "PorcentajeAcumulado" ?
+              <Grid>
+                <Typography sx={{ ...queries.medium_text }}>
+                  <br /> Para el ente publico obligado: <strong>{validacionDialogAsignarFuente.nombreEntePublicoObligado}</strong>
+                  <br /> Con el fondo o ingreso: <strong>{validacionDialogAsignarFuente.nombreFondoOIngreso}</strong>,
+                  <br /> Porcentaje acumulado utilizado es de:  <strong>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
+                  {/* <br /> <br /> Favor de revisar el porcentaje ingresado. */}
+                </Typography>
+                <Typography sx={{ ...queries.medium_text, display: "flex", justifyContent: "center" }}>
+                  <br />  Favor de revisar el porcentaje ingresado.
+                </Typography>
+              </Grid>
+              : validacionDialogAsignarFuente.registroPrevio === "SinRegistro" ?
+                <Typography sx={{ ...queries.medium_text, justifyContent: "center", display: "flex", alignItems: "end" }}>
+                  <br /> Porcentaje Original del Registro:  <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoOriginal}%</strong>
+                </Typography>
+                : null
+          }
         </DialogContent>
+
+
+
 
         <DialogActions>
           <Grid display={"flex"} justifyContent={"space-evenly"} width={"100%"}>
             <Button sx={queries.buttonContinuar}
               onClick={() => {
-                setValidacioDialogAsignarFuente({
+                setValidacionDialogAsignarFuente({
                   ...validacionDialogAsignarFuente,
                   openDialog: !validacionDialogAsignarFuente.openDialog
                 });
@@ -790,6 +1028,6 @@ export function AsignarFuente({
           </Grid>
         </DialogActions>
       </Dialog>
-    </Grid>
+    </Grid >
   );
 }

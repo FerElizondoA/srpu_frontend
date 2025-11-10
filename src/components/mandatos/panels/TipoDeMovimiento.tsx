@@ -270,7 +270,7 @@ export function TipoDeMovimientoMandato() {
               AfectadoTotalIngreso: tipoMovimiento.AfectadoTotalIngreso,
               EquivalenciaCorrespondienteMunicipios: tipoMovimiento.EquivalenciaCorrespondienteMunicipios,
             })
-             cleanTipoMovimiento();
+            cleanTipoMovimiento();
           }}
         >
           Agregar
@@ -490,7 +490,7 @@ export function TipoDeMovimientoMandato() {
             options={catalogoOrganismos.filter(
               (td: any) =>
                 td.IdTipoEntePublico ===
-              tipoMovimiento.tipoEntePublicoObligado.Id
+                tipoMovimiento.tipoEntePublicoObligado.Id
             )}
             getOptionLabel={(option) => option.Descripcion}
             renderOption={(props, option) => {
@@ -909,7 +909,10 @@ export function TipoDeMovimientoMandato() {
                           value={row.AfectadoTotalIngreso || ''}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
-                            updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+                            if (newValue < 100) {
+                              updateTipoMovimientoField(index, 'AfectadoTotalIngreso', isNaN(newValue) ? 0 : newValue);
+
+                            }
                           }}
                           inputProps={{ min: 0 }}
                         />
@@ -920,12 +923,14 @@ export function TipoDeMovimientoMandato() {
                         <TextField
                           type="number"
                           disabled={row.tipoEntePublicoObligado.Descripcion.toLowerCase() !== "gobierno estatal"}
-                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ? 
+                          value={row.tipoEntePublicoObligado.Descripcion.toLowerCase() === "gobierno estatal" ?
                             row.EquivalenciaCorrespondienteMunicipios || '' : 0}
                           onChange={(e) => {
                             const newValue = Number(e.target.value);
-                            updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue) 
-                            ? 0 : newValue);
+                            if (newValue < 100) {
+                              updateTipoMovimientoField(index, 'EquivalenciaCorrespondienteMunicipios', isNaN(newValue)
+                                ? 0 : newValue);
+                            }
                           }}
                           inputProps={{ min: 0 }}
                         />
