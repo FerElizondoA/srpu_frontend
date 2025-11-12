@@ -144,7 +144,7 @@ export function AgregarFideicomisos({
     (state) => state.DetallePorcentajesAcumuladosMultiples
   );
 
-  const TablaPruebaEditarFideicomiso: IPorcentajeAcumulados[] = useFideicomisoStore(
+  const TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew[] = useFideicomisoStore(
     (state) => state.TablaPruebaEditarFideicomiso
   );
 
@@ -157,6 +157,12 @@ export function AgregarFideicomisos({
     (state) => state.modificaAsignacionOriginalTipoSolicitud
   );
 
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+  const cleanTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.cleanTablaPruebaEditarFideicomiso
+  );
 
   const [erroresPorcentajeAcumulado, setErroresPorcentajesAcumulados] = useState<Array<string>>([])
 
@@ -177,7 +183,7 @@ export function AgregarFideicomisos({
     getOrdenesFideicomisario();
     getTiposDeFuente();
     getFondosOIngresos();
-    //console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
+    console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
   }, []);
 
   useEffect(() => {
@@ -221,6 +227,7 @@ export function AgregarFideicomisos({
             <IconButton
               edge="start"
               onClick={() => {
+                cleanTablaPruebaEditarFideicomiso([]);
                 handler(false);
 
               }}
@@ -250,7 +257,7 @@ export function AgregarFideicomisos({
                   tablaSoporteDocumentalFideicomiso.length <= 0
                 }
                 sx={queries.buttonContinuar}
-                onClick={() => {
+                onClick={() => { 
                   if (idFideicomiso === "") {
                     // CREAR FIDEICOMISO (sin validaciones)
                     setLoading(true);
@@ -261,6 +268,11 @@ export function AgregarFideicomisos({
                         getMecanismosVehiculosPago("Fideicomisos", () => { });
                     });
                     cleanPorcentajesAcumulados();
+
+
+
+
+
                   }
                   else if (idFideicomiso !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
                     let errorEncontrado = false;
@@ -324,6 +336,21 @@ export function AgregarFideicomisos({
                       );
 
                       if (acumulado) {
+
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.fideicomitente.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id 
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
+
+
+                        console.log("ROIngreso: ", ROIngreso);
+                        console.log("ROEquivalencia: ", ROEquivalencia);
+
                         const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
                         const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
 
@@ -331,7 +358,23 @@ export function AgregarFideicomisos({
                         const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
 
                         // 🔸 Si el acumulado + nuevo supera 100, marcar error
-                        if (acumuladoIngreso + nuevoIngreso > 100) {
+
+                        //acumuladoIngreso (El porcentaje acumulado que tiene este ente plublico con el fondo o ingreso) 90
+                        //nuevoIngreso (lo que ingresa el usuario) Ejemplo 15 que son 5% mas 
+                        //registro original (El que originalmente tenia el tipo de movimiento) 10
+
+                        //nuevoIngreso - registro original (15 - 10 = 5) 
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        //nuevoIngreso - registro original (20 - 10 = 10) 
+                        //90 + (20-10) = 100 ok
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        // 15 - 10 === 5 + 90 <= 100 = 95 no hay error
+
+                        // if (acumuladoIngreso + nuevoIngreso > 100) {
+
+                        if (acumuladoIngreso + (nuevoIngreso - ROIngreso) > 100) {
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
@@ -345,7 +388,7 @@ export function AgregarFideicomisos({
                           });
                         }
 
-                        if (acumuladoEquivalencia + nuevaEquivalencia > 100) {
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({

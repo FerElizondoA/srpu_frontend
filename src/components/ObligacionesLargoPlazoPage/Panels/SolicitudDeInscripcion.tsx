@@ -30,6 +30,7 @@ import { ConfirmacionCancelarSolicitud } from "../Dialog/DialogCancelarSolicitud
 import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificacion";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 
 interface Head {
   label: string;
@@ -45,7 +46,7 @@ const heads: readonly Head[] = [
 ];
 export let errores: string[] = [];
 
-export function SolicitudDeInscripcion() {
+export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminados?: IDocsEliminados[] }) {
   const [checkObj, setCheckObj] = useState<checkBoxType>({});
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
@@ -661,6 +662,8 @@ export function SolicitudDeInscripcion() {
                       <ConfirmacionEnviarSolicitud
                         handler={setOpenDialogEnviar}
                         openState={openDialogEnviar}
+                        arrDocsEliminados={arrDocsEliminados}
+
                       />
                     )}
 
@@ -676,6 +679,8 @@ export function SolicitudDeInscripcion() {
                         handler={setOpenDialogModificacion}
                         openState={openDialogModificacion}
                         accion={"modificacion"}
+                        arrDocsEliminados={arrDocsEliminados}
+
                       />
                     )}
                   </Grid>

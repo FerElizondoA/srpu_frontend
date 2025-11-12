@@ -243,8 +243,9 @@ export interface FideicomisoSlice {
   cleanPorcentajesAcumulados: () => void;
   /*Esta tabla sera la copia fija  antes de editar un fideicomiso para luego hacer la comparativa 
   con la originalY la edicion */
-  TablaPruebaEditarFideicomiso: IPorcentajeAcumulados[];
-  setTablaPruebaEditarFideicomiso: (TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => void;
+  TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew[];
+  setTablaPruebaEditarFideicomiso: (TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew) => void;
+  cleanTablaPruebaEditarFideicomiso: () => void;
 
   beneficiarioNew: IBeneficiarioFideicomiso;
   setBeneficiarioNew: (beneficiarioNew: IBeneficiarioFideicomiso) => void;
@@ -258,8 +259,13 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 ) => ({
   TablaPruebaEditarFideicomiso: [],
 
+  cleanTablaPruebaEditarFideicomiso: () => {
+    set((state) => ({
+      TablaPruebaEditarFideicomiso: [],
+    }));
+  },
   setTablaPruebaEditarFideicomiso: (
-    TablaPruebaEditarFideicomiso: IPorcentajeAcumulados) => {
+    TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew) => {
     set((state) => ({
       TablaPruebaEditarFideicomiso: [
         ...state.TablaPruebaEditarFideicomiso,

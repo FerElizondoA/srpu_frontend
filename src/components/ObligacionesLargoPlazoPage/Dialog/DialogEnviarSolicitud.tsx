@@ -25,13 +25,16 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IDataAgregarSolicitud } from "../../../store/CreditoLargoPlazo/solicitud_inscripcion";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 
 export function ConfirmacionEnviarSolicitud({
   handler,
   openState,
+  arrDocsEliminados,
 }: {
   handler: Function;
   openState: boolean;
+  arrDocsEliminados?: IDocsEliminados[];
 }) {
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
@@ -63,6 +66,15 @@ export function ConfirmacionEnviarSolicitud({
   const cleanSolicitud: Function = useInscripcionStore(
     (state) => state.cleanSolicitudCortoPlazo
   );
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
 
   const createAsignacionTipoSolicitud: Function = useLargoPlazoStore(
     (state) => state.createAsignacionTipoSolicitud
@@ -159,14 +171,22 @@ export function ConfirmacionEnviarSolicitud({
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
-                  "3"
+                  "3",
+                  arrDocsEliminados
                 )
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    }
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -174,8 +194,10 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
-                    // navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitud();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
+                    navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a largo plazo",
                       "La solicitud de inscripción está lista para firmar",
@@ -194,11 +216,18 @@ export function ConfirmacionEnviarSolicitud({
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(solicitud.CreadoPor, idUsuarioAsignado, "2")
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    }
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -207,6 +236,8 @@ export function ConfirmacionEnviarSolicitud({
                       text: "La solicitud se envió con éxito",
                     });
                     cleanSolicitud();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
                     navigate("../ConsultaDeSolicitudes");
                     createNotification(
                       "Crédito simple a largo plazo",
@@ -233,11 +264,20 @@ export function ConfirmacionEnviarSolicitud({
                   setDataAsignacion
                 )
                   .then((data: any) => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    }
+
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -245,8 +285,10 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
-                    // cleanSolicitud();
-                    // navigate("../ConsultaDeSolicitudes");
+                    cleanSolicitud();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
+                    navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
                     Swal.fire({
@@ -270,11 +312,19 @@ export function ConfirmacionEnviarSolicitud({
                   setDataAsignacion
                 )
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentarios),
-                      "Captura"
-                    );
+                    if (comentarios && Object.keys(comentarios).length > 0) {
+                      addComentario(
+                        solicitud.Id,
+                        JSON.stringify(comentarios),
+                        "Captura"
+                      );
+                    }
+
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentarios),
+                    //   "Captura"
+                    // );
                     Swal.fire({
                       confirmButtonColor: "#15212f",
                       cancelButtonColor: "rgb(175, 140, 85)",
@@ -312,6 +362,6 @@ export function ConfirmacionEnviarSolicitud({
             } `}
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   );
 }

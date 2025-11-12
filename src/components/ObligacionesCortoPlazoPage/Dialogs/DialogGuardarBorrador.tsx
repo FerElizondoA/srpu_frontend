@@ -235,7 +235,7 @@ export function DialogGuardarBorrador({
                     cleanInscripcionModify();
                     setTimeout(() => {
                       navigate("../ConsultaDeSolicitudes");
-                    }, 2000);
+                    }, 1000);
 
                   })
                   .catch(() => {

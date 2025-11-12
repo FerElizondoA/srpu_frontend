@@ -370,7 +370,7 @@ export function ObligacionesLargoPlazoPage() {
 
       {
         reestructura === ""
-          ? tabIndex === 7 && <SolicitudDeInscripcion />
+          ? tabIndex === 7 && <SolicitudDeInscripcion arrDocsEliminados={arrDocsEliminados}/>
           : null
       }
 

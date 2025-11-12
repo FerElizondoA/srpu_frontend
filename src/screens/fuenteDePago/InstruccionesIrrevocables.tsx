@@ -172,6 +172,11 @@ export function InstruccionesIrrevocables() {
     (state) => state.DetalleAsignacionTipoMoviSolicitudes
   );
 
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+
+
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
 
@@ -217,7 +222,7 @@ export function InstruccionesIrrevocables() {
       cleanInstruccion();
     }
     if (!openDialogEliminar) {
-       getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
+      getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
       //getInstrucciones(setInstrucciones);
     }
   }, [openAgregarInstruccion]);
@@ -492,6 +497,7 @@ export function InstruccionesIrrevocables() {
                                 //       ).toString())
                                 //   );
                                 // });
+                                setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
 
                                 editarInstruccion(
                                   row.Id,

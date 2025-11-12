@@ -124,6 +124,12 @@ export function Mandatos() {
     (state) => state.editarMandato
   );
 
+
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+
+
   //Todo lo que necesito para la barra de filtros***********
 
   const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
@@ -467,6 +473,9 @@ export function Mandatos() {
                               );
                               setIdMandato(row?.Id || "");
                               setOpenAgregarMandato(!openAgregarMandato);
+
+                              setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
+
                             }}
                           >
                             <EditIcon />
@@ -480,6 +489,9 @@ export function Mandatos() {
                               setIdMandato(row?.Id || "");
                               setOpenDialogEliminar(!openDialogEliminar);
                               DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
+
+
+                              //Tabla prueba antes de la edicion solo para comparar.
 
                             }}
                           >

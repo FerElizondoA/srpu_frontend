@@ -79,6 +79,22 @@ export function DialogSolicitarModificacion({
     (state) => state.cleanSolicitudLargoPlazo
   );
 
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
+  const cleanTablaCondicionesFinancieras: Function = useLargoPlazoStore(
+    (state) => state.cleanCondicionFinanciera
+  );
+
 
 
   const tablaGastosCostos: IGastosCostos[] = useLargoPlazoStore(
@@ -159,19 +175,38 @@ export function DialogSolicitarModificacion({
           arrDocsEliminados
         )
           .then(() => {
-            !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
+
+            if (!rolesAdmin.includes(localStorage.getItem("Rol")!) && (comentarios && Object.keys(comentarios).length > 0)) {
+              console.log("AGREGAR COMENTARIO");
               addComentario(
                 inscripcion.Id,
                 JSON.stringify(comentarios),
                 "Captura"
               );
-            Swal.fire({
-              confirmButtonColor: "#15212f",
-              cancelButtonColor: "rgb(175, 140, 85)",
-              icon: "success",
-              title: "Mensaje",
-              text: "La solicitud se envió con éxito",
-            });
+            } else {
+              console.log("NO AGREGAR COMENTARIO");
+            }
+
+            cleanSolicitud();
+            cleanSolicitudLargoPlazo();
+            cleanInscripcion();
+            cleanInscripcionModify();
+            cleanTablaCondicionesFinancieras()
+
+
+            // !rolesAdmin.includes(localStorage.getItem("Rol")!) &&
+            //   addComentario(
+            //     inscripcion.Id,
+            //     JSON.stringify(comentarios),
+            //     "Captura"
+            //   );
+            // Swal.fire({
+            //   confirmButtonColor: "#15212f",
+            //   cancelButtonColor: "rgb(175, 140, 85)",
+            //   icon: "success",
+            //   title: "Mensaje",
+            //   text: "La solicitud se envió con éxito",
+            // });
           })
           .catch(() => {
             Swal.fire({
@@ -187,7 +222,7 @@ export function DialogSolicitarModificacion({
           "Se te ha asignado una solicitud para modificación",
           [idUsuarioAsignado]
         );
-        //navigate("../ConsultaDeSolicitudes");
+        navigate("../ConsultaDeSolicitudes");
       } else {
         console.log("ENTRO AQUI POR QUE NO HAY ID DE LA SOLICITUD LOS CREA");
         console.log('tablaGastosCostos dentro del IF: ', tablaGastosCostos);
@@ -198,11 +233,16 @@ export function DialogSolicitarModificacion({
           //JSON.stringify(comentarios),
           setIdSolicitudCreada
         ).then(() => {
-          addComentario(
-            idSolicitudCreada,
-            JSON.stringify(comentarios),
-            "Captura"
-          );
+          if (comentarios && Object.keys(comentarios).length > 0) {
+            console.log("AGREGAR COMENTARIO");
+            addComentario(
+              idSolicitudCreada,
+              JSON.stringify(comentarios),
+              "Captura"
+            );
+          } else {
+            console.log("NO AGREGAR COMENTARIO");
+          }
           alertaConfirmCancelar("La solicitud se envió con éxito")
           cleanSolicitud();
           navigate("../ConsultaDeSolicitudes");
@@ -216,7 +256,7 @@ export function DialogSolicitarModificacion({
           });
         });
         createNotification(
-          "Crédito simple a corto plazo",
+          "Crédito simple a largo plazo",
           `Se te ha asignado una solicitud para modificación`,
           [idUsuarioAsignado]
         );

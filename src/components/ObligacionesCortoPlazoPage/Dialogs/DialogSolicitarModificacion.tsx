@@ -229,11 +229,23 @@ export function DialogSolicitarModificacion({
           //JSON.stringify(comentarios),
           setIdSolicitudCreada
         ).then(() => {
-          addComentario(
-            idSolicitudCreada,
-            JSON.stringify(comentarios),
-            "Captura"
-          );
+
+          if (comentarios && Object.keys(comentarios).length > 0) {
+            console.log("AGREGAR COMENTARIO");
+            addComentario(
+              idSolicitudCreada,
+              JSON.stringify(comentarios),
+              "Captura"
+            );
+          } else {
+            console.log("NO AGREGAR COMENTARIO");
+          }
+
+          // addComentario(
+          //   idSolicitudCreada,
+          //   JSON.stringify(comentarios),
+          //   "Captura"
+          // );
           alertaConfirmCancelar("La solicitud se envió con éxito")
           cleanSolicitud();
           navigate("../ConsultaDeSolicitudes");

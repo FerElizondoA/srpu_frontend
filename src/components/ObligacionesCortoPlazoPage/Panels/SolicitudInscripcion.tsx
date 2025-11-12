@@ -344,15 +344,11 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
   const [filtroBotonFinalizar, setFiltroBotonFinalizar] = useState(false)
 
   useEffect(() => {
-    console.log("Se ejecuto el la funcion de comentarios.lenght", comentarios)
-
     if (comentarios.length > 0) {
       setFiltroBotonFinalizar(true)
     } else {
       setFiltroBotonFinalizar(false)
     }
-
-
   }, [comentarios.lenght > 0])
 
 

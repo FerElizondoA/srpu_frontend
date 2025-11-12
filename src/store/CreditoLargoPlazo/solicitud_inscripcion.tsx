@@ -14,6 +14,7 @@ import { ITiposDocumento } from "../../components/Interfaces/InterfacesCplazo/Co
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import { useInstruccionesStore } from "../InstruccionesIrrevocables/main";
 import { useMandatoStore } from "../Mandatos/main";
+import { alertaConfirmCancelar } from "../../generics/Alertas";
 
 export interface IDataAgregarSolicitud {
   ControlInterno: string;
@@ -98,7 +99,9 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    setDataAsignacion: Function
+    setDataAsignacion: Function,
+    setIdSolicitud: Function
+
   ) => void;
 
   modificaSolicitud: (
@@ -106,8 +109,8 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idEditor: string,
     estatus: string,
     //comentario: string,
-    arrDocsEliminados: IDocsEliminados[]
-
+    arrDocsEliminados: IDocsEliminados[],
+    guardadoBorrador: number
   ) => void;
 
   createAsignacionTipoSolicitud: (
@@ -335,7 +338,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       console.log("✅ Todas las modificaciones se realizaron correctamente.");
       // Llama la función del store SOLO cuando todo terminó correctamente
 
-      console.log("HOLA",stateFuentePago)
+      console.log("HOLA", stateFuentePago)
       stateFuentePago(stateOpen, setLoading);
 
     } catch (error: any) {
@@ -394,7 +397,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitudCreada: Function
+    setDataAsignacion: Function,
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -507,7 +510,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         console.log("fuenteOriginal", fuenteOriginal);
 
         lpState.setIdSolicitudBorrador(DataSolicitud.Id)
-        setIdSolicitudCreada(DataSolicitud.Id);
+        // setIdSolicitudCreada(DataSolicitud.Id);
         console.log("IdSolicitud en inscripcion", data.data.Id);
 
         if (DataSolicitud !== undefined) {
@@ -517,6 +520,19 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         } else {
           console.log("NO encontro data de la solicitud")
         }
+
+        setTimeout(() => {
+          inscripcionState.cleanSolicitudLargoPlazo();
+          lpState.setIdSolicitudBorrador(data.data.Id)
+          //setIdSolicitudCreada(data.data.Id)
+
+          //inscripcionState.setInscripcion(data.data.)
+          alertaConfirmCancelar("La solicitud se guardó con éxito")
+
+          inscripcionState.setInscripcion(data.data.data);
+
+          //state.addComentario(data.data.Id, comentario, "Captura");
+        }, 3000);
 
         //  inscripcionState.setInscripcion(data.data);
         //  cpState.addComentario(data.data.Id, comentario, "Captura");
@@ -531,7 +547,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           true
         );
         inscripcionState.setInscripcion(data.data.data);
-        lpState.addComentario(DataSolicitud.Id, comentario, "Captura");
+        // lpState.addComentario(DataSolicitud.Id, comentario, "Captura");
 
       });
 
@@ -541,8 +557,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idEditor: string,
     estatus: string,
     // comentario: string,
-    arrDocsEliminados: IDocsEliminados[]
-
+    arrDocsEliminados: IDocsEliminados[],
+    guardadoBorrador: number = 0
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
@@ -658,6 +674,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           Solicitud: JSON.stringify(solicitud),
           IdEditor: idEditor,
           IdUsuario: idCreador,
+          guardadoBorrador: guardadoBorrador,
         },
         {
           headers: {
@@ -677,7 +694,9 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           true
         );
 
-
+        if (Array.isArray(arrDocsEliminados) && arrDocsEliminados.length !== 0) {
+          deleteDocPathSol(inscripcionState.inscripcion.Id, arrDocsEliminados)
+        }
 
 
         // if (arrDocsEliminados.length != 0) {

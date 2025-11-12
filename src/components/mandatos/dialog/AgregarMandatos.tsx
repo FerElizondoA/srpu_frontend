@@ -31,7 +31,7 @@ import { SoporteDocumentalMandato } from "../panels/SoporteDocumental";
 import { TipoDeMovimientoMandato } from "../panels/TipoDeMovimiento";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
-import { IPorcentajeAcumulados, ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
+import { IDeudorFideicomisoNew, IPorcentajeAcumulados, ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 import { IDeudorMandatoNew } from "../../../store/Mandatos/mandato";
 import { IDataAsignacionTipoMoviSolicitudes } from "../../../screens/fuenteDePago/Fideicomisos";
 import Swal from "sweetalert2";
@@ -106,6 +106,12 @@ export function AgregarMandatos({
     (state) => state.tipoMecanismoVehiculoPago
   );
 
+
+  // const tablaTipoMovimiento: IDeudorMandatoNew[] = useMandatoStore(
+  //   (state) => state.tablaTipoMovimientoMandato
+  // );
+
+
   const tablaSoporteDocumentalMandato: ISoporteDocumentalFuentePago[] = useMandatoStore(
     (state) => state.tablaSoporteDocumentalMandato
   );
@@ -129,6 +135,17 @@ export function AgregarMandatos({
     (state) => state.arregloPorcetajesAcumuladosRegistros
   );
 
+  const TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew[] = useFideicomisoStore(
+    (state) => state.TablaPruebaEditarFideicomiso
+  );
+
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+
+  const cleanTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.cleanTablaPruebaEditarFideicomiso
+  );
   const [openDialogPorcentajeAcumulado, setOpenPorcentajeAcumulado] = useState(false)
   const [erroresPorcentajeAcumulado, setErroresPorcentajesAcumulados] = useState<Array<string>>([])
 
@@ -144,7 +161,14 @@ export function AgregarMandatos({
   });
 
   useEffect(() => {
+    console.log("DataAsignacionTipoMoviSolicitudes: ", DataAsignacionTipoMoviSolicitudes);
+    console.log("tablaTipoMovimiento: ", tablaTipoMovimiento);
+  }, [DataAsignacionTipoMoviSolicitudes])
+
+
+  useEffect(() => {
     getTipoEntePublicoObligado();
+    console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
   }, []);
 
   const [arr, setArr] = useState<any>([]);
@@ -173,6 +197,8 @@ export function AgregarMandatos({
                 edge="start"
                 onClick={() => {
                   handler(false);
+                  cleanTablaPruebaEditarFideicomiso([]);
+
                 }}
                 sx={{ color: "white" }}
               >
@@ -271,6 +297,18 @@ export function AgregarMandatos({
                       );
 
                       if (acumulado) {
+
+
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.mandatario.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
+
                         const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
                         const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
 

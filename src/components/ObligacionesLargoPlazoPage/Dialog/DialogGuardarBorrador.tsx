@@ -14,13 +14,17 @@ import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
+import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 
 export function DialogGuardarBorrador({
   handler,
   openState,
+  arrDocsEliminados,
 }: {
   handler: Function;
   openState: boolean;
+  arrDocsEliminados?: IDocsEliminados[]
 }) {
   const crearSolicitud: Function = useLargoPlazoStore(
     (state) => state.crearSolicitud
@@ -28,6 +32,11 @@ export function DialogGuardarBorrador({
   const modificaSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaSolicitud
   );
+
+  const cleanInscripcionModify: Function = useInscripcionStore(
+    (state) => state.cleanInscripcionModify
+  );
+
   const institucion: string = useLargoPlazoStore(
     (state) => state.informacionGeneral.institucionFinanciera.Descripcion
   );
@@ -74,9 +83,14 @@ export function DialogGuardarBorrador({
 
   const navigate = useNavigate();
 
-  // const cleanSolicitud: Function = useLargoPlazoStore(
-  //   (state) => state.cleanSolicitud
-  // );
+  const cleanSolicitud: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+  const cleanInscripcion: Function = useInscripcionStore(
+    (state) => state.cleanInscripcion
+  );
+
 
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
@@ -87,6 +101,11 @@ export function DialogGuardarBorrador({
   const markedText = division !== -1 ? info.substring(0, division + 1) : info;
 
   const restText = division !== -1 ? info.substring(division + 1) : "";
+
+
+  const IdSolicitudBorrador: string = useCortoPlazoStore(
+    (state) => state.IdSolicitudBorrador
+  );
 
   const solicitud: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
@@ -145,36 +164,55 @@ export function DialogGuardarBorrador({
             onClick={() => {
               handler(false);
               if (solicitud.Id !== "") {
+
+
                 modificaSolicitud(
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                  JSON.stringify(comentario)
+                  //JSON.stringify(comentario),
+                  arrDocsEliminados,
+                  1,
                 )
                   .then(() => {
-                    addComentario(
-                      solicitud.Id,
-                      JSON.stringify(comentario),
-                      "Captura"
-                    );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se guardó con éxito",
-                    });
+                    // addComentario(
+                    //   solicitud.Id,
+                    //   JSON.stringify(comentario),
+                    //   "Captura"
+                    // );
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "success",
+                    //   title: "Mensaje",
+                    //   text: "La solicitud se guardó con éxito",
+                    // });
                     // cleanSolicitud();
-                    navigate("../ConsultaDeSolicitudes");
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+                    cleanSolicitud();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
+                    setTimeout(() => {
+                      navigate("../ConsultaDeSolicitudes");
+                    }, 1000);
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "error",
+                    //   title: "Mensaje",
+                    //   text: "Ocurrió un error, inténtelo de nuevo",
+                    // });
+                    alertaConfirmCancelar("Ocurrió un error, inténtelo de nuevo")
+
                   });
               } else {
                 crearSolicitud(
@@ -183,18 +221,29 @@ export function DialogGuardarBorrador({
                   JSON.stringify(comentario)
                 )
                   .then(() => {
+                    console.log("Object.keys(comentario).length > 0", Object.keys(comentario).length > 0)
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
                     // addComentario(
                     //   solicitud.Id,
                     //   JSON.stringify(comentario),
                     //   "Captura"
                     // );
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se guardó con éxito",
-                    });
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "success",
+                    //   title: "Mensaje",
+                    //   text: "La solicitud se guardó con éxito",
+                    // });
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+                    cleanInscripcion();
+                    cleanSolicitud();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -236,25 +285,40 @@ export function DialogGuardarBorrador({
                   solicitud.CreadoPor,
                   localStorage.getItem("IdUsuario"),
                   localStorage.getItem("Rol") === "Capturador" ? "1" : "2",
-                  JSON.stringify(comentario)
+                  //JSON.stringify(comentario)
+                  arrDocsEliminados,
+                  1
                 )
                   .then(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se guardó con éxito",
-                    });
+                    console.log("GUARDAR CONTINUAR, TODOS LOS COMENTARIOS: ", comentario);
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "success",
+                    //   title: "Mensaje",
+                    //   text: "La solicitud se guardó con éxito",
+                    // });
                   })
-                  .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                  .catch((data: any) => {
+                    console.log("data catch", data);
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "error",
+                    //   title: "Mensaje",
+                    //   text: "Ocurrió un error, inténtelo de nuevo",
+                    // });
                   });
               } else {
                 crearSolicitud(
@@ -263,22 +327,34 @@ export function DialogGuardarBorrador({
                   JSON.stringify(comentario)
                 )
                   .then((r: any) => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "success",
-                      title: "Mensaje",
-                      text: "La solicitud se guardó con éxito",
-                    });
+
+                    console.log("Guardar y cerrdar", Object.keys(comentario).length > 0)
+                    if (comentario && Object.keys(comentario).length > 0) {
+                      addComentario(
+                        IdSolicitudBorrador,
+                        JSON.stringify(comentario),
+                        "Captura"
+                      );
+                    }
+                    alertaConfirmCancelar("La solicitud se guardó con éxito")
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "success",
+                    //   title: "Mensaje",
+                    //   text: "La solicitud se guardó con éxito",
+                    // });
                   })
                   .catch(() => {
-                    Swal.fire({
-                      confirmButtonColor: "#15212f",
-                      cancelButtonColor: "rgb(175, 140, 85)",
-                      icon: "error",
-                      title: "Mensaje",
-                      text: "Ocurrió un error, inténtelo de nuevo",
-                    });
+                    alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
+
+                    // Swal.fire({
+                    //   confirmButtonColor: "#15212f",
+                    //   cancelButtonColor: "rgb(175, 140, 85)",
+                    //   icon: "error",
+                    //   title: "Mensaje",
+                    //   text: "Ocurrió un error, inténtelo de nuevo",
+                    // });
                   });
               }
             }}

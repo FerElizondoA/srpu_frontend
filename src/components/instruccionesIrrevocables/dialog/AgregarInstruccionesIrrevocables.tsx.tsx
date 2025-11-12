@@ -37,7 +37,7 @@ import { listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { IDataAsignacionTipoMoviSolicitudes } from "../../../screens/fuenteDePago/Fideicomisos";
 import Swal from "sweetalert2";
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOff';
-import { IPorcentajeAcumulados } from "../../../store/Fideicomiso/fideicomiso";
+import { IDeudorFideicomisoNew, IPorcentajeAcumulados } from "../../../store/Fideicomiso/fideicomiso";
 
 
 export function AgregarInstruccionesIrrevocables({
@@ -149,12 +149,27 @@ export function AgregarInstruccionesIrrevocables({
   const tablaSoporteDocumentalInstrucciones: ISoporteDocumentalInstrucciones[] =
     useInstruccionesStore((state) => state.tablaSoporteDocumentalInstruccion);
 
+  const TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew[] = useFideicomisoStore(
+    (state) => state.TablaPruebaEditarFideicomiso
+  );
+
+
+  const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.setTablaPruebaEditarFideicomiso
+  );
+  const cleanTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
+    (state) => state.cleanTablaPruebaEditarFideicomiso
+  );
+
+
   useEffect(() => {
     getTiposDeFuente();
     getOrganismos();
     getInstituciones();
     getTipoEntePublicoObligado();
     getFondosOIngresos();
+    console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
+
   }, []);
 
 
@@ -168,6 +183,7 @@ export function AgregarInstruccionesIrrevocables({
               edge="start"
               onClick={() => {
                 handler(false);
+                cleanTablaPruebaEditarFideicomiso([]);
               }}
               sx={{ color: "white" }}
             >
@@ -271,7 +287,7 @@ export function AgregarInstruccionesIrrevocables({
                         const nuevaEquivalencia = nuevo.EquivalenciaCorrespondienteMunicipios ?? 0;
 
                         if (nuevoIngreso < usadoIngreso) {
-                           errorEncontrado = true;
+                          errorEncontrado = true;
                           //mensajeError += `\nEl porcentaje de ingreso (${nuevoIngreso}%) no puede ser menor que el utilizado (${usadoIngreso}%) para ${nuevo.mandatario.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
                             openDialog: true,
@@ -307,6 +323,15 @@ export function AgregarInstruccionesIrrevocables({
                       );
 
                       if (acumulado) {
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.entePublicoObligado.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
                         const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
                         const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
 
@@ -314,8 +339,8 @@ export function AgregarInstruccionesIrrevocables({
                         const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
 
                         // 🔸 Si el acumulado + nuevo supera 100, marcar error
-                        if (acumuladoIngreso + nuevoIngreso > 100) {
-                           errorEncontrado = true;
+                        if (acumuladoIngreso + (nuevoIngreso - ROIngreso) > 100) {
+                          errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
                             openDialog: true,
@@ -328,7 +353,7 @@ export function AgregarInstruccionesIrrevocables({
                           });
                         }
 
-                        if (acumuladoEquivalencia + nuevaEquivalencia > 100) {
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({

@@ -79,9 +79,6 @@ export const Documentacion = ({ addArrDocsEliminados, }: { addArrDocsEliminados:
     (state) => state.tablaDocumentos
   );
 
-  const [borrarDoc, setBorrarDoc] = useState<deleteDocumentos[]>([]);
-
-
   const addDocumento: Function = useLargoPlazoStore(
     (state) => state.addDocumento
   );

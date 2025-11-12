@@ -4,35 +4,35 @@ import { LateralMenu } from "../LateralMenu/LateralMenu";
 import { FavIconAvisos } from "../../avisosPAUA/componentes/FavIconAvisos";
 import "../../GlobalPruebasPAME.css";
 
-const listaBotones = [
-  {
-    nombre: "Boton 1",
-  },
-  {
-    nombre: "Boton 2",
-  },
-  {
-    nombre: "Boton 3",
-  },
-  {
-    nombre: "Boton 4",
-  },
-  {
-    nombre: "Boton 5",
-  },
-  {
-    nombre: "Boton 6",
-  },
-  {
-    nombre: "Boton 7",
-  },
-  {
-    nombre: "Boton 8",
-  },
-  {
-    nombre: "Boton 9",
-  },
-]
+// const listaBotones = [
+//   {
+//     nombre: "Boton 1",
+//   },
+//   {
+//     nombre: "Boton 2",
+//   },
+//   {
+//     nombre: "Boton 3",
+//   },
+//   {
+//     nombre: "Boton 4",
+//   },
+//   {
+//     nombre: "Boton 5",
+//   },
+//   {
+//     nombre: "Boton 6",
+//   },
+//   {
+//     nombre: "Boton 7",
+//   },
+//   {
+//     nombre: "Boton 8",
+//   },
+//   {
+//     nombre: "Boton 9",
+//   },
+// ]
 
 export function HomePage() {
   return (
@@ -55,7 +55,7 @@ export function HomePage() {
       </Grid>
       <FavIconAvisos />
 
-      <Grid container width={"100%"}>
+      {/* <Grid container width={"100%"}>
         <Button className="boton-Acciones">
           <Typography>Boton ACCION Oscuro</Typography>
         </Button>
@@ -70,7 +70,7 @@ export function HomePage() {
             </Button>
           ))}
         </Grid>
-      </Grid>
+      </Grid> */}
 
     </Grid>
   );
