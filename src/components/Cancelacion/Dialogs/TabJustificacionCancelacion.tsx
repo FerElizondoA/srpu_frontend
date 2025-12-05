@@ -3,7 +3,7 @@ import { HeadLabels } from "../../ObligacionesCortoPlazoPage/Panels/Resumen";
 import { format, lightFormat } from "date-fns";
 import { queries } from "../../../queries";
 import { ICancelacionJustificaciones } from "./DialogTabsCancelacionArchivos";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GridCloseIcon } from "@mui/x-data-grid";
 import { convertFileToBase64 } from "../../../generics/Validation";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
@@ -16,13 +16,35 @@ export interface IFileCancelaciones {
   SIZE: number;
 }
 
+export interface IUsuarioCancelacion {
+  ApellidoMaterno :string
+  ApellidoPaterno: string
+  CURP:string
+  Celular: string
+  CorreoElectronico:string
+  Entidad:string
+  Ext: string
+  Id :string
+  IdEntidad :string
+  IdRol:string
+  IdTipoUsuario:string
+  Nombre:string
+  NombreUsuario:string
+  Puesto:string
+  RFC:string
+  Rol:string
+  Telefono: string
+}
+
 export function TabJustificacionCancelacion({
   DetailPathCancelaciones,
   arr,
+  CancelacionInciadoPor,
   cargados
 }: {
   DetailPathCancelaciones?: ICancelacionJustificaciones[];
   arr: IFileCancelaciones[];
+  CancelacionInciadoPor: IUsuarioCancelacion
   cargados: boolean;
 }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
@@ -38,8 +60,8 @@ export function TabJustificacionCancelacion({
     },
     {
       label: "Usuario Solicitante",
-      value:"JOSÉ V. PÉREZ ALONSO"
-      // value: DetailPathCancelaciones?.[0]?.NombreIdentificador || "No iniciado el proceso",
+      //value: "JOSÉ V. PÉREZ ALONSO"
+      value: DetailPathCancelaciones?.[0]?.FechaCreacion !== undefined ?CancelacionInciadoPor.Nombre + " " + CancelacionInciadoPor.ApellidoPaterno + " " + CancelacionInciadoPor.ApellidoMaterno : "No iniciado el proceso",
     },
     {
       label: "Acreditación de la cancelación",
@@ -57,71 +79,43 @@ export function TabJustificacionCancelacion({
 
   ];
 
+
+
   return (
     <>
-      <Grid container width={"100%"} display={"flex"} justifyContent={"center"}
+      <Grid container width={"100%"} justifyContent={"start"} mt={4}
         sx={{
-          height: "25rem",
+          height: "35rem",
           borderBottom: 1,
           borderColor: "#cfcfcf"
         }}>
         <Grid container
-          display={"flex"}
           width={"100%"}
           justifyContent={"center"}
+
         >
           {JustificacionCancelacion.map((head, index) => (
-            <Grid xs={10} sm={5} md={5} lg={5} display={"flex"} justifyContent={"start"} sx={{ alignItems: "center" }} key={index}>
-              <Typography key={index} sx={{ ...queries.medium_text, mb: 4 }}>
-                <strong> {head.label}: </strong>
-                {head.label.includes("Fecha") && head.value
-                  ? !isNaN(new Date(head.value).getTime())
-                    ? format(new Date(head.value), "dd/MM/yyyy")
-                    : "No iniciado el proceso"
-                  // "Sin Fecha Registrada"
-                  : head.value}
-              </Typography>
+            <Grid container width={"80%"} display={"flex"} justifyContent={"start"}
+              sx={{ alignItems: "center" }}
+              key={index}
+            >
+              <Grid display={"flex"} width={"70%"}>
+                <Typography key={index} sx={{ ...queries.medium_text, mb: 4 }}>
+                  <strong> {head.label}: </strong>
+                  {head.label.includes("Fecha") && head.value
+                    ? !isNaN(new Date(head.value).getTime())
+                      ? format(new Date(head.value), "dd/MM/yyyy")
+                      : "No iniciado el proceso"
+                    // "Sin Fecha Registrada"
+                    : head.value}
+                </Typography>
 
-              {head.label.includes("Acreditación") ?
-                <Grid display={"flex"} sx={{ mb: 3 }}>
-                  <Button
-                    disabled={head.value === "SIN ARCHIVOS"}
+                {head.label.includes("Acreditación") ?
+                  <Grid >
 
-                    onClick={async () => {
-
-
-                      let base64String = '';
-                      try {
-                        if (arr instanceof File) {
-                          base64String = await convertFileToBase64(arr);
-                        } else {
-                          base64String = arr[0]?.FILE || '';
-                        }
-
-                        const dataUri = `data:application/pdf;base64,${base64String}`;
-                        setFileSelected(dataUri);
-                      } catch (error) {
-                        console.error("Error al convertir el archivo a Base64", error);
-                      }
-
-                      setShowModalPrevia(true);
-                    }}
-                  >
-                    <Tooltip title="Descargar archivo">
-
-                      <Typography>
-                        <FileOpenIcon />
-                        {/* {head.value} */}
-                      </Typography>
-                    </Tooltip>
-                  </Button>
-
-                </Grid>
-
-                : head.label.includes("federal") ?
-                  <Grid display={"flex"} sx={{ mb: 3 }}>
                     <Button
                       disabled={head.value === "SIN ARCHIVOS"}
+
                       onClick={async () => {
 
 
@@ -130,7 +124,7 @@ export function TabJustificacionCancelacion({
                           if (arr instanceof File) {
                             base64String = await convertFileToBase64(arr);
                           } else {
-                            base64String = arr[1]?.FILE || '';
+                            base64String = arr[0]?.FILE || '';
                           }
 
                           const dataUri = `data:application/pdf;base64,${base64String}`;
@@ -152,9 +146,45 @@ export function TabJustificacionCancelacion({
                     </Button>
 
                   </Grid>
-                  : null
 
-              }
+                  : head.label.includes("federal") ?
+                    <Grid sx={{ mb: 3 }}>
+                      <Button
+                        disabled={head.value === "SIN ARCHIVOS"}
+                        onClick={async () => {
+
+
+                          let base64String = '';
+                          try {
+                            if (arr instanceof File) {
+                              base64String = await convertFileToBase64(arr);
+                            } else {
+                              base64String = arr[1]?.FILE || '';
+                            }
+
+                            const dataUri = `data:application/pdf;base64,${base64String}`;
+                            setFileSelected(dataUri);
+                          } catch (error) {
+                            console.error("Error al convertir el archivo a Base64", error);
+                          }
+
+                          setShowModalPrevia(true);
+                        }}
+                      >
+                        <Tooltip title="Descargar archivo">
+
+                          <Typography>
+                            <FileOpenIcon />
+                            {/* {head.value} */}
+                          </Typography>
+                        </Tooltip>
+                      </Button>
+
+                    </Grid>
+                    : null
+                }
+              </Grid>
+
 
 
             </Grid>
@@ -162,20 +192,29 @@ export function TabJustificacionCancelacion({
         </Grid>
 
 
-        <Grid container ml={19} height={"5rem"}>
-          <Grid sx={{ height: "3rem", display:"flex",justifyContent: "center", alignItems: "center"}}>
-          <Typography sx={{ ...queries.bold_text }}>Justificacion Escrita</Typography>
+        <Grid container width={"100%"} display={"flex"} justifyContent={"center"} >
+          <Grid width={"80%"} display={"flex"} justifyContent={"start"}>
 
+            <Grid sx={{ height: "3rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Typography sx={{ ...queries.bold_text }}>Justificacion Escrita</Typography>
+            </Grid>
+
+            <Grid width={"60%"}>
+              <TextField
+                disabled
+                id="outlined-error-helper-text"
+                sx={{ ...queries.medium_text, width: "100%", ml: 2 }}
+                fullWidth
+                rows={4}
+                multiline
+                value={DetailPathCancelaciones?.[0]?.Justificacion || "Sin justificación de cancelación"}
+              >
+              </TextField>
+            </Grid>
           </Grid>
 
-          <TextField
-            id="outlined-error-helper-text"
-            sx={{...queries.medium_text, width: "70%", ml: 2 }}
-            fullWidth
-           value={DetailPathCancelaciones?.[0]?.Justificacion || "Sin justificación de cancelación"}
-          >
-            
-          </TextField>
+
+
         </Grid>
       </Grid>
 

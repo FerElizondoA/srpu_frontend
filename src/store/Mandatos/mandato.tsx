@@ -168,8 +168,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     fechaMandato: new Date(),
     mandatario: { Id: "", Descripcion: "" },
     mandante: {
-      Id: localStorage.getItem("IdEntePublicoObligado")!,
-      Descripcion: localStorage.getItem("EntePublicoObligado")!,
+      Id: "",
+      Descripcion: "",
     },
   },
 
@@ -181,8 +181,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
     AfectadoTotalIngreso: 0,
     EquivalenciaCorrespondienteMunicipios: 0
-
   },
+  
   tablaTipoMovimientoMandato: [],
 
   beneficiario: {
@@ -215,8 +215,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         fechaMandato: new Date(),
         mandatario: { Id: "", Descripcion: "" },
         mandante: {
-          Id: localStorage.getItem("IdEntePublicoObligado")!,
-          Descripcion: localStorage.getItem("EntePublicoObligado")!,
+          Id: "",
+          Descripcion: "",
         },
       },
 

@@ -326,6 +326,11 @@ export function Fideicomisos() {
 
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
+  useEffect(() => {
+  setDataAsignacionTipoMoviSolicitudes([]);    
+  console.log("dataAsignacionTipoMoviSolicitudes limpiado")
+  }, [openAgregarFideicomisos])
+  
 
   return (
     <Grid>
@@ -542,10 +547,13 @@ export function Fideicomisos() {
                                 //Tabla prueba antes de la edicion solo para comparar.
                                 setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
                                 // DetallePorcentajesAcumuladosMultiples()
-
-                                setOpenAgregarFideicomiso(
+                                
+                                setTimeout(() => {
+                                 setOpenAgregarFideicomiso(
                                   !openAgregarFideicomisos
                                 );
+                                }, 1000);
+                                
                               }}
                             >
                               <EditIcon />
@@ -584,6 +592,7 @@ export function Fideicomisos() {
           openState={openAgregarFideicomisos}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
           DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
+          setDataAsignacionTipoMoviSolicitudes={setDataAsignacionTipoMoviSolicitudes}
 
         />
       )}

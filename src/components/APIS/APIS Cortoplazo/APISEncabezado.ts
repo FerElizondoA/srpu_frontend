@@ -13,12 +13,13 @@ export async function getMunicipiosUOrganismos(setState: Function) {
     },
   })
     .then(({ data }) => {
+      console.log("data catalogo MANDANTES", data.data);
       setState(data.data);
     })
     .catch((error) => {
-     
 
-      alertaError( "(" + error.response.status + ") " + error.response.data.msg,)
+
+      alertaError("(" + error.response.status + ") " + error.response.data.msg,)
     });
 }
 
@@ -36,8 +37,8 @@ export async function getTipoEntePublico(setState: Function) {
       setState(data.data);
     })
     .catch((error) => {
-      
 
-      alertaError( "(" + error.response.status + ") " + error.response.data.msg,)
+
+      alertaError("(" + error.response.status + ") " + error.response.data.msg,)
     });
 }

@@ -165,6 +165,7 @@ export const createEncabezadoSlice: StateCreator<EncabezadoSlice> = (
       )
       .then(({ data }) => {
         let r = data.data;
+        console.log("Organismos:", r);
         set((state) => ({
           catalogoOrganismos: r,
         }));

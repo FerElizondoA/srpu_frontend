@@ -11,6 +11,7 @@ export async function getCatalogo(setState: Function, getState: string) {
     },
   })
     .then(({ data }) => {
+      console.log("data catalogo MANDATARIOS", data.data);
       setState(data.data);
     })
     .catch((error) => {

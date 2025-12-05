@@ -39,6 +39,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import es from "date-fns/locale/es";
 import { buttonTheme } from "../dialog/AgregarMandatos";
+import { IPorcentajeAcumulados } from "../../../store/Fideicomiso/fideicomiso";
+import { set } from "date-fns";
 
 interface HeadLabels {
   label: string;
@@ -126,6 +128,11 @@ const headsNews: HeadLabels[] = [
 ];
 
 export function TipoDeMovimientoMandato() {
+
+  const arregloPorcetajesAcumuladosRegistros: IPorcentajeAcumulados[] = useFideicomisoStore(
+    (state) => state.arregloPorcetajesAcumuladosRegistros
+  );
+
   const tipoMovimiento: IDeudorMandatoNew = useMandatoStore(
     (state) => state.tipoMovimiento
   );
@@ -175,6 +182,10 @@ export function TipoDeMovimientoMandato() {
     (state) => state.addTipoMovimiento
   );
 
+  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
+
   //GET
   const getTiposDeFuenteInstrucciones: Function = useFideicomisoStore(
     (state) => state.getTiposDeFuente
@@ -182,6 +193,10 @@ export function TipoDeMovimientoMandato() {
 
   const getFondosOIngresosInstrucciones: Function = useFideicomisoStore(
     (state) => state.getFondosOIngresos
+  );
+
+  const getInstituciones: Function = useCortoPlazoStore(
+    (state) => state.getInstituciones
   );
 
   const removeTipoMovimiento: Function = useMandatoStore(
@@ -227,6 +242,7 @@ export function TipoDeMovimientoMandato() {
   useEffect(() => {
     getTiposDeFuenteInstrucciones();
     getFondosOIngresosInstrucciones();
+    getInstituciones()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -245,6 +261,27 @@ export function TipoDeMovimientoMandato() {
     SumaAcumuladoMunicipios: number;
     SumaAcumuladoOrganismos: number;
   } = useFideicomisoStore((state) => state.sumaPorcentajeAcumulado);
+
+  const cleanFullDeudorBeneficiario = () => { //Vacia los campos de Deudor y Beneficiario al cambiar de movimiento
+    setIdTipoMovimientoSelect("");
+    setBeneficiario({
+      tipoBeneficiario: { Id: "", Descripcion: "" },
+      beneficiario: { Id: "", Descripcion: "" },
+      fechaAlta: new Date(),
+    });
+    setTipoMovimiento(
+      {
+        id: "",
+        tipoEntePublicoObligado: { Id: "", Descripcion: "" },
+        mandatario: { Id: "", Descripcion: "" },
+        tipoFuente: { Id: "", Descripcion: "" },
+        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
+        AfectadoTotalIngreso: 0,
+        EquivalenciaCorrespondienteMunicipios: 0
+      },
+    )
+  }
+
 
   const buttonAgregar = () => {
     return (
@@ -279,6 +316,10 @@ export function TipoDeMovimientoMandato() {
     );
   };
 
+  // useEffect(() => {
+  //   console.log("GUARDO EL REGISTRO DEL % ACUMULADO EN EL ARRAY QUE VIENE DE LA BASE DE DATOS",);
+  //   console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros);
+  // }, [arregloPorcetajesAcumuladosRegistros])
 
 
 
@@ -312,6 +353,10 @@ export function TipoDeMovimientoMandato() {
           value={movimiento}
           onChange={(v) => {
             setMovimiento(v.target.value);
+
+            if (v.target.value === "DEUDOR") {
+              cleanFullDeudorBeneficiario();
+            }
           }}
           sx={{
             display: "flex",
@@ -325,12 +370,20 @@ export function TipoDeMovimientoMandato() {
             control={<Radio />}
             label="Alta de Deudor"
           />
-          <FormControlLabel
-            sx={{ ...queries.medium_text }}
-            value="BENEFICIARIO"
-            control={<Radio />}
-            label="Alta de Beneficiario"
-          />
+
+          {tablaTipoMovimiento.length > 0 ?
+            (
+              <>
+                <FormControlLabel
+                  sx={{ ...queries.medium_text }}
+                  value="BENEFICIARIO"
+                  control={<Radio />}
+                  label="Alta de Beneficiario"
+                />
+              </>
+            )
+            : null}
+
         </RadioGroup>
       </Grid>
 
@@ -350,19 +403,23 @@ export function TipoDeMovimientoMandato() {
         display={"flex"}
         justifyContent={"space-evenly"}
         alignItems={"center"}
-        sx={{ height: "10vh" }}
+        //height={ movimiento === "BENEFICIARIO" ? "28vh" :"20vh"}
+        height={movimiento === "BENEFICIARIO" ?
+          { xs: "78vh", sm: "45vh", md: "45vh", lg: "27vh", xl: "27vh" } :
+          { xs: "40vh", sm: "20vh", md: "20vh", lg: "20vh", xl: "20vh" }}
+
       >
         {movimiento === "BENEFICIARIO" ? (
           <Grid
             item
             xs={10}
-            sm={3}
-            md={3}
-            lg={2}
-            xl={2}
+            sm={5}
+            md={5}
+            lg={5}
+            xl={5}
             mb={
               movimiento === "BENEFICIARIO"
-                ? { xs: 2, sm: 0, md: 0, lg: 0 }
+                ? { xs: 4, sm: 0, md: 0, lg: 0 }
                 : { xs: 0, sm: 0 }
             }
           >
@@ -407,14 +464,14 @@ export function TipoDeMovimientoMandato() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
+          sm={movimiento === "DEUDOR" ? 5 : 5}
+          md={movimiento === "DEUDOR" ? 5 : 5}
+          lg={movimiento === "DEUDOR" ? 5 : 5}
+          xl={movimiento === "DEUDOR" ? 5 : 5}
           mb={
             movimiento === "BENEFICIARIO"
               ? { xs: 1, sm: 0, md: 0 }
-              : { xs: 4, sm: 0 }
+              : { xs: 0, sm: 0 }
           }
         >
           <InputLabel sx={queries.medium_text}>
@@ -466,13 +523,14 @@ export function TipoDeMovimientoMandato() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
-          mb={
-            movimiento === "BENEFICIARIO" ? { xs: 0, sm: 0, md: 0 } : { sm: 0 }
-          }
+          sm={movimiento === "DEUDOR" ? 5 : 5}
+          md={movimiento === "DEUDOR" ? 5 : 5}
+          lg={movimiento === "DEUDOR" ? 5 : 5}
+          xl={movimiento === "DEUDOR" ? 5 : 5}
+          // mb={
+          //   movimiento === "BENEFICIARIO" ? { xs: 0, sm: 0, md: 0 } : { sm: 0 }
+          // }
+          mt={movimiento === "BENEFICIARIO" ? { xs: 4, sm: 4, md: 4, lg: 4, xl: 4 } : { xs: 0, sm: 0 }}
         >
           <InputLabel sx={queries.medium_text}>Mandatario</InputLabel>
           <Autocomplete
@@ -522,25 +580,101 @@ export function TipoDeMovimientoMandato() {
             }
           />
         </Grid>
-      </Grid>
 
-      <Grid
-        container
-        display={{ xs: "flex", sm: "flex", md: "flex" }}
-        justifyContent={{
-          xs: "center",
-          sm: "space-evenly",
-          md: "space-evenly",
-        }}
-        alignItems={"center"}
-        mb={2}
-        mt={{ xs: 11, sm: 0 }}
-      >
+        {movimiento === "BENEFICIARIO" ? (
+          <>
+            <Grid item xs={10} sm={5} md={5} lg={5} xl={5}
+              mt={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}
+            >
+              <InputLabel sx={queries.medium_text}>Beneficiario</InputLabel>
+              <Autocomplete
+                disableClearable
+                clearText="Borrar"
+                noOptionsText="Sin opciones"
+                closeText="Cerrar"
+                openText="Abrir"
+                // disabled={
+                //   beneficiario.tipoBeneficiario.Descripcion === "No Aplica" ||
+                //   /^[\s]*$/.test(beneficiario.tipoBeneficiario.Descripcion)
+                // }
+                fullWidth
+                options={catalogoInstituciones}
+                // options={catalogoOrganismos.filter(
+                //   (td: any) =>
+                //     td.IdTipoEntePublico === beneficiario.tipoBeneficiario.Id
+                // )}
+                getOptionLabel={(option) => option.Descripcion}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} key={option.Id}>
+                      <Typography>{option.Descripcion}</Typography>
+                    </li>
+                  );
+                }}
+                onChange={(event, text) => {
+                  setBeneficiario({
+                    ...beneficiario,
+                    beneficiario: {
+                      Id: text.Id,
+                      Descripcion: text.Descripcion,
+                    },
+                  });
+                }}
+                value={beneficiario.beneficiario}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    sx={queries.medium_text}
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.Id === value.Id || value.Descripcion === ""
+                }
+              />
+            </Grid>
+
+            <Grid
+              item
+              xs={10}
+              sm={5}
+              md={5}
+              lg={3}
+              xl={3}
+              mt={{ xs: 4, sm: 4, md: 4, lg: 4, xl: 4 }}
+
+            // mt={{ xs: 2, sm: 2, md: 2, lg: 2, xl: 2 }}
+            >
+              <InputLabel sx={{ ...queries.medium_text }}>
+                Fecha de Alta
+              </InputLabel>
+              <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                adapterLocale={es}
+              >
+                <DesktopDatePicker
+                  sx={{
+                    width: "100%",
+                  }}
+                  value={beneficiario.fechaAlta}
+                  onChange={(v) => {
+                    setBeneficiario({
+                      ...beneficiario,
+                      fechaAlta: v,
+                    });
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+          </>
+        ) : null}
+
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
+          sm={movimiento === "DEUDOR" ? 5 : 5}
+          md={movimiento === "DEUDOR" ? 5 : 5}
           lg={movimiento === "DEUDOR" ? 5 : 3}
           xl={movimiento === "DEUDOR" ? 5 : 3}
           mt={
@@ -592,12 +726,12 @@ export function TipoDeMovimientoMandato() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
+          sm={movimiento === "DEUDOR" ? 5 : 10.5}
+          md={movimiento === "DEUDOR" ? 5 : 10.5}
+          lg={movimiento === "DEUDOR" ? 5 : 3.4}
+          xl={movimiento === "DEUDOR" ? 5 : 3.4}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 3 } : { xs: 3, sm: 0 }
+            movimiento === "BENEFICIARIO" ? { xs: 4, sm: 3 } : { xs: 3, sm: 0 }
           }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
@@ -654,20 +788,35 @@ export function TipoDeMovimientoMandato() {
           />
         </Grid>
       </Grid>
+      {/*  */}
 
-      {movimiento === "DEUDOR" && (
-        <Grid
-          item
-          mt={2}
-          width={"100%"}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          {buttonAgregar()}
-        </Grid>
-      )}
+      {/* <Grid
+        container
+        display={{ xs: "flex", sm: "flex", md: "flex" }}
+        justifyContent={{
+          xs: "center",
+          sm: "space-evenly",
+          md: "space-evenly",
+        }}
+        alignItems={"center"}
+        mb={2}
+        mt={{ xs: 11, sm: 0 }}
+      >
 
+      </Grid> */}
+
+
+      <Grid container
+        mt={4}
+        width={"100%"}
+        height={"4rem"}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        {buttonAgregar()}
+      </Grid>
+      {/* 
       {movimiento === "BENEFICIARIO" && (
         <Divider>
           <Typography
@@ -679,158 +828,9 @@ export function TipoDeMovimientoMandato() {
             Beneficiario
           </Typography>
         </Divider>
-      )}
+      )} */}
 
-      {movimiento === "BENEFICIARIO" && (
-        <Grid
-          container
-          display={"flex"}
-          justifyContent={"space-evenly"}
-          alignItems={"center"}
-          mt={{ xs: 2, sm: 0 }}
-        >
-          <Grid item xs={10} sm={5} md={5} lg={2} xl={3}>
-            <InputLabel sx={queries.medium_text}>
-              Tipo de Beneficiario
-            </InputLabel>
 
-            <Autocomplete
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoTipoEntePublicoObligado}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography sx={{ ...queries.medium_text }}>
-                      {option.Descripcion}
-                    </Typography>
-                  </li>
-                );
-              }}
-              value={beneficiario.tipoBeneficiario}
-              onChange={(event, text) => {
-                setBeneficiario({
-                  ...beneficiario,
-                  tipoBeneficiario: {
-                    Id: text.Id,
-                    Descripcion: text.Descripcion,
-                  },
-                  mandatario: {
-                    Id: "",
-                    Descripcion: "",
-                  },
-                });
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={{ ...queries.medium_text }}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-          <Grid item xs={10} sm={5} md={5} lg={2} xl={3} mt={{ xs: 2, sm: 0 }}>
-            <InputLabel sx={queries.medium_text}>Beneficiario</InputLabel>
-            <Autocomplete
-              disableClearable
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              disabled={
-                beneficiario.tipoBeneficiario.Descripcion === "No Aplica" ||
-                /^[\s]*$/.test(beneficiario.tipoBeneficiario.Descripcion)
-              }
-              fullWidth
-              options={catalogoOrganismos.filter(
-                (td: any) =>
-                  td.IdTipoEntePublico === beneficiario.tipoBeneficiario.Id
-              )}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(event, text) => {
-                setBeneficiario({
-                  ...beneficiario,
-                  beneficiario: {
-                    Id: text.Id,
-                    Descripcion: text.Descripcion,
-                  },
-                });
-              }}
-              value={beneficiario.beneficiario}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Id === value.Id || value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-          <Grid
-            item
-            xs={10}
-            sm={8}
-            md={5}
-            lg={3}
-            xl={3}
-            mt={{ xs: 2, sm: 2, md: 0 }}
-          >
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Fecha de Alta
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={es}
-            >
-              <DesktopDatePicker
-                sx={{
-                  width: "100%",
-                }}
-                value={beneficiario.fechaAlta}
-                onChange={(v) => {
-                  setBeneficiario({
-                    ...beneficiario,
-                    fechaAlta: v,
-                  });
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-
-          <Grid
-            item
-            mt={2}
-            width={"100%"}
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            {buttonAgregar()}
-          </Grid>
-        </Grid>
-      )}
 
       <Grid container
         mt={3} mb={2}

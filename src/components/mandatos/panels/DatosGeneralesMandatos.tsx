@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Grid, InputLabel, TextField } from "@mui/material";
+import { Autocomplete, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { es } from "date-fns/locale";
-import { useEffect } from "react";
+import { da, es } from "date-fns/locale";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useMandatoStore } from "../../../store/Mandatos/main";
@@ -11,8 +11,27 @@ import { ICatalogo } from "../../Interfaces/InterfacesLplazo/encabezado/IListEnc
 import { IDatosMandatos } from "../../../screens/fuenteDePago/Mandatos";
 import { IDatosGeneralesMandato } from "../../../store/Mandatos/mandato";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
+import { getMunicipiosUOrganismos as getMandateUOrganismos } from "../../APIS/APIS Cortoplazo/APISEncabezado";
+import { getCatalogo as getMandatarios } from "../../APIS/Config/APISCatalogos";
+import { set } from "date-fns";
 
 export function DatosGeneralesMandato() {
+  interface HeadSelect {
+    Id: string;
+    Descripcion: string;
+  }
+
+  const headsNews: HeadSelect[] = [
+    {
+      Id: "1",
+      Descripcion: "Gobierno del estado de Nuevo León",
+    },
+    {
+      Id: "2",
+      Descripcion: "Otro"
+    },
+  ];
+
   const setDatosGenerales: Function = useMandatoStore(
     (state) => state.setDatosGenerales
   );
@@ -29,30 +48,34 @@ export function DatosGeneralesMandato() {
     (state) => state.tablaMandatos
   );
 
-  
   const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
     (state) => state.tipoMecanismoVehiculoPago
   );
 
-  
   const IdMandato: string = useMandatoStore((state) => state.idMandato);
+  const [mandatarios, setMandatarios] = useState([]);
+  const [mandateUOrganismos, setMandateUOrganismos] = useState([]);
+  const [otroBoxMandatario, setOtroBoxMandatario] = useState(false);
+  const [otroBoxMandante, setOtroBoxMandante] = useState(false);
+
+  // useEffect(() => {
+  //   if (catalogoOrganismos.length > 0) {
+  //     setDatosGenerales({
+  //       ...datosGenerales,
+  //       mandante: {
+  //         Id: "",
+  //         Descripcion: "",
+  //       },
+  //       mandatario: { Id: "", Descripcion: "" },
+  //     });
+  //   }
+  // }, [catalogoOrganismos]);
 
   useEffect(() => {
-    if (catalogoOrganismos.length > 0) {
-      setDatosGenerales({
-        ...datosGenerales,
-        mandante: {
-          Id: localStorage.getItem("IdEntePublicoObligado")!,
-          Descripcion: localStorage.getItem("EntePublicoObligado")!,
-        },
-        mandatario: catalogoOrganismos?.filter(
-          (v) =>
-            v?.Descripcion.toUpperCase() ===
-            "SECRETARÍA DE FINANZAS Y TESORERÍA GENERAL DEL ESTADO"
-        )[0],
-      });
-    }
-  }, [catalogoOrganismos]);
+    getMandatarios(setMandatarios, "mandatario");
+    getMandateUOrganismos(setMandateUOrganismos)
+    console.log("datosgenerales", datosGenerales);
+  }, []);
 
   return (
     <Grid
@@ -70,29 +93,29 @@ export function DatosGeneralesMandato() {
         <InputLabel
           error={
             IdMandato !== "" ? false :
-            tablaMandatos.filter(
-              (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
+              tablaMandatos.filter(
+                (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
+              ).length > 0
           }
           sx={queries.medium_text}
         >
           Número de Mandato
         </InputLabel>
         <TextField
-        disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
+          disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
           error={
             IdMandato !== "" ? false :
-            tablaMandatos.filter(
-              (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
+              tablaMandatos.filter(
+                (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
+              ).length > 0
           }
           helperText={
             IdMandato !== "" ? "" :
-            tablaMandatos.filter(
-              (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
-            ).length > 0
-              ? "Número de mandato ya existente"
-              : ""
+              tablaMandatos.filter(
+                (v) => v.NumeroMandato.toString() === datosGenerales.numeroMandato
+              ).length > 0
+                ? "Número de mandato ya existente"
+                : ""
           }
           fullWidth
           variant="standard"
@@ -116,7 +139,7 @@ export function DatosGeneralesMandato() {
         </InputLabel>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
           <DesktopDatePicker
-          disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
+            disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
             sx={{
               width: "100%",
             }}
@@ -132,37 +155,217 @@ export function DatosGeneralesMandato() {
       </Grid>
 
       <Grid sx={{ width: "70%" }}>
-        <InputLabel sx={queries.medium_text}>Mandatario</InputLabel>
-        <TextField
-          value={datosGenerales.mandatario.Descripcion || datosGenerales.mandatario}
-          onChange={(v) => {
-            setDatosGenerales({
-              ...datosGenerales,
-              mandatario: { Id: "", Descripcion: "" },
-            });
-          }}
-          fullWidth
-          variant="standard"
-          disabled
-        />
+
+        <Grid
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <InputLabel sx={queries.medium_text}>Mandatario</InputLabel>
+
+          <FormControlLabel
+            label="Otro"
+            control={
+              <Checkbox
+                checked={otroBoxMandatario}
+                onChange={(v) => {
+                  setOtroBoxMandatario(!otroBoxMandatario);
+                  setDatosGenerales({
+                    ...datosGenerales,
+                    mandatario: { Id: "", Descripcion: "" },
+                  });
+                }}
+              />
+            }
+          ></FormControlLabel>
+        </Grid>
+
+
+        {otroBoxMandatario === false
+          ?
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={mandatarios}
+            getOptionLabel={(option) => option.Descripcion}
+            value={{
+              Id: datosGenerales?.mandatario.Id || "",
+              Descripcion: datosGenerales.mandatario.Descripcion || "",
+            }}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+
+            onChange={(event, text) => {
+              setDatosGenerales({
+                ...datosGenerales,
+                mandatario: { Id: text?.Id, Descripcion: text?.Descripcion },
+              });
+
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Id === value.Id || value.Descripcion === ""
+            }
+          />
+          :
+          <TextField
+            type="text"
+            //value={AnexoClausulas.Modificacion}
+
+            value={otroBoxMandatario === true ? datosGenerales.mandatario.Descripcion : ""}
+            disabled={otroBoxMandatario ? false : true}
+            //inputProps={{ maxlength: 120 }}
+            fullWidth
+            variant="outlined"
+            multiline
+            rows={2}
+            error={datosGenerales.mandatario.Descripcion.length === 120}
+            onChange={(x) => {
+              let inputValue = x.target.value;
+              const expRegular = /^[a-zA-ZñÑ0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+              if (
+                (inputValue.length <= 120 && expRegular.test(inputValue)) ||
+                x.target.value === ""
+              ) {
+                const nuevoMandatario = inputValue;
+                setDatosGenerales({
+                  ...datosGenerales,
+                  mandatario: {
+                    id: "otro",
+                    Descripcion: nuevoMandatario
+                  },
+                });
+              }
+            }}
+          ></TextField>
+        }
       </Grid>
 
       <Grid sx={{ width: "70%" }}>
-        <InputLabel sx={queries.medium_text}>
-          Municipio / Organismo Mandante
-        </InputLabel>
-        <TextField
+
+        <Grid
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+        >
+          <InputLabel sx={queries.medium_text}>
+            Municipio / Organismo Mandante
+          </InputLabel>
+          <FormControlLabel
+            label="Otro Tipo"
+            control={
+              <Checkbox
+                checked={otroBoxMandante}
+                onChange={(v) => {
+                  setOtroBoxMandante(!otroBoxMandante);
+                  setDatosGenerales({
+                    ...datosGenerales,
+                    mandante: { Id: "", Descripcion: "" },
+                  });
+                  // changeCheckBoxOtroTipoSolicitud(!checkBoxOtroTipoSolicitud);
+                  // changeEncabezado({
+                  //   ...encabezado,
+                  //   tipoCredito: {
+                  //     Id: "",
+                  //     Descripcion: "",
+                  //   }
+                  // })
+                }}
+              />
+            }
+          ></FormControlLabel>
+
+        </Grid>
+        
+        {otroBoxMandante === false
+          ?
+         <Autocomplete
+          clearText="Borrar"
+          noOptionsText="Sin opciones"
+          closeText="Cerrar"
+          openText="Abrir"
+          placeholder="Selecciona"
           fullWidth
-          variant="standard"
-          disabled
-          value={datosGenerales.mandante.Descripcion}
-          onChange={(v) => {
+          options={mandateUOrganismos}
+          getOptionLabel={(option) => option.Descripcion}
+          value={{
+            Id: datosGenerales?.mandante?.Id || "",
+            Descripcion: datosGenerales?.mandante?.Descripcion || "",
+          }}
+          renderOption={(props, option) => {
+            return (
+              <li {...props} key={option.Descripcion}>
+                <Typography>{option.Descripcion}</Typography>
+              </li>
+            );
+          }}
+
+          onChange={(event, text) => {
             setDatosGenerales({
               ...datosGenerales,
-              mandante: { Id: "", Descripcion: "" },
+              mandante: { Id: text?.Id, Descripcion: text?.Descripcion },
             });
+
           }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              sx={queries.medium_text}
+            />
+          )}
+          isOptionEqualToValue={(option, value) =>
+            option.Id === value.Id || value.Descripcion === ""
+          }
         />
+
+          :
+          <TextField
+            type="text"
+            //value={AnexoClausulas.Modificacion}
+
+            value={otroBoxMandante === true ? datosGenerales.mandante.Descripcion : ""}
+            disabled={otroBoxMandante ? false : true}
+            //inputProps={{ maxlength: 120 }}
+            fullWidth
+            variant="outlined"
+            multiline
+            rows={2}
+            error={datosGenerales.mandante.Descripcion.length === 120}
+            onChange={(x) => {
+              let inputValue = x.target.value;
+              const expRegular = /^[a-zA-ZñÑ0-9@#$%^&*()_+\-=<>?/|{}[\]:";'.,!\s]+$/;
+              if (
+                (inputValue.length <= 120 && expRegular.test(inputValue)) ||
+                x.target.value === ""
+              ) {
+                const nuevoMandante = inputValue;
+                setDatosGenerales({
+                  ...datosGenerales,
+                  mandante: {
+                    id: "otro",
+                    Descripcion: nuevoMandante
+                  },
+                });
+              }
+            }}
+          ></TextField>
+        }
+       
       </Grid>
     </Grid>
   );

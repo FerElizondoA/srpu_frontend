@@ -761,6 +761,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
   DetallePorcentajesAcumuladosMultiples: (combinaciones: ICombinaciones[]) => {
     const state = useFideicomisoStore.getState();
+    console.log("Combinaciones enviadas:", combinaciones);
 
     axios
       .post(
@@ -1069,7 +1070,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
           cancelButtonColor: "rgb(175, 140, 85)",
           icon: "success",
           title: "Éxito",
-          text: "El mandato se ha creado exitosamente",
+          text: "El Fideicomiso se ha creado exitosamente",
         });
 
         // if(state.idFideicomiso === "" || state.idFideicomiso === undefined){

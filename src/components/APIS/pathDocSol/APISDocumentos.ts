@@ -428,6 +428,7 @@ export const listFile = async (ROUTE: string, setState: Function) => {
     })
     .catch((r) => { });
 };
+
 export const listFileFuentesPago = async (
   ROUTE: string,
   setState: Function,
@@ -588,6 +589,27 @@ export const deleteDocPathSol = (IdSolicitud: string, docs?: any[]) => {
 
     .then((response) => { })
 
+    .catch((err) => {
+      console.error('Error al eliminar el documento:', err);
+      alertaError('Error de eliminacion')
+    });
+}
+
+export const deleteDocPathCancelaciones = (IdSolicitud: string) => {
+  axios.delete(
+    process.env.REACT_APP_APPLICATION_BACK + "/delete-DocumentosCancelacion",
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+      data: { IdSolicitud: IdSolicitud}
+    })
+
+    .then((response) => { 
+      console.log('Respuesta eliminacion doc cancelacion:', response);
+      alertaExito(()=>{}, 'Documentos eliminados correctamente')
+    })
     .catch((err) => {
       console.error('Error al eliminar el documento:', err);
       alertaError('Error de eliminacion')

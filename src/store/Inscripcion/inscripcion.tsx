@@ -10,6 +10,8 @@ import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { IGastosCostos } from "../CreditoLargoPlazo/informacion_general";
 import { IDeudorFideicomiso, IDeudorFideicomisoNew } from "../Fideicomiso/fideicomiso";
 import { IAnexoClausula, IDatosSolicitudReestructura } from "../Reestructura/reestructura";
+import axios from "axios";
+
 
 export interface IInscripcion {
   Id: string;
@@ -156,6 +158,8 @@ export interface InscripcionSlice {
 
   cleanSolicitudCortoPlazo: () => void;
   cleanSolicitudLargoPlazo: () => void;
+
+  getDetalleInfoUsuario: (Id: string, setState: Function) => void;
 }
 
 export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
@@ -513,5 +517,23 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     state.setTablaCondicionesFinancieras([]);
     state.setTablaDocumentos([]);
     state.setReglasAplicables([]);
+  },
+
+    getDetalleInfoUsuario: async (Id: string, setState: Function) => {
+    const state = useLargoPlazoStore.getState();
+
+    return await axios({
+      method: "get",
+      url: process.env.REACT_APP_APPLICATION_BACK + "/detail-usuario",
+      params: { IdUsuario: Id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken") || "",
+      },
+    }).then(({ data }) => {
+      console.log("Usuario cancelacion INFO:", data);
+      setState(data.data);
+      // state.setAutorizacionSelect(data.data);
+    });
   },
 });

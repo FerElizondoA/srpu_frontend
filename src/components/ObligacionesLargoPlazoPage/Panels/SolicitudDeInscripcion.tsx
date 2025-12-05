@@ -663,7 +663,6 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
                         handler={setOpenDialogEnviar}
                         openState={openDialogEnviar}
                         arrDocsEliminados={arrDocsEliminados}
-
                       />
                     )}
 

@@ -55,7 +55,7 @@ export const moneyMask = (value: string) => {
   const options = { minimumFractionDigits: 2 };
 
   const result = new Intl.NumberFormat("en-US", options).format(
-    parseInt(value) /100
+    parseInt(value) / 100
   );
   return "$ " + result;
 };
@@ -127,6 +127,7 @@ export function InformacionGeneral() {
     useCortoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.tipoEntePublicoObligado
     );
+
   const generalEntePublico: { Id: string; Descripcion: string } =
     useCortoPlazoStore(
       (state) => state.generalObligadoSolidarioAval.entePublicoObligado
@@ -136,9 +137,11 @@ export function InformacionGeneral() {
   const tablaObligados: any = useCortoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
   );
+
   const addObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.addObligadoSolidarioAval
   );
+
   const setObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.setObligadoSolidarioAval
   );

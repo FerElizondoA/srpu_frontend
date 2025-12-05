@@ -91,7 +91,6 @@ export function DialogGuardarBorrador({
     (state) => state.cleanInscripcion
   );
 
-
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );

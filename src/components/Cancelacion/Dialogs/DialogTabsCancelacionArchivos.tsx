@@ -23,7 +23,7 @@ import { DialogSolicitarModificacion, rolesAdmin } from "../../ObligacionesCorto
 import { DialogSolicitarCancelacion } from "./DialogSolicitarCancelacion";
 import { DialogGuardarComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogGuardarComentarios";
 import { VerBorradorCancelacion } from "./DialogResumenCancelacion";
-import { TabJustificacionCancelacion } from "./TabJustificacionCancelacion";
+import { IUsuarioCancelacion, TabJustificacionCancelacion } from "./TabJustificacionCancelacion";
 import { IDocumentosAcuses } from "../../ConsultaDeSolicitudes/AcusesSolicitudes";
 import { DialogAsignacionResumen } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogAsignacionResumen";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
@@ -165,6 +165,13 @@ export function TabsCancelacionArchivos({
   const [arr, setArr] = useState<any>([]);
   const [cargados, setCargados] = useState(true);
 
+  const getDetalleInfoUsuario: Function = useInscripcionStore(
+    (state) => state.getDetalleInfoUsuario
+  );
+
+  console.log("Inscripcion selected in Cancelaciones:", inscripcion);
+
+
   useEffect(() => {
     if (inscripcion.Id)
       getDocumentos(
@@ -175,11 +182,37 @@ export function TabsCancelacionArchivos({
       );
   }, []);
 
+  const [datosUsuarioCancelacion, setDatosUsuarioCancelacion] = useState<IUsuarioCancelacion>({
+    ApellidoMaterno: "",
+    ApellidoPaterno: "",
+    CURP: "",
+    Celular: "",
+    CorreoElectronico: "",
+    Entidad: "",
+    Ext: "",
+    Id: "",
+    IdEntidad: "",
+    IdRol: "",
+    IdTipoUsuario: "",
+    Nombre: "",
+    NombreUsuario: "",
+    Puesto: "",
+    RFC: "",
+    Rol: "",
+    Telefono: "",
+  });
+
+  useEffect(() => {
+    getDetalleInfoUsuario(rowSolicitud.CancelacionInciadoPor, setDatosUsuarioCancelacion);
+    console.log("rowSolicitud.CancelacionInciadoPor", rowSolicitud.CancelacionInciadoPor);
+
+  }, [])
 
   useEffect(() => {
     getPathDocumentosCancelacion(inscripcion.Id, setArchivos);
     console.log("inscripcion en archivos", rowSolicitud);
   }, [])
+
 
   return (
     <Dialog
@@ -495,6 +528,7 @@ export function TabsCancelacionArchivos({
         {tabIndex === 1 && <TabJustificacionCancelacion
           DetailPathCancelaciones={archivos}
           arr={arr}
+          CancelacionInciadoPor={datosUsuarioCancelacion}
           cargados={cargados}
         />}
 

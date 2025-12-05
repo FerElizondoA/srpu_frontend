@@ -255,6 +255,12 @@ export function TipoDeMovimientoFideicomiso() {
     (state) => state.DetallePorcentajesAcumulados
   );
 
+  // const porcentajeAcumuladoRegistros: IPorcentajeAcumulados = useFideicomisoStore(
+  //   (state) => state.porcentajeAcumuladoRegistros
+  // );
+
+  const [porcentajeAcumuladoLocalNew, setPorcentajeAcumuladoLocalNew] = useState<Array<IPorcentajeAcumulados>>([])
+
 
 
   const sumaPorcentajeAcumulado: {
@@ -265,98 +271,104 @@ export function TipoDeMovimientoFideicomiso() {
 
   const buttonAgregar = () => {
     return (
-      <ThemeProvider theme={buttonTheme}>
-        <Button
-          disabled={
-            tipoMovimientoFideicomiso.tipoFideicomitente.Id === "" ||
-            tipoMovimientoFideicomiso.fideicomitente.Id === "" ||
-            tipoMovimientoFideicomiso.tipoFuente.Id === "" ||
-            tipoMovimientoFideicomiso.fondoIngreso.Id === ""
-          }
-          sx={{
-            ...queries.buttonContinuar,
-            width: "15vh",
-          }}
-          onClick={() => {
-            // addTipoMovimiento({
-            //   id: tipoMovimientoFideicomiso.id,
-            //   tipoFideicomitente: tipoMovimientoFideicomiso.tipoFideicomitente,
-            //   fideicomitente: tipoMovimientoFideicomiso.fideicomitente,
-            //   tipoFuente: tipoMovimientoFideicomiso.tipoFuente,
-            //   fondoIngreso: tipoMovimientoFideicomiso.fondoIngreso,
-            //   fondoIngresoGobiernoEstatal:
-            //     tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
-            //       "participaciones"
-            //       ? "80.00"
-            //       : "100.00",
-            //   fondoIngresoMunicipios:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
-            //         "participaciones"
-            //         ? "20.00"
-            //         : "0.00"
-            //       : "0.00",
-            //   fondoIngresoAsignadoMunicipio:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? "100.00"
-            //       : "0.00",
-            //   ingresoOrganismo:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? "0.00"
-            //       : "0.00",
-            //   fondoIngresoAfectadoXGobiernoEstatal:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? ""
-            //       : "",
-            //   afectacionGobiernoEstatalEntre100:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? "0.00"
-            //       : "",
-            //   acumuladoAfectacionGobiernoEstatalEntre100:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "gobierno estatal"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
-            //       : "",
-            //   fondoIngresoAfectadoXMunicipio:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? "0"
-            //       : "0",
-            //   acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
-            //       "municipio"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
-            //       : "",
-            //   ingresoAfectadoXOrganismo:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? ""
-            //       : "",
-            //   acumuladoAfectacionOrganismoEntre100:
-            //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "municipio" &&
-            //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
-            //       "gobierno estatal"
-            //       ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
-            //       : "",
-            // });
+      <>
+        <ThemeProvider theme={buttonTheme}>
+          <Button
+            disabled={
+              tipoMovimientoFideicomiso.tipoFideicomitente.Id === "" ||
+              tipoMovimientoFideicomiso.fideicomitente.Id === "" ||
+              tipoMovimientoFideicomiso.tipoFuente.Id === "" ||
+              tipoMovimientoFideicomiso.fondoIngreso.Id === ""
+            }
+            sx={{
+              ...queries.buttonContinuar,
+              width: "15vh",
+            }}
+            onClick={() => {
+              // addTipoMovimiento({
+              //   id: tipoMovimientoFideicomiso.id,
+              //   tipoFideicomitente: tipoMovimientoFideicomiso.tipoFideicomitente,
+              //   fideicomitente: tipoMovimientoFideicomiso.fideicomitente,
+              //   tipoFuente: tipoMovimientoFideicomiso.tipoFuente,
+              //   fondoIngreso: tipoMovimientoFideicomiso.fondoIngreso,
+              //   fondoIngresoGobiernoEstatal:
+              //     tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
+              //       "participaciones"
+              //       ? "80.00"
+              //       : "100.00",
+              //   fondoIngresoMunicipios:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "municipio"
+              //       ? tipoMovimientoFideicomiso.tipoFuente.Descripcion.toLowerCase() ===
+              //         "participaciones"
+              //         ? "20.00"
+              //         : "0.00"
+              //       : "0.00",
+              //   fondoIngresoAsignadoMunicipio:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "municipio"
+              //       ? "100.00"
+              //       : "0.00",
+              //   ingresoOrganismo:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "municipio" &&
+              //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "gobierno estatal"
+              //       ? "0.00"
+              //       : "0.00",
+              //   fondoIngresoAfectadoXGobiernoEstatal:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "gobierno estatal"
+              //       ? ""
+              //       : "",
+              //   afectacionGobiernoEstatalEntre100:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "gobierno estatal"
+              //       ? "0.00"
+              //       : "",
+              //   acumuladoAfectacionGobiernoEstatalEntre100:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "gobierno estatal"
+              //       ? sumaPorcentajeAcumulado.SumaAcumuladoEstado
+              //       : "",
+              //   fondoIngresoAfectadoXMunicipio:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "municipio"
+              //       ? "0"
+              //       : "0",
+              //   acumuladoAfectacionMunicipioEntreAsignadoMunicipio:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() ===
+              //       "municipio"
+              //       ? sumaPorcentajeAcumulado.SumaAcumuladoMunicipios
+              //       : "",
+              //   ingresoAfectadoXOrganismo:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "municipio" &&
+              //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "gobierno estatal"
+              //       ? ""
+              //       : "",
+              //   acumuladoAfectacionOrganismoEntre100:
+              //     tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "municipio" &&
+              //       tipoMovimientoFideicomiso.tipoFideicomitente.Descripcion.toLowerCase() !==
+              //       "gobierno estatal"
+              //       ? sumaPorcentajeAcumulado.SumaAcumuladoOrganismos
+              //       : "",
+              // });
+              cleanTipoMovimiento();
+            }}
+          >
+            Agregar
+          </Button>
+        </ThemeProvider>
 
-
-            cleanTipoMovimiento();
-          }}
-        >
-          Agregar
+        <Button onClick={() => {
+          console.log("porcentajeAcumuladoRegistros", porcentajeAcumuladoRegistros)
+        }}>
+          Test Porcentaje Acumulado
         </Button>
-      </ThemeProvider>
+      </>
     );
   };
 
@@ -376,14 +388,13 @@ export function TipoDeMovimientoFideicomiso() {
             width: "15vh",
           }}
           onClick={() => {
-
+            setPorcentajeAcumuladoLocalNew([...porcentajeAcumuladoLocalNew, porcentajeAcumuladoRegistros])
             addTipoMovimientoNew({
               id: tipoMovimientoFideicomisoNew.id,
               tipoFideicomitente: tipoMovimientoFideicomisoNew.tipoFideicomitente,
               fideicomitente: tipoMovimientoFideicomisoNew.fideicomitente,
               tipoFuente: tipoMovimientoFideicomisoNew.tipoFuente,
               fondoIngreso: tipoMovimientoFideicomisoNew.fondoIngreso,
-
             })
 
             console.log("arregloPorcetajesAcumuladosRegistros BUTTON", arregloPorcetajesAcumuladosRegistros)
@@ -393,6 +404,14 @@ export function TipoDeMovimientoFideicomiso() {
         >
           Agregar
         </Button>
+
+        <Button onClick={() => {
+          // setPorcentajeAcumuladoLocalNew([...porcentajeAcumuladoLocalNew, porcentajeAcumuladoRegistros])
+          console.log("porcentajeAcumuladoLocalNew", porcentajeAcumuladoLocalNew)
+          console.log("porcentajeAcumuladoRegistros", porcentajeAcumuladoRegistros)
+        }}>
+          Test Porcentaje Acumulado
+        </Button>
       </ThemeProvider>
     );
   };
@@ -400,14 +419,14 @@ export function TipoDeMovimientoFideicomiso() {
 
 
 
-  // useEffect(() => {
-  //   //1* primero va y busca los porcentajes acumulados
-  //   console.log("Entro a buscar el porcentajes acumulados")
+  useEffect(() => {
+    //1* primero va y busca los porcentajes acumulados
+    console.log("Entro a buscar el porcentajes acumulados")
 
-  //   DetallePorcentajesAcumulados(tipoMovimientoFideicomisoNew.fideicomitente.Id,
-  //      tipoMovimientoFideicomisoNew.fondoIngreso.Id )
+    DetallePorcentajesAcumulados(tipoMovimientoFideicomisoNew.fideicomitente.Id,
+      tipoMovimientoFideicomisoNew.fondoIngreso.Id)
 
-  // }, [tipoMovimientoFideicomisoNew.fondoIngreso.Id !== ""])
+  }, [tipoMovimientoFideicomisoNew.fondoIngreso.Id !== ""])
 
 
   useEffect(() => {
@@ -467,7 +486,7 @@ export function TipoDeMovimientoFideicomiso() {
               sx={{ ...queries.medium_text }}
               value="BENEFICIARIO"
               control={<Radio />}
-              label="Alta de Fideicomisario"
+              label="Alta de Beneficiario"
 
             // label="Alta de Beneficiario"
             />
@@ -796,6 +815,7 @@ export function TipoDeMovimientoFideicomiso() {
                   TipoDeFuente: text.TipoDeFuente,
                 },
               });
+
 
 
               //Poner un useeffect para que busque en la base de datos si ya existe el id

@@ -136,7 +136,6 @@ export function Encabezado() {
             ?
             <Autocomplete
               sx={{ display: "flex", justifyContent: "space-evenly" }}
-
               disabled={checkBoxOtroTipoSolicitud}
               clearText="Borrar"
               noOptionsText="Sin opciones"
@@ -230,7 +229,6 @@ export function Encabezado() {
                     },
                   });
                   console.log("tipo de documento", tipoDocumento);
-
                 }
               }}
             ></TextField>

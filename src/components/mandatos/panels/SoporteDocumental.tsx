@@ -131,6 +131,10 @@ export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBa
   //   }
   // }, []);
 
+  useEffect(() => {
+    console.log("DocumentosBaseDatos:", DocumentosBaseDatos);
+  }, []);
+
 
   // useEffect(() => {
   //   if (idMandato !== "") {

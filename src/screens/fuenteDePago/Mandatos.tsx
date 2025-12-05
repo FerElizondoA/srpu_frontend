@@ -46,6 +46,7 @@ import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
 import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
+import {getCatalogo as getMandatarios} from "../../components/APIS/Config/APISCatalogos";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -145,6 +146,7 @@ export function Mandatos() {
   useEffect(() => {
     getMecanismosVehiculosPago("Mandato", () => { })
     getOrganismos();
+    
     //getMandatos(setMandatos);
   }, []);
 
@@ -270,8 +272,17 @@ export function Mandatos() {
   );
 
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
+    const [mandatarios, setMandatarios] = useState<ICatalogo[]>([]);
+
+  useEffect(() => {
+    getMandatarios(setMandatarios, "mandatario");
+  }, []);
 
 
+  // useEffect(() => {
+  // setDataAsignacionTipoMoviSolicitudes([]);    
+  // console.log("dataAsignacionTipoMoviSolicitudes limpiado")
+  // }, [openAgregarMandato])
 
 
   return (
@@ -453,12 +464,21 @@ export function Mandatos() {
                               let auxArray = JSON.parse(row.TipoMovimiento);
                               DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
 
+
+                              console.log("MANDATARIO FILTER", mandatarios.filter(
+                                    (v, index) =>
+                                      v.Descripcion === row.Mandatario
+                                  )[0])
+                                  console.log("MANDANTE FILTER", catalogoOrganismos.filter(
+                                    (v, index) =>
+                                      v.Descripcion === row.Mandante
+                                  )[0])
                               editarMandato(
                                 row.Id,
                                 {
                                   numeroMandato: row.NumeroRegistro,
                                   fechaMandato: new Date(row.FechaRegistro),
-                                  mandatario: catalogoOrganismos.filter(
+                                  mandatario: mandatarios.filter(
                                     (v, index) =>
                                       v.Descripcion === row.Mandatario
                                   )[0],
@@ -472,7 +492,9 @@ export function Mandatos() {
                                 JSON.parse(row.SoporteDocumental)
                               );
                               setIdMandato(row?.Id || "");
+                               setTimeout(() => {
                               setOpenAgregarMandato(!openAgregarMandato);
+                                }, 1000);
 
                               setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
 
@@ -514,7 +536,7 @@ export function Mandatos() {
           openState={openAgregarMandato}
           getMecanismosVehiculosPago={getMecanismosVehiculosPago}
           DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
-
+          setDataAsignacionTipoMoviSolicitudes={setDataAsignacionTipoMoviSolicitudes}
         />
       )}
 

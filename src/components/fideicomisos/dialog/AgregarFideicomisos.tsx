@@ -35,6 +35,7 @@ import Swal from "sweetalert2";
 import { IDataAsignacionTipoMoviSolicitudes } from "../../../screens/fuenteDePago/Fideicomisos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import HighlightOffSharpIcon from '@mui/icons-material/HighlightOff';
+import { set } from "date-fns";
 
 export interface IValidacionPorcentajesAcumulados {
   NombreEntePublico: string,
@@ -49,11 +50,14 @@ export function AgregarFideicomisos({
   openState,
   getMecanismosVehiculosPago,
   DataAsignacionTipoMoviSolicitudes,
+  setDataAsignacionTipoMoviSolicitudes
+
 }: {
   handler: Function;
   openState: boolean;
   getMecanismosVehiculosPago: Function,
-  DataAsignacionTipoMoviSolicitudes: IDataAsignacionTipoMoviSolicitudes[]
+  DataAsignacionTipoMoviSolicitudes: IDataAsignacionTipoMoviSolicitudes[],
+  setDataAsignacionTipoMoviSolicitudes: Function;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -135,10 +139,6 @@ export function AgregarFideicomisos({
     (state) => state.arregloPorcetajesAcumuladosRegistros
   );
 
-
-  const addArregloPorcetajesAcumuladosRegistros: Function = useFideicomisoStore(
-    (state) => state.addArregloPorcetajesAcumuladosRegistros
-  );
 
   const DetallePorcentajesAcumuladosMultiples: Function = useFideicomisoStore(
     (state) => state.DetallePorcentajesAcumuladosMultiples
@@ -228,6 +228,7 @@ export function AgregarFideicomisos({
               edge="start"
               onClick={() => {
                 cleanTablaPruebaEditarFideicomiso([]);
+                setDataAsignacionTipoMoviSolicitudes([]);
                 handler(false);
 
               }}
@@ -257,7 +258,7 @@ export function AgregarFideicomisos({
                   tablaSoporteDocumentalFideicomiso.length <= 0
                 }
                 sx={queries.buttonContinuar}
-                onClick={() => { 
+                onClick={() => {
                   if (idFideicomiso === "") {
                     // CREAR FIDEICOMISO (sin validaciones)
                     setLoading(true);
@@ -341,21 +342,29 @@ export function AgregarFideicomisos({
                         const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
                           (acc) =>
                             acc.fideicomitente.Id === nuevo.fideicomitente.Id &&
-                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id 
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
                         );
 
                         const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
                         const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
 
 
-                        console.log("ROIngreso: ", ROIngreso);
-                        console.log("ROEquivalencia: ", ROEquivalencia);
+
 
                         const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
                         const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
 
                         const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
                         const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        console.log("acumuladoIngreso: ", acumuladoIngreso);
+                        console.log("nuevoIngreso: ", nuevoIngreso);
+                        console.log("ROIngreso: ", ROIngreso);
+
+
+                        //console.log("ROEquivalencia: ", ROEquivalencia);
+
+
 
                         // 🔸 Si el acumulado + nuevo supera 100, marcar error
 
@@ -426,79 +435,11 @@ export function AgregarFideicomisos({
                         handler(false);
                       });
                       cleanPorcentajesAcumulados();
+                      setDataAsignacionTipoMoviSolicitudes([]);
                     }
 
 
-                  }
-
-
-                  // }else if (idFideicomiso !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
-                  //   // 🟡 SOLO APLICA PARA MODIFICAR
-                  //   let errorEncontrado = false;
-                  //   let mensajeError = "";
-
-                  //   tablaTipoMovimientoFideicomisoNew.forEach((nuevo, index) => {
-                  //     // console.log("nuevo.fideicomitente.Id :", nuevo.fideicomitente.Id);
-                  //     // console.log("nuevo.fondoIngreso.Id :", nuevo.fondoIngreso.Id);
-                  //     // console.log("nuevo.id :", nuevo.id);
-                  //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdEntePublicoObligado :`, DataAsignacionTipoMoviSolicitudes[index].IdEntePublicoObligado);
-                  //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdFondoIngreso :`, DataAsignacionTipoMoviSolicitudes[index].IdFondoIngreso);
-                  //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].TipoMoviRelacionado :`, DataAsignacionTipoMoviSolicitudes[index].TipoMovRelacionado);
-                  //     const coincidencia = DataAsignacionTipoMoviSolicitudes.find(
-                  //       (asig) =>
-                  //         asig.IdEntePublicoObligado === nuevo.fideicomitente.Id &&
-                  //         asig.IdFondoIngreso === nuevo.fondoIngreso.Id &&
-                  //         asig.TipoMovRelacionado === nuevo.id
-                  //     );
-
-                  //     console.log("coincidencia encontrada :", coincidencia);
-
-                  //     if (coincidencia !== undefined) {
-                  //       console.log("coincidencia encontrada1 :", coincidencia);
-                  //       const usadoIngreso = coincidencia.PorcentajeUtilizadoIngreso;
-                  //       const usadoEquivalencia = coincidencia.PorcentajeUtilizadoEquivalencia;
-                  //       const nuevoIngreso = nuevo.AfectadoTotalIngreso;
-                  //       const nuevaEquivalencia = nuevo.EquivalenciaCorrespondienteMunicipios ?? 0;
-
-                  //       if (nuevoIngreso < usadoIngreso) {
-                  //         errorEncontrado = true;
-                  //         mensajeError += `\nEl porcentaje de ingreso (${nuevoIngreso}%) no puede ser menor que el utilizado (${usadoIngreso}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
-                  //       }
-
-                  //       if (nuevaEquivalencia < usadoEquivalencia) {
-                  //         errorEncontrado = true;
-                  //         mensajeError += `\nEl porcentaje de equivalencia (${nuevaEquivalencia}%) no puede ser menor que el utilizado (${usadoEquivalencia}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
-                  //       }
-                  //     }
-                  //   });
-
-                  //   if (errorEncontrado = true) {
-                  //     Swal.fire({
-                  //       confirmButtonText: "Cerrar",
-                  //       confirmButtonColor: "rgb(175, 140, 85)",
-                  //       //cancelButtonColor: "rgb(175, 140, 85)",
-                  //       icon: "error",
-                  //       title: "Porcentaje Inválido",
-                  //       text: mensajeError.trim(),
-                  //     });
-                  //     // alert(mensajeError.trim());
-                  //    // setLoading(false);
-                  //     return;
-                  //   } 
-                  //   // ✅ Si todo está bien, proceder a modificar
-                  //   setLoading(true);
-                  //   modificaAsignacionOriginalTipoSolicitud(
-                  //     idFideicomiso,
-                  //     tablaTipoMovimientoFideicomisoNew,
-                  //     "Fideicomiso",
-                  //     setLoading(true),
-                  //     handler(true)
-                  //   ).then(() => {
-                  //      handler(false)
-                  //   });
-                  //   cleanPorcentajesAcumulados();
-                  // } 
-                  else if (idFideicomiso !== "") {
+                  } else if (idFideicomiso !== "") {
                     modificarFideicomiso(
                       setLoading(false),
                       handler(false),
@@ -507,6 +448,75 @@ export function AgregarFideicomisos({
                   }
                   setTabIndex(0);
                 }}
+
+
+              // }else if (idFideicomiso !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
+              //   // 🟡 SOLO APLICA PARA MODIFICAR
+              //   let errorEncontrado = false;
+              //   let mensajeError = "";
+
+              //   tablaTipoMovimientoFideicomisoNew.forEach((nuevo, index) => {
+              //     // console.log("nuevo.fideicomitente.Id :", nuevo.fideicomitente.Id);
+              //     // console.log("nuevo.fondoIngreso.Id :", nuevo.fondoIngreso.Id);
+              //     // console.log("nuevo.id :", nuevo.id);
+              //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdEntePublicoObligado :`, DataAsignacionTipoMoviSolicitudes[index].IdEntePublicoObligado);
+              //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdFondoIngreso :`, DataAsignacionTipoMoviSolicitudes[index].IdFondoIngreso);
+              //     // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].TipoMoviRelacionado :`, DataAsignacionTipoMoviSolicitudes[index].TipoMovRelacionado);
+              //     const coincidencia = DataAsignacionTipoMoviSolicitudes.find(
+              //       (asig) =>
+              //         asig.IdEntePublicoObligado === nuevo.fideicomitente.Id &&
+              //         asig.IdFondoIngreso === nuevo.fondoIngreso.Id &&
+              //         asig.TipoMovRelacionado === nuevo.id
+              //     );
+
+              //     console.log("coincidencia encontrada :", coincidencia);
+
+              //     if (coincidencia !== undefined) {
+              //       console.log("coincidencia encontrada1 :", coincidencia);
+              //       const usadoIngreso = coincidencia.PorcentajeUtilizadoIngreso;
+              //       const usadoEquivalencia = coincidencia.PorcentajeUtilizadoEquivalencia;
+              //       const nuevoIngreso = nuevo.AfectadoTotalIngreso;
+              //       const nuevaEquivalencia = nuevo.EquivalenciaCorrespondienteMunicipios ?? 0;
+
+              //       if (nuevoIngreso < usadoIngreso) {
+              //         errorEncontrado = true;
+              //         mensajeError += `\nEl porcentaje de ingreso (${nuevoIngreso}%) no puede ser menor que el utilizado (${usadoIngreso}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+              //       }
+
+              //       if (nuevaEquivalencia < usadoEquivalencia) {
+              //         errorEncontrado = true;
+              //         mensajeError += `\nEl porcentaje de equivalencia (${nuevaEquivalencia}%) no puede ser menor que el utilizado (${usadoEquivalencia}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+              //       }
+              //     }
+              //   });
+
+              //   if (errorEncontrado = true) {
+              //     Swal.fire({
+              //       confirmButtonText: "Cerrar",
+              //       confirmButtonColor: "rgb(175, 140, 85)",
+              //       //cancelButtonColor: "rgb(175, 140, 85)",
+              //       icon: "error",
+              //       title: "Porcentaje Inválido",
+              //       text: mensajeError.trim(),
+              //     });
+              //     // alert(mensajeError.trim());
+              //    // setLoading(false);
+              //     return;
+              //   } 
+              //   // ✅ Si todo está bien, proceder a modificar
+              //   setLoading(true);
+              //   modificaAsignacionOriginalTipoSolicitud(
+              //     idFideicomiso,
+              //     tablaTipoMovimientoFideicomisoNew,
+              //     "Fideicomiso",
+              //     setLoading(true),
+              //     handler(true)
+              //   ).then(() => {
+              //      handler(false)
+              //   });
+              //   cleanPorcentajesAcumulados();
+              // } 
+
               >
                 <Typography
                   sx={{

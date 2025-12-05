@@ -60,6 +60,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import { queries } from "../../queries";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Swal from "sweetalert2";
+import { deleteDocPathCancelaciones } from "../../components/APIS/pathDocSol/APISDocumentos";
 
 
 const heads: Array<{ label: string }> = [
@@ -193,9 +194,12 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.setInscripcion
   );
 
+  
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
+
+
 
 
   const llenaSolicitud = (solicitud: IData) => {
@@ -271,7 +275,6 @@ export function ConsultaDeCancelacionesPage() {
         : "Cancelacion",
       (e: IData[]) => {
         setDatos(e);
-
       },
       setDatosFiltrados
     );
@@ -887,25 +890,14 @@ export function ConsultaDeCancelacionesPage() {
           <Button sx={{ ...queries.buttonContinuar }}
             onClick={() => {
               CambiaEstatus("11", inscripcion.Id, localStorage.getItem("IdUsuario") || "", "").then(() => {
-                console.log("HOLA AQUI ANDO")
-
                 Toast.fire({
                   icon: "success",
                   title: "Se ha desistido la cancelación correctamente.",
                 })
-                // Toast.fire({
-                //   position: "top-right",
-                //   timer: 1500,
-                //   confirmButtonText: "Cerrar",
-                //   confirmButtonColor: "rgb(175, 140, 85)",
-                //   //cancelButtonColor: "rgb(175, 140, 85)",
-                //   icon: "success",
-                //   title: "Completado",
-                //   text: "Se ha desistido en la cancelación de la solicitud correctamente.",
-                // });
 
                 getDatos(rolUsuario);
                 setOpenDialogConfirmDecistir(false);
+                deleteDocPathCancelaciones(inscripcion.Id);
               })
 
             }}

@@ -67,11 +67,13 @@ export function AgregarMandatos({
   openState,
   getMecanismosVehiculosPago,
   DataAsignacionTipoMoviSolicitudes,
+  setDataAsignacionTipoMoviSolicitudes,
 }: {
   handler: Function;
   openState: boolean;
   getMecanismosVehiculosPago: Function;
-  DataAsignacionTipoMoviSolicitudes: IDataAsignacionTipoMoviSolicitudes[]
+  DataAsignacionTipoMoviSolicitudes: IDataAsignacionTipoMoviSolicitudes[];
+  setDataAsignacionTipoMoviSolicitudes: Function;
 }) {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -118,6 +120,9 @@ export function AgregarMandatos({
 
   //const idMandato: Function = useMandatoStore((state) => state.idMandato);
 
+  const DetallePorcentajesAcumuladosMultiples: Function = useFideicomisoStore(
+    (state) => state.DetallePorcentajesAcumuladosMultiples
+  );
 
   const modificaAsignacionOriginalTipoSolicitud: Function = useLargoPlazoStore(
     (state) => state.modificaAsignacionOriginalTipoSolicitud
@@ -135,7 +140,7 @@ export function AgregarMandatos({
     (state) => state.arregloPorcetajesAcumuladosRegistros
   );
 
-  const TablaPruebaEditarFideicomiso: IDeudorFideicomisoNew[] = useFideicomisoStore(
+  const TablaPruebaEditarFideicomiso: any[] = useFideicomisoStore(
     (state) => state.TablaPruebaEditarFideicomiso
   );
 
@@ -160,6 +165,22 @@ export function AgregarMandatos({
     nombreFondoOIngreso: "",
   });
 
+
+  useEffect(() => {
+    if (IdMandato !== "") {
+      DetallePorcentajesAcumuladosMultiples(
+        tablaTipoMovimiento.map((reg) => ({
+          IdEntePublicoObligado: reg.mandatario.Id,
+          IdFondoOIngreso: reg.fondoIngreso.Id,
+        })),
+        // (datos: any) => {
+        //   // Guardarlos en zustand o estado local:
+        //   addArregloPorcetajesAcumuladosRegistros(datos);
+        // }
+      );
+    }
+  }, [IdMandato]);
+
   useEffect(() => {
     console.log("DataAsignacionTipoMoviSolicitudes: ", DataAsignacionTipoMoviSolicitudes);
     console.log("tablaTipoMovimiento: ", tablaTipoMovimiento);
@@ -171,12 +192,17 @@ export function AgregarMandatos({
     console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
   }, []);
 
+
+
+  useEffect(() => {
+    cleanPorcentajesAcumulados()
+  }, [openState === false]);
+
   const [arr, setArr] = useState<any>([]);
 
 
   useEffect(() => {
     if (IdMandato !== "") {
-      console.log("Entré al useEffect de IDMANDATO:");
       listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${IdMandato}/`,
         setArr,
         tablaSoporteDocumentalMandato
@@ -186,6 +212,10 @@ export function AgregarMandatos({
     }
     console.log("idMandato:", IdMandato);
   }, [IdMandato !== ""]);
+
+  useEffect(() => {
+    console.log("arregloPorcetajesAcumuladosRegistros actualizado:", arregloPorcetajesAcumuladosRegistros);
+  }, [arregloPorcetajesAcumuladosRegistros]);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
@@ -198,6 +228,7 @@ export function AgregarMandatos({
                 onClick={() => {
                   handler(false);
                   cleanTablaPruebaEditarFideicomiso([]);
+                  setDataAsignacionTipoMoviSolicitudes([]);
 
                 }}
                 sx={{ color: "white" }}
@@ -229,18 +260,20 @@ export function AgregarMandatos({
                       handler(false);
                       getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
                     });
+                    cleanPorcentajesAcumulados();
+
                   } else if (IdMandato !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
                     // 🟡 SOLO APLICA PARA MODIFICAR
                     let errorEncontrado = false;
                     let mensajeError = "";
 
                     tablaTipoMovimiento.forEach((nuevo, index) => {
-                      // console.log("nuevo.fideicomitente.Id :", nuevo.fideicomitente.Id);
-                      // console.log("nuevo.fondoIngreso.Id :", nuevo.fondoIngreso.Id);
-                      // console.log("nuevo.id :", nuevo.id);
-                      // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdEntePublicoObligado :`, DataAsignacionTipoMoviSolicitudes[index].IdEntePublicoObligado);
-                      // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdFondoIngreso :`, DataAsignacionTipoMoviSolicitudes[index].IdFondoIngreso);
-                      // console.log(`DataAsignacionTipoMoviSolicitudes[${index}].TipoMoviRelacionado :`, DataAsignacionTipoMoviSolicitudes[index].TipoMovRelacionado);
+                      console.log("nuevo.fideicomitente.Id :", nuevo.mandatario.Id);
+                      console.log("nuevo.fondoIngreso.Id :", nuevo.fondoIngreso.Id);
+                      console.log("nuevo.id :", nuevo.id);
+                      console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdEntePublicoObligado :`, DataAsignacionTipoMoviSolicitudes[index].IdEntePublicoObligado);
+                      console.log(`DataAsignacionTipoMoviSolicitudes[${index}].IdFondoIngreso :`, DataAsignacionTipoMoviSolicitudes[index].IdFondoIngreso);
+                      console.log(`DataAsignacionTipoMoviSolicitudes[${index}].TipoMoviRelacionado :`, DataAsignacionTipoMoviSolicitudes[index].TipoMovRelacionado);
                       const coincidencia = DataAsignacionTipoMoviSolicitudes.find(
                         (asig) =>
                           asig.IdEntePublicoObligado === nuevo.mandatario.Id &&
@@ -250,15 +283,17 @@ export function AgregarMandatos({
 
                       if (coincidencia) {
                         console.log("coincidencia encontrada1 :", coincidencia);
-                        const usadoIngreso = coincidencia.PorcentajeUtilizadoIngreso;
+                        const usadoIngreso = Number(coincidencia.PorcentajeUtilizadoIngreso) || 0;
                         const orignalIngreso = Number(coincidencia.PorcentajeOriginalIngreso) || 0;
 
-                        const usadoEquivalencia = coincidencia.PorcentajeUtilizadoEquivalencia;
+                        const usadoEquivalencia = Number(coincidencia.PorcentajeUtilizadoEquivalencia) || 0;
                         const orignalEquivalencia = Number(coincidencia.PorcentajeOriginalEquivalencia) || 0;
 
+                        const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
+                        const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
 
-                        const nuevoIngreso = nuevo.AfectadoTotalIngreso;
-                        const nuevaEquivalencia = nuevo.EquivalenciaCorrespondienteMunicipios ?? 0;
+
+
 
                         if (nuevoIngreso < usadoIngreso) {
                           errorEncontrado = true;
@@ -289,6 +324,7 @@ export function AgregarMandatos({
                           //mensajeError += `\nEl porcentaje de equivalencia (${nuevaEquivalencia}%) no puede ser menor que el utilizado (${usadoEquivalencia}%) para ${nuevo.mandatario.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                         }
                       }
+                      console.log("arregloPorcetajesAcumuladosRegistros x1000:", arregloPorcetajesAcumuladosRegistros);
 
                       const acumulado = arregloPorcetajesAcumuladosRegistros.find(
                         (acc) =>
@@ -296,13 +332,15 @@ export function AgregarMandatos({
                           acc.IdEntePublicoObligado === nuevo.mandatario.Id
                       );
 
+                      console.log("acumulado encontrado :", acumulado);
+                      console.log("TablaPruebaEditarFideicomiso :", TablaPruebaEditarFideicomiso);
                       if (acumulado) {
 
 
                         // 🔹 Validación 3: contra porcentajes acumulados (nueva)
                         const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
                           (acc) =>
-                            acc.fideicomitente.Id === nuevo.mandatario.Id &&
+                            acc.mandatario.Id === nuevo.mandatario.Id &&
                             acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
                         );
 
@@ -315,8 +353,13 @@ export function AgregarMandatos({
                         const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
                         const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
 
+                        console.log("acumuladoIngreso: ", acumuladoIngreso);
+                        console.log("nuevoIngreso: ", nuevoIngreso);
+                        console.log("ROIngreso: ", ROIngreso);
+
                         // 🔸 Si el acumulado + nuevo supera 100, marcar error
-                        if (acumuladoIngreso + nuevoIngreso > 100) {
+                        if (acumuladoIngreso + (nuevoIngreso - ROIngreso) > 100) {
+                          // 30 + (80-0) == 30+80 = 110 > 100 se pasa y salta error registro nuevo
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
@@ -330,7 +373,7 @@ export function AgregarMandatos({
                           });
                         }
 
-                        if (acumuladoEquivalencia + nuevaEquivalencia > 100) {
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
@@ -344,54 +387,48 @@ export function AgregarMandatos({
                           });
                         }
                       }
-
-
                     });
-
-
-
                     if (errorEncontrado) {
-                      Swal.fire({
-                        confirmButtonText: "Cerrar",
-                        confirmButtonColor: "rgb(175, 140, 85)",
-                        //cancelButtonColor: "rgb(175, 140, 85)",
-                        icon: "error",
-                        title: "Porcentaje Inválido",
-                        text: mensajeError.trim(),
-                      });
+                      // Swal.fire({
+                      //   confirmButtonText: "Cerrar",
+                      //   confirmButtonColor: "rgb(175, 140, 85)",
+                      //   //cancelButtonColor: "rgb(175, 140, 85)",
+                      //   icon: "error",
+                      //   title: "Porcentaje Inválido",
+                      //   text: mensajeError.trim(),
+                      // });
                       // alert(mensajeError.trim());
                       // setLoading(false);
                       return;
+                    } else {
+                      // ✅ Si todo está bien, proceder a modificar
+                      setLoading(true);
+                      modificaAsignacionOriginalTipoSolicitud(
+                        IdMandato,
+                        tablaTipoMovimiento,
+                        "Mandato",
+                        setLoading(true),
+                        handler(true)
+                      ).then(() => {
+                        handler(false)
+                        setDataAsignacionTipoMoviSolicitudes([]);
+                      });
                     }
-                    // ✅ Si todo está bien, proceder a modificar
-                    setLoading(true);
-                    modificaAsignacionOriginalTipoSolicitud(
-                      IdMandato,
-                      tablaTipoMovimiento,
-                      "Mandato",
-                      setLoading(true),
-                      handler(true)
-                    ).then(() => {
-                      handler(false)
-                    });
-                    //  // console.log("EDITA MANDATO")
-                    //   setLoading(true);
-                    //   modificaMandato(() => {
-                    //     setLoading(false);
-                    //     handler(false);
-                    //     getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
-                    //   });
-                  } else if (IdMandato !== "") {
-                    console.log("EDITA MANDATO DIRECTO")
-                    modificaMandato(() => {
-                      setLoading(false);
-                      handler(false);
-                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
-                    }).then(() => {
-                      handler(false)
-                    });
 
                   }
+                  // else if (IdMandato !== "") {
+                  //   console.log("EDITA MANDATO DIRECTO")
+                  //   modificaMandato(() => {
+                  //     setLoading(false);
+                  //     handler(false);
+                  //     getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
+                  //   }).then(() => {
+                  //     handler(false)
+                  //     setDataAsignacionTipoMoviSolicitudes([]);
+                  //     cleanPorcentajesAcumulados();
+                  //   });
+
+                  // }
                   setTabIndex(0);
                 }}
               >
