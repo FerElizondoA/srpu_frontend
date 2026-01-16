@@ -38,8 +38,11 @@ import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideico
 import { convertFileToBase64 } from "../../../generics/Validation";
 
 const headsTipoMovimiento: { label: string }[] = [
-  {
-    label: "Id",
+  // {
+  //   label: "Id",
+  // },
+    {
+    label: "No. de Mandato",
   },
   {
     label: "Tipo de Fuente",

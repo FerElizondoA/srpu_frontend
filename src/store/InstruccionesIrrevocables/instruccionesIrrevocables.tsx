@@ -8,11 +8,17 @@ import { useInstruccionesStore } from "./main";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../generics/Alertas";
 
 export interface IDatosGeneralesInstrucciones {
-  numeroCuenta: string;
-  cuentaCLABE: string;
-  banco: { Id: string; Descripcion: string };
+  //numeroCuenta: string;
+  //cuentaCLABE: string;
+  //banco: { Id: string; Descripcion: string };
+  giraIntruccion: { Id: string; Descripcion: string };
+  vaDirigidaA: { Id: string; Descripcion: string };
+  beneficiario: { Id: string; Descripcion: string };
   fechaInstruccion: Date;
+  tipoFuente?: { Id: string; Descripcion: string };
+  fondoIngreso?: { Id: string; Descripcion: string; TipoDeFuente: string };
 }
+
 export interface IDeudorInstrucciones {
   id: string;
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
@@ -21,6 +27,7 @@ export interface IDeudorInstrucciones {
   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
   AfectadoTotalIngreso: number;
   EquivalenciaCorrespondienteMunicipios: number;
+  Beneficiario: { Id: string; Descripcion: string };
   // fondoIngresoGobiernoEstatal: string;
   // fondoIngresoMunicipios: string;
   // fondoIngresoAsignadoMunicipio: string;
@@ -140,10 +147,15 @@ export const createInstruccionesIrrevocables: StateCreator<
   },
 
   datosGenerales: {
-    numeroCuenta: "",
-    cuentaCLABE: "",
-    banco: { Id: "", Descripcion: "" },
+    // numeroCuenta: "",
+    // cuentaCLABE: "",
+    // banco: { Id: "", Descripcion: "" },
+    giraIntruccion: { Id: "", Descripcion: "" },
+    vaDirigidaA: { Id: "", Descripcion: "" },
+    beneficiario: { Id: "", Descripcion: "" },
     fechaInstruccion: new Date(),
+    tipoFuente: { Id: "", Descripcion: "" },
+    fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
   },
 
   tipoMovimiento: {
@@ -153,7 +165,8 @@ export const createInstruccionesIrrevocables: StateCreator<
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
     AfectadoTotalIngreso: 0,
-    EquivalenciaCorrespondienteMunicipios: 0
+    EquivalenciaCorrespondienteMunicipios: 0,
+    Beneficiario: { Id: "", Descripcion: "" },
     // fondoIngresoGobiernoEstatal: "",
     // fondoIngresoMunicipios: "",
     // fondoIngresoAsignadoMunicipio: "",
@@ -193,10 +206,15 @@ export const createInstruccionesIrrevocables: StateCreator<
     set(() => ({
       idInstruccion: "",
       datosGenerales: {
-        numeroCuenta: "",
-        cuentaCLABE: "",
-        banco: { Id: "", Descripcion: "" },
+        // numeroCuenta: "",
+        // cuentaCLABE: "",
+        // banco: { Id: "", Descripcion: "" },
+        giraIntruccion: { Id: "", Descripcion: "" },
+        vaDirigidaA: { Id: "", Descripcion: "" },
+        beneficiario: { Id: "", Descripcion: "" },
         fechaInstruccion: new Date(),
+        tipoFuente: { Id: "", Descripcion: "" },
+        fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
       },
 
       deudorInstrucciones: {
@@ -314,8 +332,14 @@ export const createInstruccionesIrrevocables: StateCreator<
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
         AfectadoTotalIngreso: 0,
-        EquivalenciaCorrespondienteMunicipios: 0
+        EquivalenciaCorrespondienteMunicipios: 0,
+        Beneficiario: { Id: "", Descripcion: "" },
       },
+      beneficiario:{
+        tipoBeneficiario: { Id: "", Descripcion: "" },
+        beneficiario: { Id: "", Descripcion: "" },
+        fechaAlta: new Date(),
+      }
     }));
   },
   cleanSoporteDocumental: () => {
@@ -375,10 +399,25 @@ export const createInstruccionesIrrevocables: StateCreator<
       .post(
         process.env.REACT_APP_APPLICATION_BACK + "/create-instruccion",
         {
-          NumeroCuenta: state.datosGenerales.numeroCuenta,
-          CLABE: state.datosGenerales.cuentaCLABE,
-          IdBanco: state.datosGenerales.banco.Id,
-          NombreBanco: state.datosGenerales.banco.Descripcion,
+          // NumeroCuenta: state.datosGenerales.numeroCuenta,
+          // CLABE: state.datosGenerales.cuentaCLABE,
+          // IdBanco: state.datosGenerales.banco.Id,
+
+
+          IdGiraInstruccion: state.datosGenerales.giraIntruccion.Id,
+          NombreGiraInstruccion: state.datosGenerales.giraIntruccion.Descripcion,
+          IdVaDirigidaA: state.datosGenerales.vaDirigidaA.Id,
+          NombreVaDirigidaA: state.datosGenerales.vaDirigidaA.Descripcion,
+          IdBeneficiario: state.datosGenerales.beneficiario.Id,
+          NombreBeneficiario: state.datosGenerales.beneficiario.Descripcion,
+
+
+          IdTipoFuente: state.datosGenerales?.tipoFuente?.Id,//Nuevos
+          NombreTipoFuente: state.datosGenerales.tipoFuente?.Descripcion,//Nuevos
+          IdFondoIngreso: state.datosGenerales?.fondoIngreso?.Id,//Nuevos
+          NombreFondoIngreso: state.datosGenerales.fondoIngreso?.Descripcion,//Nuevos
+
+
           FechaInstruccion: state.datosGenerales.fechaInstruccion,
           TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
           EntePublicoObligado: state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,
@@ -458,9 +497,14 @@ export const createInstruccionesIrrevocables: StateCreator<
         process.env.REACT_APP_APPLICATION_BACK + "/modify-Instruccion",
         {
           Id: state.idInstruccion,
-          CLABE: state.datosGenerales.cuentaCLABE,
-          IdBanco: state.datosGenerales.banco.Id,
-          BancoNombre: state.datosGenerales.banco.Descripcion,
+          // CLABE: state.datosGenerales.cuentaCLABE,
+          // IdBanco: state.datosGenerales.banco.Id,
+          // BancoNombre: state.datosGenerales.banco.Descripcion,
+          IdgiraInstruccion: state.datosGenerales.giraIntruccion.Id,
+          NombreGiraIntruccion: state.datosGenerales.giraIntruccion.Descripcion,
+          IdBeneficiario: state.datosGenerales.beneficiario.Id,
+          NombreBeneficiario: state.datosGenerales.beneficiario.Descripcion,
+
           FechaInstruccion: state.datosGenerales.fechaInstruccion,
           TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
           EntePublicoObligado: state.tablaTipoMovimiento[0].entePublicoObligado.Descripcion,

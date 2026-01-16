@@ -503,9 +503,24 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
       Mandante: "",
       TipoEntePublicoObligado: "",
 
-      CLABE: "",
-      IdBanco: "",
-      NombreBanco: "",
+      //CLABE: "",
+      //IdBanco: "",
+      //NombreBanco: "",
+
+      IdGiraInstruccion: "",
+      NombreGiraInstruccion: "",
+      
+      IdVaDirigidaA: "",
+      NombreVaDirigidaA: "",
+      IdBeneficiario: "",
+      NombreBeneficiario: "",
+
+      IdTipoFuente: "",//Nuevos
+      NombreTipoFuente: "",//Nuevos
+      IdFondoIngreso: "",//Nuevos
+      NombreFondoIngreso: "",
+
+
       EntePublicoObligado: "",
 
       TipoMovimiento: "",
@@ -519,7 +534,7 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     state.setReglasAplicables([]);
   },
 
-    getDetalleInfoUsuario: async (Id: string, setState: Function) => {
+  getDetalleInfoUsuario: async (Id: string, setState: Function) => {
     const state = useLargoPlazoStore.getState();
 
     return await axios({

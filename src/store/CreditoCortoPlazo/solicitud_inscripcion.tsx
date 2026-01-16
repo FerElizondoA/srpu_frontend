@@ -12,6 +12,7 @@ import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import { alertaInfo } from "../../avisosPAUA/componentes/Alertas";
 import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
+import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -32,7 +33,8 @@ export interface SolicitudInscripcionSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitud: Function
+    setIdSolicitud: Function,
+    NotificacionEnviar: boolean
   ) => void;
 
   modificaSolicitud: (
@@ -41,7 +43,8 @@ export interface SolicitudInscripcionSlice {
     estatus: string,
     //comentario: string,
     arrDocsEliminados: IDocsEliminados[],
-    guardadoBorrador: number
+    guardadoBorrador: number,
+    NotificacionEnviar: boolean,
   ) => void;
 
   borrarSolicitud: (Id: string) => void;
@@ -133,7 +136,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
-    setIdSolicitudCreada: Function
+    setIdSolicitudCreada: Function,
+    NotificacionEnviar: boolean = false,
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -197,6 +201,17 @@ export const createSolicitudInscripcionSlice: StateCreator<
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${data.data.Id}`
         );
 
+        if (NotificacionEnviar === true && idEditor) {
+          createNotification(
+            "Crédito simple a largo plazo",
+            `Se te ha asignado una solicitud para modificación`,
+            [idEditor],
+            "",
+            "",
+            data.data.NumeroRegistro
+          );
+        }
+
         setTimeout(() => {
           inscripcionState.cleanSolicitudCortoPlazo();
           state.setIdSolicitudBorrador(data.data.Id)
@@ -221,7 +236,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
     estatus: string,
     //comentario: string,
     arrDocsEliminados: IDocsEliminados[],
-    guardadoBorrador: number = 0
+    guardadoBorrador: number = 0,
+    NotificacionEnviar: boolean = false,
   ) => {
     const state = useCortoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
@@ -286,6 +302,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
         console.log("modifcarsoli data: ", data.data);
         console.log('arrDocsEliminados', arrDocsEliminados);
+
+
+        if (NotificacionEnviar === true && idEditor) {
+          createNotification(
+            "Crédito simple a largo plazo",
+            `Se te ha asignado una solicitud para modificación`,
+            [idEditor],
+            "",
+            "",
+            data.data.NumeroRegistro
+          );
+        }
 
         state.saveFiles(
           data.data.Id,

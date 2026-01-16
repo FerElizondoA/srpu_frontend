@@ -16,6 +16,7 @@ import { moneyMask } from "../../ObligacionesCortoPlazoPage/Panels/InformacionGe
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
 import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { IEncabezado } from "../../../store/CreditoCortoPlazo/encabezado";
 
 export function DialogGuardarBorrador({
   handler,
@@ -47,6 +48,11 @@ export function DialogGuardarBorrador({
     (state) => state.informacionGeneral.monto
   );
 
+  const encabezado: IEncabezado = useLargoPlazoStore(
+    (state) => state.encabezado
+  );
+
+
   const comentario: any = useLargoPlazoStore((state) => state.comentarios);
 
   const [info, setInfo] = useState(
@@ -72,6 +78,8 @@ export function DialogGuardarBorrador({
       setInfo(
         "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
       );
+    } else if (encabezado.tipoCredito.Descripcion === "" || encabezado.tipoCredito.Descripcion === null || encabezado.tipoCredito.Descripcion === undefined) {
+      setInfo("*En ENCABEZADO: Seleccionar tipo de Documento.");
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
@@ -159,7 +167,7 @@ export function DialogGuardarBorrador({
 
         <ThemeProvider theme={buttonTheme}>
           <Button
-            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === "" || encabezado.tipoCredito.Descripcion === ""}
             onClick={() => {
               handler(false);
               if (solicitud.Id !== "") {
@@ -276,7 +284,7 @@ export function DialogGuardarBorrador({
 
         <ThemeProvider theme={buttonTheme}>
           <Button
-            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === "" || encabezado.tipoCredito.Descripcion === ""}
             onClick={() => {
               handler(false);
               if (solicitud.Id !== "") {

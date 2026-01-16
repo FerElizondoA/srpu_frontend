@@ -167,9 +167,19 @@ export function VehiculoDePago({
       editarInstruccion(
         mecanismoVehiculoPago.Id,
         {
-          numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
-          cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: mecanismoVehiculoPago.NombreBanco,
+          IdGiraInstruccion: mecanismoVehiculoPago.IdGiraInstruccion,
+          NombreGiraInstruccion: mecanismoVehiculoPago.NombreGiraInstruccion,
+          IdBeneficiario: mecanismoVehiculoPago.IdBeneficiario,
+          NombreBeneficiario: mecanismoVehiculoPago.NombreBeneficiario,
+
+          IdTipoFuente: mecanismoVehiculoPago.IdTipoFuente,//Nuevos
+          NombreTipoFuente: mecanismoVehiculoPago.NombreTipoFuente,//Nuevos
+          IdFondoIngreso: mecanismoVehiculoPago.IdFondoIngreso,//Nuevos
+          NombreFondoIngreso: mecanismoVehiculoPago.NombreFondoIngreso,
+
+          // numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
+          // cuentaCLABE: mecanismoVehiculoPago.CLABE,
+          // banco: mecanismoVehiculoPago.NombreBanco,
           fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
         },
         auxArray,
@@ -260,10 +270,10 @@ export function VehiculoDePago({
     return [opcionesFiltradasTipoFuente];
   };
 
-    const setTablaAsignarFuenteNew: Function = useLargoPlazoStore(
-      (state) => state.setTablaAsignarFuenteNew
-    );
-  
+  const setTablaAsignarFuenteNew: Function = useLargoPlazoStore(
+    (state) => state.setTablaAsignarFuenteNew
+  );
+
   useEffect(() => {
     console.log("✔️ mecanismoVehiculoPago", mecanismoVehiculoPago);
   }, [mecanismoVehiculoPago]);
@@ -356,7 +366,7 @@ export function VehiculoDePago({
 
               console.log("Vehiculo de pago seleccionado", text);
               setMecanismoVehiculoPago(text);
-              
+
               console.log("Tabla resumen mecanismo pago", JSON.parse(mecanismoVehiculoPago.TipoMovimiento));
 
               const AuxFiltro = JSON.parse(mecanismoVehiculoPago.TipoMovimiento);
@@ -419,13 +429,13 @@ export function VehiculoDePago({
                   item
                   xs={10}
                   sm={10}
-                  md={3}
-                  lg={4}
-                  xl={3}
+                  md={5}
+                  lg={5}
+                  xl={5}
                   mb={{ xs: 4, sm: 4, md: 0 }}
                   flexDirection={"column"}
                 >
-                  <Grid item display={"flex"} justifyContent={"center"}>
+                  <Grid item width={"90%"} display={"flex"} justifyContent={"center"}>
                     <InputLabel sx={{ ...queries.bold_text, mb: 2 }}>
                       {tipoMecanismoVehiculoPago}
                     </InputLabel>
@@ -485,6 +495,78 @@ export function VehiculoDePago({
                 </Grid>
 
                 <Grid
+                  item
+                  container
+                  flexDirection={"column"}
+                  xs={10}
+                  sm={10}
+                  md={6}
+                  lg={6}
+                  xl={6}
+                  mt={{ xs: 4, sm: 4, md: 0 }}
+                >
+
+                  <Grid item display={"flex"} width={"90%"} justifyContent={"center"} mb={2}>
+                    <InputLabel sx={queries.bold_text}>
+                      Fideicomisario
+                    </InputLabel>
+                  </Grid>
+
+                  <Grid container display={"flex"} justifyContent={"center"}>
+
+                    <Grid width={"50%"}>
+                      {mecanismoVehiculoPago.Fideicomisario &&
+                        JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
+                          (fideicomisario: IFideicomisario, index: number) => (
+                            <Grid mb={2} key={index}>
+                              <TextField
+                                fullWidth
+                                key={index}
+                                size="small"
+                                sx={{ width: "80%" }}
+                                inputProps={{
+                                  sx: {
+                                    fontSize: "0.7rem",
+                                  },
+                                }}
+                                value={fideicomisario.fideicomisario.Descripcion}
+                              />
+                            </Grid>
+                          )
+                        )}
+                    </Grid>
+
+                    <Grid width={"50%"}>
+                      {mecanismoVehiculoPago.Fideicomisario &&
+                        JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
+                          (fideicomisario: IFideicomisario, index: number) => (
+                            <Grid mb={2} key={index}>
+                              <TextField
+                                key={index}
+                                size="small"
+                                sx={{ width: "80%" }}
+                                inputProps={{
+                                  sx: {
+                                    fontSize: "0.7rem",
+                                  },
+                                }}
+                                value={
+                                  fideicomisario.ordenFideicomisario.Descripcion
+                                }
+                              />
+                            </Grid>
+                          )
+                        )}
+                    </Grid>
+
+
+                  </Grid>
+
+
+
+                </Grid>
+
+                {/* <Grid
                   container
                   item
                   xs={10}
@@ -494,12 +576,7 @@ export function VehiculoDePago({
                   xl={3}
                   flexDirection={"column"}
                 >
-                  <Grid item display={"flex"} justifyContent={"center"} mb={2}>
-                    <InputLabel sx={queries.bold_text}>
-                      Fideicomisario
-                    </InputLabel>
-                  </Grid>
-
+                 
                   <Grid width={"100%"}>
                     {mecanismoVehiculoPago.Fideicomisario &&
                       JSON.parse(mecanismoVehiculoPago.Fideicomisario).map(
@@ -562,7 +639,7 @@ export function VehiculoDePago({
                         )
                       )}
                   </Grid>
-                </Grid>
+                </Grid> */}
               </Grid>
             )}
           </Grid>
@@ -572,9 +649,10 @@ export function VehiculoDePago({
               container
               flexDirection={"column"}
               justifyContent={"space-evenly"}
-              width={{ xs: "100%", sm: "100%", md: "50%" }}
+              width={{ xs: "100%", sm: "100%", md: "60%" }}
               height={"16rem"}
             >
+
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
                   sx={{
@@ -600,7 +678,7 @@ export function VehiculoDePago({
                 />
               </Grid>
 
-              <Grid display={"flex"} justifyContent={"center"}>
+              {/* <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
                   sx={{
                     fontSize: ".9rem",
@@ -620,7 +698,7 @@ export function VehiculoDePago({
                   size="small"
                   value={mecanismoVehiculoPago.TipoEntePublicoObligado}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
@@ -705,24 +783,66 @@ export function VehiculoDePago({
                 <Typography
                   sx={{
                     fontSize: ".9rem",
-                    width: "50%",
+                    width: "30%",
                     justifyContent: "start",
                   }}
                 >
-                  Banco
+                  {/* Banco */} Va dirigida la Instrucción
                 </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
                     sx: {
-                      fontSize: "0.7rem",
+                      fontSize: "0.8rem",
                     },
                   }}
                   size="small"
-                  value={mecanismoVehiculoPago.NombreBanco}
+                  value={mecanismoVehiculoPago.NombreVaDirigidaA}
                 />
               </Grid>
-
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "30%",
+                    justifyContent: "start",
+                  }}
+                >
+                  {/* Banco */} A quien gira la Instrucción
+                </Typography>
+                <TextField
+                  fullWidth
+                  inputProps={{
+                    sx: {
+                      fontSize: "0.8rem",
+                    },
+                  }}
+                  size="small"
+                  value={mecanismoVehiculoPago.NombreGiraInstruccion}
+                />
+              </Grid>
+              <Grid display={"flex"} justifyContent={"center"}>
+                <Typography
+                  sx={{
+                    fontSize: ".9rem",
+                    width: "30%",
+                    justifyContent: "start",
+                  }}
+                >
+                  {/* Banco */} Beneficiario
+                </Typography>
+                <TextField
+                  fullWidth
+                  inputProps={{
+                    sx: {
+                      fontSize: "0.8rem",
+                    },
+                  }}
+                  size="small"
+                  value={mecanismoVehiculoPago.NombreBeneficiario}
+                />
+              </Grid>
+              {/* 
               <Grid display={"flex"}>
                 <Typography
                   sx={{
@@ -731,7 +851,7 @@ export function VehiculoDePago({
                     justifyContent: "start",
                   }}
                 >
-                  CLABE
+                  CLABE PENDIENTE
                 </Typography>
                 <TextField
                   fullWidth
@@ -741,15 +861,15 @@ export function VehiculoDePago({
                     },
                   }}
                   size="small"
-                  value={mecanismoVehiculoPago.CLABE}
+                  //value={mecanismoVehiculoPago.CLABE} PENDIENTE
                 />
-              </Grid>
+              </Grid> */}
 
-              <Grid display={"flex"} justifyContent={"center"}>
+              <Grid display={"flex"} justifyContent={"center"} mt={4}>
                 <Typography
                   sx={{
                     fontSize: ".9rem",
-                    width: "50%",
+                    width: "30%",
                     justifyContent: "start",
                   }}
                 >
@@ -759,7 +879,7 @@ export function VehiculoDePago({
                   fullWidth
                   inputProps={{
                     sx: {
-                      fontSize: "0.7rem",
+                      fontSize: "0.8rem",
                     },
                   }}
                   size="small"
@@ -774,24 +894,24 @@ export function VehiculoDePago({
                 <Typography
                   sx={{
                     fontSize: ".9rem",
-                    width: "50%",
+                    width: "30%",
                     justifyContent: "start",
                   }}
                 >
-                  Tipo de Ente Público Obligado
+                  {/* Tipo de Ente Público Obligado */} Fondo o Ingreso
                 </Typography>
                 <TextField
                   fullWidth
                   inputProps={{
                     sx: {
-                      fontSize: "0.7rem",
+                      fontSize: "0.9rem",
                     },
                   }}
                   size="small"
-                  value={mecanismoVehiculoPago.TipoEntePublicoObligado}
+                  value={mecanismoVehiculoPago.NombreFondoIngreso}
                 />
               </Grid>
-
+              {/* 
               <Grid display={"flex"} justifyContent={"center"}>
                 <Typography
                   sx={{
@@ -812,7 +932,7 @@ export function VehiculoDePago({
                   size="small"
                   value={mecanismoVehiculoPago.EntePublicoObligado}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           )}
 

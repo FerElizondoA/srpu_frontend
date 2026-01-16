@@ -14,6 +14,7 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../generics/Alertas";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { IEncabezado } from "../../../store/CreditoCortoPlazo/encabezado";
 
 export const moneyMask = (value: string) => {
   value = value.replace(/\D/g, "");
@@ -51,6 +52,10 @@ export function DialogGuardarBorrador({
     (state) => state.informacionGeneral.monto
   );
 
+  const encabezado: IEncabezado = useCortoPlazoStore(
+    (state) => state.encabezado
+  );
+
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
 
   const tipoCredito: { Id: string; Descripcion: string } = useCortoPlazoStore(
@@ -86,9 +91,9 @@ export function DialogGuardarBorrador({
     // else if (isMissingInstitution) {
     //   setInfo("*En INFORMACIÓN GENERAL: Seleccionar institución financiera.");
     else if (isMissingOriginalAmount) {
-      setInfo(
-        "*En INFORMACIÓN GENERAL: Seleccionar monto original contratado."
-      );
+      setInfo("*En INFORMACIÓN GENERAL: Seleccionar monto original contratado.");
+    } else if (encabezado.tipoCredito.Descripcion === "" || encabezado.tipoCredito.Descripcion === null || encabezado.tipoCredito.Descripcion === undefined) {
+      setInfo("*En ENCABEZADO: Seleccionar tipo de Documento.");
     } else {
       setInfo("La solicitud se guardará como borrador.");
     }
@@ -112,8 +117,6 @@ export function DialogGuardarBorrador({
     (state) => state.cleanInscripcionModify
   );
 
-
-
   const addComentario: Function = useCortoPlazoStore(
     (state) => state.addComentario
   );
@@ -127,6 +130,7 @@ export function DialogGuardarBorrador({
   const solicitud: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
+
   const setProceso: Function = useInscripcionStore(
     (state) => state.setProceso
   );
@@ -134,6 +138,7 @@ export function DialogGuardarBorrador({
   const monto: number = useCortoPlazoStore(
     (state) => state.informacionGeneral.monto
   );
+
   const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
 
   const [filtroTipoGuardado, setFiltroTipoGuardado] = useState(1);
@@ -149,8 +154,6 @@ export function DialogGuardarBorrador({
   );
 
   useEffect(() => {
-
-
     console.log("filtroTipoGuardado", filtroTipoGuardado);
   }, [])
 
@@ -203,7 +206,7 @@ export function DialogGuardarBorrador({
         </Button>
         <ThemeProvider theme={buttonTheme}>
           <Button
-            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === "" || encabezado.tipoCredito.Descripcion === ""}
             onClick={() => {
               handler(false);
               const state = useCortoPlazoStore.getState();
@@ -289,7 +292,7 @@ export function DialogGuardarBorrador({
 
         <ThemeProvider theme={buttonTheme}>
           <Button
-            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === ""}
+            disabled={moneyMask(monto.toString()) === "$ 0.00" || institucion === "" || encabezado.tipoCredito.Descripcion === ""}
             onClick={() => {
               handler(false);
               if (

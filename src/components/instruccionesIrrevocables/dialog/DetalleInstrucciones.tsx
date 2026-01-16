@@ -35,9 +35,9 @@ import { IRegistro } from "../../../store/CreditoLargoPlazo/fuenteDePago";
 import { convertFileToBase64 } from "../../../generics/Validation";
 
 const headsTipoMovimiento: { label: string }[] = [
-  {
-    label: "Id",
-  },
+  // {
+  //   label: "Id",
+  // },
   {
     label: "Tipo de Fuente",
   },
@@ -187,11 +187,11 @@ export function DetalleInstruccion({
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong>Cuenta CLABE:</strong> {instruccion.CLABE}
+            <strong>Benefeciario:</strong> {instruccion.NombreBeneficiario}
           </Typography>
 
           <Typography sx={{ ...queries.medium_text }}>
-            <strong>Banco:</strong> {instruccion.NombreBanco}
+            {/* <strong>Banco:</strong> {instruccion.NombreBanco} */}
           </Typography>
 
           <Divider color="lightGrey"></Divider>
@@ -236,11 +236,11 @@ export function DetalleInstruccion({
                   return (
                     <StyledTableRow key={index}>
                       {/* ID */}
-                      <StyledTableCell align="center">
+                      {/* <StyledTableCell align="center">
                         <Typography >
                           {row?.id}
                         </Typography>
-                      </StyledTableCell>
+                      </StyledTableCell> */}
 
                       {/* FUENTE DE PAGO */}
                       <StyledTableCell align="center">

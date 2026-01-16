@@ -23,6 +23,7 @@ export interface IDeudorMandatoNew {
   fondoIngreso: { Id: string; Descripcion: string; TipoDeFuente: string };
   AfectadoTotalIngreso: number;
   EquivalenciaCorrespondienteMunicipios: number;
+  Beneficiario: { Id: string; Descripcion: string };
 }
 
 // export interface IDeudorMandato {
@@ -180,7 +181,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
     tipoFuente: { Id: "", Descripcion: "" },
     fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
     AfectadoTotalIngreso: 0,
-    EquivalenciaCorrespondienteMunicipios: 0
+    EquivalenciaCorrespondienteMunicipios: 0,
+    Beneficiario: { Id: "", Descripcion: "" },
   },
   
   tablaTipoMovimientoMandato: [],
@@ -227,7 +229,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
         AfectadoTotalIngreso: 0,
-        EquivalenciaCorrespondienteMunicipios: 0
+        EquivalenciaCorrespondienteMunicipios: 0,
+        Beneficiario: { Id: "", Descripcion: "" },
       },
       tablaTipoMovimientoMandato: [],
 
@@ -321,7 +324,8 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
         tipoFuente: { Id: "", Descripcion: "" },
         fondoIngreso: { Id: "", Descripcion: "", TipoDeFuente: "" },
         AfectadoTotalIngreso: 0,
-        EquivalenciaCorrespondienteMunicipios: 0
+        EquivalenciaCorrespondienteMunicipios: 0,
+        Beneficiario: { Id: "", Descripcion: "" },
       },
     }));
   },
@@ -381,6 +385,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       fondoIngreso,
       AfectadoTotalIngreso,
       EquivalenciaCorrespondienteMunicipios,
+      Beneficiario
     }) => ({
       id,
       tipoEntePublicoObligado,
@@ -389,6 +394,7 @@ export const createMandatoSlice: StateCreator<MandatoSlice> = (set, get) => ({
       fondoIngreso,
       AfectadoTotalIngreso,
       EquivalenciaCorrespondienteMunicipios,
+      Beneficiario
     })
     );
 

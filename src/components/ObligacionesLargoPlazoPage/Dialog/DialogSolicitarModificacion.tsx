@@ -95,14 +95,22 @@ export function DialogSolicitarModificacion({
     (state) => state.cleanCondicionFinanciera
   );
 
-
-
   const tablaGastosCostos: IGastosCostos[] = useLargoPlazoStore(
     (state) => state.tablaGastosCostos
   );
 
+  const [NumRegistroSolicitud, setNumRegistroSolicitud] = useState<number>(0);
+
+  const inscripcionState = useInscripcionStore.getState();
 
 
+  const inscripcionValores: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
+  useEffect(() => {
+    console.log("numeroRegistroSolicitud en dialog: ", NumRegistroSolicitud);
+  }, [NumRegistroSolicitud]);
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -172,7 +180,10 @@ export function DialogSolicitarModificacion({
           inscripcion.CreadoPor || localStorage.getItem("IdUsuario"),
           idUsuarioAsignado,
           "1",
-          arrDocsEliminados
+          arrDocsEliminados,
+          0,
+          true,
+
         )
           .then(() => {
 
@@ -217,11 +228,11 @@ export function DialogSolicitarModificacion({
               text: "Ocurrió un error, inténtelo de nuevo",
             });
           });
-        createNotification(
-          "Crédito simple a corto plazo",
-          "Se te ha asignado una solicitud para modificación",
-          [idUsuarioAsignado]
-        );
+        // createNotification(
+        //   "Crédito simple a corto plazo",
+        //   "Se te ha asignado una solicitud para modificación",
+        //   [idUsuarioAsignado]
+        // );
         navigate("../ConsultaDeSolicitudes");
       } else {
         console.log("ENTRO AQUI POR QUE NO HAY ID DE LA SOLICITUD LOS CREA");
@@ -230,9 +241,12 @@ export function DialogSolicitarModificacion({
           idUsuarioAsignado,
           "1",
           "",
-          //JSON.stringify(comentarios),
-          setIdSolicitudCreada
+          ()=> {},//JSON.stringify(comentarios),
+          setIdSolicitudCreada,
+          true,
         ).then(() => {
+
+          console.log("NUMERO REGISTRO .THEN CHIDO", inscripcionValores)
           if (comentarios && Object.keys(comentarios).length > 0) {
             console.log("AGREGAR COMENTARIO");
             addComentario(
@@ -243,8 +257,20 @@ export function DialogSolicitarModificacion({
           } else {
             console.log("NO AGREGAR COMENTARIO");
           }
-          alertaConfirmCancelar("La solicitud se envió con éxito")
-          cleanSolicitud();
+          // createNotification( LO MANDAMOS AL AXIOS
+          //   "Crédito simple a largo plazo",
+          //   `Se te ha asignado una solicitud para modificación`,
+          //   [idUsuarioAsignado],
+          //   "",
+          //   "",
+          //   parseInt(inscripcionValores.NumeroRegistro)
+          // );
+
+          setTimeout(() => {
+            alertaConfirmCancelar("La solicitud se envió con éxito")
+            cleanSolicitud();
+          }, 1000);
+
           navigate("../ConsultaDeSolicitudes");
         }).catch(() => {
           Swal.fire({
@@ -255,12 +281,16 @@ export function DialogSolicitarModificacion({
             text: "Ocurrió un error, inténtelo de nuevo",
           });
         });
-        createNotification(
-          "Crédito simple a largo plazo",
-          `Se te ha asignado una solicitud para modificación`,
-          [idUsuarioAsignado]
-        );
-        //navigate("../ConsultaDeSolicitudes");
+        //   createNotification(
+        //   "Crédito simple a largo plazo",
+        //   `Se te ha asignado una solicitud para modificación`,
+        //   [idUsuarioAsignado],
+        //   "",
+        //   "",
+        //   NumRegistroSolicitud
+        // );
+
+        navigate("../ConsultaDeSolicitudes");
       }
     }
 

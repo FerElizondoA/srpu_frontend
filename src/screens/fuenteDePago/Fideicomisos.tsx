@@ -114,7 +114,7 @@ const heads: Head[] = [
     label: "Acción",
   },
 ];
-
+//*1) Agregar validación de porcentajes acumulados a la ahora de crear un nuevo fideicomiso 
 export function Fideicomisos() {
   const [openAgregarFideicomisos, setOpenAgregarFideicomiso] = useState(false);
 
@@ -270,9 +270,22 @@ export function Fideicomisos() {
       Mandante: "",
       TipoEntePublicoObligado: "",
 
-      CLABE: "",
-      IdBanco: "",
-      NombreBanco: "",
+      // CLABE: "",
+      // IdBanco: "",
+      // NombreBanco: "",
+      IdGiraInstruccion: "",
+      NombreGiraInstruccion: "",
+      IdBeneficiario: "",
+      NombreBeneficiario: "",
+
+      IdVaDirigidaA: "",
+      NombreVaDirigidaA: "",
+
+
+      IdTipoFuente: "",//Nuevos
+      NombreTipoFuente: "",//Nuevos
+      IdFondoIngreso: "",//Nuevos
+      NombreFondoIngreso: "",
       EntePublicoObligado: "",
 
       TipoMovimiento: "",
@@ -327,10 +340,10 @@ export function Fideicomisos() {
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
 
   useEffect(() => {
-  setDataAsignacionTipoMoviSolicitudes([]);    
-  console.log("dataAsignacionTipoMoviSolicitudes limpiado")
+    setDataAsignacionTipoMoviSolicitudes([]);
+    console.log("dataAsignacionTipoMoviSolicitudes limpiado")
   }, [openAgregarFideicomisos])
-  
+
 
   return (
     <Grid>
@@ -547,13 +560,13 @@ export function Fideicomisos() {
                                 //Tabla prueba antes de la edicion solo para comparar.
                                 setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
                                 // DetallePorcentajesAcumuladosMultiples()
-                                
+
                                 setTimeout(() => {
-                                 setOpenAgregarFideicomiso(
-                                  !openAgregarFideicomisos
-                                );
+                                  setOpenAgregarFideicomiso(
+                                    !openAgregarFideicomisos
+                                  );
                                 }, 1000);
-                                
+
                               }}
                             >
                               <EditIcon />

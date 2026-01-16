@@ -41,8 +41,11 @@ import { getDocumentos } from "../../APIS/pathDocSol/APISDocumentos";
 
 
 const headsTipoMovimiento: { label: string }[] = [
+  // {
+  //   label: "Id",
+  // },
   {
-    label: "Id",
+    label: "No. de Fideicomiso",
   },
   {
     label: "Tipo de Fuente",

@@ -29,6 +29,7 @@ import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import {
   IBeneficiarioFideicomiso,
+  IDatosGeneralesFideicomiso,
   IDeudorFideicomiso,
   IDeudorFideicomisoNew,
   IPorcentajeAcumulados,
@@ -41,14 +42,18 @@ import {
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { TableRows } from "@mui/icons-material";
+import { ValidacionAgregarTipoMov } from "../dialog/ValidacionAgregarTipoMov";
 
 interface HeadLabels {
   label: string;
 }
 
 const heads: HeadLabels[] = [
+  // {
+  //   label: "Id",
+  // },
   {
-    label: "Id",
+    label: "No. Fideicomiso",
   },
   {
     label: "Tipo de Fideicomitente",
@@ -103,8 +108,11 @@ const heads: HeadLabels[] = [
 ];
 
 const headsNews: HeadLabels[] = [
+  // {
+  //   label: "Id",
+  // },
   {
-    label: "Id",
+    label: "No. Fideicomiso",
   },
   {
     label: "Tipo de Fuente",
@@ -362,15 +370,20 @@ export function TipoDeMovimientoFideicomiso() {
             Agregar
           </Button>
         </ThemeProvider>
-
+        {/* 
         <Button onClick={() => {
           console.log("porcentajeAcumuladoRegistros", porcentajeAcumuladoRegistros)
         }}>
           Test Porcentaje Acumulado
-        </Button>
+        </Button> */}
       </>
     );
   };
+  const datosGenerales: IDatosGeneralesFideicomiso = useFideicomisoStore(
+    (state) => state.datosGenerales
+  );
+
+  const [openValidacionAgregarTipoMov, setOpenValidacionAgregarTipoMov] = useState(false)
 
 
   const buttonAgregarNew = () => {
@@ -388,30 +401,38 @@ export function TipoDeMovimientoFideicomiso() {
             width: "15vh",
           }}
           onClick={() => {
-            setPorcentajeAcumuladoLocalNew([...porcentajeAcumuladoLocalNew, porcentajeAcumuladoRegistros])
-            addTipoMovimientoNew({
-              id: tipoMovimientoFideicomisoNew.id,
-              tipoFideicomitente: tipoMovimientoFideicomisoNew.tipoFideicomitente,
-              fideicomitente: tipoMovimientoFideicomisoNew.fideicomitente,
-              tipoFuente: tipoMovimientoFideicomisoNew.tipoFuente,
-              fondoIngreso: tipoMovimientoFideicomisoNew.fondoIngreso,
-            })
+            if (datosGenerales.numeroFideicomiso === "") {
+              setOpenValidacionAgregarTipoMov(true)
 
-            console.log("arregloPorcetajesAcumuladosRegistros BUTTON", arregloPorcetajesAcumuladosRegistros)
-            //addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
-            cleanTipoMovimientoNew();
+            } else {
+              setPorcentajeAcumuladoLocalNew([...porcentajeAcumuladoLocalNew, porcentajeAcumuladoRegistros])
+              addTipoMovimientoNew({
+                // id: tipoMovimientoFideicomisoNew.id,
+                id: datosGenerales.numeroFideicomiso,
+                tipoFideicomitente: tipoMovimientoFideicomisoNew.tipoFideicomitente,
+                fideicomitente: tipoMovimientoFideicomisoNew.fideicomitente,
+                tipoFuente: tipoMovimientoFideicomisoNew.tipoFuente,
+                fondoIngreso: tipoMovimientoFideicomisoNew.fondoIngreso,
+              })
+              addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
+
+              console.log("arregloPorcetajesAcumuladosRegistros BUTTON", arregloPorcetajesAcumuladosRegistros)
+              //addArregloPorcetajesAcumuladosRegistros(porcentajeAcumuladoRegistros)
+              cleanTipoMovimientoNew();
+            }
+
           }}
         >
           Agregar
         </Button>
 
-        <Button onClick={() => {
+        {/* <Button onClick={() => {
           // setPorcentajeAcumuladoLocalNew([...porcentajeAcumuladoLocalNew, porcentajeAcumuladoRegistros])
           console.log("porcentajeAcumuladoLocalNew", porcentajeAcumuladoLocalNew)
           console.log("porcentajeAcumuladoRegistros", porcentajeAcumuladoRegistros)
         }}>
           Test Porcentaje Acumulado
-        </Button>
+        </Button> */}
       </ThemeProvider>
     );
   };
@@ -458,7 +479,7 @@ export function TipoDeMovimientoFideicomiso() {
         },
       }}
     >
-      <Grid
+      {/* <Grid
         item
         display={"flex"}
         justifyContent={"center"}
@@ -492,10 +513,12 @@ export function TipoDeMovimientoFideicomiso() {
             />
           )}
         </RadioGroup>
-      </Grid>
+      </Grid> */}
 
       <Grid item
         mb={{ xs: 2, sm: 2, md: 1, lg: 1, xl: 0 }}
+        mt={{ xs: 2, sm: 2, md: 1, lg: 1, xl: 2 }}
+
       >
         <Divider >
           <Typography
@@ -1490,9 +1513,14 @@ export function TipoDeMovimientoFideicomiso() {
             </Table>
           </TableContainer> */}
         </Paper>
-
-
       </Grid>
+
+      <ValidacionAgregarTipoMov
+        openValidacionAgregarTipoMov={openValidacionAgregarTipoMov}
+        setOpenValidacionAgregarTipoMov={setOpenValidacionAgregarTipoMov}
+        TipoFuentePago={"Fideicomiso"}
+
+      />
     </Grid>
   );
 }

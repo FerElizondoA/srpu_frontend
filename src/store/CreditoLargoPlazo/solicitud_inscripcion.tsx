@@ -15,6 +15,8 @@ import { useFideicomisoStore } from "../Fideicomiso/main";
 import { useInstruccionesStore } from "../InstruccionesIrrevocables/main";
 import { useMandatoStore } from "../Mandatos/main";
 import { alertaConfirmCancelar } from "../../generics/Alertas";
+import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+
 
 export interface IDataAgregarSolicitud {
   ControlInterno: string;
@@ -100,7 +102,10 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     estatus: string,
     comentario: string,
     setDataAsignacion: Function,
-    setIdSolicitud: Function
+    setIdSolicitud: Function,
+    NotificacionEnviar: boolean,
+    idUsuarioAsignado?: string
+
 
   ) => void;
 
@@ -110,7 +115,8 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     estatus: string,
     //comentario: string,
     arrDocsEliminados: IDocsEliminados[],
-    guardadoBorrador: number
+    guardadoBorrador: number,
+    NotificacionEnviar: boolean,
   ) => void;
 
   createAsignacionTipoSolicitud: (
@@ -398,12 +404,18 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     estatus: string,
     comentario: string,
     setDataAsignacion: Function,
+    setIdSolicitud: Function,
+    NotificacionEnviar: boolean,
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const inscripcionState = useInscripcionStore.getState();
 
     console.log("SolicitudCompleta Largo Plazo", lpState);
     console.log("lpstate gastos y costos", lpState.tablaGastosCostos);
+
+
+    console.log("NotificacionEnviar Largo Plazo AXIOS", NotificacionEnviar);
+    console.log("idUsuarioAsignado AXIOS", idEditor);
 
     const solicitud: ISolicitudLargoPlazo = {
       encabezado: lpState.encabezado,
@@ -504,6 +516,23 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         // console.log("DATAAAA.DAAATAAA", data.data)
 
         const DataSolicitud = data.data.data;
+
+        inscripcionState.setInscripcion(data.data.data);
+        console.log("DATAAAA.DAAATAAA", data.data.data)
+        console.log("NumeroRegistroSolicitud", data.data.data.NumeroRegistro);
+
+        if (NotificacionEnviar === true && idEditor) {
+          createNotification(
+            "Crédito simple a largo plazo",
+            `Se te ha asignado una solicitud para modificación`,
+            [idEditor],
+            "",
+            "",
+            DataSolicitud.NumeroRegistro
+          );
+
+        }
+
         const fuente = lpState.tablaAsignarFuenteNew[0];
         const fuenteOriginal = lpState.OriginalTablaAsignarFuenteNew[0];
         console.log("fuente", fuente);
@@ -546,7 +575,6 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${DataSolicitud.Id}`,
           true
         );
-        inscripcionState.setInscripcion(data.data.data);
         // lpState.addComentario(DataSolicitud.Id, comentario, "Captura");
 
       });
@@ -558,7 +586,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     estatus: string,
     // comentario: string,
     arrDocsEliminados: IDocsEliminados[],
-    guardadoBorrador: number = 0
+    guardadoBorrador: number = 0,
+    NotificacionEnviar: boolean,
   ) => {
     const lpState = useLargoPlazoStore.getState();
     const cpState = useCortoPlazoStore.getState();
@@ -687,7 +716,19 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         console.log('arrDocsEliminados', arrDocsEliminados);
         //cpState.deleteFiles(`/SRPU/LARGOPLAZO/DOCSOL/${data.data.Id}`);
 
-        console.log("HOLA SOY EL ID DE LA SOLICITUD: ", inscripcionState.inscripcion.Id)
+        // console.log("HOLA SOY EL ID DE LA SOLICITUD: ", inscripcionState.inscripcion.Id)
+
+        if (NotificacionEnviar === true && idEditor) {
+          createNotification(
+            "Crédito simple a largo plazo",
+            `Se te ha asignado una solicitud para modificación`,
+            [idEditor],
+            "",
+            "",
+            data.data.NumeroRegistro
+          );
+        }
+        
         lpState.saveFiles(
           inscripcionState.inscripcion.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`,

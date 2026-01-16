@@ -208,6 +208,9 @@ export function AgregarFideicomisos({
     }
   }, [idFideicomiso]);
 
+  const porcentajeAcumuladoRegistros: IPorcentajeAcumulados = useFideicomisoStore(
+    (state) => state.porcentajeAcumuladoRegistros
+  );
 
 
   useEffect(() => {
@@ -247,6 +250,11 @@ export function AgregarFideicomisos({
           </Grid>
 
           <Grid item>
+            {/* <Button sx={{ color: "black" }}
+              onClick={() => {
+                console.log("arregloPorcetajesAcumuladosRegistros", arregloPorcetajesAcumuladosRegistros)
+              }}
+            >Prueba de arreglo</Button> */}
             <ThemeProvider theme={buttonTheme}>
               <Button
                 disabled={
@@ -259,75 +267,11 @@ export function AgregarFideicomisos({
                 }
                 sx={queries.buttonContinuar}
                 onClick={() => {
-                  if (idFideicomiso === "") {
-                    // CREAR FIDEICOMISO (sin validaciones)
-                    setLoading(true);
-                    createFideicomiso(() => {
-                      setLoading(false);
-                      handler(false);
-                      getMecanismosVehiculosPago &&
-                        getMecanismosVehiculosPago("Fideicomisos", () => { });
-                    });
-                    cleanPorcentajesAcumulados();
-
-
-
-
-
-                  }
-                  else if (idFideicomiso !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
+                  if (idFideicomiso === "" && arregloPorcetajesAcumuladosRegistros.length > 0) {
                     let errorEncontrado = false;
                     let mensajeError = "";
 
                     tablaTipoMovimientoFideicomisoNew.forEach((nuevo) => {
-                      // 🔹 Validación 1: contra asignaciones de solicitudes (ya existente)
-                      const coincidencia = DataAsignacionTipoMoviSolicitudes.find(
-                        (asig) =>
-                          asig.IdEntePublicoObligado === nuevo.fideicomitente.Id &&
-                          asig.IdFondoIngreso === nuevo.fondoIngreso.Id &&
-                          asig.TipoMovRelacionado === nuevo.id
-                      );
-
-                      if (coincidencia) {
-                        const usadoIngreso = Number(coincidencia.PorcentajeUtilizadoIngreso) || 0;
-                        const orignalIngreso = Number(coincidencia.PorcentajeOriginalIngreso) || 0;
-
-                        const usadoEquivalencia = Number(coincidencia.PorcentajeUtilizadoEquivalencia) || 0;
-                        const orignalEquivalencia = Number(coincidencia.PorcentajeOriginalEquivalencia) || 0;
-
-                        const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
-                        const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
-
-                        if (nuevoIngreso < usadoIngreso) {
-                          errorEncontrado = true;
-                          // mensajeError += `\nEl porcentaje de ingreso (${nuevoIngreso}%) no puede ser menor que el utilizado (${usadoIngreso}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
-
-                          setValidacionDialogAsignarFuente({
-                            openDialog: true,
-                            registroPrevio: "Asignacion",
-                            message: "AfectadoTotalIngreso",
-                            montoOriginal: orignalIngreso,
-                            montoUtilizado: usadoIngreso,
-                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
-                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
-                          });
-
-                        }
-
-                        if (nuevaEquivalencia < usadoEquivalencia) {
-                          errorEncontrado = true;
-                          // mensajeError += `\nEl porcentaje de equivalencia (${nuevaEquivalencia}%) no puede ser menor que el utilizado (${usadoEquivalencia}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
-                          setValidacionDialogAsignarFuente({
-                            openDialog: true,
-                            registroPrevio: "Asignacion",
-                            message: "EquivalenciaCorrespondienteMunicipios",
-                            montoOriginal: orignalEquivalencia,
-                            montoUtilizado: usadoEquivalencia,
-                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
-                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
-                          });
-                        }
-                      }
 
                       // 🔹 Validación 2: contra porcentajes acumulados (nueva)
                       const acumulado = arregloPorcetajesAcumuladosRegistros.find(
@@ -335,6 +279,8 @@ export function AgregarFideicomisos({
                           acc.IdFondoOIngreso === nuevo.fondoIngreso.Id &&
                           acc.IdEntePublicoObligado === nuevo.fideicomitente.Id
                       );
+
+                      console.log("acumulado encontrado :", acumulado);
 
                       if (acumulado) {
 
@@ -398,6 +344,194 @@ export function AgregarFideicomisos({
                         }
 
                         if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "EquivalenciaCorrespondienteMunicipios",
+                            montoOriginal: acumuladoEquivalencia,
+                            montoUtilizado: nuevaEquivalencia,
+                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+                      }
+                    });
+
+                    if (errorEncontrado) {
+
+                      return;
+                    } else {
+                      // ✅ Si todo pasa las validaciones:
+                      setLoading(true);
+                      createFideicomiso(() => {
+                        setLoading(false);
+                        handler(false);
+                        getMecanismosVehiculosPago &&
+                          getMecanismosVehiculosPago("Fideicomisos", () => { });
+                      });
+                      cleanPorcentajesAcumulados();
+                      setDataAsignacionTipoMoviSolicitudes([]);
+                    }
+                    // CREAR FIDEICOMISO (sin validaciones)
+                    // setLoading(true);
+                    // createFideicomiso(() => {
+                    //   setLoading(false);
+                    //   handler(false);
+                    //   getMecanismosVehiculosPago &&
+                    //     getMecanismosVehiculosPago("Fideicomisos", () => { });
+                    // });
+                    // cleanPorcentajesAcumulados();
+                  } else if (idFideicomiso === "") {
+                    setLoading(true);
+                    createFideicomiso(() => {
+                      setLoading(false);
+                      handler(false);
+                      getMecanismosVehiculosPago &&
+                        getMecanismosVehiculosPago("Fideicomisos", () => { });
+                    });
+                    cleanPorcentajesAcumulados();
+                    setDataAsignacionTipoMoviSolicitudes([]);
+                  }
+                  //DE AQUI VIENE EL ERROR
+                  else if (idFideicomiso !== "" && (DataAsignacionTipoMoviSolicitudes.length > 0 || arregloPorcetajesAcumuladosRegistros.length > 0)) {
+                    let errorEncontrado = false;
+                    let mensajeError = "";
+
+                    tablaTipoMovimientoFideicomisoNew.forEach((nuevo) => {
+                      // 🔹 Validación 1: contra asignaciones de solicitudes (ya existente)
+                      const coincidencia = DataAsignacionTipoMoviSolicitudes.find(
+                        (asig) =>
+                          asig.IdEntePublicoObligado === nuevo.fideicomitente.Id &&
+                          asig.IdFondoIngreso === nuevo.fondoIngreso.Id &&
+                          asig.TipoMovRelacionado === nuevo.id
+                      );
+
+                      const usadoIngreso = Number(coincidencia?.PorcentajeUtilizadoIngreso) || 0;
+                      const orignalIngreso = Number(coincidencia?.PorcentajeOriginalIngreso) || 0;
+
+                      const usadoEquivalencia = Number(coincidencia?.PorcentajeUtilizadoEquivalencia) || 0;
+                      const orignalEquivalencia = Number(coincidencia?.PorcentajeOriginalEquivalencia) || 0;
+
+                      const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
+                      const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                      if (coincidencia) {
+
+                        console.log("usadoIngreso: ", usadoIngreso);
+
+                        //50 < 60 == SALTA ERROR
+                        //60 < 50 == NO SALTA ERROR
+
+
+                        if (nuevoIngreso < usadoIngreso) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de ingreso (${nuevoIngreso}%) no puede ser menor que el utilizado (${usadoIngreso}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "Asignacion",
+                            message: "AfectadoTotalIngreso",
+                            montoOriginal: orignalIngreso,
+                            montoUtilizado: usadoIngreso,
+                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+
+                        }
+
+                        if (nuevaEquivalencia < usadoEquivalencia) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de equivalencia (${nuevaEquivalencia}%) no puede ser menor que el utilizado (${usadoEquivalencia}%) para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "Asignacion",
+                            message: "EquivalenciaCorrespondienteMunicipios",
+                            montoOriginal: orignalEquivalencia,
+                            montoUtilizado: usadoEquivalencia,
+                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+                      }
+
+                      // 🔹 Validación 2: contra porcentajes acumulados (nueva)
+                      const acumulado = arregloPorcetajesAcumuladosRegistros.find(
+                        (acc) =>
+                          acc.IdFondoOIngreso === nuevo.fondoIngreso.Id &&
+                          acc.IdEntePublicoObligado === nuevo.fideicomitente.Id
+                      );
+                      console.log("acumulado encontrado EDITAR :", acumulado);
+
+                      if (acumulado) {
+
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.fideicomitente.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
+                        const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
+                        const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
+
+
+
+
+                        //console.log("ROEquivalencia: ", ROEquivalencia);
+                        // 🔸 Si el acumulado + nuevo supera 100, marcar error
+
+                        //acumuladoIngreso (El porcentaje acumulado que tiene este ente plublico con el fondo o ingreso) 90
+                        //nuevoIngreso (lo que ingresa el usuario) Ejemplo 15 que son 5% mas 
+                        //registro original (El que originalmente tenia el tipo de movimiento) 10
+
+                        //nuevoIngreso - registro original (15 - 10 = 5) 
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        //nuevoIngreso - registro original (20 - 10 = 10) 
+                        //90 + (20-10) = 100 ok
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+                        // 15 - 10 === 5 + 90 <= 100 = 95 no hay error
+                        // if (acumuladoIngreso + nuevoIngreso > 100) {
+                        console.log("usadoIngreso: ", usadoIngreso);
+                        console.log("acumuladoIngreso: ", acumuladoIngreso);
+                        console.log("nuevoIngreso: ", nuevoIngreso);
+                        console.log("ROIngreso: ", ROIngreso);
+
+                        //    acumuladoIngreso   +   nuevoIngreso - ROIngreso(Eliminado) + UTILIZADO
+
+                        //30          +          90      -  0 // REGISTRO NUEVO ESTO ESTA BIEN *****
+                        //30         +          90      -  0  === // REGISTRO EDITABLE SIN ASIGNACION NO ESTA BIEN 
+                        //30         +          90      -  10 === // REGISTRO EDITABLE CON ASIGNACION UTILIZADO ESTO ESTA BIEN *****  
+
+                        // 50  +    60    - 0  === 110 SALTARA ERROR, REGISTRO EDITABLE SIN ASIGNACION 
+                        // 50  +    60    - 30 === 80 REGISTRO EDITABLE CON ASIGNACION UTILIZADO DONDE TIENE PORCENTAJE ACUMULADO EN ESA FUENTE DE PAGO
+
+                        // 60 - 100 = 40 + 50 - 30 === 60
+                        //30 - 100 = 70 + 90 - 30 = 130
+                        //Antes ROIngreso(Registro Original Ingreso)
+                        if (acumuladoIngreso + (nuevoIngreso - usadoIngreso) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "AfectadoTotalIngreso",
+                            montoOriginal: acumuladoIngreso,
+                            montoUtilizado: nuevoIngreso,
+                            nombreEntePublicoObligado: nuevo.fideicomitente.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+                        //Antes ROEquivalencia(Registro Original Equivalencia)
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - usadoEquivalencia) > 100) {
                           errorEncontrado = true;
                           // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
                           setValidacionDialogAsignarFuente({
@@ -683,7 +817,7 @@ export function AgregarFideicomisos({
                     <br /> Porcentaje acumulado utilizado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoOriginal}%</strong>
                   </Typography>
                   <Typography sx={{ ...queries.medium_text, display: "flex", alignItems: "end" }}>
-                    <br /> Porcentaje acumulado ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
+                    <br /> Porcentaje ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
                   </Typography>
                 </Grid>
                 <Typography sx={{ ...queries.medium_text, display: "flex", justifyContent: "center" }}>
