@@ -7,6 +7,7 @@ export const createNotification = (
   listadoUsuarios: Array<string>,
   IdSolicitud?: string,
   ControlInterno?: string,
+  NumRegistroSolicitud?: number
 ) => {
   axios
     .post(
@@ -18,6 +19,7 @@ export const createNotification = (
         ControlInterno: ControlInterno,
         IdUsuarioCreador: localStorage.getItem("IdUsuario"),
         ListadoUsuarios: listadoUsuarios,
+        NumRegistroSolicitud: NumRegistroSolicitud,
       },
       {
         headers: {
@@ -28,6 +30,7 @@ export const createNotification = (
     )
     .then((r) => {
       // window.location.reload();
+      console.log("Respuesta Notificacion: ", r);
       
 
       alertaExito(()=>{}, "La solicitud se envió con éxito" )

@@ -20,9 +20,24 @@ export interface IRegistro {
   TipoEntePublicoObligado: string;
 
 
-  CLABE: string;
-  IdBanco: string;
-  NombreBanco: string;
+  // CLABE: string;
+  // IdBanco: string;
+  // NombreBanco: string;
+  IdGiraInstruccion: string;
+  NombreGiraInstruccion: string;
+
+  IdVaDirigidaA: string;
+  NombreVaDirigidaA: string;
+  
+  IdBeneficiario: string;
+  NombreBeneficiario: string;
+
+
+  IdTipoFuente: string;
+  NombreTipoFuente: string;
+  IdFondoIngreso: string;
+  NombreFondoIngreso: string;
+
   EntePublicoObligado: string;
 
   TipoMovimiento: string;
@@ -175,10 +190,23 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
     Mandante: "",
     TipoEntePublicoObligado: "",
 
-    NumeroCuenta: "",
-    CLABE: "",
-    IdBanco: "",
-    NombreBanco: "",
+    // NumeroCuenta: "",
+    // CLABE: "",
+    // IdBanco: "",
+    // NombreBanco: "",
+    IdGiraInstruccion: "",
+    NombreGiraInstruccion: "",
+    IdVaDirigidaA: "",
+    NombreVaDirigidaA: "",
+    IdBeneficiario: "",
+    NombreBeneficiario: "",
+
+
+    IdTipoFuente: "",//Nuevos
+    NombreTipoFuente: "",//Nuevos
+    IdFondoIngreso: "",//Nuevos
+    NombreFondoIngreso: "",
+
     EntePublicoObligado: "",
 
     TipoMovimiento: "",
@@ -201,7 +229,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       })),
       OriginalTablaAsignarFuenteNew: fuente,
     })),
-    
+
   cleanTablaAsignarFuenteNew: () =>
     set(() => ({
       tablaAsignarFuente: [],
@@ -242,7 +270,7 @@ export const createFuentePagoLargoPLazoSlice: StateCreator<
       })
       .then(({ data }) => {
         let r = data.data;
-        console.log("Mecanismos de pago fetched:", r);
+        console.log("Mecanismos de pago ", "tabla" , tabla, r);
 
         set(() => ({
           tablaMecanismoVehiculoPago: r,

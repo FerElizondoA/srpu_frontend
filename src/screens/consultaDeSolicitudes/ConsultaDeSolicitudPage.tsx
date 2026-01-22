@@ -690,6 +690,10 @@ export function ConsultaDeSolicitudPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                cleanSolicitudCortoPlazo();
+                                cleanSolicitudLargoPlazo();
+                                cleanInscripcion();
+                                cleanInscripcionModify();
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
@@ -779,6 +783,11 @@ export function ConsultaDeSolicitudPage() {
                               <IconButton
                                 type="button"
                                 onClick={() => {
+                                  cleanSolicitudCortoPlazo();
+                                  cleanSolicitudLargoPlazo();
+                                  cleanInscripcion();
+                                  cleanInscripcionModify();
+
                                   setInscripcion(row);
                                   setOpenDescargar(true);
                                 }}

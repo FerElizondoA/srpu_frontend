@@ -46,12 +46,14 @@ export function AgregarInstruccionesIrrevocables({
   openState,
   getMecanismosVehiculosPago,
   DataAsignacionTipoMoviSolicitudes,
+  setDataAsignacionTipoMoviSolicitudes
 }: {
   deshabilidarCamposSCLP?: boolean;
   handler: Function;
   openState: boolean;
   getMecanismosVehiculosPago: Function;
   DataAsignacionTipoMoviSolicitudes: IDataAsignacionTipoMoviSolicitudes[],
+  setDataAsignacionTipoMoviSolicitudes: Function;
 
 }) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -94,21 +96,21 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.getFondosOIngresos
   );
 
-  const banco: string = useInstruccionesStore(
-    (state) => state.datosGenerales.banco.Descripcion
-  );
+  // const beneficiario: string = useInstruccionesStore(
+  //   (state) => state.datosGenerales.beneficiario.Descripcion
+  // );
 
-  const numeroCuenta: string = useInstruccionesStore(
-    (state) => state.datosGenerales.numeroCuenta
-  );
+  // const giraIntruccion: string = useInstruccionesStore(
+  //   (state) => state.datosGenerales.giraIntruccion.Descripcion
+  // );
 
   const fechaInstruccion: Date = useInstruccionesStore(
     (state) => state.datosGenerales.fechaInstruccion
   );
 
-  const cuentaCLABE: string = useInstruccionesStore(
-    (state) => state.datosGenerales.cuentaCLABE
-  );
+  // const vaDirigidaA: string = useInstruccionesStore(
+  //   (state) => state.datosGenerales.vaDirigidaA.Descripcion
+  // );
 
   const tablaTipoMovimiento: IDeudorInstrucciones[] = useInstruccionesStore(
     (state) => state.tablaTipoMovimiento
@@ -153,14 +155,17 @@ export function AgregarInstruccionesIrrevocables({
     (state) => state.TablaPruebaEditarFideicomiso
   );
 
-
   const setTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
     (state) => state.setTablaPruebaEditarFideicomiso
   );
+
   const cleanTablaPruebaEditarFideicomiso: Function = useFideicomisoStore(
     (state) => state.cleanTablaPruebaEditarFideicomiso
   );
 
+  const cleanTipoMovimiento: Function = useInstruccionesStore(
+    (state) => state.cleanTipoMovimiento
+  );
 
   useEffect(() => {
     getTiposDeFuente();
@@ -169,9 +174,7 @@ export function AgregarInstruccionesIrrevocables({
     getTipoEntePublicoObligado();
     getFondosOIngresos();
     console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
-
   }, []);
-
 
 
   return (
@@ -184,6 +187,7 @@ export function AgregarInstruccionesIrrevocables({
               onClick={() => {
                 handler(false);
                 cleanTablaPruebaEditarFideicomiso([]);
+                cleanTipoMovimiento()
               }}
               sx={{ color: "white" }}
             >
@@ -207,11 +211,11 @@ export function AgregarInstruccionesIrrevocables({
                 // disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instrucción Irrevocable"}
                 disabled={
                   (tablaTipoMovimiento.length <= 0 ||
-                    numeroCuenta === "" ||
-                    parseInt(numeroCuenta) === 0 ||
-                    cuentaCLABE === "" ||
-                    parseInt(cuentaCLABE) === 0 ||
-                    banco === "" ||
+                    //giraIntruccion === "" ||
+                    //parseInt(numeroCuenta) === 0 ||
+                    // vaDirigidaA === "" ||
+                    //parseInt(cuentaCLABE) === 0 ||
+                    //beneficiario === "" ||
                     tablaSoporteDocumentalInstrucciones.length <= 0) ||
 
                   (tipoMecanismoVehiculoPago === "Mandato" ||  //Para fuente de pago->vehiculo de pago
@@ -239,7 +243,114 @@ export function AgregarInstruccionesIrrevocables({
                 }}
                 onClick={() => {
 
-                  if (IdInstruccion === "") {
+                  if (IdInstruccion === "" && arregloPorcetajesAcumuladosRegistros.length > 0) {
+                    let errorEncontrado = false;
+                    let mensajeError = "";
+
+                    tablaTipoMovimiento.forEach((nuevo) => {
+
+                      // 🔹 Validación 2: contra porcentajes acumulados (nueva)
+                      const acumulado = arregloPorcetajesAcumuladosRegistros.find(
+                        (acc) =>
+                          acc.IdFondoOIngreso === nuevo.fondoIngreso.Id &&
+                          acc.IdEntePublicoObligado === nuevo.entePublicoObligado.Id
+                      );
+
+                      console.log("acumulado encontrado :", acumulado);
+
+                      if (acumulado) {
+
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.entePublicoObligado.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
+
+
+
+
+                        const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
+                        const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
+                        const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        console.log("acumuladoIngreso: ", acumuladoIngreso);
+                        console.log("nuevoIngreso: ", nuevoIngreso);
+                        console.log("ROIngreso: ", ROIngreso);
+
+
+                        //console.log("ROEquivalencia: ", ROEquivalencia);
+
+
+
+                        // 🔸 Si el acumulado + nuevo supera 100, marcar error
+
+                        //acumuladoIngreso (El porcentaje acumulado que tiene este ente plublico con el fondo o ingreso) 90
+                        //nuevoIngreso (lo que ingresa el usuario) Ejemplo 15 que son 5% mas 
+                        //registro original (El que originalmente tenia el tipo de movimiento) 10
+
+                        //nuevoIngreso - registro original (15 - 10 = 5) 
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        //nuevoIngreso - registro original (20 - 10 = 10) 
+                        //90 + (20-10) = 100 ok
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        // 15 - 10 === 5 + 90 <= 100 = 95 no hay error
+
+                        // if (acumuladoIngreso + nuevoIngreso > 100) {
+
+                        if (acumuladoIngreso + (nuevoIngreso - ROIngreso) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "AfectadoTotalIngreso",
+                            montoOriginal: acumuladoIngreso,
+                            montoUtilizado: nuevoIngreso,
+                            nombreEntePublicoObligado: nuevo.entePublicoObligado.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "EquivalenciaCorrespondienteMunicipios",
+                            montoOriginal: acumuladoEquivalencia,
+                            montoUtilizado: nuevaEquivalencia,
+                            nombreEntePublicoObligado: nuevo.entePublicoObligado.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+                      }
+                    });
+
+                    if (errorEncontrado) {
+
+                      return;
+                    } else {
+                      // ✅ Si todo pasa las validaciones:
+                      setLoading(true);
+                      createInstruccion(() => {
+                        setLoading(false);
+                        handler(false);
+                        getMecanismosVehiculosPago &&
+                          getMecanismosVehiculosPago("Instrucción Irrevocable", () => { });
+                      });
+                      cleanPorcentajesAcumulados();
+                      setDataAsignacionTipoMoviSolicitudes([]);
+                    }
+                  } else if (IdInstruccion === "") {
                     setLoading(true);
                     createInstruccion(() => {
                       setLoading(false);
@@ -642,7 +753,7 @@ export function AgregarInstruccionesIrrevocables({
                     <br /> Porcentaje acumulado utilizado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoOriginal}%</strong>
                   </Typography>
                   <Typography sx={{ ...queries.medium_text, display: "flex", alignItems: "end" }}>
-                    <br /> Porcentaje acumulado ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
+                    <br /> Porcentaje ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
                   </Typography>
                 </Grid>
                 <Typography sx={{ ...queries.medium_text, display: "flex", justifyContent: "center" }}>

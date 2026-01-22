@@ -46,7 +46,7 @@ import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 import { useLargoPlazoStore } from "../../store/CreditoLargoPlazo/main";
 import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
 import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
-import {getCatalogo as getMandatarios} from "../../components/APIS/Config/APISCatalogos";
+import { getCatalogo as getMandatarios } from "../../components/APIS/Config/APISCatalogos";
 
 export interface IDatosMandatos {
   AcumuladoEstado: string;
@@ -91,9 +91,9 @@ const heads: Head[] = [
   {
     label: "Mandatario",
   },
-  {
-    label: "Tipo de Mandante",
-  },
+  // {
+  //   label: "Tipo de Mandante",
+  // },
   {
     label: "Organismo / Municipio Mandante",
   },
@@ -146,7 +146,7 @@ export function Mandatos() {
   useEffect(() => {
     getMecanismosVehiculosPago("Mandato", () => { })
     getOrganismos();
-    
+
     //getMandatos(setMandatos);
   }, []);
 
@@ -258,11 +258,20 @@ export function Mandatos() {
     Mandante: "",
     TipoEntePublicoObligado: "",
 
-    CLABE: "",
-    IdBanco: "",
-    NombreBanco: "",
-    EntePublicoObligado: "",
+    IdGiraInstruccion: "",
+    NombreGiraInstruccion: "",
 
+    IdVaDirigidaA: "",
+    NombreVaDirigidaA: "",
+    IdBeneficiario: "",
+    NombreBeneficiario: "",
+
+    IdTipoFuente: "",//Nuevos
+    NombreTipoFuente: "",//Nuevos
+    IdFondoIngreso: "",//Nuevos
+    NombreFondoIngreso: "",
+
+    EntePublicoObligado: "",
     TipoMovimiento: "",
     SoporteDocumental: "",
   });
@@ -272,7 +281,7 @@ export function Mandatos() {
   );
 
   const [dataAsignacionTipoMoviSolicitudes, setDataAsignacionTipoMoviSolicitudes] = useState<IDataAsignacionTipoMoviSolicitudes[]>([]);
-    const [mandatarios, setMandatarios] = useState<ICatalogo[]>([]);
+  const [mandatarios, setMandatarios] = useState<ICatalogo[]>([]);
 
   useEffect(() => {
     getMandatarios(setMandatarios, "mandatario");
@@ -436,9 +445,9 @@ export function Mandatos() {
                         {row.Mandatario}
                       </StyledTableCell>
 
-                      <StyledTableCell align="center">
+                      {/* <StyledTableCell align="center">
                         {row.TipoEntePublicoObligado}
-                      </StyledTableCell>
+                      </StyledTableCell> */}
 
                       <StyledTableCell align="center">
                         {row.Mandante}
@@ -466,13 +475,13 @@ export function Mandatos() {
 
 
                               console.log("MANDATARIO FILTER", mandatarios.filter(
-                                    (v, index) =>
-                                      v.Descripcion === row.Mandatario
-                                  )[0])
-                                  console.log("MANDANTE FILTER", catalogoOrganismos.filter(
-                                    (v, index) =>
-                                      v.Descripcion === row.Mandante
-                                  )[0])
+                                (v, index) =>
+                                  v.Descripcion === row.Mandatario
+                              )[0])
+                              console.log("MANDANTE FILTER", catalogoOrganismos.filter(
+                                (v, index) =>
+                                  v.Descripcion === row.Mandante
+                              )[0])
                               editarMandato(
                                 row.Id,
                                 {
@@ -492,9 +501,9 @@ export function Mandatos() {
                                 JSON.parse(row.SoporteDocumental)
                               );
                               setIdMandato(row?.Id || "");
-                               setTimeout(() => {
-                              setOpenAgregarMandato(!openAgregarMandato);
-                                }, 1000);
+                              setTimeout(() => {
+                                setOpenAgregarMandato(!openAgregarMandato);
+                              }, 1000);
 
                               setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
 

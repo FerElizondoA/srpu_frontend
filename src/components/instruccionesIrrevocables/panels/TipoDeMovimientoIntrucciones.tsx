@@ -40,15 +40,24 @@ import {
   IFondoOIngreso,
 } from "../../Interfaces/InterfacesLplazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { ValidacionAgregarTipoMov } from "../../fideicomisos/dialog/ValidacionAgregarTipoMov";
 
 interface HeadLabels {
   label: string;
 }
 
+interface arregloIdBeneficiarios {
+  Id: string;
+  TipoFuenteMovimiento: String
+}
+
 const headsNews: HeadLabels[] = [
-  {
-    label: "Id",
-  },
+  // {
+  //   label: "Id",
+  // },
+  // {
+  //   label: "Id del Movimiento",
+  // },
   {
     label: "Tipo de Fuente",
   },
@@ -62,7 +71,10 @@ const headsNews: HeadLabels[] = [
     label: "Porcentaje Afectado Sobre el Total de Ingreso",
   },
   {
-    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios  ([*])",
+    label: "Equivalencia Sobre Sin incluir el monto que corresponde a los municipios",
+  },
+  {
+    label: "Beneficiario",
   },
   {
     label: "Eliminar",
@@ -188,10 +200,21 @@ export function TipoDeMovimientoIntrucciones() {
     (state) => state.updateTipoMovimientoField
   );
 
+  // const ids: string[] = tablaTipoMovimiento.map((row) => {
+  //   return row.id;
+  // });
 
-  const ids: string[] = tablaTipoMovimiento.map((row) => {
-    return row.id;
-  });
+  // const TipoFuenteMovimientos: string[] = tablaTipoMovimiento.map((row) => {
+  //   return row.tipoFuente.Descripcion;
+  // });
+
+  // const opcionesMovimientoRelacionado = tablaTipoMovimiento;
+
+  // const [openValidacionAgregarTipoMov, setOpenValidacionAgregarTipoMov] = useState(false)
+
+  const catalogoInstituciones: Array<ICatalogo> = useCortoPlazoStore(
+    (state) => state.catalogoInstituciones
+  );
 
   const sumaPorcentajeAcumulado: {
     SumaAcumuladoEstado: number;
@@ -212,9 +235,13 @@ export function TipoDeMovimientoIntrucciones() {
             tipoMovimiento.tipoEntePublicoObligado.Id === "" ||
             tipoMovimiento.entePublicoObligado.Id === "" ||
             tipoMovimiento.tipoFuente.Id === "" ||
-            tipoMovimiento.fondoIngreso.Id === ""
+            tipoMovimiento.fondoIngreso.Id === "" ||
+            beneficiario.beneficiario.Id === ""
           }
           onClick={() => {
+
+            console.log("Agregar beneficiario al tipo de movimiento");
+            console.log("COMPARACION ID ENTE OBLIGADO: ");
             addTipoMovimiento({
               id: tipoMovimiento.id,
               tipoEntePublicoObligado: tipoMovimiento.tipoEntePublicoObligado,
@@ -223,6 +250,9 @@ export function TipoDeMovimientoIntrucciones() {
               fondoIngreso: tipoMovimiento.fondoIngreso,
               AfectadoTotalIngreso: tipoMovimiento.AfectadoTotalIngreso,
               EquivalenciaCorrespondienteMunicipios: tipoMovimiento.EquivalenciaCorrespondienteMunicipios,
+              Beneficiario: tipoMovimiento.entePublicoObligado.Id === beneficiario.beneficiario.Id ?
+                { Id: "", Descripcion: "" } :
+                beneficiario.beneficiario
             });
             cleanTipoMovimiento();
           }}
@@ -253,7 +283,7 @@ export function TipoDeMovimientoIntrucciones() {
         },
       }}
     >
-      <Grid
+      {/* <Grid
         item
         display={"flex"}
         justifyContent={"center"}
@@ -285,7 +315,7 @@ export function TipoDeMovimientoIntrucciones() {
             />
           )}
         </RadioGroup>
-      </Grid>
+      </Grid> */}
 
       <Divider>
         <Typography
@@ -307,7 +337,7 @@ export function TipoDeMovimientoIntrucciones() {
         sx={{ height: "10vh" }}
       // flexDirection={"column"}
       >
-        {movimiento === "BENEFICIARIO" ? (
+        {/* {movimiento === "BENEFICIARIO" ? (
           <Grid
             item
             xs={10}
@@ -321,14 +351,53 @@ export function TipoDeMovimientoIntrucciones() {
                 : { xs: 0, sm: 0 }
             }
           >
-            <InputLabel sx={queries.medium_text}>Id</InputLabel>
+            <InputLabel sx={queries.medium_text}>Movimiento Relacionado</InputLabel>
             <Autocomplete
               clearText="Borrar"
               noOptionsText="Sin opciones"
               closeText="Cerrar"
               openText="Abrir"
               fullWidth
-              options={ids}
+
+              options={opcionesMovimientoRelacionado}
+
+              getOptionLabel={(option) =>
+                option?.tipoFuente?.Descripcion || ""
+              }
+
+              renderOption={(props, option, { index }) => (
+                <li {...props} key={option.id}>
+                  <Typography>
+                    {index + 1}. {option.tipoFuente.Descripcion}
+                  </Typography>
+                </li>
+              )}
+
+              value={tipoMovimiento || null}
+
+              onChange={(event, value) => {
+                setTipoMovimiento(value || undefined);
+              }}
+
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  sx={queries.medium_text}
+                />
+              )}
+
+              isOptionEqualToValue={(option, value) =>
+                option?.id === value?.id
+              }
+            />
+            <Autocomplete
+              clearText="Borrar"
+              noOptionsText="Sin opciones"
+              closeText="Cerrar"
+              openText="Abrir"
+              fullWidth
+              options={TipoFuenteMovimientos}
               getOptionLabel={(option) => option}
               renderOption={(props, option) => {
                 return (
@@ -356,20 +425,28 @@ export function TipoDeMovimientoIntrucciones() {
               }
             />
           </Grid>
-        ) : null}
+        ) : null} */}
 
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
+          sm={5}
+          md={5}
+          lg={5}
+          xl={5}
           mb={
-            movimiento === "BENEFICIARIO"
-              ? { xs: 1, sm: 0, md: 0 }
-              : { xs: 4, sm: 0, md: 0 }
+            { xs: 4, sm: 0, md: 0 }
           }
+        // sm={movimiento === "DEUDOR" ? 5 : 3}
+        // md={movimiento === "DEUDOR" ? 5 : 3}
+        // lg={movimiento === "DEUDOR" ? 5 : 3}
+        // xl={movimiento === "DEUDOR" ? 5 : 3}
+
+        // mb={
+        //   movimiento === "BENEFICIARIO"
+        //     ? { xs: 1, sm: 0, md: 0 }
+        //     : { xs: 4, sm: 0, md: 0 }
+        // }
         //mb={{xs:2, sm:0}}
         >
           <InputLabel sx={queries.medium_text}>
@@ -377,6 +454,7 @@ export function TipoDeMovimientoIntrucciones() {
           </InputLabel>
 
           <Autocomplete
+            // disabled={movimiento === "BENEFICIARIO"}
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -418,13 +496,21 @@ export function TipoDeMovimientoIntrucciones() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 3}
-          md={movimiento === "DEUDOR" ? 5 : 3}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
+          sm={5}
+          md={5}
+          lg={5}
+          xl={5}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : { sm: 0 }
+            { xs: 1, sm: 0, md: 0 }
           }
+        // sm={movimiento === "DEUDOR" ? 5 : 3}
+        // md={movimiento === "DEUDOR" ? 5 : 3}
+        // lg={movimiento === "DEUDOR" ? 5 : 3}
+        // xl={movimiento === "DEUDOR" ? 5 : 3}
+
+        // mt={
+        //   movimiento === "BENEFICIARIO" ? { xs: 1, sm: 0, md: 0 } : { sm: 0 }
+        // }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
             Ente Público Obligado
@@ -439,6 +525,7 @@ export function TipoDeMovimientoIntrucciones() {
               tipoMovimiento.tipoEntePublicoObligado.Descripcion ===
               "No Aplica" ||
               /^[\s]*$/.test(tipoMovimiento.tipoEntePublicoObligado.Descripcion)
+              // || movimiento === "BENEFICIARIO"
             }
             options={catalogoOrganismos.filter(
               (td: any) =>
@@ -492,18 +579,22 @@ export function TipoDeMovimientoIntrucciones() {
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
-          mt={
-            movimiento === "BENEFICIARIO" ? { xs: 5, sm: 3 } : { xs: 0, sm: 0 }
-          }
+          sm={5}
+          md={5}
+          lg={5}
+          xl={5}
+          mt={{ xs: 5, sm: 3 }}
+
+        // mt={
+        //   movimiento === "BENEFICIARIO" ? { xs: 5, sm: 3 } : { xs: 0, sm: 0 }
+        // }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
             Tipo de fuente
           </InputLabel>
           <Autocomplete
+            //disabled={movimiento === "BENEFICIARIO"}
+
             disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -547,15 +638,20 @@ export function TipoDeMovimientoIntrucciones() {
           />
         </Grid>
 
+        {/* 
+        ***************falta agregar el beneficiario al registro de tipo de movimiento ***************
+        
+        
+        */}
         <Grid
           item
           xs={10}
-          sm={movimiento === "DEUDOR" ? 5 : 4}
-          md={movimiento === "DEUDOR" ? 5 : 4}
-          lg={movimiento === "DEUDOR" ? 5 : 3}
-          xl={movimiento === "DEUDOR" ? 5 : 3}
+          sm={5}
+          md={5}
+          lg={5}
+          xl={5}
           mt={
-            movimiento === "BENEFICIARIO" ? { xs: 1, sm: 3 } : { xs: 3, sm: 0 }
+            { xs: 1, sm: 3 }
           }
         >
           <InputLabel sx={{ ...queries.medium_text }}>
@@ -563,7 +659,9 @@ export function TipoDeMovimientoIntrucciones() {
           </InputLabel>
           <Autocomplete
             disableClearable
-            disabled={tipoMovimiento.tipoFuente?.Id === ""}
+            disabled={tipoMovimiento.tipoFuente?.Id === ""
+              // || movimiento === "BENEFICIARIO"
+            }
             clearText="Borrar"
             noOptionsText="Sin opciones"
             closeText="Cerrar"
@@ -613,7 +711,7 @@ export function TipoDeMovimientoIntrucciones() {
         </Grid>
       </Grid>
 
-      {movimiento === "DEUDOR" && (
+      {/* {movimiento === "DEUDOR" && (
         <Grid
           container
           mt={2}
@@ -624,165 +722,167 @@ export function TipoDeMovimientoIntrucciones() {
         >
           {buttonAgregar()}
         </Grid>
-      )}
+      )} */}
 
-      {movimiento === "BENEFICIARIO" && (
-        <Divider>
-          <Typography
-            sx={{
-              ...queries.bold_text,
-              color: "#af8c55 ",
-            }}
-          >
-            Beneficiario
-          </Typography>
-        </Divider>
-      )}
-
-      {movimiento === "BENEFICIARIO" && (
-        <Grid
-          container
-          display={"flex"}
-          justifyContent={"space-evenly"}
-          alignItems={"center"}
-          mt={{ xs: 2, sm: 0 }}
+      {/* {movimiento === "BENEFICIARIO" && ( */}
+      <Divider>
+        <Typography
+          sx={{
+            ...queries.bold_text,
+            color: "#af8c55 ",
+          }}
         >
-          <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Tipo de beneficiario
-            </InputLabel>
+          Beneficiario
+        </Typography>
+      </Divider>
+      {/* )} */}
 
-            <Autocomplete
-              clearText="Borrar"
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoTipoEntePublicoObligado}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Descripcion}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
+      {/* {movimiento === "BENEFICIARIO" && ( */}
+      <Grid
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+        mt={{ xs: 2, sm: 0 }}
+      >
+        {/* <Grid item xs={10} sm={5} md={5} lg={3} xl={3}>
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Tipo de beneficiario
+          </InputLabel>
+
+          <Autocomplete
+            clearText="Borrar"
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogoTipoEntePublicoObligado}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Descripcion}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            value={beneficiario.tipoBeneficiario}
+            onChange={(v, text) =>
+              setBeneficiario({
+                tipoBeneficiario: {
+                  Id: text?.Id || "",
+                  Descripcion: text?.Descripcion || "",
+                },
+                beneficiario: beneficiario.beneficiario,
+              })
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+        </Grid> */}
+
+        <Grid item xs={10} sm={5} md={5} lg={5} xl={5} mt={{ xs: 2, sm: 0 }}>
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Beneficiario
+          </InputLabel>
+
+          <Autocomplete
+            clearText="Borrar"
+            //disabled={beneficiario.tipoBeneficiario.Descripcion === ""}
+            noOptionsText="Sin opciones"
+            closeText="Cerrar"
+            openText="Abrir"
+            fullWidth
+            options={catalogoInstituciones}
+
+            // options={catalogoOrganismos.filter(
+            //   (td: any) =>
+            //     td.IdTipoEntePublico === beneficiario.tipoBeneficiario.Id
+            // )}
+            value={beneficiario.beneficiario}
+            getOptionLabel={(option) => option.Descripcion}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} key={option.Id}>
+                  <Typography>{option.Descripcion}</Typography>
+                </li>
+              );
+            }}
+            onChange={(v, text) =>
+              setBeneficiario({
+                ...beneficiario,
+                beneficiario: {
+                  Id: text.Id,
+                  Descripcion: text.Descripcion,
+                },
+              })
+            }
+            disableClearable
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                sx={queries.medium_text}
+              />
+            )}
+            isOptionEqualToValue={(option, value) =>
+              option.Descripcion === value.Descripcion ||
+              value.Descripcion === ""
+            }
+          />
+        </Grid>
+
+        <Grid
+          item
+          xs={10}
+          sm={8}
+          md={5}
+          lg={5}
+          xl={5}
+          mt={{ xs: 2, sm: 2, md: 0 }}
+        >
+          <InputLabel sx={{ ...queries.medium_text }}>
+            Fecha de Alta
+          </InputLabel>
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            adapterLocale={es}
+          >
+            <DesktopDatePicker
+              sx={{
+                width: "100%",
               }}
-              value={beneficiario.tipoBeneficiario}
-              onChange={(v, text) =>
-                setBeneficiario({
-                  tipoBeneficiario: {
-                    Id: text?.Id || "",
-                    Descripcion: text?.Descripcion || "",
-                  },
-                  beneficiario: beneficiario.beneficiario,
-                })
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
-            />
-          </Grid>
-
-          <Grid item xs={10} sm={5} md={5} lg={3} xl={3} mt={{ xs: 2, sm: 0 }}>
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Beneficiario
-            </InputLabel>
-
-            <Autocomplete
-              clearText="Borrar"
-              disabled={beneficiario.tipoBeneficiario.Descripcion === ""}
-              noOptionsText="Sin opciones"
-              closeText="Cerrar"
-              openText="Abrir"
-              fullWidth
-              options={catalogoOrganismos.filter(
-                (td: any) =>
-                  td.IdTipoEntePublico === beneficiario.tipoBeneficiario.Id
-              )}
-              value={beneficiario.beneficiario}
-              getOptionLabel={(option) => option.Descripcion}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} key={option.Id}>
-                    <Typography>{option.Descripcion}</Typography>
-                  </li>
-                );
-              }}
-              onChange={(v, text) =>
+              value={beneficiario.fechaAlta}
+              onChange={(v) => {
                 setBeneficiario({
                   ...beneficiario,
-                  beneficiario: {
-                    Id: text.Id,
-                    Descripcion: text.Descripcion,
-                  },
-                })
-              }
-              disableClearable
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  sx={queries.medium_text}
-                />
-              )}
-              isOptionEqualToValue={(option, value) =>
-                option.Descripcion === value.Descripcion ||
-                value.Descripcion === ""
-              }
+                  fechaAlta: v,
+                });
+              }}
             />
-          </Grid>
-
-          <Grid
-            item
-            xs={10}
-            sm={8}
-            md={5}
-            lg={3}
-            xl={3}
-            mt={{ xs: 2, sm: 2, md: 0 }}
-          >
-            <InputLabel sx={{ ...queries.medium_text }}>
-              Fecha de Alta
-            </InputLabel>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={es}
-            >
-              <DesktopDatePicker
-                sx={{
-                  width: "100%",
-                }}
-                value={beneficiario.fechaAlta}
-                onChange={(v) => {
-                  setBeneficiario({
-                    ...beneficiario,
-                    fechaAlta: v,
-                  });
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-
-          <Grid
-            item
-            mt={2}
-            width={"100%"}
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            {buttonAgregar()}
-          </Grid>
+          </LocalizationProvider>
         </Grid>
-      )}
+
+        <Grid
+          item
+          mt={2}
+          width={"100%"}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          {buttonAgregar()}
+        </Grid>
+      </Grid>
+      {/* )} */}
 
       <Grid container mt={3} mb={2} display={"flex"} justifyContent={"center"}>
         <Paper sx={{ width: "100%" }}>
@@ -821,11 +921,11 @@ export function TipoDeMovimientoIntrucciones() {
                     return (
                       <StyledTableRow key={index}>
                         {/* ID */}
-                        <StyledTableCell align="center">
+                        {/* <StyledTableCell align="center">
                           <Typography >
                             {row?.id}
                           </Typography>
-                        </StyledTableCell>
+                        </StyledTableCell> */}
 
                         {/* FUENTE DE PAGO */}
                         <StyledTableCell align="center">
@@ -887,8 +987,9 @@ export function TipoDeMovimientoIntrucciones() {
                           />
                         </StyledTableCell>
 
-
-
+                        <StyledTableCell align="center">
+                          {row?.Beneficiario.Descripcion}
+                        </StyledTableCell>
 
                         <StyledTableCell align="center">
                           <Tooltip title="Eliminar">
@@ -915,6 +1016,10 @@ export function TipoDeMovimientoIntrucciones() {
           </TableContainer>
         </Paper>
       </Grid>
+      {/* <ValidacionAgregarTipoMov
+        openValidacionAgregarTipoMov={openValidacionAgregarTipoMov}
+        setOpenValidacionAgregarTipoMov={setOpenValidacionAgregarTipoMov}
+      /> */}
     </Grid>
   );
 }

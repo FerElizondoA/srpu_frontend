@@ -33,7 +33,7 @@ import { useCortoPlazoStore } from "../../store/CreditoCortoPlazo/main";
 import { useInstruccionesStore } from "../../store/InstruccionesIrrevocables/main";
 import { Transition } from "./Mandatos";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { be, es, id } from "date-fns/locale";
 import { DetalleInstruccion } from "../../components/instruccionesIrrevocables/dialog/DetalleInstrucciones";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useFideicomisoStore } from "../../store/Fideicomiso/main";
@@ -43,13 +43,21 @@ import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { IRegistro } from "../../store/CreditoLargoPlazo/fuenteDePago";
 import { BarraFiltrosFuentesPago } from "../../generics/BarraFiltrosFuentesPago";
 import { IDataAsignacionTipoMoviSolicitudes } from "./Fideicomisos";
+import { getMunicipiosUOrganismos } from "../../components/APIS/APIS Cortoplazo/APISEncabezado";
 
 export interface IDatosInstrucciones {
   Id: string;
-  NumeroCuenta: string;
-  CLABE: string;
-  FechaInstruccion: string;
-  DescripcionBanco: string;
+  // NumeroCuenta: string;
+  // CLABE: string;
+  // FechaInstruccion: string;
+  // DescripcionBanco: string;
+  giraIntruccion: { Id: string; Descripcion: string };
+  vaDirigidaA: { Id: string; Descripcion: string };
+  beneficiario: { Id: string; Descripcion: string };
+  fechaInstruccion: Date;
+  tipoFuente?: { Id: string; Descripcion: string };
+  fondoIngreso?: { Id: string; Descripcion: string; TipoDeFuente: string };
+
   TipoEntePublicoObligado: string;
   EntePublicoObligado: string;
   TipoMovimiento: string;
@@ -66,24 +74,46 @@ interface Head {
 }
 
 const heads: Head[] = [
+  // {
+  //   label: "Número de Cuenta",
+  // },
+  // {
+  //   label: "Fecha de la Instrucción",
+  // },
+  // {
+  //   label: "Cuenta CLABE",
+  // },
+  // {
+  //   label: "Banco",
+  // },
   {
-    label: "Número de Cuenta",
+    label: "No. de Registro",
   },
   {
     label: "Fecha de la Instrucción",
   },
   {
-    label: "Cuenta CLABE",
+    label: "Gira la Instrucción",
   },
   {
-    label: "Banco",
+    label: "Dirigida a",
   },
   {
-    label: "Tipo de Ente Público Obligado",
+    label: "Beneficiario",
+  },
+
+  {
+    label: "Tipo de Fuente",
   },
   {
-    label: "Ente Público Obligado",
+    label: "Fondo o Ingreso",
   },
+  // {
+  //   label: "Tipo de Ente Público Obligado",
+  // },
+  // {
+  //   label: "Ente Público Obligado",
+  // },
   {
     label: "Acciones",
   },
@@ -194,6 +224,8 @@ export function InstruccionesIrrevocables() {
   const [instruccionesFiltrados, setInstruccionesFiltrados] = useState<Array<IRegistro>>([]);
   const [datos, setDatos] = useState<Array<IRegistro>>([]);
 
+  const [DatosOrganismos, setDatosOrganismos] = useState<Array<any>>([]);
+
 
   useEffect(() => {
     getMecanismosVehiculosPago("Instruccion Irrevocable", () => { })
@@ -201,6 +233,7 @@ export function InstruccionesIrrevocables() {
     getInstituciones();
     getSumaPorcentajeAcumulado("InstruccionesIrrevocables");
     setTipoMecanismoVehiculoPago("")
+    getMunicipiosUOrganismos(setDatosOrganismos)
   }, []);
 
   useEffect(() => {
@@ -208,6 +241,14 @@ export function InstruccionesIrrevocables() {
     setInstruccionesFiltrados(tablaMecanismoVehiculoPago);
   }, [tablaMecanismoVehiculoPago]);
 
+  useEffect(() => {
+    console.log("DatosOrganismos", DatosOrganismos);
+
+    console.log("PRUEBA", DatosOrganismos.filter(
+      (i: ICatalogo) =>
+        i.Descripcion === "AGENCIA DE ADMINISTRACIÓN PENITENCIARIA"
+    )[0],)
+  }, [DatosOrganismos]);
 
 
   useEffect(() => {
@@ -245,11 +286,24 @@ export function InstruccionesIrrevocables() {
       Mandante: "",
       TipoEntePublicoObligado: "",
 
+      // CLABE: "",
+      // IdBanco: "",
+      // NombreBanco: "",
+
+      IdGiraInstruccion: "",
+      NombreGiraInstruccion: "",
+      IdVaDirigidaA: "",
+      NombreVaDirigidaA: "",
+      IdBeneficiario: "",
+      NombreBeneficiario: "",
 
 
-      CLABE: "",
-      IdBanco: "",
-      NombreBanco: "",
+
+      IdTipoFuente: "",//Nuevos
+      NombreTipoFuente: "",//Nuevos
+      IdFondoIngreso: "",//Nuevos
+      NombreFondoIngreso: "",
+
       EntePublicoObligado: "",
 
       TipoMovimiento: "",
@@ -270,6 +324,14 @@ export function InstruccionesIrrevocables() {
       // FechaCreacion: "",
       // CreadoPor: "",
     });
+
+
+  useEffect(() => {
+    setDataAsignacionTipoMoviSolicitudes([]);
+    console.log("dataAsignacionTipoMoviSolicitudes limpiado")
+  }, [openAgregarInstruccion])
+
+
 
   return (
     <Grid height={"74vh"}>
@@ -441,9 +503,27 @@ export function InstruccionesIrrevocables() {
                         </StyledTableCell>
 
                         <StyledTableCell align="center">
-                          {row.CLABE}
+                          {/* {row.TipoEntePublicoObligado} */}
+                          {row.NombreGiraInstruccion}
                         </StyledTableCell>
 
+                        <StyledTableCell align="center">
+                          {row.NombreVaDirigidaA}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row.NombreBeneficiario}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row.NombreTipoFuente}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center">
+                          {row.NombreFondoIngreso}
+                        </StyledTableCell>
+
+                        {/* 
                         <StyledTableCell align="center" >
                           <Typography sx={{
                             width: "300px",
@@ -452,15 +532,13 @@ export function InstruccionesIrrevocables() {
                           }}>
                             {row.NombreBanco}
                           </Typography>
-                        </StyledTableCell>
+                        </StyledTableCell> */}
 
-                        <StyledTableCell align="center">
-                          {row.TipoEntePublicoObligado}
-                        </StyledTableCell>
 
-                        <StyledTableCell align="center">
+
+                        {/* <StyledTableCell align="center">
                           {row.EntePublicoObligado}
-                        </StyledTableCell>
+                        </StyledTableCell> */}
 
                         <StyledTableCell align="center">
                           <Tooltip title="Ver detalle">
@@ -479,6 +557,7 @@ export function InstruccionesIrrevocables() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                console.log("row", row);
                                 let auxArray = JSON.parse(row.TipoMovimiento);
                                 DetalleAsignacionTipoMoviSolicitudes(row.Id, setDataAsignacionTipoMoviSolicitudes)
                                 // auxArray.map((column: any) => {
@@ -499,15 +578,33 @@ export function InstruccionesIrrevocables() {
                                 // });
                                 setTablaPruebaEditarFideicomiso(JSON.parse(row.TipoMovimiento))
 
+                                const auxgiraInstruccion = { Id: row.IdGiraInstruccion, Descripcion: row.NombreGiraInstruccion };
+                                const auxvaDirigidaA = { Id: row.IdVaDirigidaA, Descripcion: row.NombreVaDirigidaA };
+                                const auxbenefeciario = { Id: row.IdBeneficiario, Descripcion: row.NombreBeneficiario };
+
+                                console.log("auxgiraInstruccion", auxgiraInstruccion);
+                                console.log("auxvaDirigidaA", auxvaDirigidaA);
+                                console.log("auxbenefeciario", auxbenefeciario);
                                 editarInstruccion(
                                   row.Id,
                                   {
+                                    giraIntruccion: auxgiraInstruccion,
+                                    vaDirigidaA: auxvaDirigidaA,
+                                    beneficiario: auxbenefeciario,
+
+
+                                    tipoFuente: { Id: row.IdTipoFuente, Descripcion: row.NombreTipoFuente },
+                                    fondoIngreso: { Id: row.IdFondoIngreso, Descripcion: row.NombreFondoIngreso },
+                                    //IdTipoFuente: row?.IdTipoFuente,//Nuevos
+                                    //NombreTipoFuente: row.NombreTipoFuente,//Nuevos
+                                    //IdFondoIngreso: row?.IdFondoIngreso,//Nuevos
+                                    //NombreFondoIngreso: row.NombreFondoIngreso,
                                     numeroCuenta: row.NumeroRegistro,
-                                    cuentaCLABE: row.CLABE,
-                                    banco: catalogoInstituciones.filter(
-                                      (i: ICatalogo) =>
-                                        i.Descripcion === row.NombreBanco
-                                    )[0],
+                                    //cuentaCLABE: row.CLABE,
+                                    // benefeciario: catalogoInstituciones.filter(
+                                    //   (i: ICatalogo) =>
+                                    //     i.Descripcion === row.NombreBeneficiario
+                                    // )[0],
                                     fechaInstruccion: new Date(
                                       row.FechaRegistro
                                     ),
@@ -552,15 +649,18 @@ export function InstruccionesIrrevocables() {
         </Paper>
       </Grid>
 
-      {openAgregarInstruccion && (
-        <AgregarInstruccionesIrrevocables
-          handler={setOpenAgregarInstruccion}
-          openState={openAgregarInstruccion}
-          getMecanismosVehiculosPago={getMecanismosVehiculosPago}
-          DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
+      {
+        openAgregarInstruccion && (
+          <AgregarInstruccionesIrrevocables
+            handler={setOpenAgregarInstruccion}
+            openState={openAgregarInstruccion}
+            getMecanismosVehiculosPago={getMecanismosVehiculosPago}
+            DataAsignacionTipoMoviSolicitudes={dataAsignacionTipoMoviSolicitudes}
+            setDataAsignacionTipoMoviSolicitudes={setDataAsignacionTipoMoviSolicitudes}
 
-        />
-      )}
+          />
+        )
+      }
 
       <Dialog
         open={openDialogEliminar}
@@ -637,13 +737,15 @@ export function InstruccionesIrrevocables() {
         </DialogActions>
       </Dialog> */}
 
-      {openDetalle && (
-        <DetalleInstruccion
-          open={openDetalle}
-          setOpen={setOpenDetalle}
-          instruccion={detalleInstruccion}
-        />
-      )}
-    </Grid>
+      {
+        openDetalle && (
+          <DetalleInstruccion
+            open={openDetalle}
+            setOpen={setOpenDetalle}
+            instruccion={detalleInstruccion}
+          />
+        )
+      }
+    </Grid >
   );
 }

@@ -58,8 +58,11 @@ interface IDataAsignacionTipoMoviSolicitudes {
 
 
 const headsNews: HeadSelect[] = [
+  // {
+  //   Label: "Id",
+  // },
   {
-    Label: "Id",
+    Label: "Numero de Registro"
   },
   {
     Label: "Clasificación"
@@ -431,7 +434,17 @@ export function AsignarFuente({
       ) // 👈 callback cuando hay error
     );
   };
+  // const tipoMecanismoVehiculoPago: string = useLargoPlazoStore(
+  //   (state) => state.tipoMecanismoVehiculoPago
+  // );
+  const mostrarNumeroRegistro =
+    tipoMecanismoVehiculoPago?.toLowerCase() === "fideicomiso" ||
+    tipoMecanismoVehiculoPago?.toLowerCase() === "mandato";
 
+  const headsFiltrados: HeadSelect[] = headsNews.filter(
+    (head) =>
+      head.Label !== "Numero de Registro" || mostrarNumeroRegistro
+  );
 
   return (
     <Grid
@@ -698,31 +711,49 @@ export function AsignarFuente({
             <Table>
               <TableHead>
                 <TableRow>
-                  {headsNews.map((head, index) => (
-                    <StyledTableCell align="center" key={index}>
-                      <Typography
-                        sx={{
-                          // fontSize: ".7rem",
-                          fontFamily: "MontserratRegular",
-                        }}
-                      >
-                        {head.Label}
-                      </Typography>
-                    </StyledTableCell>
-                  ))}
+                  {headsFiltrados.map((head, index) => {
+
+                    return (
+                      <StyledTableCell align="center" key={index}>
+                        <Typography
+                          sx={{
+                            // fontSize: ".7rem",
+                            fontFamily: "MontserratRegular",
+                          }}
+                        >
+                          {head.Label}
+                        </Typography>
+                      </StyledTableCell>
+                    )
+                  })}
                 </TableRow>
               </TableHead>
               <TableBody>
-
                 {tablaAsignarFuenteNew.map((movimiento: any, index: number) => {
                   console.log("movimiento", movimiento)
-                  return (
 
+                  return (
                     <StyledTableRow key={index}>
 
-                      <StyledTableCell align="center">
+                      {/* <StyledTableCell align="center">
                         {movimiento.id}
-                      </StyledTableCell>
+                      </StyledTableCell> */}
+
+                      {
+                        tipoMecanismoVehiculoPago.toLowerCase() === "fideicomiso" || tipoMecanismoVehiculoPago.toLowerCase() === "mandato" ?
+                          (
+                            <StyledTableCell align="center"> {/* cambia el nombre de la variable id a NUMERO DE REGISTRO */}
+                              {movimiento.id}
+                            </StyledTableCell>
+                          ) : null
+
+
+                      }
+
+
+                      {/* <StyledTableCell align="center">
+                        {movimiento.NumeroRegistro}
+                      </StyledTableCell> */}
 
                       <StyledTableCell align="center">
                         {movimiento?.Clasificacion?.Descripcion}

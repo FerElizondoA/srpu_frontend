@@ -103,7 +103,7 @@ export function Encabezado() {
                 display: "flex",
               }}
             >
-              Tipo de Solicitud
+              Tipo de Documento
             </InputLabel>
 
 

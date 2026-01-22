@@ -28,6 +28,7 @@ import { IDatosFideicomiso } from "../../../screens/fuenteDePago/Fideicomisos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import {
   IDatosGeneralesFideicomiso,
+  IDeudorFideicomisoNew,
   IFideicomisario,
 } from "../../../store/Fideicomiso/fideicomiso";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
@@ -112,6 +113,10 @@ export function DatoGeneralesFideicomiso() {
   const tablaFideicomisos: IDatosFideicomiso[] = useFideicomisoStore(
     (state) => state.tablaFideicomisos
   );
+  const tablaTipoMovimientoFideicomisoNew: IDeudorFideicomisoNew[] = useFideicomisoStore(
+    (state) => state.tablaTipoMovimientoFideicomisoNew
+  );
+
 
   return (
     <Grid
@@ -141,6 +146,8 @@ export function DatoGeneralesFideicomiso() {
         },
       }}
     >
+
+
       <Grid container display={"flex"} justifyContent={"space-evenly"}>
         <Grid item xs={10} sm={4} md={5} lg={5} xl={5} mb={{ xs: 2, sm: 0 }}>
           <InputLabel sx={queries.medium_text}>
@@ -151,6 +158,7 @@ export function DatoGeneralesFideicomiso() {
             variant="standard"
             type="number"
             value={datosGenerales.numeroFideicomiso}
+            disabled={tablaTipoMovimientoFideicomisoNew.length > 0}
             onChange={(v) => {
               tablaFideicomisos.filter(
                 (_) => _.NumeroFideicomiso === v.target.value

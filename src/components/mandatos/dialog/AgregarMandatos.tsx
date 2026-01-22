@@ -252,7 +252,115 @@ export function AgregarMandatos({
                 disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
                 sx={queries.buttonContinuar}
                 onClick={() => {
-                  if (IdMandato === "") {
+                  if (IdMandato === "" && arregloPorcetajesAcumuladosRegistros.length > 0) {
+                    let errorEncontrado = false;
+                    let mensajeError = "";
+
+                    tablaTipoMovimiento.forEach((nuevo) => {
+
+                      // 🔹 Validación 2: contra porcentajes acumulados (nueva)
+                      const acumulado = arregloPorcetajesAcumuladosRegistros.find(
+                        (acc) =>
+                          acc.IdFondoOIngreso === nuevo.fondoIngreso.Id &&
+                          acc.IdEntePublicoObligado === nuevo.mandatario.Id
+                      );
+
+                      console.log("acumulado encontrado :", acumulado);
+
+                      if (acumulado) {
+
+                        // 🔹 Validación 3: contra porcentajes acumulados (nueva)
+                        const registroOriginal = TablaPruebaEditarFideicomiso.flat().find(
+                          (acc) =>
+                            acc.fideicomitente.Id === nuevo.mandatario.Id &&
+                            acc.fondoIngreso.Id === nuevo.fondoIngreso.Id
+                        );
+
+                        const ROIngreso = Number(registroOriginal?.AfectadoTotalIngreso) || 0;
+                        const ROEquivalencia = Number(registroOriginal?.EquivalenciaCorrespondienteMunicipios) || 0;
+
+
+
+
+                        const acumuladoIngreso = Number(acumulado.AfectadoTotalIngreso) || 0;
+                        const acumuladoEquivalencia = Number(acumulado.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        const nuevoIngreso = Number(nuevo.AfectadoTotalIngreso) || 0;
+                        const nuevaEquivalencia = Number(nuevo.EquivalenciaCorrespondienteMunicipios) || 0;
+
+                        console.log("acumuladoIngreso: ", acumuladoIngreso);
+                        console.log("nuevoIngreso: ", nuevoIngreso);
+                        console.log("ROIngreso: ", ROIngreso);
+
+
+                        //console.log("ROEquivalencia: ", ROEquivalencia);
+
+
+
+                        // 🔸 Si el acumulado + nuevo supera 100, marcar error
+
+                        //acumuladoIngreso (El porcentaje acumulado que tiene este ente plublico con el fondo o ingreso) 90
+                        //nuevoIngreso (lo que ingresa el usuario) Ejemplo 15 que son 5% mas 
+                        //registro original (El que originalmente tenia el tipo de movimiento) 10
+
+                        //nuevoIngreso - registro original (15 - 10 = 5) 
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        //nuevoIngreso - registro original (20 - 10 = 10) 
+                        //90 + (20-10) = 100 ok
+                        // acumuladoIngreso + (nuevoIngreso - registro original) <= 100
+
+                        // 15 - 10 === 5 + 90 <= 100 = 95 no hay error
+
+                        // if (acumuladoIngreso + nuevoIngreso > 100) {
+
+                        if (acumuladoIngreso + (nuevoIngreso - ROIngreso) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de ingreso acumulado (${acumuladoIngreso}%) más el nuevo (${nuevoIngreso}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "AfectadoTotalIngreso",
+                            montoOriginal: acumuladoIngreso,
+                            montoUtilizado: nuevoIngreso,
+                            nombreEntePublicoObligado: nuevo.mandatario.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+
+                        if (acumuladoEquivalencia + (nuevaEquivalencia - ROEquivalencia) > 100) {
+                          errorEncontrado = true;
+                          // mensajeError += `\nEl porcentaje de equivalencia acumulado (${acumuladoEquivalencia}%) más el nuevo (${nuevaEquivalencia}%) supera el 100% permitido para ${nuevo.fideicomitente.Descripcion} con el ${nuevo.fondoIngreso.Descripcion}.`;
+                          setValidacionDialogAsignarFuente({
+                            openDialog: true,
+                            registroPrevio: "PorcentajeAcumulado",
+                            message: "EquivalenciaCorrespondienteMunicipios",
+                            montoOriginal: acumuladoEquivalencia,
+                            montoUtilizado: nuevaEquivalencia,
+                            nombreEntePublicoObligado: nuevo.mandatario.Descripcion,
+                            nombreFondoOIngreso: nuevo.fondoIngreso.Descripcion,
+                          });
+                        }
+                      }
+                    });
+
+                    if (errorEncontrado) {
+
+                      return;
+                    } else {
+                      // ✅ Si todo pasa las validaciones:
+                      setLoading(true);
+                      createMandato(() => {
+                        setLoading(false);
+                        handler(false);
+                        getMecanismosVehiculosPago &&
+                          getMecanismosVehiculosPago("Mandato", () => { });
+                      });
+                      cleanPorcentajesAcumulados();
+                      setDataAsignacionTipoMoviSolicitudes([]);
+                    }
+
+                  } else if (IdMandato === "") {
                     //console.log("CREA MANDATO")
                     setLoading(true);
                     createMandato(() => {
@@ -598,7 +706,7 @@ export function AgregarMandatos({
                     <br /> Porcentaje acumulado utilizado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoOriginal}%</strong>
                   </Typography>
                   <Typography sx={{ ...queries.medium_text, display: "flex", alignItems: "end" }}>
-                    <br /> Porcentaje acumulado ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
+                    <br /> Porcentaje ingresado: <strong style={{ marginLeft: ".5rem" }}>{validacionDialogAsignarFuente.montoUtilizado}%</strong>
                   </Typography>
                 </Grid>
                 <Typography sx={{ ...queries.medium_text, display: "flex", justifyContent: "center" }}>

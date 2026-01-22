@@ -117,9 +117,19 @@ export function FuentePagoSecciones() {
       editarInstruccion(
         mecanismoVehiculoPago.Id,
         {
-          numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
-          cuentaCLABE: mecanismoVehiculoPago.CLABE,
-          banco: { id: "", Descripcion: mecanismoVehiculoPago.NombreBanco },
+          IdGiraInstruccion: mecanismoVehiculoPago.IdGiraInstruccion,
+          NombreGiraInstruccion: mecanismoVehiculoPago.NombreGiraInstruccion,
+          IdBeneficiario: mecanismoVehiculoPago.IdBeneficiario,
+          NombreBeneficiario: mecanismoVehiculoPago.NombreBeneficiario,
+
+          IdTipoFuente: mecanismoVehiculoPago.IdTipoFuente,//Nuevos
+          NombreTipoFuente: mecanismoVehiculoPago.NombreTipoFuente,//Nuevos
+          IdFondoIngreso: mecanismoVehiculoPago.IdFondoIngreso,//Nuevos
+          NombreFondoIngreso: mecanismoVehiculoPago.NombreFondoIngreso,
+
+          // numeroCuenta: mecanismoVehiculoPago.NumeroRegistro,
+          // cuentaCLABE: mecanismoVehiculoPago.CLABE,
+          // banco: { id: "", Descripcion: mecanismoVehiculoPago.NombreBanco },
           fechaInstruccion: new Date(mecanismoVehiculoPago.FechaRegistro),
         },
         auxArray,

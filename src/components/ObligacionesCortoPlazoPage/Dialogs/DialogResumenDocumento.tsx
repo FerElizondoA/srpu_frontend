@@ -122,12 +122,22 @@ export function VerBorradorDocumento(props: Props) {
 
   const [comentariosAuxOriginal, setComentariosAuxOriginal] = useState(comentarios);
 
-  function tieneComentarios(
-    comentarios: Record<string, string | undefined>,
-    comentariosAuxOriginal: Record<string, string | undefined>
-  ): boolean {
-    return JSON.stringify(comentarios) !== JSON.stringify(comentariosAuxOriginal);
-  }
+  // function tieneComentarios(
+  //   comentarios: Record<string, string | undefined>,
+  //   comentariosAuxOriginal: Record<string, string | undefined>
+  // ): boolean {
+  //   return JSON.stringify(comentarios) !== JSON.stringify(comentariosAuxOriginal);
+  // }
+
+  const hayComentarios =
+  tieneComentarios(comentarios) || tieneComentarios(comentariosAuxOriginal);
+
+
+  function tieneComentarios(comentarios: Record<string, string | undefined>): boolean {
+  return Object.values(comentarios).some(
+    (valor) => typeof valor === "string" && valor.trim().length > 0
+  );
+}
 
   function compararComentarios(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
     const claves1 = Object.keys(obj1);
@@ -456,7 +466,7 @@ export function VerBorradorDocumento(props: Props) {
         {props.rowSolicitud.TipoSolicitud === "Crédito Simple a Corto Plazo" ? (
           <Resumen coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios} />
         ) : (
-          <ResumenLP coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios}/>
+          <ResumenLP coments={false} estatus={props.rowSolicitud.NoEstatus} funcionFiltroComentarios={setFiltroComentarios} />
         )}
       </DialogContent>
 
@@ -464,7 +474,7 @@ export function VerBorradorDocumento(props: Props) {
         <DialogTitle>Guardar comentarios</DialogTitle>
         <DialogContent>
 
-          {tieneComentarios(comentarios, comentariosAuxOriginal) && (
+          {!hayComentarios   && (
             <Typography>Se borraron todos los comentarios</Typography>
           )}
           {Object.entries(comentarios).map(([key, val], index) =>
