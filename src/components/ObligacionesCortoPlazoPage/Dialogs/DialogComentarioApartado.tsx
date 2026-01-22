@@ -67,13 +67,13 @@ export function ComentarioApartado({
   }, [openState.apartado]);
 
   // useEffect(() => {
-    
+
   //   //console.log("comemt", coment,);
   //   //console.log("newComentario");
 
   //   //console.log("comentario", comentario);
   // }, [newComentario, coment.Comentario, comentario])
-  
+
 
 
   return (
@@ -101,8 +101,8 @@ export function ComentarioApartado({
           onChange={(v) => {
             setComent({
               Comentario: v.target.value
-                .replaceAll(/[^\w\s]/gi, "")
-                .replaceAll("\n", ""),
+                .replaceAll(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s]/g, "")
+                .replaceAll(/\n/g, ""),
               Apartado: openState.apartado,
             });
           }}
@@ -124,7 +124,7 @@ export function ComentarioApartado({
           </Button>
         ) : null}
         <Button
-        
+
           sx={queries.buttonCancelar}
           onClick={() => {
             setComent({ Comentario: "", Apartado: "" });
@@ -136,18 +136,18 @@ export function ComentarioApartado({
 
         <ThemeProvider theme={theme}>
           <Button
-           disabled={coment.Comentario===""}
+            disabled={coment.Comentario === ""}
             sx={queries.buttonContinuar}
             onClick={() => {
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
 
-              
-    
+
+
               console.log("comemt", coment,);
               console.log("newComentario", newComentario);
-              
+
 
 
 
@@ -156,7 +156,7 @@ export function ComentarioApartado({
               // }
 
               console.log("comment,comentario", coment.Comentario);
-              
+
 
             }}
           >

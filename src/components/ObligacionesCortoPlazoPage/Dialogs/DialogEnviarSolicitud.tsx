@@ -250,7 +250,8 @@ export function ConfirmacionEnviarSolicitud({
                   localStorage.getItem("IdUsuario"),
                   "3",
                   "",
-                  setIdSolicitudCreada
+                  setIdSolicitudCreada,
+                  true
                 )
                   .then(() => {
 
@@ -271,13 +272,13 @@ export function ConfirmacionEnviarSolicitud({
                     // );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitudCortoPlazo();
-                    createNotification(
-                      "Crédito simple a corto plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""],
-                      idSolicitudCreada,
-                      "inscripcion"
-                    );
+                    // createNotification(
+                    //   "Crédito simple a corto plazo",
+                    //   "La solicitud de inscripción está lista para firmar",
+                    //   [localStorage.getItem("IdUsuario") || ""],
+                    //   idSolicitudCreada,
+                    //   "inscripcion"
+                    // );
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {
@@ -289,7 +290,8 @@ export function ConfirmacionEnviarSolicitud({
                   idUsuarioAsignado,
                   "2",
                   "Se te ha asignado una solicitud de Credito a Corto Plazo",
-                  setIdSolicitudCreada
+                  setIdSolicitudCreada,
+                  true
 
                 )
                   .then(() => {
@@ -309,13 +311,13 @@ export function ConfirmacionEnviarSolicitud({
                     //   JSON.stringify(comentarios),
                     //   "Captura"
                     // );
-                    createNotification(
-                      "Crédito simple a corto plazo",
-                      "Se te ha asignado una solicitud de Credito a Corto Plazo",
-                      [idUsuarioAsignado || ""],
-                      idSolicitudCreada,
-                      "inscripcion"
-                    );
+                    // createNotification(
+                    //   "Crédito simple a corto plazo",
+                    //   "Se te ha asignado una solicitud de Credito a Corto Plazo",
+                    //   [idUsuarioAsignado || ""],
+                    //   idSolicitudCreada,
+                    //   "inscripcion"
+                    // );
                     alertaConfirmCancelar("La solicitud se envió con éxito")
                     cleanSolicitudCortoPlazo();
                     navigate("../ConsultaDeSolicitudes");
