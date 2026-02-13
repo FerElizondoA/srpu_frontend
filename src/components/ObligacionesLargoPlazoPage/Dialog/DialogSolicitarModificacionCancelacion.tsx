@@ -126,7 +126,7 @@ export function DialogSolicitarModificacionCancelacion({
           : idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo cancelación",
+          "Crédito simple a corto plazo cancelación hola1",
           `Se te ha asignado una solicitud para  
           ${localStorage.getItem("Rol") === "Autorizador" ?
             accion === "enviar" ?
