@@ -266,77 +266,158 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
+convertirMontosAPalabras(numeroConFormato: string): string {
 
+  function limpiarFormatoMoneda(monto: string): number {
+    const montoLimpio = monto.replace(/[^0-9.]/g, '');
+    return parseFloat(montoLimpio);
+  }
 
-  convertirMontosAPalabras(numeroConFormato: string): string {
+  const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
+  const parteEntera = Math.floor(numeroFloat);
+  const centavos = Math.round((numeroFloat - parteEntera) * 100);
 
-    // Limpia el formato de moneda para extraer solo el número
-    function limpiarFormatoMoneda(monto: string): number {
-      const montoLimpio = monto.replace(/[^0-9.]/g, '');
-      return parseFloat(montoLimpio);
-    }
+  const unidades = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+  const especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+  const decenas = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+  const centenas = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
 
-    const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
-    const parteEntera = Math.floor(numeroFloat); // Parte entera del número
-    const centavos = Math.round((numeroFloat - parteEntera) * 100); // Parte decimal (centavos)
+  function convertirNumeroAPalabras(numero: number): string {
+    if (numero === 0) return 'cero';
+    if (numero < 10) return unidades[numero];
+    if (numero < 20) return especiales[numero - 10];
+    if (numero < 100) return convertirDecenas(numero);
+    if (numero < 1000) return convertirCentenas(numero);
+    if (numero < 1_000_000) return convertirMiles(numero);
+    if (numero < 1_000_000_000) return convertirMillones(numero);
+    if (numero < 1_000_000_000_000) return convertirMilesDeMillones(numero);
+    if (numero <= 1_000_000_000_000_000) return convertirBillones(numero);
 
-    const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-    const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-    const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-    const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+    return 'Número fuera de rango';
+  }
 
-    // Función para convertir el número entero a palabras
-    function convertirNumeroAPalabras(numero: number): string {
-      if (numero === 0) return 'cero';
-      if (numero < 10) return unidades[numero];
-      if (numero < 20) return especiales[numero - 10];
-      if (numero < 100) return convertirDecenas(numero);
-      if (numero < 1000) return convertirCentenas(numero);
-      if (numero < 1000000) return convertirMiles(numero);
-      if (numero < 1000000000000) return convertirMillones(numero);
-
-      return 'Número demasiado grande';
-    }
-
-    function convertirDecenas(numero: number): string {
-      const decena = Math.floor(numero / 10);
-      const unidad = numero % 10;
-      if (numero < 30) {
-        return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-      }
+  function convertirDecenas(numero: number): string {
+    const decena = Math.floor(numero / 10);
+    const unidad = numero % 10;
+    if (numero < 30) {
       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
     }
+    return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  }
 
-    function convertirCentenas(numero: number): string {
-      const centena = Math.floor(numero / 100);
-      const resto = numero % 100;
-      if (numero === 100) return 'cien';
-      return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-    }
+  function convertirCentenas(numero: number): string {
+    const centena = Math.floor(numero / 100);
+    const resto = numero % 100;
+    if (numero === 100) return 'cien';
+    return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+  }
 
-    function convertirMiles(numero: number): string {
-      const miles = Math.floor(numero / 1000);
-      const resto = numero % 1000;
-      if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-      return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-    }
+  function convertirMiles(numero: number): string {
+    const miles = Math.floor(numero / 1000);
+    const resto = numero % 1000;
+    if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+    return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  }
 
-    function convertirMillones(numero: number): string {
-      const millones = Math.floor(numero / 1000000);
-      const resto = numero % 1000000;
-      if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-      return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-    }
+  function convertirMillones(numero: number): string {
+    const millones = Math.floor(numero / 1_000_000);
+    const resto = numero % 1_000_000;
+    if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+    return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+  }
 
-    // Convertir la parte entera del monto a palabras
-    let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+  function convertirMilesDeMillones(numero: number): string {
+    const milesMillones = Math.floor(numero / 1_000_000_000);
+    const resto = numero % 1_000_000_000;
+    if (milesMillones === 1) return 'mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
+    return convertirNumeroAPalabras(milesMillones) + ' mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
+  }
 
-    // Agregar "pesos" y manejar los centavos
-    const centavosEnPalabras = centavos > 0 ? ` ${centavos}/100 M.N.` : ' 00/100 M.N.';
-    parteEnteraEnPalabras += ` pesos${centavosEnPalabras}`;
+  function convertirBillones(numero: number): string {
+    const billones = Math.floor(numero / 1_000_000_000_000);
+    const resto = numero % 1_000_000_000_000;
+    if (billones === 1) return 'un billón ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
+    return convertirNumeroAPalabras(billones) + ' billones ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
+  }
 
-    return parteEnteraEnPalabras;
-  },
+  let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+
+  const centavosEnPalabras = centavos > 0
+    ? ` ${centavos.toString().padStart(2, '0')}/100 M.N.`
+    : ' 00/100 M.N.';
+
+  return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
+},
+
+  // convertirMontosAPalabras(numeroConFormato: string): string {
+
+  //   // Limpia el formato de moneda para extraer solo el número
+  //   function limpiarFormatoMoneda(monto: string): number {
+  //     const montoLimpio = monto.replace(/[^0-9.]/g, '');
+  //     return parseFloat(montoLimpio);
+  //   }
+
+  //   const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
+  //   const parteEntera = Math.floor(numeroFloat); // Parte entera del número
+  //   const centavos = Math.round((numeroFloat - parteEntera) * 100); // Parte decimal (centavos)
+
+  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+
+  //   // Función para convertir el número entero a palabras
+  //   function convertirNumeroAPalabras(numero: number): string {
+  //     if (numero === 0) return 'cero';
+  //     if (numero < 10) return unidades[numero];
+  //     if (numero < 20) return especiales[numero - 10];
+  //     if (numero < 100) return convertirDecenas(numero);
+  //     if (numero < 1000) return convertirCentenas(numero);
+  //     if (numero < 1000000) return convertirMiles(numero);
+  //     if (numero < 1000000000000) return convertirMillones(numero);
+
+  //     return 'Número demasiado grande';
+  //   }
+
+  //   function convertirDecenas(numero: number): string {
+  //     const decena = Math.floor(numero / 10);
+  //     const unidad = numero % 10;
+  //     if (numero < 30) {
+  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //     }
+  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+  //   }
+
+  //   function convertirCentenas(numero: number): string {
+  //     const centena = Math.floor(numero / 100);
+  //     const resto = numero % 100;
+  //     if (numero === 100) return 'cien';
+  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+  //   }
+
+  //   function convertirMiles(numero: number): string {
+  //     const miles = Math.floor(numero / 1000);
+  //     const resto = numero % 1000;
+  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //     return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+  //   }
+
+  //   function convertirMillones(numero: number): string {
+  //     const millones = Math.floor(numero / 1000000);
+  //     const resto = numero % 1000000;
+  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+  //     return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+  //   }
+
+  //   // Convertir la parte entera del monto a palabras
+  //   let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+
+  //   // Agregar "pesos" y manejar los centavos
+  //   const centavosEnPalabras = centavos > 0 ? ` ${centavos}/100 M.N.` : ' 00/100 M.N.';
+  //   parteEnteraEnPalabras += ` pesos${centavosEnPalabras}`;
+
+  //   return parteEnteraEnPalabras;
+  // },
 
   proceso: "",
 

@@ -9,6 +9,7 @@ export const createNotification = (
   ControlInterno?: string,
   NumRegistroSolicitud?: number
 ) => {
+  console.log("ListadoUsuarios en APINotificaciones: ", listadoUsuarios);
   axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/create-notificacion",

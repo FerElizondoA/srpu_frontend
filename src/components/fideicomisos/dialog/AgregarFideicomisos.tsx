@@ -394,7 +394,7 @@ export function AgregarFideicomisos({
                     cleanPorcentajesAcumulados();
                     setDataAsignacionTipoMoviSolicitudes([]);
                   }
-                  //DE AQUI VIENE EL ERROR
+
                   else if (idFideicomiso !== "" && (DataAsignacionTipoMoviSolicitudes.length > 0 || arregloPorcetajesAcumuladosRegistros.length > 0)) {
                     let errorEncontrado = false;
                     let mensajeError = "";
@@ -577,8 +577,10 @@ export function AgregarFideicomisos({
                     modificarFideicomiso(
                       setLoading(false),
                       handler(false),
-                      getMecanismosVehiculosPago && getMecanismosVehiculosPago("Fideicomisos", () => { })
-                    )
+                     // getMecanismosVehiculosPago && getMecanismosVehiculosPago("Fideicomisos", () => { })
+                    ).then(() => {
+                      handler(false)
+                    });
                   }
                   setTabIndex(0);
                 }}

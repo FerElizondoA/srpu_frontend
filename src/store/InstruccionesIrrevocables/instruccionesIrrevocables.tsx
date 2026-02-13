@@ -335,7 +335,7 @@ export const createInstruccionesIrrevocables: StateCreator<
         EquivalenciaCorrespondienteMunicipios: 0,
         Beneficiario: { Id: "", Descripcion: "" },
       },
-      beneficiario:{
+      beneficiario: {
         tipoBeneficiario: { Id: "", Descripcion: "" },
         beneficiario: { Id: "", Descripcion: "" },
         fechaAlta: new Date(),
@@ -500,10 +500,19 @@ export const createInstruccionesIrrevocables: StateCreator<
           // CLABE: state.datosGenerales.cuentaCLABE,
           // IdBanco: state.datosGenerales.banco.Id,
           // BancoNombre: state.datosGenerales.banco.Descripcion,
-          IdgiraInstruccion: state.datosGenerales.giraIntruccion.Id,
+          IdGiraInstruccion: state.datosGenerales.giraIntruccion.Id,
           NombreGiraIntruccion: state.datosGenerales.giraIntruccion.Descripcion,
+          IdVaDirigidaA: state.datosGenerales.vaDirigidaA.Id,
+          NombreVaDirigidaA: state.datosGenerales.vaDirigidaA.Descripcion,
           IdBeneficiario: state.datosGenerales.beneficiario.Id,
           NombreBeneficiario: state.datosGenerales.beneficiario.Descripcion,
+
+
+          IdTipoFuente: state.datosGenerales?.tipoFuente?.Id,//Nuevos
+          NombreTipoFuente: state.datosGenerales.tipoFuente?.Descripcion,//Nuevos
+          IdFondoIngreso: state.datosGenerales?.fondoIngreso?.Id,//Nuevos
+          NombreFondoIngreso: state.datosGenerales.fondoIngreso?.Descripcion,//Nuevos
+
 
           FechaInstruccion: state.datosGenerales.fechaInstruccion,
           TipoEntePublicoObligado: state.tablaTipoMovimiento[0].tipoEntePublicoObligado.Descripcion,
@@ -538,8 +547,8 @@ export const createInstruccionesIrrevocables: StateCreator<
         SaveFile.saveFilesFuentesPago(
           "Instruccion",
           soporteDocumentalPrueba,
-          data.result.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${data.result.Id}`,
+          state.idInstruccion,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${state.idInstruccion}`,
           setLoading,
         );
 

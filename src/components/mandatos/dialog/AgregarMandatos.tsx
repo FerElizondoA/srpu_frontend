@@ -252,9 +252,13 @@ export function AgregarMandatos({
                 disabled={tipoMecanismoVehiculoPago === "Mandato" || tipoMecanismoVehiculoPago === "Instruccion Irrevocable"}
                 sx={queries.buttonContinuar}
                 onClick={() => {
+                  console.log("IdMandato:", IdMandato);
+                  console.log("arregloPorcetajesAcumuladosRegistros:", arregloPorcetajesAcumuladosRegistros);
+
                   if (IdMandato === "" && arregloPorcetajesAcumuladosRegistros.length > 0) {
                     let errorEncontrado = false;
                     let mensajeError = "";
+                    console.log("CREA MANDATO SIN ARREGLO")
 
                     tablaTipoMovimiento.forEach((nuevo) => {
 
@@ -349,6 +353,7 @@ export function AgregarMandatos({
                       return;
                     } else {
                       // ✅ Si todo pasa las validaciones:
+                      console.log("PASE A CREA MANDATO");
                       setLoading(true);
                       createMandato(() => {
                         setLoading(false);
@@ -361,7 +366,7 @@ export function AgregarMandatos({
                     }
 
                   } else if (IdMandato === "") {
-                    //console.log("CREA MANDATO")
+                    console.log("CREA MANDATO")
                     setLoading(true);
                     createMandato(() => {
                       setLoading(false);
@@ -372,6 +377,8 @@ export function AgregarMandatos({
 
                   } else if (IdMandato !== "" && DataAsignacionTipoMoviSolicitudes.length > 0) {
                     // 🟡 SOLO APLICA PARA MODIFICAR
+                    console.log("EDITAR MANDATO")
+
                     let errorEncontrado = false;
                     let mensajeError = "";
 
@@ -511,6 +518,7 @@ export function AgregarMandatos({
                     } else {
                       // ✅ Si todo está bien, proceder a modificar
                       setLoading(true);
+                      console.log("PASE A MDOFICAR MANDATO ")
                       modificaAsignacionOriginalTipoSolicitud(
                         IdMandato,
                         tablaTipoMovimiento,
@@ -524,19 +532,19 @@ export function AgregarMandatos({
                     }
 
                   }
-                  // else if (IdMandato !== "") {
-                  //   console.log("EDITA MANDATO DIRECTO")
-                  //   modificaMandato(() => {
-                  //     setLoading(false);
-                  //     handler(false);
-                  //     getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
-                  //   }).then(() => {
-                  //     handler(false)
-                  //     setDataAsignacionTipoMoviSolicitudes([]);
-                  //     cleanPorcentajesAcumulados();
-                  //   });
+                  else if (IdMandato !== "") {
+                    console.log("EDITA MANDATO DIRECTO")
+                    modificaMandato(() => {
+                      setLoading(false);
+                      handler(false);
+                      // getMecanismosVehiculosPago && getMecanismosVehiculosPago("Mandato", () => { })
+                    }).then(() => {
+                      handler(false)
+                      //setDataAsignacionTipoMoviSolicitudes([]);
+                      //cleanPorcentajesAcumulados();
+                    });
 
-                  // }
+                  }
                   setTabIndex(0);
                 }}
               >
