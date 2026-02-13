@@ -331,7 +331,8 @@ export function InformacionGeneral() {
                     .replace(".", "")
                     .replace(",", "")
                     .replace(/\D/g, "")
-                ) < 99999999999
+                ) < 9999999999999999
+                //99999999999
               ) {
                 setInformacionGeneral({
                   fechaContratacion: contratacion,
@@ -365,7 +366,7 @@ export function InformacionGeneral() {
         justifyContent={"space-evenly"}
         width={"100%"}
       >
-        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+        {/* <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
@@ -377,6 +378,22 @@ export function InformacionGeneral() {
               value={new Date(vencimiento)}
               onChange={(date) => setVencimiento(date?.toString() || "")}
               minDate={new Date(addDays(new Date(contratacion), 0))}
+            />
+          </LocalizationProvider>
+        </Grid> */}
+        <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+            <DesktopDatePicker
+              disabled={
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento")
+              }
+              sx={{ width: "100%" }}
+              value={vencimiento ? new Date(vencimiento) : null}
+              onChange={(date) => setVencimiento(date?.toISOString() || "")}
+              minDate={new Date(contratacion)}
+              maxDate={addDays(new Date(contratacion), 364)}
             />
           </LocalizationProvider>
         </Grid>

@@ -13,6 +13,7 @@ import {
   rolesAdmin,
 } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
+import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -28,8 +29,13 @@ export const FirmaConUrl = () => {
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
+   const inscripcion : IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  ); 
+
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
+    console.log("inscripcion FIRMACONURL: ", inscripcion);
   }, []);
 
   const enviaNotificacion = (
@@ -40,8 +46,37 @@ export const FirmaConUrl = () => {
   ) => {
     let users: string[] = [];
     let editor = "";
-//TODOS LOS IF TENIAN MENOS 1 POR EL EL NUEVO ESTATUS 
-    if (estatus === "5") {
+    //TODOS LOS IF TENIAN MENOS 1 POR EL EL NUEVO ESTATUS 
+    if (estatus === "4") {
+      console.log("Estatus CHIDO 4: ", estatus);
+      console.log(" usuarios: ", usuarios);
+      const usuariosDestino = usuarios
+        .filter((usr: any) =>
+          usr.Entidad === localStorage.getItem("EntePublicoObligado") &&
+          (
+            usr.Rol.toLowerCase() === "validador" ||
+            usr.Rol.toLowerCase() === "autorizador"
+          )
+        )
+        .map((usuario) => usuario.Id);
+
+        console.log("Usuarios Destino para Notificación: ", usuariosDestino);
+
+      createNotification(
+        "Crédito Simple a Corto Plazo",
+        `Solicitud lista para asignar a usuario revisor`,
+        usuariosDestino ,// ← AQUÍ ESTÁ LA CORRECCIÓN
+        inscripcion.Id,
+        "Revision",
+        parseInt(inscripcion.NumeroRegistro) //numero registro solicitud
+      );
+
+      // createNotification(
+      //   "Crédito simple a corto plazo",
+      //   `Se ha registrado una solicitud de inscripción pendiente de revisión`,
+      //   users
+      // );
+    } else if (estatus === "5") {
       usuarios
         .filter(
           (usr: any) =>
@@ -111,10 +146,10 @@ export const FirmaConUrl = () => {
       // );
     }
 
-    
-    
 
-    CambiaEstatus(estatus, id, editor);  
+
+
+    CambiaEstatus(estatus, id, editor);
     //REVISA EL ESTATU
   };
 
@@ -123,7 +158,7 @@ export const FirmaConUrl = () => {
   // useEffect(() => {
   //   console.log("Inscripcion Firma", SolicitudDatos);
   // }, [])
-  
+
   return (
     <Grid container direction="column" sx={{ overflow: "hidden" }}>
       <Grid item>
@@ -142,8 +177,8 @@ export const FirmaConUrl = () => {
             AsuntoDoc: "asd",
           })}
           setState={(v: any) => {
-           //console.log("FIRMADOCONURL", v);
-           
+            //console.log("FIRMADOCONURL", v);
+
             changeInfoDoc(v, enviaNotificacion);
           }}
         />

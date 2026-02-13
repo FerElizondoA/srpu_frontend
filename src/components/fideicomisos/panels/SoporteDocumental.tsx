@@ -31,12 +31,13 @@ import { format } from "date-fns";
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
-import { listFile } from "../../APIS/pathDocSol/APISDocumentos";
+import { listFile, listFileFuentesPago } from "../../APIS/pathDocSol/APISDocumentos";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import { useFideicomisoStore } from "../../../store/Fideicomiso/main";
 import { ISoporteDocumentalFuentePago } from "../../../store/Fideicomiso/fideicomiso";
 import CircularProgress from "@mui/material/CircularProgress";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
+import { convertFileToBase64 } from "../../../generics/Validation";
 
 const heads = [
   {
@@ -114,6 +115,10 @@ export function SoporteDocumentalFideicomiso() {
     (state) => state.cleanSoporteDocumental
   );
 
+  
+  const soporteDocumentalFideicomiso: ISoporteDocumentalFuentePago = useFideicomisoStore(
+    (state) => state.soporteDocumentalFideicomiso
+  );
   function cargarArchivo(event: any) {
     let file = event.target.files[0];
     console.log("EVENTO FIDEICOMISO", file)
@@ -121,8 +126,7 @@ export function SoporteDocumentalFideicomiso() {
 
     if (file !== undefined) {
       setSoporteDocumentalFideicomiso({
-        tipo: tipo,
-        fechaArchivo: fechaArchivo,
+        ...soporteDocumentalFideicomiso,
         archivo: file,
         nombreArchivo: file.name,
       });
@@ -141,13 +145,26 @@ export function SoporteDocumentalFideicomiso() {
 
   const [arr, setArr] = useState<any>([]);
 
+  // useEffect(() => {
+  //   if (idFideicomiso !== "") {
+  //     listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+  //       setLoading(false);
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (idFideicomiso !== "") {
-      listFile(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FIDEICOMISOS/${idFideicomiso}/`, setArr).then(() => {
+      console.log("Entré al useEffect de idFideicomiso:");
+      listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${idFideicomiso}/`,
+        setArr,
+        tablaSoporteDocumentalFideicomiso
+      ).then(() => {
         setLoading(false);
       });
     }
-  }, []);
+    console.log("idFideicomiso:", idFideicomiso);
+  }, [idFideicomiso !== ""]);
 
   const [loading, setLoading] = useState(true);
 
@@ -319,12 +336,10 @@ export function SoporteDocumentalFideicomiso() {
               }}
               disabled={tipo === "" || nombreArchivo === ""}
               onClick={() => {
-                addSoporteDocumentalFideicomiso({
-                  tipo: tipo,
-                  fechaArchivo: fechaArchivo,
-                  archivo: archivo,
-                  nombreArchivo: nombreArchivo,
-                });
+                addSoporteDocumentalFideicomiso(
+                 soporteDocumentalFideicomiso
+                );
+                setArr([...arr, soporteDocumentalFideicomiso]);
               }}
             >
               Agregar
@@ -370,7 +385,7 @@ export function SoporteDocumentalFideicomiso() {
               </TableHead>
 
               <TableBody>
-                {tablaSoporteDocumentalFideicomiso.map(
+                {arr.map(
                   (row: any, index: number) => {
 
                     return (
@@ -379,9 +394,11 @@ export function SoporteDocumentalFideicomiso() {
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
                                 removeSoporteDocumentalFideicomiso(index)
-                              }
+                                setArr(arr.filter((_: any, i: any) => i !== index));
+
+                              }}
                             >
                               <DeleteIcon />
                             </IconButton>
@@ -400,35 +417,53 @@ export function SoporteDocumentalFideicomiso() {
                         </StyledTableCell>
 
                         <StyledTableCell>
-                          {loading && !row.archivo ? (
-                            <CircularProgress />
-                          ) : (
+                         
                             <Tooltip
                               title={"Mostrar vista previa del documento"}
                             >
                               <IconButton
-                                onClick={() => {
-                                  toBase64(row.archivo)
-                                    .then((data) => {
-                                      setFileSelected(data);
-                                    })
-                                    .catch((err) => {
-                                      setFileSelected(
-                                        `data:application/pdf;base64,${arr.filter((td: any) =>
-                                          td.NOMBREFORMATEADO.includes(
-                                            row.nombreArchivo
-                                          )
-                                        )[0].FILE
-                                        }`
-                                      );
-                                    });
+                                onClick={async () => {
+                                  let base64String = '';
+                                  try {
+                                    if (row.archivo instanceof File) {
+                                      base64String = await convertFileToBase64(row.archivo);
+                                      console.log("base64String 1", base64String)
+
+                                    } else {
+                                      base64String = row.archivo;
+                                      console.log("base64String 2", base64String)
+
+                                    }
+
+                                    const dataUri = `data:application/pdf;base64,${base64String}`;
+                                    console.log("dataUri", dataUri)
+                                    setFileSelected(dataUri);
+                                  } catch (error) {
+                                    console.error("Error al convertir el archivo a Base64", error);
+                                  }
+
                                   setShowModalPrevia(true);
+                                  // toBase64(row.archivo)
+                                  //   .then((data) => {
+                                  //     setFileSelected(data);
+                                  //   })
+                                  //   .catch((err) => {
+                                  //     setFileSelected(
+                                  //       `data:application/pdf;base64,${arr.filter((td: any) =>
+                                  //         td.NOMBREFORMATEADO.includes(
+                                  //           row.nombreArchivo
+                                  //         )
+                                  //       )[0].FILE
+                                  //       }`
+                                  //     );
+                                  //   });
+                                  // setShowModalPrevia(true);
                                 }}
                               >
                                 <FileOpenIcon />
                               </IconButton>
                             </Tooltip>
-                          )}
+                         
                         </StyledTableCell>
                       </StyledTableRow>
                     );

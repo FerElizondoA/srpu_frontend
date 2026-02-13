@@ -113,15 +113,15 @@ export const IconsMenu = (icon: string) => {
       return <BuildOutlinedIcon sx={queries.icon} />;
     case "ExtensionIcon":
       return <ExtensionIcon />;
-    case "NotificationsActiveIcon" :
-      return <NotificationsActiveIcon sx={queries.icon}/>;
+    case "NotificationsActiveIcon":
+      return <NotificationsActiveIcon sx={queries.icon} />;
 
     default:
       return <KeyboardDoubleArrowRightIcon sx={queries.icon} />;
   }
 };
 
-export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
+export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
 
   const setIdSolicitudNotificacion: Function = useTrazabilidad(
     (state) => state.setIdSolicitudNotificacion
@@ -204,22 +204,22 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
 
   const routerControlInterno = (controlInterno: string) => {
     switch (controlInterno) {
-      case "inscripcion" : 
+      case "inscripcion":
 
-      case "revision" :
+      case "revision":
 
-      case "autorizado" : navigate("../ConsultaDeSolicitudes"); fnc()
-      break;
+      case "autorizado": navigate("../ConsultaDeSolicitudes"); fnc()
+        break;
 
-      case "cancelacion" : navigate("../cancelaciones") ; fnc()
-      break;
+      case "cancelacion": navigate("../cancelaciones"); fnc()
+        break;
 
-      case "reestructura" : 
+      case "reestructura":
 
-      case "reestructurado" : navigate("../reestructura") ; fnc()
-      break;
+      case "reestructurado": navigate("../reestructura"); fnc()
+        break;
     }
-    
+
 
   }
 
@@ -250,10 +250,21 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
       );
   }, [bandejaInfo]);
 
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     getNotificaciones(setNotificaciones, setCantNoti);
+  //   }, 2000);
+  // }, []);
+
+
   React.useEffect(() => {
-    setTimeout(() => {
+    getNotificaciones(setNotificaciones, setCantNoti); 
+
+    const interval = setInterval(() => {
       getNotificaciones(setNotificaciones, setCantNoti);
-    }, 2000);
+    }, 20000);
+
+    return () => clearInterval(interval);
   }, []);
 
   React.useEffect(() => {
@@ -341,13 +352,13 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
           if (r.response.status === 409) {
             handleClosePasswordChange();
 
-           
+
             alertaError("Error")
           }
         });
     };
 
-    
+
 
 
     return (
@@ -476,7 +487,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               </IconButton>
             </Tooltip>
           </Grid>
-          
+
           <Grid item mt={0.5} ml={3}>
             <img src={logo} style={{ height: "40px" }} alt={"logo"}></img>
           </Grid>
@@ -599,8 +610,8 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
             }}
           >
             <Grid item container direction="column" mt={2}>
-              <Grid item sx={{ alignSelf: "center",  }}>
-                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}}>
+              <Grid item sx={{ alignSelf: "center", }}>
+                <Typography sx={{ fontSize: [15, 15, 15, 15, 15] }}>
                   SISTEMA DE GESTIÓN DE CRÉDITO DE MUNICIPIOS
                 </Typography>
               </Grid>
@@ -616,13 +627,13 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}} >
+                <Typography sx={{ fontSize: [15, 15, 15, 15, 15] }} >
                   {localStorage.getItem("NombreUsuario")}
                 </Typography>
               </Grid>
 
               <Grid item sx={{ alignSelf: "center" }}>
-                <Typography sx={{fontSize: [15, 15, 15, 15, 15]}}>
+                <Typography sx={{ fontSize: [15, 15, 15, 15, 15] }}>
                   {localStorage.getItem("Rol")}
                 </Typography>
               </Grid>
@@ -646,7 +657,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                       ].includes(v.ControlInterno) && (
                         <Grid key={i}>
                           {/* Aqui esta el despliegue de las opciones */}
-                          <ListItemButton     
+                          <ListItemButton
                             sx={{
                               backgroundColor:
                                 i === indexSelect && seccionesHover === true
@@ -702,7 +713,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                   <Grid key={i}>
                                     <ListItemButton
                                       sx={{
-                                        
+
                                         ":hover": {
                                           backgroundColor: "#AF8C55",
                                         },
@@ -728,7 +739,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                       <ListItemIcon>
                                         {IconsMenu(v.Icon)}
                                       </ListItemIcon>
-                                      <Typography sx={{...queries.medium_text,fontSize: [15, 15, 15, 15, 15] }}
+                                      <Typography sx={{ ...queries.medium_text, fontSize: [15, 15, 15, 15, 15] }}
                                       >
                                         {v.Menu}
                                       </Typography>
@@ -784,7 +795,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                                                   {IconsMenu(v.Icon)}
                                                 </ListItemIcon>
                                                 <Typography
-                                                  sx={{...queries.medium_text,fontSize: [15, 15, 15, 15, 15] }}
+                                                  sx={{ ...queries.medium_text, fontSize: [15, 15, 15, 15, 15] }}
                                                 >
                                                   {v.Menu}
                                                 </Typography>
@@ -809,7 +820,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                     }}
                   >
                     <ListItemIcon>{IconsMenu("LogoutIcon")}</ListItemIcon>
-                    <Typography sx={{fontSize: [15, 15, 15, 15, 15] }}>
+                    <Typography sx={{ fontSize: [15, 15, 15, 15, 15] }}>
                       Cerrar sesión
                     </Typography>
                   </ListItemButton>
@@ -859,7 +870,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                             }}
                           >
                             <ListItemIcon>{IconsMenu(v.Icon)}</ListItemIcon>
-                            <Typography sx={{fontSize: [15, 15, 15, 15, 15] }}>
+                            <Typography sx={{ fontSize: [15, 15, 15, 15, 15] }}>
                               {v.Menu}
                             </Typography>
                           </ListItemButton>
@@ -897,7 +908,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
               <Typography
                 sx={{
                   textAlign: "center",
-                  
+
                   fontWeight: "bold",
                   fontSize: [15, 15, 15, 15, 15]
                 }}
@@ -921,7 +932,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                           <Typography
                             sx={{
                               padding: "1px 4px 1px 0",
-                            fontSize: [15, 15, 15, 15, 15],
+                              fontSize: [15, 15, 15, 15, 15],
                               fontWeight: "bold",
                             }}
                             color="#af8c55"
@@ -953,7 +964,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                             sx={{
                               width: "100%",
                               padding: "10px 4px 1px 5px",
-                          fontSize: [15, 15, 15, 15, 15],
+                              fontSize: [15, 15, 15, 15, 15],
                               textAlign: "center",
                             }}
                             color="black"
@@ -1000,7 +1011,7 @@ export function LateralMenu({fnc=()=>{}}:{fnc?:Function}) {
                           </Typography>
                         </Button>
 
-                        
+
                         <Divider variant="fullWidth" />
                       </Box>
                     </Grid>

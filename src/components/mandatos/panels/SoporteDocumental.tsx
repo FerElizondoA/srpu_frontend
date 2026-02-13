@@ -135,6 +135,19 @@ export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBa
     console.log("DocumentosBaseDatos:", DocumentosBaseDatos);
   }, []);
 
+  useEffect(() => {
+    if (idMandato !== "") {
+      console.log("Entré al useEffect de idMandato:");
+      listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/MANDATOS/${idMandato}/`,
+        setArr,
+        tablaSoporteDocumentalMandato
+      ).then(() => {
+        setLoading(false);
+      });
+    }
+    console.log("idMandato:", idMandato);
+  }, [idMandato !== ""]);
+
 
   // useEffect(() => {
   //   if (idMandato !== "") {
@@ -320,6 +333,8 @@ export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBa
               }
               onClick={() => {
                 addSoporteDocumental(soporteDocumental);
+                setArr([...arr, soporteDocumental]);
+
               }}
             >
               Agregar
@@ -365,7 +380,7 @@ export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBa
               </TableHead>
 
               <TableBody>
-                {DocumentosBaseDatos.map( //HAS QUE GUARDE EL ARRDATOS EN EL SET DE SOPORTE DOCUMENTAL QUE TENIAS ANTERIOREMENTE
+                {arr.map( //HAS QUE GUARDE EL ARRDATOS EN EL SET DE SOPORTE DOCUMENTAL QUE TENIAS ANTERIOREMENTE
                   (row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
@@ -373,7 +388,10 @@ export function SoporteDocumentalMandato({ DocumentosBaseDatos }: { DocumentosBa
                           <Tooltip title="Eliminar">
                             <IconButton
                               type="button"
-                              onClick={() => removeSoporteDocumental(index)}
+                              onClick={() => {
+                                removeSoporteDocumental(index)
+                                setArr(arr.filter((_: any, i: any) => i !== index));
+                              }}
                             >
                               <DeleteIcon />
                             </IconButton>

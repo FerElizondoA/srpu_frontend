@@ -24,7 +24,7 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
@@ -133,6 +133,10 @@ export function SoporteDocumentalInstrucciones() {
     }
     console.log("idInstruccion:", idInstruccion);
   }, [idInstruccion !== ""]);
+
+
+
+  
 
 
   const [loading, setLoading] = useState(true);
@@ -287,6 +291,7 @@ export function SoporteDocumentalInstrucciones() {
               }
               onClick={() => {
                 addSoporteDocumentalInstrucciones(soporteDocumentalInstruccion);
+                setArr([...arr, soporteDocumentalInstruccion]);
               }}
             >
               Agregar
@@ -332,7 +337,7 @@ export function SoporteDocumentalInstrucciones() {
               </TableHead>
 
               <TableBody>
-                {tablaSoporteDocumentalInstrucciones.map(
+                {arr.map(
                   (row: any, index: number) => {
                     return (
                       <StyledTableRow key={index}>
@@ -342,6 +347,7 @@ export function SoporteDocumentalInstrucciones() {
                               type="button"
                               onClick={() => {
                                 removeSoporteDocumental(index);
+                                setArr(arr.filter((_: any, i: any) => i !== index));
                               }}
                             >
                               <DeleteIcon />

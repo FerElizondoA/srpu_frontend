@@ -856,7 +856,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
 
 
-  modificaPorcentajesAcumulados: async (setLoading:Function, stateOpen: Function ) => {
+  modificaPorcentajesAcumulados: async (setLoading: Function, stateOpen: Function) => {
     const state = useFideicomisoStore.getState();
 
     const peticiones = state.tablaTipoMovimientoFideicomisoNew.map((item) => {
@@ -1107,11 +1107,13 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       });
   },
 
-  modificaFideicomiso: async ( stateOpen: Function, setLoading: Function,) => {
+  modificaFideicomiso: async (stateOpen: Function, setLoading: Function,) => {
     const state = useFideicomisoStore.getState();
-    const cpState = useCortoPlazoStore.getState();
+    //const cpState = useCortoPlazoStore.getState();
+    const SaveFile = useCortoPlazoStore.getState();
 
     console.log("TABLA NEW tipo de fidicomiso", state.tablaTipoMovimientoFideicomisoNew)
+    console.log("tablaSoporteDocumentalFideicomiso", state.tablaSoporteDocumentalFideicomiso)
 
     const tipoMovimeintoNew = state.tablaTipoMovimientoFideicomisoNew.map(({
       id,
@@ -1132,6 +1134,17 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
     })
     );
 
+    const soporteDocumentalPrueba = state.tablaSoporteDocumentalFideicomiso.map(({
+      tipo, archivo, nombreArchivo, fechaArchivo }) => ({
+        tipo,
+        archivo,
+        nombreArchivo,
+        fechaArchivo
+      })
+    );
+
+        console.log("PRINCIPIO soporteDocumentalPrueba", soporteDocumentalPrueba)
+
 
     await axios
       .put(
@@ -1144,9 +1157,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
 
           Fideicomisario: JSON.stringify(state.tablaFideicomisario),
           TipoMovimiento: JSON.stringify(tipoMovimeintoNew),
-          SoporteDocumental: JSON.stringify(
-            state.tablaSoporteDocumentalFideicomiso
-          ),
+          SoporteDocumental: JSON.stringify(soporteDocumentalPrueba),
           ModificadoPor: localStorage.getItem("IdUsuario"),
         },
         {
@@ -1159,13 +1170,23 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
         console.log("DATA FIDEICOMISO", data);
 
         state.setIdFideicomiso(data.data.Id);
-        state.saveFilesFideicomiso(
-          data.result.Id,
-          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${data.result.Id}`,
-          //`/SRPU/FIDEICOMISOS/${data.result.Id}`,
+        // state.saveFilesFideicomiso(
+        //   state.idFideicomiso,
+        //   process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${state.idFideicomiso}`,
+        //   //`/SRPU/FIDEICOMISOS/${data.result.Id}`,
+        //   setLoading,
+        //   new File([data.data], "PRUEBA DE FIDEICOMISO.pdf")
+        // )
+
+        console.log("FINAL soporteDocumentalPrueba ", soporteDocumentalPrueba)
+
+        SaveFile.saveFilesFuentesPago(
+          "Fideicomiso",
+          soporteDocumentalPrueba,
+          state.idFideicomiso,
+          process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/FIDEICOMISOS/${state.idFideicomiso}`,
           setLoading,
-          new File([data.data], "PRUEBA DE FIDEICOMISO.pdf")
-        )
+        );
 
       })
       .catch(function (error) {
@@ -1302,7 +1323,7 @@ export const createFideicomisoSlice: StateCreator<FideicomisoSlice> = (
       .then((r) => {
         setLoading(false);
         console.log("r ENTRO: ", r.data);
-       
+
       })
       .catch((e) => { });
   },

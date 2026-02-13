@@ -176,6 +176,18 @@ export function AgregarInstruccionesIrrevocables({
     console.log("TablaPruebaEditarFideicomiso: ", TablaPruebaEditarFideicomiso);
   }, []);
 
+    // useEffect(() => {
+    //   if (idInstruccion !== "") {
+    //     console.log("Entré al useEffect de idInstruccion:");
+    //     listFileFuentesPago(process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/FUENTEDEPAGO/INSTRUCCIONES-IRREVOCABLES/${idInstruccion}/`,
+    //       setArr,
+    //       tablaSoporteDocumentalInstrucciones
+    //     ).then(() => {
+    //       setLoading(false);
+    //     });
+    //   }
+    //   console.log("idInstruccion:", idInstruccion);
+    // }, [idInstruccion !== ""]);
 
   return (
     <Dialog fullScreen open={openState} TransitionComponent={DialogTransition}>
