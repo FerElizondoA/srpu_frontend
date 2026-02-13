@@ -128,7 +128,7 @@ export function DialogSolicitarModificacion({
           : idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
+          "Crédito simple a corto plazo hola2",
           `Se te ha asignado una solicitud para  
           ${localStorage.getItem("Rol") === "Autorizador" ?
             accion === "enviar" ?

@@ -204,8 +204,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         if (NotificacionEnviar === true && idEditor) {
           createNotification(
             "Crédito simple a corto plazo",
-            "La solicitud de inscripción está lista para firmar",
-            [localStorage.getItem("IdUsuario") || ""],
+            "La solicitud de inscripción está lista para modificación",
+            [idEditor],
             data.data.Id,
             "inscripcion",
             data.data.NumeroRegistro
