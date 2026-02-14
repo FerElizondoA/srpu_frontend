@@ -307,11 +307,11 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
         if (NotificacionEnviar === true && idEditor) {
           createNotification(
-            "Crédito simple a largo plazo",
+            "Crédito simple a corto plazo",
             `Se te ha asignado una solicitud para modificación`,
             [idEditor],
-            "",
-            "",
+            inscripcionState.inscripcion.Id || state.IdSolicitudBorrador,
+            "inscripcion",
             data.data.NumeroRegistro
           );
         }
