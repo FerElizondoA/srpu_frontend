@@ -116,7 +116,7 @@ export function Resumen({
     (state) => state.encabezado.tipoDocumento
   );
 
-    const tipoCredito: string = useCortoPlazoStore(
+  const tipoCredito: string = useCortoPlazoStore(
     (state) => state.encabezado.tipoCredito.Descripcion
   );
   const solicitanteAutorizado: {
@@ -241,7 +241,7 @@ export function Resumen({
   const [arr, setArr] = useState<any>([]);
   const [cargados, setCargados] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
     if (inscripcion.Id)
       getDocumentosResumen(
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
@@ -757,16 +757,15 @@ export function Resumen({
                                         component="th"
                                         scope="row"
                                       >
-                                        {row.tipoDeComision.Descripcion}
+                                        {row.tipoDeComision?.Descripcion || "N/A"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {lightFormat(
-                                          new Date(row.fechaComision),
-                                          "dd-MM-yyyy"
-                                        )}
+                                        {row?.fechaComision !== "N/A"
+                                          ? format(new Date(row?.fechaComision), "dd/MM/yyyy")
+                                          : "N/A"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.periodicidadDePago.Descripcion}
+                                        {row.periodicidadDePago?.Descripcion || "N/A"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.porcentaje}
@@ -775,7 +774,7 @@ export function Resumen({
                                         {row.monto}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.iva === false ? "N/A" : "Aplica"}
+                                        {row.iva === false ? "Aplica" : "N/A"}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -1032,23 +1031,23 @@ export function Resumen({
                                   <IconButton
                                     onClick={
                                       async () => {
-                                      console.log("row?.archivo?.name", row?.archivo)
-                                      let base64String = '';
-                                      try {
-                                        if (row.archivo instanceof File) {
-                                          base64String = await convertFileToBase64(row.archivo);
-                                        } else {
-                                          base64String = row.archivo;
+                                        console.log("row?.archivo?.name", row?.archivo)
+                                        let base64String = '';
+                                        try {
+                                          if (row.archivo instanceof File) {
+                                            base64String = await convertFileToBase64(row.archivo);
+                                          } else {
+                                            base64String = row.archivo;
+                                          }
+
+                                          const dataUri = `data:application/pdf;base64,${base64String}`;
+                                          setFileSelected(dataUri);
+                                        } catch (error) {
+                                          console.error("Error al convertir el archivo a Base64", error);
                                         }
 
-                                        const dataUri = `data:application/pdf;base64,${base64String}`;
-                                        setFileSelected(dataUri);
-                                      } catch (error) {
-                                        console.error("Error al convertir el archivo a Base64", error);
-                                      }
-
-                                      setShowModalPrevia(true);
-                                    }}
+                                        setShowModalPrevia(true);
+                                      }}
                                   >
                                     <FileOpenIcon />
                                   </IconButton>

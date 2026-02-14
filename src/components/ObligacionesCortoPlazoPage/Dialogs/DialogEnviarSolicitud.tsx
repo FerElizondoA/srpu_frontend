@@ -169,7 +169,7 @@ export function ConfirmacionEnviarSolicitud({
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
-                  localStorage.getItem("IdUsuario"),
+                  idUsuarioAsignado, //localStorage.getItem("IdUsuario"),
                   "3",
                   arrDocsEliminados,
                 )
@@ -292,7 +292,6 @@ export function ConfirmacionEnviarSolicitud({
                   "Se te ha asignado una solicitud de Credito a Corto Plazo",
                   setIdSolicitudCreada,
                   true
-
                 )
                   .then(() => {
                     if (comentarios && Object.keys(comentarios).length > 0) {
