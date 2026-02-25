@@ -694,6 +694,7 @@ export function ConsultaDeSolicitudPage() {
                                 cleanSolicitudLargoPlazo();
                                 cleanInscripcion();
                                 cleanInscripcionModify();
+                                
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
@@ -879,6 +880,7 @@ export function ConsultaDeSolicitudPage() {
         <VerComentariosSolicitud
           handler={changeOpenVerComentarios}
           openState={openVerComentarios}
+          filtroBotonesAccion={true}
         />
       )}
 

@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, TextField, ThemeProvider, createTheme } from "@mui/material";
+import { Button, Dialog, Grid, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { IComentarios } from "./DialogComentariosSolicitud";
 
 const theme = createTheme({
   components: {
@@ -30,19 +31,23 @@ export function ComentarioApartado({
   openState: { open: boolean; apartado: string; tab: string };
   filtroComentarioVolver?: Function
 }) {
-  const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
 
-  const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+
+
+  const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
+  const comentariosZustand: any = useCortoPlazoStore((state) => state.comentarios);
+
+  const comentariosBD: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion);
 
   const newComentario: Function = useCortoPlazoStore(
-    (state) => state.newComentario
-  );
-
+    (state) => state.newComentario);
 
   const removeComentario: Function = useCortoPlazoStore(
-    (state) => state.removeComentario
-  );
+    (state) => state.removeComentario);
 
+
+    
   // const comentariosRegistro: any = useCortoPlazoStore(
   //   (state) => state.comentariosRegistro
   // );
@@ -60,7 +65,7 @@ export function ComentarioApartado({
     // comentariosRegistro[openState.apartado] &&
     setComent({
       Apartado: openState.apartado,
-      Comentario: comentario[openState.apartado],
+      Comentario: comentariosZustand[openState.apartado],
       // ||
       // comentariosRegistro[openState.apartado],
     });
@@ -74,6 +79,84 @@ export function ComentarioApartado({
   //   //console.log("comentario", comentario);
   // }, [newComentario, coment.Comentario, comentario])
 
+
+
+
+  // const comentariosPreviosMap = useMemo(() => {
+  //   const map: { [key: string]: string } = {};
+
+  //   comentariosSolicitudInscripcion.forEach((item) => {
+  //     try {
+  //       const parsed = JSON.parse(item.Comentarios);
+  //       const key = Object.keys(parsed)[0];
+  //       const value = parsed[key];
+
+  //       if (key && value) {
+  //         map[key] = value;
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parseando comentario:", error);
+  //     }
+  //   });
+
+  //   return map;
+  // }, [comentariosSolicitudInscripcion]);
+
+  const [comentariosPrevios, setComentariosPrevios] = useState<string[]>([]);
+
+  // useEffect(() => {
+  //   if (!openState.apartado) return;
+
+  //   const encontrados: string[] = [];
+
+  //   comentariosSolicitudInscripcion.forEach((c) => {
+  //     try {
+  //       const parsed = JSON.parse(c.Comentarios);
+
+  //       if (parsed[openState.apartado]) {
+  //         encontrados.push(parsed[openState.apartado]);
+  //       }
+  //     } catch { }
+  //   });
+
+  //   setComentariosPrevios(encontrados);
+
+  //   // IMPORTANTE: SIEMPRE iniciar nuevo comentario vacío
+  //   setComent({
+  //     Apartado: openState.apartado,
+  //     Comentario: "",
+  //   });
+
+  // }, [openState.apartado, comentariosSolicitudInscripcion]);
+
+  useEffect(() => {
+    if (!openState.apartado) return;
+
+    const encontrados: string[] = [];
+
+    comentariosBD.forEach((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+
+        if (parsed[openState.apartado]) {
+          encontrados.push(parsed[openState.apartado]);
+        }
+      } catch { }
+    });
+
+    setComentariosPrevios(encontrados);
+
+    setComent({
+      Apartado: openState.apartado,
+      Comentario: "",
+    });
+
+  }, [openState.apartado, comentariosBD]);
+
+  useEffect(() => {
+
+    console.log("comentarios RECIEN AGREGADO", comentariosZustand);
+  }, [])
 
 
   return (
@@ -90,9 +173,67 @@ export function ComentarioApartado({
       </DialogTitle>
 
       <DialogContent>
+
+        {comentariosPrevios.length > 0 && (
+          <Grid sx={{ width: "100%", mt: 2, height: "15rem", overflowY: "auto" }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 600, mb: 2 }}
+            >
+              Comentarios asignados
+            </Typography>
+
+            {comentariosPrevios.map((comentario, index) => (
+              <Grid
+                key={index}
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: "#f5f5f5",
+                  border: "1px solid #e0e0e0",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ whiteSpace: "pre-line" }}
+                >
+                  {comentario}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+
+        {comentariosZustand[openState.apartado] && (
+          <Grid sx={{ width: "100%", mt: 3 }}>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 600, mb: 2 }}
+            >
+              Comentario agregado
+            </Typography>
+
+            <Grid
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: "#e3f2fd",
+                border: "1px solid #90caf9",
+              }}
+            >
+              <Typography variant="body2">
+                {comentariosZustand[openState.apartado]}
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
+
+
+
         <TextField
           label={
-            comentario[openState.apartado]
+            comentariosZustand[openState.apartado]
               ? "Editar comentario"
               : "Nuevo comentario"
           }
@@ -108,10 +249,29 @@ export function ComentarioApartado({
           }}
           multiline
         />
+
+        {/* <TextField
+          label={
+            coment.Comentario !== ""
+              ? "Editar comentario"
+              : "Sin comentarios previos"
+          }
+          sx={{ width: "100%", mt: 2 }}
+          value={coment.Comentario || ""}
+          onChange={(v) => {
+            setComent({
+              Comentario: v.target.value
+                .replaceAll(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s]/g, "")
+                .replaceAll(/\n/g, ""),
+              Apartado: openState.apartado,
+            });
+          }}
+          multiline
+        /> */}
       </DialogContent>
 
       <DialogActions>
-        {comentario[openState.apartado] !== "" ? (
+        {comentariosZustand[openState.apartado] !== "" ? (
 
           <Button
             sx={queries.buttonCancelar}
@@ -142,22 +302,7 @@ export function ComentarioApartado({
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
-
-
-
-              console.log("comemt", coment,);
-              console.log("newComentario", newComentario);
-
-
-
-
-              // if(coment.Comentario!== ""){
-              //   setFiltroComentarios(true)
-              // }
-
               console.log("comment,comentario", coment.Comentario);
-
-
             }}
           >
             Aceptar

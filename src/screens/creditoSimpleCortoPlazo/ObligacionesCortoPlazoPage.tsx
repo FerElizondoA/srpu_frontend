@@ -17,21 +17,23 @@ import { IInscripcion } from "../../store/Inscripcion/inscripcion";
 import { getDocumentos } from "../../components/APIS/pathDocSol/APISDocumentos";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { IComentarios, VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 
 export function ObligacionesCortoPlazoPage() {
 
-  const [arrDocsEliminados, setArrDocsEliminados]=useState<IDocsEliminados[]>([]);
+  const [arrDocsEliminados, setArrDocsEliminados] = useState<IDocsEliminados[]>([]);
 
-  useEffect(()=>{
-    console.log("arrDocsEliminados ObligacionCortoPlazo:",JSON.stringify(arrDocsEliminados));
-  },[arrDocsEliminados])
+  useEffect(() => {
+    console.log("arrDocsEliminados ObligacionCortoPlazo:", JSON.stringify(arrDocsEliminados));
+  }, [arrDocsEliminados])
 
 
   const addArrDocsEliminados = (obj: IDocsEliminados) => {
     console.log('objeto eliminado', obj);
-    
-    setArrDocsEliminados( [...arrDocsEliminados, obj]);
+
+    setArrDocsEliminados([...arrDocsEliminados, obj]);
   };
 
   const [openDialogBorrador, setOpenDialogBorrador] = useState(false);
@@ -64,19 +66,31 @@ export function ObligacionesCortoPlazoPage() {
     (state) => state.IdSolicitudBorrador
   );
 
-    const tipoCredito: { Id: string; Descripcion: string } = useCortoPlazoStore(
+  const tipoCredito: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.encabezado.tipoCredito
   );
 
+  const [openVerComentarios, changeOpenVerComentarios] = useState(false);
+  const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
+    []
+  );
+
+  useEffect(() => {
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id,  () => { });
+    }
+  }, [inscripcion.Id]);
 
   useEffect(() => {
     getTiposDocumentos();
-    if(inscripcion.Id){getDocumentos(
-      process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS +`/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
-      () => {},
-      () => {},
-      "CortoPlazo"
-    );}
+    if (inscripcion.Id) {
+      getDocumentos(
+        process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/CORTOPLAZO/DOCSOL/${inscripcion.Id}/`,
+        () => { },
+        () => { },
+        "CortoPlazo"
+      );
+    }
   }, []);
 
   return (
@@ -92,12 +106,12 @@ export function ObligacionesCortoPlazoPage() {
           display={"flex"}
           width={"100%"}
           justifyContent={
-            !inscripcion.NumeroRegistro ? "center" : "space-evenly"
+             "space-evenly"
           }
         >
           {inscripcion.NumeroRegistro && (
             <Grid
-              width={query.isTittle ? "20%" : "20%"}
+              width={query.isTittle ? "15%" : "20%"}
               display={"flex"}
               justifyContent={"start"}
               alignItems={"center"}
@@ -115,13 +129,20 @@ export function ObligacionesCortoPlazoPage() {
             mr={3}
             width={
               !inscripcion.NumeroRegistro
-                ? "90%"
+                ? "50%"
                 : query.isTittle
-                ? "60%"
-                : "50%"
+                  ? "60%"
+                  : "30%"
             }
             display={"flex"}
-            justifyContent={"center"}
+            justifyContent={
+              !inscripcion.NumeroRegistro
+                ? "end"
+                : query.isTittle
+                  ? "center"
+                  : "center"
+            }
+            // justifyContent={"center"}
             alignItems={"center"}
           >
             <Typography
@@ -134,14 +155,23 @@ export function ObligacionesCortoPlazoPage() {
             </Typography>
           </Grid>
 
-          <Grid
+          <Grid container
             width={
-              !inscripcion.NumeroRegistro ? "0" : query.isTittle ? "10%" : "20%"
+              !inscripcion.NumeroRegistro ? "20%" : query.isTittle ? "10%" : "20%"
             }
             display={"flex"}
-            justifyContent={"end"}
+            justifyContent={"space-evenly"}
             alignItems={"center"}
           >
+            <Button
+              sx={{ ...queries.buttonContinuar }}
+              onClick={() => {
+                changeOpenVerComentarios(!openVerComentarios);
+              }}
+            >
+
+              Ver Comentarios
+            </Button>
             <Button
               sx={{ ...queries.buttonContinuar }}
               onClick={() => {
@@ -197,12 +227,20 @@ export function ObligacionesCortoPlazoPage() {
       {tabIndex === 2 && <CondicionesFinancieras />}
       {tabIndex === 3 && <Documentacion addArrDocsEliminados={addArrDocsEliminados} />}
       {tabIndex === 4 && <Resumen coments={true} estatus={""} arrDocsEliminados={arrDocsEliminados} />}
-      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados}/>}
+      {tabIndex === 5 && <SolicitudInscripcion arrDocsEliminados={arrDocsEliminados} />}
 
       {openDialogBorrador && (
         <DialogGuardarBorrador
           handler={setOpenDialogBorrador}
           openState={openDialogBorrador}
+        />
+      )}
+
+      {openVerComentarios && (
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+          filtroBotonesAccion={false}
         />
       )}
     </>

@@ -15,6 +15,7 @@ import { alertaConfirmCancelar, alertaConfirmCancelarError } from "../../../gene
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { IEncabezado } from "../../../store/CreditoCortoPlazo/encabezado";
+import { getComentariosSolicitudPlazo } from "../../APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 export const moneyMask = (value: string) => {
   value = value.replace(/\D/g, "");
@@ -57,6 +58,10 @@ export function DialogGuardarBorrador({
   );
 
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+
+  const cleanComentario: Function = useCortoPlazoStore((state) => state.cleanComentario);
+
+  
 
   const tipoCredito: { Id: string; Descripcion: string } = useCortoPlazoStore(
     (state) => state.encabezado.tipoCredito
@@ -232,6 +237,10 @@ export function DialogGuardarBorrador({
                         "Captura"
                       );
                     }
+
+
+
+
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
                     cleanSolicitud();
                     cleanInscripcion();
@@ -308,12 +317,19 @@ export function DialogGuardarBorrador({
                 )
                   .then(() => {
                     console.log("GUARDAR CONTINUAR, TODOS LOS COMENTARIOS: ", comentario);
+
+
                     if (comentario && Object.keys(comentario).length > 0) {
                       addComentario(
                         IdSolicitudBorrador,
                         JSON.stringify(comentario),
                         "Captura"
-                      );
+                      ).then(() => {
+                        console.log("Comentario agregado correctamente");
+                        cleanComentario()
+                        getComentariosSolicitudPlazo(IdSolicitudBorrador, () => { });
+
+                      })
                     }
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
                     // cleanSolicitud();
@@ -332,14 +348,23 @@ export function DialogGuardarBorrador({
                   setIdSolicitudCreada
                 )
                   .then(() => {
+
+
                     if (comentario && Object.keys(comentario).length > 0) {
                       addComentario(
                         IdSolicitudBorrador,
                         JSON.stringify(comentario),
                         "Captura"
-                      );
+                      ).then(() => {
+                        console.log("Comentario agregado correctamente");
+                        getComentariosSolicitudPlazo(IdSolicitudBorrador, () => { });
+
+                      })
+
+
                     }
                     alertaConfirmCancelar("La solicitud se guardó con éxito")
+
 
                     //navigate("../ConsultaDeSolicitudes");
                   })

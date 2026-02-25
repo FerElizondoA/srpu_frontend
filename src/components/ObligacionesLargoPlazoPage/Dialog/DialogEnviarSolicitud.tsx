@@ -198,11 +198,11 @@ export function ConfirmacionEnviarSolicitud({
                     cleanInscripcion();
                     cleanInscripcionModify();
                     navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "La solicitud de inscripción está lista para firmar",
-                      [localStorage.getItem("IdUsuario") || ""]
-                    );
+                    // createNotification(
+                    //   "Crédito simple a largo plazo",
+                    //   "La solicitud de inscripción está lista para firmar",
+                    //   [localStorage.getItem("IdUsuario") || ""]
+                    // );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -239,11 +239,11 @@ export function ConfirmacionEnviarSolicitud({
                     cleanInscripcion();
                     cleanInscripcionModify();
                     navigate("../ConsultaDeSolicitudes");
-                    createNotification(
-                      "Crédito simple a largo plazo",
-                      "Se te ha asignado una solicitud de inscripción",
-                      [idUsuarioAsignado]
-                    );
+                    // createNotification(
+                    //   "Crédito simple a largo plazo",
+                    //   "Se te ha asignado una solicitud de inscripción",
+                    //   [idUsuarioAsignado]
+                    // );
                   })
                   .catch(() => {
                     Swal.fire({
@@ -299,11 +299,11 @@ export function ConfirmacionEnviarSolicitud({
                       text: "Ocurrió un error, inténtelo de nuevo",
                     });
                   });
-                createNotification(
-                  "Crédito simple a largo plazo",
-                  "La solicitud de inscripción está lista para firmar",
-                  [localStorage.getItem("IdUsuario") || ""]
-                );
+                // createNotification(
+                //   "Crédito simple a largo plazo",
+                //   "La solicitud de inscripción está lista para firmar",
+                //   [localStorage.getItem("IdUsuario") || ""]
+                // );
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
                   localStorage.getItem("IdUsuario"),

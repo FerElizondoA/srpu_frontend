@@ -13,6 +13,8 @@ import { useFideicomisoStore } from "../Fideicomiso/main";
 import { alertaInfo } from "../../avisosPAUA/componentes/Alertas";
 import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+import { IComentarios } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -77,25 +79,28 @@ export interface SolicitudInscripcionSlice {
   IdSolicitudBorrador: string
 
 
-  comentariosSolicitudInscrpcion: { [key: string]: string };
-  setComentariosSolicitudInscrpcion: (comentario: any) => void;
+  // comentariosSolicitudInscrpcion: { [key: string]: string };
+  // setComentariosSolicitudInscrpcion: (comentario: [IComentarios]) => void;
+  comentariosSolicitudInscripcion: IComentarios[];
+  setComentariosSolicitudInscripcion: (comentarios: IComentarios[]) => void;
 
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-  comentariosSolicitudInscrpcion: {},
+  comentariosSolicitudInscripcion: [],
 
-  setComentariosSolicitudInscrpcion: (comentariosSolicitudInscrpcion: any) => {
-    set((state) => ({
-      comentariosSolicitudInscrpcion: comentariosSolicitudInscrpcion,
+  setComentariosSolicitudInscripcion: (comentarios: IComentarios[]) => {
+    set(() => ({
+      comentariosSolicitudInscripcion: comentarios,
     }));
   },
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => {
     set(() => ({ IdSolicitudBorrador: IdSolicitudBorrador }))
   },
+
   IdSolicitudBorrador: "",
 
   inscripcion: {
@@ -212,11 +217,18 @@ export const createSolicitudInscripcionSlice: StateCreator<
           );
           // 
         }
+        // console.log("Solicitud creada, ID: ", data.data.Id);
+        // console.log("Comentario a agregar CREAR NUEVO: ", comentario);
+        state.addComentario(data.data.Id, comentario, "Captura");
 
         setTimeout(() => {
           inscripcionState.cleanSolicitudCortoPlazo();
           state.setIdSolicitudBorrador(data.data.Id)
           setIdSolicitudCreada(data.data.Id)
+
+
+          getComentariosSolicitudPlazo(data.data.Id, () => { });
+          state.cleanComentario();
 
           //inscripcionState.setInscripcion(data.data.)
           alertaConfirmCancelar("La solicitud se guardó con éxito")
@@ -307,7 +319,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
 
         if (NotificacionEnviar === true && idEditor) {
           createNotification(
-            "Crédito simple a corto plazo",
+            "Crédito Simple a Corto Plazo",
             `Se te ha asignado una solicitud para modificación`,
             [idEditor],
             inscripcionState.inscripcion.Id || state.IdSolicitudBorrador,
@@ -400,6 +412,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
           comentarios: {},
           idComentario: "",
         });
+        getComentariosSolicitudPlazo(data.data.Id, () => { });
+
       })
       .catch((e) => { });
 
