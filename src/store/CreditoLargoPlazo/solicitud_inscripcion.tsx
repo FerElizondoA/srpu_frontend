@@ -16,6 +16,7 @@ import { useInstruccionesStore } from "../InstruccionesIrrevocables/main";
 import { useMandatoStore } from "../Mandatos/main";
 import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
+import { stat } from "fs";
 
 
 export interface IDataAgregarSolicitud {
@@ -526,8 +527,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             "Crédito simple a largo plazo",
             `Se te ha asignado una solicitud para modificación`,
             [idEditor],
-            "",
-            "",
+            data.data.Id,
+            "inscripcion",
             DataSolicitud.NumeroRegistro
           );
 
@@ -723,8 +724,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             "Crédito simple a largo plazo",
             `Se te ha asignado una solicitud para modificación`,
             [idEditor],
-            "",
-            "",
+            inscripcionState.inscripcion.Id || lpState.IdSolicitudBorrador,
+            "inscripcion",
             data.data.NumeroRegistro
           );
         }

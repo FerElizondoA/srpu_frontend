@@ -44,10 +44,26 @@ export function VerBorradorDocumento(props: Props) {
   const [openGuardaComentarios, setOpenGuardaComentarios] =
     React.useState(false);
 
+
+  // OCUPAS ESTO PARA LOS CAMBIOS*******
+  const setComentariosSolicitudInscripcion: Function = useCortoPlazoStore(
+    (state) => state.setComentariosSolicitudInscripcion
+  );
+
+  const comentariosBD: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion);
+
+  const newComentario: Function = useCortoPlazoStore(
+    (state) => state.newComentario);
+
+  const removeComentario: Function = useCortoPlazoStore(
+    (state) => state.removeComentario);
+
+
   // REQUERIMIENTOS
   React.useEffect(() => {
     if (props.rowSolicitud.Id !== "") {
-      getComentariosSolicitudPlazo(props.rowSolicitud.Id, setDatosComentarios);
+      getComentariosSolicitudPlazo(props.rowSolicitud.Id, () => { });
     }
   }, [props.rowSolicitud.Id]);
 
@@ -130,14 +146,14 @@ export function VerBorradorDocumento(props: Props) {
   // }
 
   const hayComentarios =
-  tieneComentarios(comentarios) || tieneComentarios(comentariosAuxOriginal);
+    tieneComentarios(comentarios) || tieneComentarios(comentariosAuxOriginal);
 
 
   function tieneComentarios(comentarios: Record<string, string | undefined>): boolean {
-  return Object.values(comentarios).some(
-    (valor) => typeof valor === "string" && valor.trim().length > 0
-  );
-}
+    return Object.values(comentarios).some(
+      (valor) => typeof valor === "string" && valor.trim().length > 0
+    );
+  }
 
   function compararComentarios(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
     const claves1 = Object.keys(obj1);
@@ -284,7 +300,7 @@ export function VerBorradorDocumento(props: Props) {
                   }}
                   onClick={() => {
                     setOpenGuardaComentarios(true);
-                    console.log("comentariosAuxOriginal", comentariosAuxOriginal)
+                    console.log("comentariosAuxOriginal", comentarios)
 
                   }}
                 >
@@ -322,14 +338,15 @@ export function VerBorradorDocumento(props: Props) {
                       fontSize: "50%",
                     }}
                     onClick={() => {
-                      if (compararComentarios(comentarios, botonVolverFiltro) === false) {
-                        setOpenDialogConfirmacionVolver(true)
-                        setConfirmBotonAccionComentario(true)
-                      } else {
-                        setOpenDialogRegresar(true);
-                        setAccion("modificar");
-                      }
-
+                      // if (compararComentarios(comentarios, botonVolverFiltro) === false) {
+                      //   setOpenDialogConfirmacionVolver(true)
+                      //   setConfirmBotonAccionComentario(true)
+                      // } else {
+                      //   setOpenDialogRegresar(true);
+                      //   setAccion("modificar");
+                      // }
+                      setOpenDialogRegresar(true);
+                      setAccion("modificar");
                     }}
                   >
                     {`Devolver para ${localStorage.getItem("Rol") === "Autorizador"
@@ -345,13 +362,15 @@ export function VerBorradorDocumento(props: Props) {
                     fontSize: "50%",
                   }}
                   onClick={() => {
-                    if (compararComentarios(comentarios, botonVolverFiltro) === false) {
-                      setOpenDialogConfirmacionVolver(true)
-                      setConfirmBotonAccionComentario(true)
-                    } else {
-                      setOpenDialogRegresar(true);
-                      setAccion("enviar");
-                    }
+                    // if (compararComentarios(comentarios, botonVolverFiltro) === false) {
+                    //   setOpenDialogConfirmacionVolver(true)
+                    //   setConfirmBotonAccionComentario(true)
+                    // } else {
+                    //   setOpenDialogRegresar(true);
+                    //   setAccion("enviar");
+                    // }
+                    setOpenDialogRegresar(true);
+                    setAccion("enviar");
 
                   }}
                 >
@@ -474,7 +493,7 @@ export function VerBorradorDocumento(props: Props) {
         <DialogTitle>Guardar comentarios</DialogTitle>
         <DialogContent>
 
-          {!hayComentarios   && (
+          {!hayComentarios && (
             <Typography>Se borraron todos los comentarios</Typography>
           )}
           {Object.entries(comentarios).map(([key, val], index) =>

@@ -13,17 +13,7 @@ export function getComentariosSolicitudPlazo(
   setState: Function
 ) {
 
-  // const navigate = useNavigate();
-
-  // const setProceso: Function = useCortoPlazoStore((state) => state.setProceso);
-
-  // const solicitud: IInscripcion = useInscripcionStore(
-  //   (state) => state.inscripcion
-  // );
-  // const setUrl: Function = useSolicitudFirmaStore((state) => state.setUrl);
-
-
-
+  const state = useCortoPlazoStore.getState();
 
   return axios({
     method: "get",
@@ -64,7 +54,10 @@ export function getComentariosSolicitudPlazo(
               !rolesAdmin.includes(localStorage.getItem("Rol")!))
         )
       );
-     // console.log("Data comentarios", data.data)
+      console.log("Data comentarios", data.data)
+
+      state.setComentariosSolicitudInscripcion(data.data);
+      
       return data.data;
 
     })

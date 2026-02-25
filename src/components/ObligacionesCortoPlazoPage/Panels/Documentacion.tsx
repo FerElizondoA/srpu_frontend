@@ -25,7 +25,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
@@ -35,6 +35,7 @@ import { useResumenStore } from "../../../store/Resumen/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { alertaInfo } from "../../../generics/Alertas";
 import { newFile } from "../../../generics/instanciasObjetosVacios";
+import { IComentarios } from "../Dialogs/DialogComentariosSolicitud";
 
 interface Head {
   label: string;
@@ -65,7 +66,7 @@ const heads: readonly Head[] = [
   },
 ];
 
-export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Function}) {
+export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: Function }) {
   // despliega la lista de tipos de documentos
   const tiposDocumentos: ITiposDocumento[] = useCortoPlazoStore(
     (state) => state.catalogoTiposDocumentos
@@ -111,11 +112,12 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
 
   function clearArchivo(index: number) {
     let auxArrayArchivos = [...tablaDocumentos];
-    let objetoSeleccionado={...auxArrayArchivos[index]} 
-    
-    addArrDocsEliminados({  
-      NombreDoc:objetoSeleccionado.nombreArchivo,
-      TpoDoc:objetoSeleccionado.tipoArchivo}
+    let objetoSeleccionado = { ...auxArrayArchivos[index] }
+
+    addArrDocsEliminados({
+      NombreDoc: objetoSeleccionado.nombreArchivo,
+      TpoDoc: objetoSeleccionado.tipoArchivo
+    }
     )
     if (index < tablaDocumentos.length) {
       auxArrayArchivos[index].archivo = newFile;
@@ -154,7 +156,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
   const [openEliminar, setOpenEliminar] = useState({ open: false, index: 0 });
   //const [confirmBorrarDocumento, setConfirmBorrarDocumento] = useState(false);
   const [index, setIndex] = useState(0);
-  
+
   const query = {
     isScrollable: useMediaQuery("(min-width: 0px) and (max-width: 1189px)"),
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 479px)"),
@@ -167,6 +169,43 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
   );
+
+
+  const comentariosSolicitudInscripcion: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion
+  );
+
+  const tieneComentariosPrevios = (apartado: string) => {
+    return comentariosSolicitudInscripcion.some((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        return parsed[apartado] !== undefined && parsed[apartado] !== "";
+      } catch (error) {
+        return false;
+      }
+    });
+  }
+
+  const comentariosBDMap = useMemo(() => {
+    const mapa: Record<string, boolean> = {};
+
+    comentariosSolicitudInscripcion.forEach((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        Object.keys(parsed).forEach((key) => {
+          if (parsed[key]) {
+            mapa[key] = true;
+          }
+        });
+      } catch {
+        // ignore
+      }
+    });
+
+    return mapa;
+
+  }, [comentariosSolicitudInscripcion]);
+
 
   return (
     <Grid
@@ -204,41 +243,67 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
               </TableHead>
 
               <TableBody>
-                {tablaDocumentos.map((val, index) => (
-                  <StyledTableRow key={index} id={`${index + 1}`}>
-                    <StyledTableCell scope="row" sx={{ width: "100px" }}>
-                      {index < catalogoTiposDocumentosObligatorios.length ? (
-                        <Typography style={{ textDecoration: "underline" }}>
-                          Obligatorio
-                        </Typography>
-                      ) : (
-                        <Typography>Opcional</Typography>
-                        // <IconButton
-                        //   onClick={() => {
-                        //     setOpenEliminar({ open: true, index: index });
-                        //   }}
-                        // >
-                        //   <DeleteIcon />
-                        // </IconButton>
-                      )}
-                    </StyledTableCell>
+                {tablaDocumentos.map((val, index) => {
 
-                    <StyledTableCell sx={{ width: "150px" }}>
-                      <Grid sx={{ display: "flex", width: "120px" }}>
-                        <Grid>
-                          {comentario[val.descripcionTipo] &&
-                          comentario[val.descripcionTipo] !== "" ? (
-                            <Badge badgeContent={"!"} color="primary">
+                  const tieneComentarioLocal = !!comentario[val.descripcionTipo];
+                  const tieneComentarioBD = !!comentariosBDMap[val.descripcionTipo];
+
+                  const esVerde = tieneComentarioLocal || tieneComentarioBD;
+            
+
+                  return (
+                    <StyledTableRow key={index} id={`${index + 1}`}>
+                      <StyledTableCell scope="row" sx={{ width: "100px" }}>
+                        {index < catalogoTiposDocumentosObligatorios.length ? (
+                          <Typography style={{ textDecoration: "underline" }}>
+                            Obligatorio
+                          </Typography>
+                        ) : (
+                          <Typography>Opcional</Typography>
+                          // <IconButton
+                          //   onClick={() => {
+                          //     setOpenEliminar({ open: true, index: index });
+                          //   }}
+                          // >
+                          //   <DeleteIcon />
+                          // </IconButton>
+                        )}
+                      </StyledTableCell>
+
+                      <StyledTableCell sx={{ width: "150px" }}>
+                        <Grid sx={{ display: "flex", width: "120px" }}>
+                          <Grid>
+                            {comentario[val.descripcionTipo] &&
+                              comentario[val.descripcionTipo] !== "" ? (
+                              <Badge badgeContent={"!"} color="primary">
+                                <Tooltip title="Añadir comentario a este apartado">
+                                  <IconButton
+                                    // color={"primary"}
+                                    size="small"
+                                    onClick={() => {
+                                      console.log("comentario", comentario)
+                                      setOpenComentarioApartado({
+                                        open: true,
+                                        apartado: val.descripcionTipo,
+                                        tab: "TabDocumentacion",
+                                      });
+                                    }}
+                                  >
+                                    <CommentIcon
+                                      fontSize="medium"
+                                      sx={{ mr: 2 }}
+                                      color={esVerde ? "success" : "primary"}
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                              </Badge>
+                            ) : (
                               <Tooltip title="Añadir comentario a este apartado">
                                 <IconButton
-                                  color={
-                                    comentario[val.descripcionTipo] &&
-                                    comentario[val.descripcionTipo] !== ""
-                                      ? "success"
-                                      : "primary"
-                                  }
+                                  sx={{ ...queries.iconButtonCancelar }}
                                   size="small"
                                   onClick={() => {
+                                    console.log("esVerde", esVerde)
                                     setOpenComentarioApartado({
                                       open: true,
                                       apartado: val.descripcionTipo,
@@ -246,175 +311,157 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                                     });
                                   }}
                                 >
-                                  <CommentIcon
-                                    fontSize="medium"
-                                    sx={{ mr: 2 }}
+                                  <CommentIcon fontSize="medium"
+                                    color={esVerde ? "success" : "primary"}
                                   />
                                 </IconButton>
                               </Tooltip>
-                            </Badge>
-                          ) : (
-                            <Tooltip title="Añadir comentario a este apartado">
+                            )}
+                          </Grid>
+
+
+                          <Grid>
+                            {index >=
+                              catalogoTiposDocumentosObligatorios.length ? (
                               <IconButton
                                 sx={{ ...queries.iconButtonCancelar }}
-                                size="small"
                                 onClick={() => {
-                                  setOpenComentarioApartado({
-                                    open: true,
-                                    apartado: val.descripcionTipo,
-                                    tab: "TabDocumentacion",
-                                  });
+                                  setOpenEliminar({ open: true, index: index });
                                 }}
                               >
-                                <CommentIcon fontSize="medium" />
+                                <DeleteIcon />
                               </IconButton>
-                            </Tooltip>
-                          )}
+                            ) : null}
+                          </Grid>
+                          <Grid></Grid>
                         </Grid>
+                      </StyledTableCell>
 
-
-                        <Grid>
-                          {index >=
-                          catalogoTiposDocumentosObligatorios.length ? (
-                            <IconButton
-                              sx={{ ...queries.iconButtonCancelar }}
-                              onClick={() => {
-                                setOpenEliminar({ open: true, index: index });
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          ) : null}
-                        </Grid>
-                        <Grid></Grid>
-                      </Grid>
-                    </StyledTableCell>
-
-                    <StyledTableCell scope="row" sx={{ width: "300px" }}>
-                      <TextField
-                        sx={{ width: "250px" }}
-                        disabled={
-                          reestructura === "con autorizacion"
-                            ? true
-                            : val.archivo?.name ===
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                      <StyledTableCell scope="row" sx={{ width: "300px" }}>
+                        <TextField
+                          sx={{ width: "250px" }}
+                          disabled={
+                            reestructura === "con autorizacion"
+                              ? true
+                              : val.archivo?.name ===
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                               val.nombreArchivo ===
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
+                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                               (datosActualizar.length > 0 &&
                                 !datosActualizar.includes(val.tipoArchivo))
-                        }
-                        size="small"
-                        multiline={!query.isMobile}
-                        value={val.nombreArchivo}
-                        onChange={(v) => {
-                          console.log("V", v)
-                          let auxArrayArchivos = [...tablaDocumentos];
-                          auxArrayArchivos[index].nombreArchivo = v.target.value
-                            .replaceAll("'", "")
-                            .replaceAll('"', "")
-                            .replaceAll("\n", "");
-                          
-                            console.log(" auxArrayArchivos[index].nombreArchivo",  auxArrayArchivos[index].nombreArchivo)
+                          }
+                          size="small"
+                          multiline={!query.isMobile}
+                          value={val.nombreArchivo}
+                          onChange={(v) => {
+                            console.log("V", v)
+                            let auxArrayArchivos = [...tablaDocumentos];
+                            auxArrayArchivos[index].nombreArchivo = v.target.value
+                              .replaceAll("'", "")
+                              .replaceAll('"', "")
+                              .replaceAll("\n", "");
 
-                          setTablaDocumentos(auxArrayArchivos);
-                        }}
-                      ></TextField>
-                    </StyledTableCell>
+                            console.log(" auxArrayArchivos[index].nombreArchivo", auxArrayArchivos[index].nombreArchivo)
 
-                    <StyledTableCell
-                      sx={{ position: "relative", width: "400px" }}
-                    >
-                      <Grid
-                        container
-                        height="3rem"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
+                            setTablaDocumentos(auxArrayArchivos);
+                          }}
+                        ></TextField>
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        sx={{ position: "relative", width: "400px" }}
                       >
                         <Grid
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            width: "350px",
-                          }}
+                          container
+                          height="3rem"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
                         >
-                          <Typography
-                            position="absolute"
+                          <Grid
                             sx={{
                               display: "flex",
-                              fontFamily:
-                                val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                                  ? "MontserratBold"
-                                  : "MontserratMedium",
-                              textAlign: "center",
-                              justifyContent: "center",
                               alignItems: "center",
-                              width: {
-                                xs: "300px", // 100% width on extra small screens
-                                sm: "300px", // 80% width on small screens
-                                md: "300px", // 70% width on medium screens
-                                lg: "300px", // 60% width on large screens
-                              },
-                              height: "65%",
-                              fontSize: {
-                                xs: "60%", // smaller font size on extra small screens
-                                sm: "65%", // slightly larger on small screens
-                                md: "70%", // normal on medium and larger screens
-                              },
-                              border:
-                                val.archivo?.name !==
-                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
-                                  ? "2px dotted #af8c55"
-                                  : "2px dotted black",
+                              width: "350px",
                             }}
                           >
-                            {val.archivo?.name ||
-                              val.nombreArchivo ||
-                              "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
-                          </Typography>
-                          <input
-                            disabled={
-                              reestructura === "con autorizacion"
-                                ? true
-                                : datosActualizar.length > 0 &&
-                                  !datosActualizar.includes(val.tipoArchivo)
-                            }
-                            type="file"
-                            accept="application/pdf"
-                            onChange={(v) => {
-                              console.log("v", v)
-                              cargarArchivo(v, index);
-                            }}
-                            style={{
-                              opacity: 0,
-                              width: "250px",
-                              height: "5vh",
-                              cursor: "pointer",
-                            }}
-                          />
-                        </Grid>
-                        
-                        <Grid sx={{ display: "flex", alignItems: "center" }}>
-                          <Tooltip title="Remover Archivo">
-                            <Button
-                              sx={{ position: "absolute", right: 0 }}
-                              onClick={() => {
-                                //  clearArchivo(index);
-                                setOpenEliminar({ open: true, index: index})
-                            
-                                // quitDocument(openEliminar.index);
-                                // setOpenEliminar({ ...openEliminar, open: false });
+                            <Typography
+                              position="absolute"
+                              sx={{
+                                display: "flex",
+                                fontFamily:
+                                  val.archivo?.name !==
+                                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                    ? "MontserratBold"
+                                    : "MontserratMedium",
+                                textAlign: "center",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: {
+                                  xs: "300px", // 100% width on extra small screens
+                                  sm: "300px", // 80% width on small screens
+                                  md: "300px", // 70% width on medium screens
+                                  lg: "300px", // 60% width on large screens
+                                },
+                                height: "65%",
+                                fontSize: {
+                                  xs: "60%", // smaller font size on extra small screens
+                                  sm: "65%", // slightly larger on small screens
+                                  md: "70%", // normal on medium and larger screens
+                                },
+                                border:
+                                  val.archivo?.name !==
+                                    "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"
+                                    ? "2px dotted #af8c55"
+                                    : "2px dotted black",
                               }}
                             >
-                              <CloseIcon />
-                            </Button>
-                          </Tooltip>
-                        </Grid>
-                      </Grid>
-                    </StyledTableCell>
+                              {val.archivo?.name ||
+                                val.nombreArchivo ||
+                                "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO"}
+                            </Typography>
+                            <input
+                              disabled={
+                                reestructura === "con autorizacion"
+                                  ? true
+                                  : datosActualizar.length > 0 &&
+                                  !datosActualizar.includes(val.tipoArchivo)
+                              }
+                              type="file"
+                              accept="application/pdf"
+                              onChange={(v) => {
+                                console.log("v", v)
+                                cargarArchivo(v, index);
+                              }}
+                              style={{
+                                opacity: 0,
+                                width: "250px",
+                                height: "5vh",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </Grid>
 
-                    {/* <StyledTableCell sx={{ position: "relative" }}>
+                          <Grid sx={{ display: "flex", alignItems: "center" }}>
+                            <Tooltip title="Remover Archivo">
+                              <Button
+                                sx={{ position: "absolute", right: 0 }}
+                                onClick={() => {
+                                  //  clearArchivo(index);
+                                  setOpenEliminar({ open: true, index: index })
+
+                                  // quitDocument(openEliminar.index);
+                                  // setOpenEliminar({ ...openEliminar, open: false });
+                                }}
+                              >
+                                <CloseIcon />
+                              </Button>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+                      </StyledTableCell>
+
+                      {/* <StyledTableCell sx={{ position: "relative" }}>
                       <Grid
                         container
                         height="3rem"
@@ -485,58 +532,59 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
                       </Grid>
                     </StyledTableCell> */}
 
-                    <StyledTableCell sx={{ width: "700px" }}>
-                      {index < catalogoTiposDocumentosObligatorios.length ? (
-                        <Typography width={"700px"}>
-                          {tablaDocumentos[index]?.descripcionTipo || ""}
-                        </Typography>
-                      ) : (
-                        <FormControl required variant="standard" fullWidth>
-                          <Select
-                            error={
-                              tablaDocumentos[index]?.tipoArchivo === "" ||
-                              tablaDocumentos[index]?.tipoArchivo === undefined
-                            }
-                            value={tablaDocumentos[index]?.tipoArchivo || ""}
-                            onChange={(v) => {
-                              asignarTpoDoc(
-                                index,
-                                v.target.value,
-                                tiposDocumentos.filter(
-                                  (td: any) => td.Id === v.target.value
-                                )[0].Descripcion
-                              );
-                            }}
-                            sx={{
-                              display: "flex",
-                              pt: 1,
-                              backgroundColor:
+                      <StyledTableCell sx={{ width: "700px" }}>
+                        {index < catalogoTiposDocumentosObligatorios.length ? (
+                          <Typography width={"700px"}>
+                            {tablaDocumentos[index]?.descripcionTipo || ""}
+                          </Typography>
+                        ) : (
+                          <FormControl required variant="standard" fullWidth>
+                            <Select
+                              error={
                                 tablaDocumentos[index]?.tipoArchivo === "" ||
-                                tablaDocumentos[index]?.tipoArchivo ===
-                                  undefined
-                                  ? "#ff000057"
-                                  : null,
-                            }}
-                            inputProps={{
-                              readOnly:
-                                index <
-                                catalogoTiposDocumentosObligatorios.length,
-                            }}
-                            disabled={
-                              index < catalogoTiposDocumentosObligatorios.length
-                            }
-                          >
-                            {tiposDocumentos.map((tipo) => (
-                              <MenuItem key={tipo.Id} value={tipo.Id}>
-                                {tipo.Descripcion}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      )}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
+                                tablaDocumentos[index]?.tipoArchivo === undefined
+                              }
+                              value={tablaDocumentos[index]?.tipoArchivo || ""}
+                              onChange={(v) => {
+                                asignarTpoDoc(
+                                  index,
+                                  v.target.value,
+                                  tiposDocumentos.filter(
+                                    (td: any) => td.Id === v.target.value
+                                  )[0].Descripcion
+                                );
+                              }}
+                              sx={{
+                                display: "flex",
+                                pt: 1,
+                                backgroundColor:
+                                  tablaDocumentos[index]?.tipoArchivo === "" ||
+                                    tablaDocumentos[index]?.tipoArchivo ===
+                                    undefined
+                                    ? "#ff000057"
+                                    : null,
+                              }}
+                              inputProps={{
+                                readOnly:
+                                  index <
+                                  catalogoTiposDocumentosObligatorios.length,
+                              }}
+                              disabled={
+                                index < catalogoTiposDocumentosObligatorios.length
+                              }
+                            >
+                              {tiposDocumentos.map((tipo) => (
+                                <MenuItem key={tipo.Id} value={tipo.Id}>
+                                  {tipo.Descripcion}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        )}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  )
+                })}
               </TableBody>
             </Table>
             <Divider id="divider" sx={{ height: "10vh" }} />
@@ -622,11 +670,11 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
         openState={openComentarioApartado}
       />
       <Dialog
-        
+
         open={openEliminar.open}
-        
+
         onClose={() => setOpenEliminar({ ...openEliminar, open: false })}
-        
+
       >
         <DialogContent>
           ¿Eliminar este archivo de la documentación?
@@ -635,7 +683,7 @@ export function Documentacion({addArrDocsEliminados}:{addArrDocsEliminados:Funct
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
-             
+
               setOpenEliminar({ ...openEliminar, open: false });
             }}
           >

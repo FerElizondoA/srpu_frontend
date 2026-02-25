@@ -4,6 +4,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
+  Badge,
   Button,
   Dialog,
   DialogContent,
@@ -23,7 +24,7 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { format, lightFormat } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 import { IObligadoSolidarioAval } from "../../../store/CreditoCortoPlazo/informacion_general";
@@ -46,6 +47,7 @@ import {
 import { IComisiones } from "../../../store/CreditoCortoPlazo/tasa_efectiva";
 import { IDocsEliminados } from "./InterfacesCortoPlazo";
 import { convertFileToBase64 } from "../../../generics/Validation";
+import { IComentarios } from "../Dialogs/DialogComentariosSolicitud";
 
 interface Head {
   label: string;
@@ -172,6 +174,22 @@ export function Resumen({
   const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
 
+
+  const comentariosSolicitudInscripcion: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion
+  );
+
+  const tieneComentariosPrevios = (apartado: string) => {
+    return comentariosSolicitudInscripcion.some((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        return parsed[apartado] !== undefined && parsed[apartado] !== "";
+      } catch (error) {
+        return false;
+      }
+    });
+  }
+
   const [openComentarioApartado, setOpenComentarioApartado] = useState({
     open: false,
     apartado: "",
@@ -269,6 +287,94 @@ export function Resumen({
   const activacionComentariosRevisor = ["5", "14", "23"]
 
 
+  const comentariosBDMap = useMemo(() => {
+    const mapa: Record<string, boolean> = {};
+
+    comentariosSolicitudInscripcion.forEach((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        Object.keys(parsed).forEach((key) => {
+          if (parsed[key]) {
+            mapa[key] = true;
+          }
+        });
+      } catch {
+        // ignore
+      }
+    });
+
+    return mapa;
+
+  }, [comentariosSolicitudInscripcion]);
+
+  interface BotonComentarioProps {
+    apartado: string;
+    tab: string;
+    activaAccion: boolean;
+    estatus: string;
+    activacionComentariosRevisor: string[];
+    comentarios: Record<string, string>;
+    comentariosBDMap: Record<string, boolean>;
+    setOpenComentarioApartado: (params: {
+      open: boolean;
+      apartado: string;
+      tab: string;
+    }) => void;
+  }
+
+  const BotonComentario = ({
+    apartado,
+    tab,
+    activaAccion,
+    estatus,
+    activacionComentariosRevisor,
+    comentarios,
+    comentariosBDMap,
+    setOpenComentarioApartado,
+  }: BotonComentarioProps) => {
+
+    const puedeMostrar =
+      activaAccion ||
+      (activacionComentariosRevisor.includes(estatus) &&
+        localStorage.getItem("Rol") === "Revisor");
+
+    if (!puedeMostrar) return null;
+
+    const tieneComentarioLocal = !!comentarios[apartado];
+    const tieneComentarioBD = !!comentariosBDMap[apartado];
+
+    const esVerde = tieneComentarioLocal || tieneComentarioBD;
+
+    const boton = (
+      <Tooltip title="Añadir comentario a este apartado">
+        <IconButton
+          size="small" 
+          onClick={() => {
+            setOpenComentarioApartado({
+              open: true,
+              apartado,
+              tab,
+            });
+          }}
+        >
+          <CommentIcon
+            fontSize="small"
+            sx={{ mr: 2, mb: 2 }}
+            color={esVerde ? "success" : "primary"}
+          />
+        </IconButton>
+      </Tooltip>
+    );
+
+    return tieneComentarioLocal ? (
+      <Badge badgeContent="!" color="primary">
+        {boton}
+      </Badge>
+    ) : (
+      boton
+    );
+  };
+
 
   return (
 
@@ -330,32 +436,23 @@ export function Resumen({
           >
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios[head.label]
-                          ? // ||
-                          // comentariosRegistro[head.label]
-                          "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        console.log("comentario", comentarios)
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: head.label,
-                          tab: "TabEncabezado",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
+              <Grid sx={{ display: "flex", alignItems: "center", mt: 2 }} key={index}>
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
+                localStorage.getItem("Rol") === "Revisor")) && (
+
+                  <BotonComentario
+                    apartado={head.label}
+                    tab="TabEncabezado"
+                    activaAccion={activaAccion}
+                    estatus={estatus}
+                    activacionComentariosRevisor={activacionComentariosRevisor}
+                    comentarios={comentarios}
+                    comentariosBDMap={comentariosBDMap}
+                    setOpenComentarioApartado={setOpenComentarioApartado}
+                  />
+
                 )}
-                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
+                <Typography sx={{ ...queries.medium_text, mb: 2, ml: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
                     ? format(new Date(head.value), "dd/MM/yyyy")
@@ -379,66 +476,74 @@ export function Resumen({
             }}
           >
             <Divider color="lightGrey"></Divider>
-            {infoGeneral.map((head, index) => (
-              <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
-                  <Tooltip title="Añadir comentario a este apartado">
-                    <IconButton
-                      color={
-                        comentarios[head.label]
-                          ? // ||
-                          // comentariosRegistro[head.label]
-                          "success"
-                          : "primary"
-                      }
-                      size="small"
-                      onClick={() => {
-                        setOpenComentarioApartado({
-                          open: true,
-                          apartado: head.label,
-                          tab: "TabInformaciónGeneral",
-                        });
-                      }}
-                    >
-                      <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                    </IconButton>
-                  </Tooltip>
-                )}
+            {infoGeneral.map((head, index) => {
 
-                <Typography sx={{ ...queries.medium_text, mb: 2 }}>
-                  <strong>{head.label}: </strong>
-                  {head.label.includes("Fecha")
-                    ? format(new Date(head.value), "dd/MM/yyyy")
-                    : head.value}
-                </Typography>
-              </Grid>
-            ))}
+              return (
+                <Grid sx={{ display: "flex", alignItems: "center", mt: 2 }} 
+                key={index}>
+                  {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
+                  localStorage.getItem("Rol") === "Revisor")) && (
+                    
+                    <BotonComentario
+                      apartado={head.label}
+                      tab="TabEncabezado"
+                      activaAccion={activaAccion}
+                      estatus={estatus}
+                      activacionComentariosRevisor={activacionComentariosRevisor}
+                      comentarios={comentarios}
+                      comentariosBDMap={comentariosBDMap}
+                      setOpenComentarioApartado={setOpenComentarioApartado}
+                    />
+                  )}
+
+                  <Typography sx={{ ...queries.medium_text, mb: 2, ml: 2 }}>
+                    <strong>{head.label}: </strong>
+                    {head.label.includes("Fecha")
+                      ? format(new Date(head.value), "dd/MM/yyyy")
+                      : head.value}
+                  </Typography>
+                </Grid>
+              )
+            })}
           </Grid>
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
-            <Grid mt={2}>
-              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentarios["Tabla Obligado Solidario / Aval"]
-                        ? // ||
-                        // comentariosRegistro["Tabla Obligado Solidario / Aval"]
-                        "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: "Tabla Obligado Solidario / Aval",
-                        tab: "TabInformaciónGeneral",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                  </IconButton>
-                </Tooltip>
+            <Grid mt={2} mr={2}>
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
+              localStorage.getItem("Rol") === "Revisor")) && (
+                <BotonComentario
+                  apartado="Tabla Obligado Solidario / Aval"
+                  tab="TabInformaciónGeneral"
+                  activaAccion={activaAccion}
+                  estatus={estatus}
+                  activacionComentariosRevisor={activacionComentariosRevisor}
+                  comentarios={comentarios}
+                  comentariosBDMap={comentariosBDMap}
+                  setOpenComentarioApartado={setOpenComentarioApartado}
+                />
+
+
+                // <Tooltip title="Añadir comentario a este apartado">
+                //   <IconButton
+                //     color={
+                //       comentarios["Tabla Obligado Solidario / Aval"] || tieneComentariosPrevios("Tabla Obligado Solidario / Aval")
+                //         ? // ||
+                //         // comentariosRegistro["Tabla Obligado Solidario / Aval"]
+                //         "success"
+                //         : "primary"
+                //     }
+                //     size="small"
+                //     onClick={() => {
+                //       setOpenComentarioApartado({
+                //         open: true,
+                //         apartado: "Tabla Obligado Solidario / Aval",
+                //         tab: "TabInformaciónGeneral",
+                //       });
+                //     }}
+                //   >
+                //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                //   </IconButton>
+                // </Tooltip>
               )}
             </Grid>
 
@@ -523,29 +628,40 @@ export function Resumen({
           </Typography>
           <Divider color="lightGrey"></Divider>
           <Grid item width={"100%"} mt={3} display={"flex"} height={350}>
-            <Grid mt={4}>
+            <Grid mt={4} mr={2}>
               {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentarios["Tabla Condiciones Financieras"]
-                        ? // ||
-                        // comentariosRegistro["Tabla Condiciones Financieras"]
-                        "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: "Tabla Condiciones Financieras",
-                        tab: "TabCondiciones Financieras",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                  </IconButton>
-                </Tooltip>
+
+                <BotonComentario
+                  apartado="Tabla Condiciones Financieras"
+                  tab="TabCondiciones Financieras"
+                  activaAccion={activaAccion}
+                  estatus={estatus}
+                  activacionComentariosRevisor={activacionComentariosRevisor}
+                  comentarios={comentarios}
+                  comentariosBDMap={comentariosBDMap}
+                  setOpenComentarioApartado={setOpenComentarioApartado}
+                />
+                // <Tooltip title="Añadir comentario a este apartado">
+                //   <IconButton
+                //     color={
+                //       comentarios["Tabla Condiciones Financieras"] || tieneComentariosPrevios("Tabla Condiciones Financieras")
+                //         ? // ||
+                //         // comentariosRegistro["Tabla Condiciones Financieras"]
+                //         "success"
+                //         : "primary"
+                //     }
+                //     size="small"
+                //     onClick={() => {
+                //       setOpenComentarioApartado({
+                //         open: true,
+                //         apartado: "Tabla Condiciones Financieras",
+                //         tab: "TabCondiciones Financieras",
+                //       });
+                //     }}
+                //   >
+                //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                //   </IconButton>
+                // </Tooltip>
               )}
             </Grid>
 
@@ -913,27 +1029,41 @@ export function Resumen({
             {localStorage.getItem("Rol") === "Revisor" ||
               localStorage.getItem("Rol") === "Validador" ||
               localStorage.getItem("Rol") === "Autorizador" ?
-              <Tooltip title="Añadir comentario a este apartado">
-                <IconButton
-                  color={
-                    comentarios["Documentación"]
-                      ? // ||
-                      // comentariosRegistro["Tabla Condiciones Financieras"]
-                      "success"
-                      : "primary"
-                  }
-                  size="small"
-                  onClick={() => {
-                    setOpenComentarioApartado({
-                      open: true,
-                      apartado: "Documentación",
-                      tab: "TabDocumentacion",
-                    });
-                  }}
-                >
-                  <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                </IconButton>
-              </Tooltip> : null}
+
+              <BotonComentario
+                apartado="Documentación"
+                tab="TabDocumentacion"
+                activaAccion={activaAccion}
+                estatus={estatus}
+                activacionComentariosRevisor={activacionComentariosRevisor}
+                comentarios={comentarios}
+                comentariosBDMap={comentariosBDMap}
+                setOpenComentarioApartado={setOpenComentarioApartado}
+              />
+
+              // <Tooltip title="Añadir comentario a este apartado">
+              //   <IconButton
+              //     color={
+              //       comentarios["Documentación"] || tieneComentariosPrevios("Documentación")
+              //         ? // ||
+              //         // comentariosRegistro["Tabla Condiciones Financieras"]
+              //         "success"
+              //         : "primary"
+              //     }
+              //     size="small"
+              //     onClick={() => {
+              //       setOpenComentarioApartado({
+              //         open: true,
+              //         apartado: "Documentación",
+              //         tab: "TabDocumentacion",
+              //       });
+              //     }}
+              //   >
+              //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+              //   </IconButton>
+              // </Tooltip> 
+
+              : null}
 
             <Typography sx={queries.bold_text}>Documentación</Typography>
           </Grid>
@@ -966,10 +1096,23 @@ export function Resumen({
                       <StyledTableRow key={index}>
                         {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
                           <StyledTableCell sx={{ width: "5%" }}>
-                            <Tooltip title="Añadir comentario a este apartado">
+
+
+                            <BotonComentario
+                              apartado={row.descripcionTipo}
+                              tab="TabDocumentacion"
+                              activaAccion={activaAccion}
+                              estatus={estatus}
+                              activacionComentariosRevisor={activacionComentariosRevisor}
+                              comentarios={comentarios}
+                              comentariosBDMap={comentariosBDMap}
+                              setOpenComentarioApartado={setOpenComentarioApartado}
+                            />
+
+                            {/* <Tooltip title="Añadir comentario a este apartado">
                               <IconButton
                                 color={
-                                  comentarios[row.descripcionTipo]
+                                  comentarios[row.descripcionTipo] || tieneComentariosPrevios(row.descripcionTipo)
                                     ? "success"
                                     : "primary"
                                 }
@@ -984,7 +1127,7 @@ export function Resumen({
                               >
                                 <CommentIcon fontSize="small" sx={{ mr: 2 }} />
                               </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
                           </StyledTableCell>
                         )}
 
@@ -1111,6 +1254,6 @@ export function Resumen({
         openState={openComentarioApartado}
         filtroComentarioVolver={funcionFiltroComentarios}
       />
-    </Grid>
+    </Grid >
   );
 }

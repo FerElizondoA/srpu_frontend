@@ -75,6 +75,9 @@ export function DialogAsignacionResumen({
     //console.log("inscripcion asignacion", inscripcion.Estatus);
     //console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
 
+        console.log("Hola estoy en Asignacion Resumen", inscripcion);
+
+
     console.log("inscripcion.Estatus", inscripcion.Estatus);
     console.log("inscripcion.NoEstatus", inscripcion.NoEstatus);
     console.log("accion", accion);
@@ -82,7 +85,7 @@ export function DialogAsignacionResumen({
   }, [openState]);
 
   const checkform = () => {
-
+    const filtroCortoLargoPlazo = inscripcion.TipoSolicitud === "Crédito Simple a Corto Plazo" ? "Corto" : "Largo";
 
     if (inscripcion.Estatus === "Asignación" &&
       inscripcion.NoEstatus === "4" &&
@@ -96,7 +99,7 @@ export function DialogAsignacionResumen({
         idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
+          `Crédito Simple a ${filtroCortoLargoPlazo} Plazo`,
           "Se te ha asignado una solicitud para revisión",
           [idUsuarioAsignado],
           inscripcion.Id,
@@ -125,7 +128,7 @@ export function DialogAsignacionResumen({
         idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
+          `Crédito Simple a ${filtroCortoLargoPlazo} Plazo`,
           "Se te ha asignado una solicitud para revisión",
           [idUsuarioAsignado],
           inscripcion.Id,
@@ -152,7 +155,7 @@ export function DialogAsignacionResumen({
         idUsuarioAsignado
       ).then(() => {
         createNotification(
-          "Crédito simple a corto plazo",
+          `Crédito Simple a ${filtroCortoLargoPlazo} Plazo`,
           "Se te ha asignado una solicitud para revisión",
           [idUsuarioAsignado],
           inscripcion.Id,

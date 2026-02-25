@@ -13,6 +13,7 @@ import { useCancelacionStore } from "../Cancelacion/main";
 import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import Swal from "sweetalert2";
+import { useTrazabilidad } from "../Trazabilidad/main";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -266,88 +267,88 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
-convertirMontosAPalabras(numeroConFormato: string): string {
+  convertirMontosAPalabras(numeroConFormato: string): string {
 
-  function limpiarFormatoMoneda(monto: string): number {
-    const montoLimpio = monto.replace(/[^0-9.]/g, '');
-    return parseFloat(montoLimpio);
-  }
+    function limpiarFormatoMoneda(monto: string): number {
+      const montoLimpio = monto.replace(/[^0-9.]/g, '');
+      return parseFloat(montoLimpio);
+    }
 
-  const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
-  const parteEntera = Math.floor(numeroFloat);
-  const centavos = Math.round((numeroFloat - parteEntera) * 100);
+    const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
+    const parteEntera = Math.floor(numeroFloat);
+    const centavos = Math.round((numeroFloat - parteEntera) * 100);
 
-  const unidades = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-  const especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-  const decenas = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-  const centenas = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
+    const unidades = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+    const especiales = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
+    const decenas = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
+    const centenas = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
 
-  function convertirNumeroAPalabras(numero: number): string {
-    if (numero === 0) return 'cero';
-    if (numero < 10) return unidades[numero];
-    if (numero < 20) return especiales[numero - 10];
-    if (numero < 100) return convertirDecenas(numero);
-    if (numero < 1000) return convertirCentenas(numero);
-    if (numero < 1_000_000) return convertirMiles(numero);
-    if (numero < 1_000_000_000) return convertirMillones(numero);
-    if (numero < 1_000_000_000_000) return convertirMilesDeMillones(numero);
-    if (numero <= 1_000_000_000_000_000) return convertirBillones(numero);
+    function convertirNumeroAPalabras(numero: number): string {
+      if (numero === 0) return 'cero';
+      if (numero < 10) return unidades[numero];
+      if (numero < 20) return especiales[numero - 10];
+      if (numero < 100) return convertirDecenas(numero);
+      if (numero < 1000) return convertirCentenas(numero);
+      if (numero < 1_000_000) return convertirMiles(numero);
+      if (numero < 1_000_000_000) return convertirMillones(numero);
+      if (numero < 1_000_000_000_000) return convertirMilesDeMillones(numero);
+      if (numero <= 1_000_000_000_000_000) return convertirBillones(numero);
 
-    return 'Número fuera de rango';
-  }
+      return 'Número fuera de rango';
+    }
 
-  function convertirDecenas(numero: number): string {
-    const decena = Math.floor(numero / 10);
-    const unidad = numero % 10;
-    if (numero < 30) {
+    function convertirDecenas(numero: number): string {
+      const decena = Math.floor(numero / 10);
+      const unidad = numero % 10;
+      if (numero < 30) {
+        return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
+      }
       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
     }
-    return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  }
 
-  function convertirCentenas(numero: number): string {
-    const centena = Math.floor(numero / 100);
-    const resto = numero % 100;
-    if (numero === 100) return 'cien';
-    return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-  }
+    function convertirCentenas(numero: number): string {
+      const centena = Math.floor(numero / 100);
+      const resto = numero % 100;
+      if (numero === 100) return 'cien';
+      return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
+    }
 
-  function convertirMiles(numero: number): string {
-    const miles = Math.floor(numero / 1000);
-    const resto = numero % 1000;
-    if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-    return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  }
+    function convertirMiles(numero: number): string {
+      const miles = Math.floor(numero / 1000);
+      const resto = numero % 1000;
+      if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+      return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
+    }
 
-  function convertirMillones(numero: number): string {
-    const millones = Math.floor(numero / 1_000_000);
-    const resto = numero % 1_000_000;
-    if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-    return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-  }
+    function convertirMillones(numero: number): string {
+      const millones = Math.floor(numero / 1_000_000);
+      const resto = numero % 1_000_000;
+      if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
+      return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
+    }
 
-  function convertirMilesDeMillones(numero: number): string {
-    const milesMillones = Math.floor(numero / 1_000_000_000);
-    const resto = numero % 1_000_000_000;
-    if (milesMillones === 1) return 'mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
-    return convertirNumeroAPalabras(milesMillones) + ' mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
-  }
+    function convertirMilesDeMillones(numero: number): string {
+      const milesMillones = Math.floor(numero / 1_000_000_000);
+      const resto = numero % 1_000_000_000;
+      if (milesMillones === 1) return 'mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
+      return convertirNumeroAPalabras(milesMillones) + ' mil millones ' + (resto > 0 ? convertirMillones(resto) : '');
+    }
 
-  function convertirBillones(numero: number): string {
-    const billones = Math.floor(numero / 1_000_000_000_000);
-    const resto = numero % 1_000_000_000_000;
-    if (billones === 1) return 'un billón ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
-    return convertirNumeroAPalabras(billones) + ' billones ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
-  }
+    function convertirBillones(numero: number): string {
+      const billones = Math.floor(numero / 1_000_000_000_000);
+      const resto = numero % 1_000_000_000_000;
+      if (billones === 1) return 'un billón ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
+      return convertirNumeroAPalabras(billones) + ' billones ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
+    }
 
-  let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+    let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
 
-  const centavosEnPalabras = centavos > 0
-    ? ` ${centavos.toString().padStart(2, '0')}/100 M.N.`
-    : ' 00/100 M.N.';
+    const centavosEnPalabras = centavos > 0
+      ? ` ${centavos.toString().padStart(2, '0')}/100 M.N.`
+      : ' 00/100 M.N.';
 
-  return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
-},
+    return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
+  },
 
   // convertirMontosAPalabras(numeroConFormato: string): string {
 
@@ -475,6 +476,7 @@ convertirMontosAPalabras(numeroConFormato: string): string {
   changeInfoDoc: (info: any, cambiaEstatus: Function) => {
     set(() => ({ infoDoc: info }));
     const stateCancelaciones = useCancelacionStore.getState()
+    const stateTrazabilidad = useTrazabilidad.getState()
 
     if (info) {
       //Proceso para saber que tipo de firma hara - Inscripcion (CP y LP), Reestructura y Cancelacion
@@ -717,9 +719,17 @@ convertirMontosAPalabras(numeroConFormato: string): string {
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
-/////////REVISA ESTO FERNANDO///////// ****************
+          /////////REVISA ESTO FERNANDO///////// ****************
           console.log("Estatusprevio.ControlInterno", estatusPrevio.ControlInterno)
           console.log("estatusPrevio.NoEstatus", estatusPrevio.NoEstatus)
+
+
+          //Aqui ira el proceso para tomar el primer ID del usuario verificador con el estatus 2 
+          // que este de la tabla trazabilidad, y este de convierta en el usuario EDITOR ******
+
+          stateTrazabilidad.getPrimerUsuarioEstatus2(estatusPrevio.Id)
+          console.log("estatusPrevio QUIERO EL ID ", estatusPrevio)
+
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
@@ -746,9 +756,11 @@ convertirMontosAPalabras(numeroConFormato: string): string {
                                 ? "11" // Antes 10
                                 : "13", // Antes 11
             estatusPrevio.Id,
-            inf.IdUsuario,
+            estatusPrevio.NoEstatus === "8" ? stateTrazabilidad.IdPrimerUsuarioEstatus2 : inf.IdUsuario,
             estatusPrevio.NoEstatus === "12" ? localStorage.getItem("IdUsuario") : ""
           );
+
+          console.log("stateTrazabilidad.IdPrimerUsuarioEstatus2", stateTrazabilidad.IdPrimerUsuarioEstatus2)
 
           // cambiaEstatus(
           //   estatusPrevio.ControlInterno === "inscripcion"
@@ -1644,7 +1656,9 @@ export const CambiaEstatus = (
   IdEditor: string,
   IdCancelacionInciaiado?: string
 ) => {
-
+  const state = useTrazabilidad.getState();
+console.log("Editor ID en cambia estatus", IdEditor);
+console.log("state.IdPrimerUsuarioEstatus2 en cambia estatus", state.IdPrimerUsuarioEstatus2)
   return axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/cambiaEstatus",

@@ -77,7 +77,7 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.cleanInscripcion
   );
 
-    const cleanTablaCondicionesFinancieras: Function = useCortoPlazoStore(
+  const cleanTablaCondicionesFinancieras: Function = useCortoPlazoStore(
     (state) => state.cleanCondicionFinanciera
   );
 
@@ -169,7 +169,7 @@ export function ConfirmacionEnviarSolicitud({
               if (localStorage.getItem("Rol") === "Verificador") {
                 modificaSolicitud(
                   solicitud.CreadoPor,
-                  idUsuarioAsignado, //localStorage.getItem("IdUsuario"),
+                  localStorage.getItem("IdUsuario"),
                   "3",
                   arrDocsEliminados,
                 )
@@ -190,7 +190,7 @@ export function ConfirmacionEnviarSolicitud({
                     cleanInscripcion();
                     cleanInscripcionModify();
                     cleanTablaCondicionesFinancieras();
-                    
+
                     setTimeout(() => {
                       navigate("../ConsultaDeSolicitudes");
                     }, 2000);
@@ -205,16 +205,15 @@ export function ConfirmacionEnviarSolicitud({
                     // );
                   })
                   .catch(() => {
-
                     alertaError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 modificaSolicitud(
-                  solicitud.CreadoPor, 
-                  idUsuarioAsignado, 
-                  "2", 
+                  solicitud.CreadoPor,
+                  idUsuarioAsignado,
+                  "2",
                   arrDocsEliminados,
-                  0, 
+                  0,
                   true
                 )
                   .then(() => {

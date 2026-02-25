@@ -17,7 +17,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { Transition } from "../../../screens/fuenteDePago/Mandatos";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -64,9 +64,11 @@ const heads: readonly Head[] = [
 export function VerComentariosSolicitud({
   handler,
   openState,
+  filtroBotonesAccion = false
 }: {
   handler: Function;
   openState: boolean;
+  filtroBotonesAccion?: boolean;
 }) {
   const [datosComentario, setDatosComentarios] = useState<Array<IComentarios>>(
     []
@@ -75,6 +77,11 @@ export function VerComentariosSolicitud({
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
+
+  const comentariosSolicitudInscripcion: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion
+  );
+
 
   const [openDialogCrear, changeOpenDialogCrear] = useState(false);
   const [openDialogEliminar, setOpenDialogEliminar] = useState(false);
@@ -101,12 +108,12 @@ export function VerComentariosSolicitud({
   };
 
   return (
-    <Dialog 
-    sx={{
-      width:"100%"
-    }}
+    <Dialog
+      sx={{
+        width: "100%"
+      }}
       fullWidth
-     // maxWidth={"lg"}
+      // maxWidth={"lg"}
       open={openState}
       keepMounted
       TransitionComponent={Transition}
@@ -147,12 +154,12 @@ export function VerComentariosSolicitud({
         {menu === "Requerimientos" ? (
           <Grid>
             {datosComentario.filter((f) => f.Tipo === "Requerimiento")[0] &&
-            Object.entries(
-              JSON.parse(
-                datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
-                  ?.Comentarios
-              )
-            ).length > 0 ? (
+              Object.entries(
+                JSON.parse(
+                  datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                    ?.Comentarios
+                )
+              ).length > 0 ? (
               Object.entries(
                 JSON.parse(
                   datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
@@ -229,15 +236,15 @@ export function VerComentariosSolicitud({
                             >
                               {row?.Comentarios.includes("{")
                                 ? Object.entries(
-                                    JSON.parse(row?.Comentarios)
-                                  ).map(([key, val], index) =>
-                                    (val as string) === "" ? null : (
-                                      <Typography key={index}>
-                                        <strong>{key}:</strong>
-                                        {val as string}
-                                      </Typography>
-                                    )
+                                  JSON.parse(row?.Comentarios)
+                                ).map(([key, val], index) =>
+                                  (val as string) === "" ? null : (
+                                    <Typography key={index}>
+                                      <strong>{key}:</strong>
+                                      {val as string}
+                                    </Typography>
                                   )
+                                )
                                 : row.Comentarios}
                             </StyledTableCell>
                           </StyledTableRow>
@@ -262,7 +269,40 @@ export function VerComentariosSolicitud({
       </DialogContent>
 
       <DialogActions>
-        <Button
+
+        {filtroBotonesAccion === true ? 
+         (
+          <>
+            <Button
+              sx={queries.buttonCancelar}
+              onClick={() => {
+                handler(false);
+              }}
+            >
+              Cerrar
+            </Button>
+            {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+            <Button
+              sx={queries.buttonCancelar}
+              onClick={() => {
+                setOpenDialogEliminar(true);
+              }}
+            >
+              Eliminar Requerimientos
+            </Button>
+            )}
+            <Button
+              sx={queries.buttonContinuar}
+              onClick={() => {
+                changeOpenDialogCrear(!openDialogCrear);
+              }}
+            >
+              Crear nuevo comentario
+            </Button>
+          </>
+        ):null}
+        
+        {/* <Button
           sx={queries.buttonCancelar}
           onClick={() => {
             handler(false);
@@ -287,13 +327,14 @@ export function VerComentariosSolicitud({
           }}
         >
           Crear nuevo comentario
-        </Button>
+        </Button> */}
       </DialogActions>
       <AgregarComentario
         handler={changeOpenDialogCrear}
         openState={openDialogCrear}
         IdSolicitud={inscripcion.Id}
       />
+
       <Dialog
         open={openDialogEliminar}
         onClose={() => {
