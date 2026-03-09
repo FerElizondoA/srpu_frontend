@@ -1,7 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useTrazabilidad } from "../../../store/Trazabilidad/main";
-import { alertaError } from "../../../generics/Alertas";
+import { alertaConfirmCancelar, alertaError, alertaErrorConfirm, alertaExito, alertaExitoConfirm, alertaInfo } from "../../../generics/Alertas";
 
 export async function getDestinos() {
   await axios({
@@ -17,7 +17,7 @@ export async function getDestinos() {
       return data;
     })
     .catch((error) => {
-      
+
 
       alertaError("(" + error.response.status + ") " + error.response.data.msg)
     });
@@ -38,12 +38,12 @@ export function getObligadoSolidarioAval(setState: Function) {
       return data;
     })
     .catch((error) => {
-      
+
       alertaError("(" + error.response.status + ") " + error.response.data.msg)
     });
 }
 
-export function getSolicitudes(tipoListado: string, setState: Function, setStateFilter:Function) {
+export function getSolicitudes(tipoListado: string, setState: Function, setStateFilter: Function) {
   console.log("tipoListado", tipoListado);
 
   axios({
@@ -63,15 +63,27 @@ export function getSolicitudes(tipoListado: string, setState: Function, setState
     .then(({ data }) => {
       const state = useTrazabilidad.getState()
       console.log("data solicitudes", data);
-      
-      if (state.IdSolicitudNotificacion !== "") {
+      console.log("data.data noti", data.data)
+      const solicitudEncontrada = data.data.find((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || ""))
+
+      if (state.IdSolicitudNotificacion !== "" && solicitudEncontrada != undefined) {
+        console.log("solicitudEncontrada", solicitudEncontrada);
+        console.log("state.IdSolicitudNotificacion", state.IdSolicitudNotificacion);
+        console.log("Si es notificacion")
+
         setStateFilter(data.data.filter((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || "")))
-        setTimeout(() => state.cleanIdSolicitud, 1000)
-      }else{
-        setStateFilter(data.data);
-      }
+
+        //alertaExitoConfirm("Se encontró una notificación nueva, mostrando la solicitud relacionada")
         setState(data.data);
-})
+        setTimeout(() => state.cleanIdSolicitud, 1000)
+      } else {
+        console.log("No es notificacion")
+        setStateFilter(data.data);
+        alertaInfo("El estatus de la solicitud ha cambiado")
+        setState(data.data);
+      }
+
+    })
     .catch((error) => {
       alertaError("(" + error.response.status + ") " + error.response.data.msg)
     });

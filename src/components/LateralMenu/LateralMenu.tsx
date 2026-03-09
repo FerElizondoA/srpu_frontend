@@ -206,7 +206,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
     switch (controlInterno) {
       case "inscripcion":
 
-      case "revision":
+      case "Revision": navigate("../ConsultaDeSolicitudes"); fnc(); break;
 
       case "autorizado": navigate("../ConsultaDeSolicitudes"); fnc()
         break;
@@ -999,6 +999,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
                           onClick={() => {
                             setIdSolicitudNotificacion(noti.IdSolicitud)
                             routerControlInterno(noti.ControlInterno)
+                            setIsDrawerNotificationOpen(false)
                           }}
                         >
                           <Typography

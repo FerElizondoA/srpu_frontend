@@ -180,7 +180,6 @@ export function ConsultaDeSolicitudPage() {
         return elemento;
       }
     });
-
     setDatosFiltrados(ResultadoBusqueda);
   };
 
@@ -241,6 +240,7 @@ export function ConsultaDeSolicitudPage() {
   const tablaCondicionesFinancieras: ICondicionFinanciera[] = useCortoPlazoStore(
     (state) => state.tablaCondicionesFinancieras
   );
+
   const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -250,7 +250,7 @@ export function ConsultaDeSolicitudPage() {
         setDatos(e);
       },
       setDatosFiltrados
-    );
+    )
   };
 
   useEffect(() => {
@@ -261,11 +261,14 @@ export function ConsultaDeSolicitudPage() {
 
   useEffect(() => {
     getDatos();
-    console.log("tablaCondicionesFinancieras en consulta de solicitudes:", tablaCondicionesFinancieras);
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
     cleanInscripcion();
   }, []);
+
+  // useEffect(() => {
+  //   console.log("datosFiltrados notificacion", datosFiltrados);
+  // }, []);
 
 
   //Fin barra de filtros*************
@@ -715,7 +718,6 @@ export function ConsultaDeSolicitudPage() {
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {
                                       setInscripcion(row);
-                                      console.log("INSCRIPCION", row);
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");
                                       navigate("../firmaUrl");

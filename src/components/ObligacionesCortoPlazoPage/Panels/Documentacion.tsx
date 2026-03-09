@@ -36,6 +36,7 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { alertaInfo } from "../../../generics/Alertas";
 import { newFile } from "../../../generics/instanciasObjetosVacios";
 import { IComentarios } from "../Dialogs/DialogComentariosSolicitud";
+import { set } from "date-fns";
 
 interface Head {
   label: string;
@@ -127,6 +128,8 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
       alertaInfo("Ocurrio un error al remover el archivo");
     }
   }
+
+  const [removeRegistroOpcional, setRemoveRegistroOpcional] = useState(false);
 
   const quitDocument: Function = useCortoPlazoStore(
     (state) => state.removeDocumento
@@ -235,7 +238,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
               <TableHead>
                 <TableRow>
                   {heads.map((head, index) => (
-                    <StyledTableCell key={index}>
+                    <StyledTableCell key={index} align={"center"}>
                       <TableSortLabel>{head.label}</TableSortLabel>
                     </StyledTableCell>
                   ))}
@@ -249,7 +252,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                   const tieneComentarioBD = !!comentariosBDMap[val.descripcionTipo];
 
                   const esVerde = tieneComentarioLocal || tieneComentarioBD;
-            
+
 
                   return (
                     <StyledTableRow key={index} id={`${index + 1}`}>
@@ -270,8 +273,8 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                         )}
                       </StyledTableCell>
 
-                      <StyledTableCell sx={{ width: "150px" }}>
-                        <Grid sx={{ display: "flex", width: "120px" }}>
+                      <StyledTableCell sx={{ width: "100px" }}>
+                        <Grid sx={{ display: "flex", alignItems: "center", justifyContent:"space-around" }}>
                           <Grid>
                             {comentario[val.descripcionTipo] &&
                               comentario[val.descripcionTipo] !== "" ? (
@@ -319,21 +322,23 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                             )}
                           </Grid>
 
-
-                          <Grid>
+                       
                             {index >=
                               catalogoTiposDocumentosObligatorios.length ? (
-                              <IconButton
-                                sx={{ ...queries.iconButtonCancelar }}
-                                onClick={() => {
-                                  setOpenEliminar({ open: true, index: index });
-                                }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
+                              <Tooltip title="Remover registro no obligatorio">
+                                <IconButton
+                                  sx={{ ...queries.iconButtonCancelar}}
+                                  onClick={() => {
+                                    setOpenEliminar({ open: true, index: index });
+                                    setRemoveRegistroOpcional(true)
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+
                             ) : null}
-                          </Grid>
-                          <Grid></Grid>
+                          
                         </Grid>
                       </StyledTableCell>
 
@@ -670,21 +675,22 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
         openState={openComentarioApartado}
       />
       <Dialog
-
         open={openEliminar.open}
-
         onClose={() => setOpenEliminar({ ...openEliminar, open: false })}
-
       >
         <DialogContent>
-          ¿Eliminar este archivo de la documentación?
+          {removeRegistroOpcional === true ?
+            "¿Eliminar este registro opcional de la tabla de documentación?"
+            :
+            "¿Remover este archivo de la documentación?"
+          }
         </DialogContent>
         <DialogActions>
           <Button
             sx={queries.buttonCancelar}
             onClick={() => {
-
               setOpenEliminar({ ...openEliminar, open: false });
+              setRemoveRegistroOpcional(false);
             }}
           >
             Cancelar
@@ -693,8 +699,16 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
             sx={queries.buttonContinuar}
             onClick={() => {
               clearArchivo(openEliminar.index);
-              //quitDocument(openEliminar.index);
+
+              {removeRegistroOpcional === true && (
+                  quitDocument(openEliminar.index)
+                )}
+                
               setOpenEliminar({ ...openEliminar, open: false });
+              setRemoveRegistroOpcional(false);
+
+              //clearArchivo(openEliminar.index);
+              //quitDocument(openEliminar.index);
             }}
           >
             Confirmar

@@ -47,7 +47,7 @@ export function ComentarioApartado({
     (state) => state.removeComentario);
 
 
-    
+
   // const comentariosRegistro: any = useCortoPlazoStore(
   //   (state) => state.comentariosRegistro
   // );
@@ -59,6 +59,8 @@ export function ComentarioApartado({
   const filtroComentarios: boolean = useCortoPlazoStore(
     (state) => state.filtroComentarios
   );
+
+
 
 
   useEffect(() => {
@@ -102,8 +104,14 @@ export function ComentarioApartado({
   //   return map;
   // }, [comentariosSolicitudInscripcion]);
 
-  const [comentariosPrevios, setComentariosPrevios] = useState<string[]>([]);
 
+  ///***** */
+  //const [comentariosPrevios, setComentariosPrevios] = useState<string[]>([]);
+  const [comentariosPrevios, setComentariosPrevios] = useState<
+    { usuario: string; fecha: string; comentario: string }[]
+  >([]);
+
+  //**** */
   // useEffect(() => {
   //   if (!openState.apartado) return;
 
@@ -129,17 +137,47 @@ export function ComentarioApartado({
 
   // }, [openState.apartado, comentariosSolicitudInscripcion]);
 
+
+
+  // useEffect(() => {
+  //   if (!openState.apartado) return;
+
+  //   const encontrados: string[] = [];
+
+  //   comentariosBD.forEach((c) => {
+  //     try {
+  //       const parsed = JSON.parse(c.Comentarios);
+
+  //       if (parsed[openState.apartado]) {
+  //         encontrados.push(parsed[openState.apartado]);
+  //       }
+  //     } catch { }
+  //   });
+
+  //   setComentariosPrevios(encontrados);
+
+  //   setComent({
+  //     Apartado: openState.apartado,
+  //     Comentario: "",
+  //   });
+
+  // }, [openState.apartado, comentariosBD]);
+
   useEffect(() => {
     if (!openState.apartado) return;
 
-    const encontrados: string[] = [];
+    const encontrados: { usuario: string; fecha: string; comentario: string }[] = [];
 
     comentariosBD.forEach((c) => {
       try {
         const parsed = JSON.parse(c.Comentarios);
 
         if (parsed[openState.apartado]) {
-          encontrados.push(parsed[openState.apartado]);
+          encontrados.push({
+            usuario: c.Nombre,
+            fecha: new Date(c.FechaCreacion).toLocaleDateString(),
+            comentario: parsed[openState.apartado],
+          });
         }
       } catch { }
     });
@@ -153,10 +191,10 @@ export function ComentarioApartado({
 
   }, [openState.apartado, comentariosBD]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    console.log("comentarios RECIEN AGREGADO", comentariosZustand);
-  }, [])
+  //   console.log("comentarios RECIEN AGREGADO", comentariosZustand);
+  // }, [])
 
 
   return (
@@ -183,7 +221,7 @@ export function ComentarioApartado({
               Comentarios asignados
             </Typography>
 
-            {comentariosPrevios.map((comentario, index) => (
+            {comentariosPrevios.map((item, index) => (
               <Grid
                 key={index}
                 sx={{
@@ -194,13 +232,34 @@ export function ComentarioApartado({
                   border: "1px solid #e0e0e0",
                 }}
               >
+                <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                  {item.usuario} • {item.fecha}
+                </Typography>
+
                 <Typography
                   variant="body2"
-                  sx={{ whiteSpace: "pre-line" }}
+                  sx={{ whiteSpace: "pre-line", mt: 1 }}
                 >
-                  {comentario}
+                  {item.comentario}
                 </Typography>
               </Grid>
+              // <Grid
+              //   key={index}
+              //   sx={{
+              //     mb: 2,
+              //     p: 2,
+              //     borderRadius: 2,
+              //     backgroundColor: "#f5f5f5",
+              //     border: "1px solid #e0e0e0",
+              //   }}
+              // >
+              //   <Typography
+              //     variant="body2"
+              //     sx={{ whiteSpace: "pre-line" }}
+              //   >
+              //     {comentario}
+              //   </Typography>
+              // </Grid>
             ))}
           </Grid>
         )}
@@ -302,7 +361,7 @@ export function ComentarioApartado({
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
-              console.log("comment,comentario", coment.Comentario);
+              // console.log("comment,comentario", coment.Comentario);
             }}
           >
             Aceptar
