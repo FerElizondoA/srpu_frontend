@@ -288,7 +288,7 @@ export function ConfirmacionEnviarSolicitud({
                 crearSolicitud(
                   idUsuarioAsignado,
                   "2",
-                  "Se te ha asignado una solicitud de Credito a Corto Plazo",
+                  "Se te ha asignado una solicitud de Credito a Corto Plazo", //checar 
                   setIdSolicitudCreada,
                   true
                 )

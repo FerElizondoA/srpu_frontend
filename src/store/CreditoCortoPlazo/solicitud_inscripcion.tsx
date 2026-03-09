@@ -140,7 +140,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   crearSolicitud: async (
     idEditor: string,
     estatus: string,
-    comentario: string,
+    comentarioNotificacion: string,
     setIdSolicitudCreada: Function,
     NotificacionEnviar: boolean = false,
   ) => {
@@ -219,7 +219,8 @@ export const createSolicitudInscripcionSlice: StateCreator<
         }
         // console.log("Solicitud creada, ID: ", data.data.Id);
         // console.log("Comentario a agregar CREAR NUEVO: ", comentario);
-        state.addComentario(data.data.Id, comentario, "Captura");
+
+        state.addComentario(data.data.Id, JSON.stringify(state.comentarios), "Captura");
 
         setTimeout(() => {
           inscripcionState.cleanSolicitudCortoPlazo();

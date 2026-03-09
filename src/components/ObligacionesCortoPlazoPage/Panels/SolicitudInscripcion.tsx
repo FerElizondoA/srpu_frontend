@@ -29,6 +29,7 @@ import { ConfirmacionEnviarSolicitud } from "../Dialogs/DialogEnviarSolicitud";
 import { DialogGuardarBorrador } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import { IDocsEliminados } from "./InterfacesCortoPlazo";
+import { IFile } from "./Documentacion";
 
 interface Head {
   label: string;
@@ -100,6 +101,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         Denominacion: state.informacionGeneral.denominacion,
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
+        Documentacion: state.tablaDocumentos
       };
 
       let importe = "$ 0.00";
@@ -120,6 +122,30 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         tasaEfectiva = item.tasaEfectiva.tasaEfectiva;
         comisiones = item.comisiones;
       }
+
+      // solicitud.Documentacion.forEach((doc: IFile) => {
+
+      //   if (!doc.archivo || !(doc.archivo instanceof File)) {
+
+      //     errores.push(
+      //       `Sección Documentación: Cargar un archivo en el apartado "${doc.descripcionTipo}".`
+      //     );
+      //   }
+      // });
+
+
+      const faltaDocumento = solicitud.Documentacion.some(
+        (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      );
+
+      if (faltaDocumento) {
+        errores.push(
+          "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+        );
+      }
+
+
+
       if (
         solicitud.encabezado.tipoCredito.Descripcion === undefined ||
         solicitud.encabezado.tipoCredito.Descripcion === "" ||
@@ -184,66 +210,66 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         );
       }
 
-      if (TasaDeInteres[0] === undefined || TasaDeInteres[0].tasa === "") {
-        err = 1;
+      // if (TasaDeInteres[0] === undefined || TasaDeInteres[0].tasa === "") {
+      //   err = 1;
 
-        errores.push(
-          "Sección Condiciones Financieras:Agregar al menos una Tasa De Interés."
-        );
-      }
-      if (
-        importe === undefined ||
-        importe === "$ 0.00" ||
-        importe === "$ 0.00"
-      ) {
-        err = 1;
-        errores.push("Sección Condiciones Financieras: Ingrese el Importe.");
-      }
-      if (numeroDePago === undefined || numeroDePago === 0) {
-        err = 1;
-
-        errores.push(
-          "Sección Condiciones Financieras: Ingrese el Número de pagos."
-        );
-      }
-      if (
-        PeriocidadDePago === undefined ||
-        PeriocidadDePago === "" ||
-        /^[\s]*$/.test(PeriocidadDePago)
-      ) {
-        err = 1;
-
-        errores.push(
-          "Sección Condiciones Financieras: Seleccione la Periodicidad de pago."
-        );
-      }
+      //   errores.push(
+      //     "Sección Condiciones Financieras:Agregar al menos una Tasa De Interés."
+      //   );
+      // }
       // if (
-      //   diasEjercicio === undefined ||
-      //   diasEjercicio === "" ||
-      //   /^[\s]*$/.test(diasEjercicio)
+      //   importe === undefined ||
+      //   importe === "$ 0.00" ||
+      //   importe === "$ 0.00"
+      // ) {
+      //   err = 1;
+      //   errores.push("Sección Condiciones Financieras: Ingrese el Importe.");
+      // }
+      // if (numeroDePago === undefined || numeroDePago === 0) {
+      //   err = 1;
+
+      //   errores.push(
+      //     "Sección Condiciones Financieras: Ingrese el Número de pagos."
+      //   );
+      // }
+      // if (
+      //   PeriocidadDePago === undefined ||
+      //   PeriocidadDePago === "" ||
+      //   /^[\s]*$/.test(PeriocidadDePago)
       // ) {
       //   err = 1;
 
       //   errores.push(
-      //     "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
+      //     "Sección Condiciones Financieras: Seleccione la Periodicidad de pago."
       //   );
       // }
-      if (
-        tasaEfectiva === undefined ||
-        tasaEfectiva === "" ||
-        /^[\s]*$/.test(tasaEfectiva)
-      ) {
-        err = 1;
-        errores.push(
-          "Sección Condiciones Financieras: Ingrese la tasa Efectiva."
-        );
-      }
+      // // if (
+      // //   diasEjercicio === undefined ||
+      // //   diasEjercicio === "" ||
+      // //   /^[\s]*$/.test(diasEjercicio)
+      // // ) {
+      // //   err = 1;
 
-      if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
-        errores.push(
-          "Sección Condiciones Financieras: Agregar al menos una comision."
-        );
-      }
+      // //   errores.push(
+      // //     "Sección Condiciones Financieras: Seleccione los Díaz del Ejercicio."
+      // //   );
+      // // }
+      // if (
+      //   tasaEfectiva === undefined ||
+      //   tasaEfectiva === "" ||
+      //   /^[\s]*$/.test(tasaEfectiva)
+      // ) {
+      //   err = 1;
+      //   errores.push(
+      //     "Sección Condiciones Financieras: Ingrese la tasa Efectiva."
+      //   );
+      // }
+
+      // if (comisiones[0] === undefined || comisiones[0].tipoDeComision === "") {
+      //   errores.push(
+      //     "Sección Condiciones Financieras: Agregar al menos una comision."
+      //   );
+      // }
 
       if (
         state.reglasAplicables[0] === undefined ||
@@ -271,7 +297,33 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         Denominacion: state.informacionGeneral.denominacion,
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
+        Documentacion: state.tablaDocumentos
       };
+
+
+      const faltaDocumento = solicitud.Documentacion.some(
+        (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      );
+
+      if (faltaDocumento) {
+        errores.push(
+          "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+        );
+      }
+
+
+      // solicitud.Documentacion.forEach((doc: IFile) => {
+
+      //   if (doc.nombreArchivo === undefined || doc.nombreArchivo === "") {
+
+      //     errores.push(
+      //       `Sección Documentación: Cargar un archivo en el apartado "${doc.descripcionTipo}".`
+      //     );
+
+      //   }
+
+      // });
+
       if (
         solicitud.encabezado.tipoCredito.Descripcion === undefined ||
         solicitud.encabezado.tipoCredito.Descripcion === "" ||
@@ -626,8 +678,11 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
                   {/* Ver QUE VALIDACION IBA AQUI */}
 
                   {
-                    Object.keys(comentarios).length > 0 &&
-                     (localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador")
+
+                    //Sin id y sin estatud
+                    //arriba comentarios
+                    Object.keys(comentarios).length > 0 && localStorage.getItem("Rol") === "Verificador"
+                      //  (localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador")
                       ? null
                       : <Grid
                         mb={2}
@@ -712,8 +767,8 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         </Grid>
       </Grid>
 
-      <Dialog open={openDialogValidacion}>
-        <DialogTitle>
+      <Dialog open={openDialogValidacion} fullWidth maxWidth="md">
+        <DialogTitle sx={{ display: "flex", justifyContent: "center" }}>
           <Typography sx={queries.bold_text}>
             Favor de revisar los siguientes apartados:
           </Typography>
@@ -742,7 +797,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
               division !== -1 ? item.substring(division + 1) : "";
 
             return (
-              <Typography color={"red"} sx={{ fontSize: ".9rem" }} key={index}>
+              <Typography color={"red"} sx={{ fontSize: "1rem" }} key={index}>
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   *{markedText}
                 </span>

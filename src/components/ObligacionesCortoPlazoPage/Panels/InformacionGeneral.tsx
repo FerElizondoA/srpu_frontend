@@ -393,7 +393,7 @@ export function InformacionGeneral() {
               value={vencimiento ? new Date(vencimiento) : null}
               onChange={(date) => setVencimiento(date?.toISOString() || "")}
               minDate={new Date(contratacion)}
-              maxDate={addDays(new Date(contratacion), 364)}
+              maxDate={addDays(new Date(contratacion), 365)}
             />
           </LocalizationProvider>
         </Grid>

@@ -15,7 +15,10 @@ export interface DocumentosSlice {
   getIdAcuse: () => void;
 
   addDocumento: (newDocumento: IFile) => void;
+
+
   removeDocumento: (index: number) => void;
+
   setTablaDocumentos: (docs: any) => any;
   getTiposDocumentos: () => void;
 }
@@ -24,6 +27,9 @@ export const createDocumentoSlice: StateCreator<DocumentosSlice> = (
   set,
   get
 ) => ({
+
+
+
   idAcuse: "",
 
   // setIdAcuse: (idAcuse: string) =>
