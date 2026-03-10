@@ -343,7 +343,6 @@ export function ComentarioApartado({
           </Button>
         ) : null}
         <Button
-
           sx={queries.buttonCancelar}
           onClick={() => {
             setComent({ Comentario: "", Apartado: "" });
@@ -361,7 +360,6 @@ export function ComentarioApartado({
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
-              // console.log("comment,comentario", coment.Comentario);
             }}
           >
             Aceptar
