@@ -8,6 +8,7 @@ import { queries } from "../../../queries";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
+import { IComentarios } from "./DialogComentariosSolicitudReestructura";
 
 const theme = createTheme({
   components: {
@@ -58,15 +59,51 @@ export function ComentarioApartado({
     (state) => state.filtroComentarios
   );
 
+  const [comentariosPrevios, setComentariosPrevios] = useState<
+    { usuario: string; fecha: string; comentario: string }[]
+  >([]);
+
+    const comentariosBD: IComentarios[] = useCortoPlazoStore(
+      (state) => state.comentariosSolicitudInscripcion);
+
   useEffect(() => {
-    // comentariosRegistro[openState.apartado] &&
+    if (!openState.apartado) return;
+
+    const encontrados: { usuario: string; fecha: string; comentario: string }[] = [];
+
+    comentariosBD.forEach((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+
+        if (parsed[openState.apartado]) {
+          encontrados.push({
+            usuario: c.Nombre,
+            fecha: new Date(c.FechaCreacion).toLocaleDateString(),
+            comentario: parsed[openState.apartado],
+          });
+        }
+      } catch { }
+    });
+
+    setComentariosPrevios(encontrados);
+
     setComent({
       Apartado: openState.apartado,
-      Comentario: comentario[openState.apartado],
-      // ||
-      // comentariosRegistro[openState.apartado],
+      Comentario: "",
     });
-  }, [openState.apartado]);
+
+  }, [openState.apartado, comentariosBD]);
+
+
+  // useEffect(() => {
+  //   // comentariosRegistro[openState.apartado] &&
+  //   setComent({
+  //     Apartado: openState.apartado,
+  //     Comentario: comentario[openState.apartado],
+  //     // ||
+  //     // comentariosRegistro[openState.apartado],
+  //   });
+  // }, [openState.apartado]);
 
   return (
     <Dialog

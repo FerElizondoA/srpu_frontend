@@ -127,6 +127,15 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
     (state) => state.setIdSolicitudNotificacion
   )
 
+  const consultaListaNotificaciones: Function = useTrazabilidad(
+    (state) => state.consultaListaNotificaciones
+  )
+
+  const filtroNotificacion: boolean = useTrazabilidad(
+    (state) => state.filtroNotificacion
+  )
+
+
   const IdSolicitudNotificacion: string = useTrazabilidad(
     (state) => state.IdSolicitudNotificacion
   )
@@ -206,7 +215,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
     switch (controlInterno) {
       case "inscripcion":
 
-      case "Revision": navigate("../ConsultaDeSolicitudes"); fnc(); break;
+      case "revision": navigate("../ConsultaDeSolicitudes"); fnc(); break;
 
       case "autorizado": navigate("../ConsultaDeSolicitudes"); fnc()
         break;
@@ -219,8 +228,6 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
       case "reestructurado": navigate("../reestructura"); fnc()
         break;
     }
-
-
   }
 
   const getBandejas = () => {
@@ -258,7 +265,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
 
 
   React.useEffect(() => {
-    getNotificaciones(setNotificaciones, setCantNoti); 
+    getNotificaciones(setNotificaciones, setCantNoti);
 
     const interval = setInterval(() => {
       getNotificaciones(setNotificaciones, setCantNoti);
@@ -999,6 +1006,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
                           onClick={() => {
                             setIdSolicitudNotificacion(noti.IdSolicitud)
                             routerControlInterno(noti.ControlInterno)
+                            consultaListaNotificaciones(true)
                             setIsDrawerNotificationOpen(false)
                           }}
                         >

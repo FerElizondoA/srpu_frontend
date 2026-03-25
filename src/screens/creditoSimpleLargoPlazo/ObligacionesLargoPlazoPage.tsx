@@ -28,6 +28,7 @@ import { buttonTheme } from "../../components/mandatos/dialog/AgregarMandatos";
 import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
 import { deleteDocumentos } from "../../generics/interfaces";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -104,6 +105,7 @@ export function ObligacionesLargoPlazoPage() {
       () => { },
       "LargoPlazo"
     );
+
     getDocumentosGastosCostos(
       process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${inscripcion.Id}/DOCGASTOSCOSTOS/`,
       () => { },
@@ -115,6 +117,12 @@ export function ObligacionesLargoPlazoPage() {
     (state) => state.inscripcionReestructura
   );
 
+
+  useEffect(() => {
+    if (inscripcion.Id !== "") {
+      getComentariosSolicitudPlazo(inscripcion.Id, () => { });
+    }
+  }, [inscripcion.Id]);
 
   return (
     <>
@@ -370,7 +378,7 @@ export function ObligacionesLargoPlazoPage() {
 
       {
         reestructura === ""
-          ? tabIndex === 7 && <SolicitudDeInscripcion arrDocsEliminados={arrDocsEliminados}/>
+          ? tabIndex === 7 && <SolicitudDeInscripcion arrDocsEliminados={arrDocsEliminados} />
           : null
       }
 

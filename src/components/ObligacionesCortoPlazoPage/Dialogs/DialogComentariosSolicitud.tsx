@@ -153,16 +153,16 @@ export function VerComentariosSolicitud({
       <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
         {menu === "Requerimientos" ? (
           <Grid>
-            {datosComentario.filter((f) => f.Tipo === "Requerimiento")[0] &&
+            {comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0] &&
               Object.entries(
                 JSON.parse(
-                  datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                  comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0]
                     ?.Comentarios
                 )
               ).length > 0 ? (
               Object.entries(
                 JSON.parse(
-                  datosComentario.filter((f) => f.Tipo === "Requerimiento")[0]
+                  comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0]
                     ?.Comentarios
                 )
               ).map(([key, val], index) =>
@@ -200,9 +200,9 @@ export function VerComentariosSolicitud({
                 </TableHead>
 
                 <TableBody>
-                  {datosComentario?.filter((r) => r.Tipo !== "Requerimiento")
+                  {comentariosSolicitudInscripcion?.filter((r) => r.Tipo !== "Requerimiento")
                     .length !== 0 ? (
-                    datosComentario
+                    comentariosSolicitudInscripcion
                       ?.filter((r) => r.Tipo !== "Requerimiento")
                       .map((row, index) => {
                         return (
@@ -355,7 +355,7 @@ export function VerComentariosSolicitud({
             sx={queries.buttonContinuar}
             onClick={() => {
               eliminarRequerimientos(
-                datosComentario?.filter((r) => r.Tipo === "Requerimiento")[0]
+                comentariosSolicitudInscripcion?.filter((r) => r.Tipo === "Requerimiento")[0]
                   .Id,
                 () => {
                   setOpenDialogEliminar(false);

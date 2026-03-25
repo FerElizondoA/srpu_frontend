@@ -134,16 +134,18 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
       // });
 
 
-      const faltaDocumento = solicitud.Documentacion.some(
-        (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
-      );
+      
+      //**  VUELVELO A POENER BIEN **/
+      // const faltaDocumento = solicitud.Documentacion.some(
+      //   (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      // );
 
-      if (faltaDocumento) {
-        err = 1;
-        errores.push(
-          "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
-        );
-      }
+      // if (faltaDocumento) {
+      //   err = 1;
+      //   errores.push(
+      //     "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+      //   );
+      // }
 
       if (
         solicitud.encabezado.tipoCredito.Descripcion === undefined ||
@@ -355,22 +357,20 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
           "Sección Información General:Seleccione la Institución Financiera."
         );
       }
-      const faltaDocumento = solicitud.Documentacion.some(
-        (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
-      );
 
-      console.log("falta documento: ", faltaDocumento);
+      //**  VUELVELO A POENER BIEN **/
+      // const faltaDocumento = solicitud.Documentacion.some(
+      //   (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      // );
 
-      if (faltaDocumento) {
-        err = 1;
-
-        errores.push(
-          "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
-        );
-      }
+      // if (faltaDocumento) {
+      //   err = 1;
+      //   errores.push(
+      //     "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+      //   );
+      // }
 
       if (err === 0) {
-
         setOpenDialogModificacion(!openDialogModificacion);
       } else {
         setOpenDialogValidacion(!openDialogValidacion);

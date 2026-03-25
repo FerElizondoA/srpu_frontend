@@ -45,6 +45,7 @@ export function getObligadoSolidarioAval(setState: Function) {
 
 export function getSolicitudes(tipoListado: string, setState: Function, setStateFilter: Function) {
   console.log("tipoListado", tipoListado);
+  const stateFiltroNotificaciones = useTrazabilidad.getState()
 
   axios({
     method: "get",
@@ -62,24 +63,28 @@ export function getSolicitudes(tipoListado: string, setState: Function, setState
 
     .then(({ data }) => {
       const state = useTrazabilidad.getState()
-      console.log("data solicitudes", data);
-      console.log("data.data noti", data.data)
+      // console.log("data solicitudes", data);
+      // console.log("data.data noti", data.data)
       const solicitudEncontrada = data.data.find((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || ""))
 
       if (state.IdSolicitudNotificacion !== "" && solicitudEncontrada != undefined) {
-        console.log("solicitudEncontrada", solicitudEncontrada);
-        console.log("state.IdSolicitudNotificacion", state.IdSolicitudNotificacion);
-        console.log("Si es notificacion")
+        // console.log("solicitudEncontrada", solicitudEncontrada);
+        // console.log("state.IdSolicitudNotificacion", state.IdSolicitudNotificacion);
+        // console.log("Si es notificacion")
 
         setStateFilter(data.data.filter((x: any) => x.Id.toLowerCase().includes(state.IdSolicitudNotificacion || "")))
 
         //alertaExitoConfirm("Se encontró una notificación nueva, mostrando la solicitud relacionada")
         setState(data.data);
+        stateFiltroNotificaciones.consultaListaNotificaciones(false)
         setTimeout(() => state.cleanIdSolicitud, 1000)
-      } else {
+      } else if(stateFiltroNotificaciones.filtroNotificacion === true){
         console.log("No es notificacion")
         setStateFilter(data.data);
         alertaInfo("El estatus de la solicitud ha cambiado")
+        setState(data.data);
+      }else{
+        setStateFilter(data.data);
         setState(data.data);
       }
 

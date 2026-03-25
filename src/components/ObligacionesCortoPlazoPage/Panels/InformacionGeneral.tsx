@@ -213,6 +213,35 @@ export function InformacionGeneral() {
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+
+useEffect(() => {
+  if (!contratacion || !vencimiento) return;
+
+  const fechaContratacion = new Date(contratacion);
+  const fechaVencimiento = new Date(vencimiento);
+
+  const diff =
+    fechaVencimiento.getTime() - fechaContratacion.getTime();
+
+  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (dias > 365) {
+
+    const nuevaFecha = addDays(fechaContratacion, 365);
+
+    setVencimiento(nuevaFecha.toISOString());
+    setPlazo(365); // 👈 importante actualizar plazo
+
+  } else if (dias >= 0) {
+
+    setPlazo(dias);
+
+  }
+
+}, [contratacion, vencimiento]);
+
+
   return (
     <Grid
       container
