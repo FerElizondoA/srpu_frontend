@@ -24,6 +24,9 @@ export interface TrazabilidadSlice {
   setIdSolicitudNotificacion: (IdSolicitudNotificacion: string) => void;
   cleanIdSolicitud: () => void;
 
+  consultaListaNotificaciones: (filtroNotificacion: boolean) => void;
+  filtroNotificacion: boolean;
+
 
   getPrimerUsuarioEstatus2: (IdSolicitud: string) => void;
   setIdPrimerUsuarioEstatus2: (IdUsuario: string) => void;
@@ -34,6 +37,15 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
   set,
   get
 ) => ({
+
+  consultaListaNotificaciones: (filtroNotificacion: boolean) => {
+    set(() => ({
+      filtroNotificacion: filtroNotificacion,
+    }));
+  },
+
+  filtroNotificacion: false,
+
   IdSolicitudNotificacion: "",
 
   setIdSolicitudNotificacion: (IdSolicitudNotificacion: string) => {
@@ -74,11 +86,11 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
       IdPrimerUsuarioEstatus2: IdUsuario,
     }));
   },
-  
+
   IdPrimerUsuarioEstatus2: "",
 
   getPrimerUsuarioEstatus2: async (IdSolicitud: string) => {
-      const state = useTrazabilidad.getState();
+    const state = useTrazabilidad.getState();
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-PrimerUsuarioEstatus2", {
         params: {
@@ -90,7 +102,7 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
       })
       .then(({ data }) => {
 
-         state.setIdPrimerUsuarioEstatus2(data.data);
+        state.setIdPrimerUsuarioEstatus2(data.data);
 
       }).catch((error) => {
         console.log("Error al obtener el primer usuario con estatus 2", error);

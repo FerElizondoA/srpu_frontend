@@ -61,7 +61,7 @@ export const createComentarioSlice: StateCreator<ComentarioApartadoSlice> = (
   removeComentario: (apartado: string, Tab: string) => {
     set((state) => {
       const newComentarios: { [key: string]: string } = { ...state.comentarios };
-      delete newComentarios[apartado]; // 🔥 Elimina completamente la propiedad
+      delete newComentarios[apartado]; // Elimina completamente la propiedad
   
       return {
         comentarios: newComentarios,

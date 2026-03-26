@@ -486,7 +486,7 @@ export function Resumen({
                     
                     <BotonComentario
                       apartado={head.label}
-                      tab="TabEncabezado"
+                      tab="TabInformaciónGeneral"
                       activaAccion={activaAccion}
                       estatus={estatus}
                       activacionComentariosRevisor={activacionComentariosRevisor}

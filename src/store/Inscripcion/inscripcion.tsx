@@ -160,12 +160,23 @@ export interface InscripcionSlice {
   cleanSolicitudLargoPlazo: () => void;
 
   getDetalleInfoUsuario: (Id: string, setState: Function) => void;
+
+  recargarSolicitud: boolean;
+  setRecargarSolicitud: (recargarSolicitud: boolean) => void;
+
 }
 
 export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
   set,
   get
 ) => ({
+
+  recargarSolicitud: false,
+  setRecargarSolicitud: (recargarSolicitud: boolean) =>{
+    set(() => ({
+      recargarSolicitud: recargarSolicitud,
+    }));
+  },
 
   cleanInscripcionModify: () => {
     set(() => ({

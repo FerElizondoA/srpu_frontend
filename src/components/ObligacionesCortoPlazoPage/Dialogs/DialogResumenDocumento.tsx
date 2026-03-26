@@ -32,11 +32,15 @@ import { appTheme } from "../../..";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { ConfirmacionEnviarSolicitud } from "./DialogEnviarSolicitud";
 import { DialogAsignacionResumen } from "./DialogAsignacionResumen";
+import { getSolicitudes } from "../../APIS/cortoplazo/APISInformacionGeneral";
+
 
 type Props = {
   handler: Function;
   openState: boolean;
   rowSolicitud: IInscripcion;
+ //setRecargarSolicitud: Function;
+ //recargarSolicitud: boolean;
   rowId: string;
 };
 
@@ -170,6 +174,12 @@ export function VerBorradorDocumento(props: Props) {
   }
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
+
+  // useEffect(() => {
+  // props.handler(false);
+  // console.log("hola me cerre")
+  // }, [!props.recargarSolicitud ])
+  
 
   return (
 
@@ -610,6 +620,7 @@ export function VerBorradorDocumento(props: Props) {
           handler={setOpenDialogRegresar}
           openState={openDialogRegresar}
           accion={accion}
+          //setRecargarSolicitud={props.setRecargarSolicitud}
         />
       )}
     </Dialog>

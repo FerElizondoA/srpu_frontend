@@ -226,6 +226,13 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.cleanInscripcionModify
   );
 
+  const setRecargarSolicitud: Function = useInscripcionStore(
+    (state) => state.setRecargarSolicitud
+  );
+
+  const recargarSolicitud: boolean = useInscripcionStore(
+    (state) => state.recargarSolicitud
+  );
 
 
   const convertirMontosAPalabras: Function = useSolicitudFirmaStore(
@@ -237,10 +244,8 @@ export function ConsultaDeSolicitudPage() {
   const [datos, setDatos] = useState<Array<IInscripcion>>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<Array<IInscripcion>>([]);
 
-  const tablaCondicionesFinancieras: ICondicionFinanciera[] = useCortoPlazoStore(
-    (state) => state.tablaCondicionesFinancieras
-  );
 
+  // export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
   const getDatos = () => {
     getSolicitudes(
       !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -253,11 +258,17 @@ export function ConsultaDeSolicitudPage() {
     )
   };
 
+  // const [recargarSolicitud, setRecargarSolicitud] = useState(false);
+
+
   useEffect(() => {
     getDatos();
     cleanSolicitudCortoPlazo();
     cleanSolicitudLargoPlazo();
-  }, [openEliminar]);
+
+    changeOpenDialogVer(false);
+    setRecargarSolicitud(false);
+  }, [openEliminar || recargarSolicitud]);
 
   useEffect(() => {
     getDatos();
@@ -307,10 +318,9 @@ export function ConsultaDeSolicitudPage() {
     (state) => state.setIdSolicitudBorrador
   );
 
+  // const [accion, setAccion] = useState("");
+  // const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
-
-  const [accion, setAccion] = useState("");
-  const [idUsuarioAsignado, setidUsuarioAsignado] = useState("");
 
   return (
     <Grid container flexDirection="column" justifyContent={"space-between"}>
@@ -478,8 +488,18 @@ export function ConsultaDeSolicitudPage() {
                 ) : (
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
+                    if ((localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador") &&
+                      (row.Control !== "Capturador" && row.Control !== "Verificador")) {
 
-                    if (row.ControlInterno === "inscripcion") {
+                      chip = (
+                        <Chip
+                          label={"En Revisión Finanzas"}
+                          color="secondary"
+                          variant="outlined"
+                        />
+                      );
+
+                    } else if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -697,7 +717,7 @@ export function ConsultaDeSolicitudPage() {
                                 cleanSolicitudLargoPlazo();
                                 cleanInscripcion();
                                 cleanInscripcionModify();
-                                
+
                                 setInscripcion(row);
                                 changeOpenDialogVer(!openDialogVer);
                                 getCatalogoFirmaDetalle(row.Id);
@@ -868,6 +888,8 @@ export function ConsultaDeSolicitudPage() {
           handler={changeOpenDialogVer}
           openState={openDialogVer}
           rowSolicitud={inscripcion}
+          //setRecargarSolicitud={setRecargarSolicitud}
+          //recargarSolicitud={recargarSolicitud}
           rowId={""}
         />
       )}

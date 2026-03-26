@@ -28,36 +28,48 @@ export function getComentariosSolicitudPlazo(
     },
   })
     .then(({ data }) => {
-      setState(
-        data.data.filter(
-          (_: IComentarios) =>
+      // setState(
+      //   data.data.filter(
+      //     (_: IComentarios) =>
 
-            (_.Tipo === "Admin" &&
-              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "Admin" &&
+      //         rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "AdminReestructura" &&
-              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "AdminReestructura" &&
+      //         rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "Requerimiento" &&
-              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "Requerimiento" &&
+      //         rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "RequerimientoReestructura" &&
-              rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "RequerimientoReestructura" &&
+      //         rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "RequerimientoReestructura" &&
-              !rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "RequerimientoReestructura" &&
+      //         !rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "Requerimiento" &&
-              !rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
+      //       (_.Tipo === "Requerimiento" &&
+      //         !rolesAdmin.includes(localStorage.getItem("Rol")!)) ||
 
-            (_.Tipo === "Captura" &&
-              !rolesAdmin.includes(localStorage.getItem("Rol")!))
-        )
+      //       (_.Tipo === "Captura" &&
+      //         !rolesAdmin.includes(localStorage.getItem("Rol")!))
+      //   )
+      // );
+      console.log("Data comentarios completos", data.data)
+
+      const rol = localStorage.getItem("Rol") || "";
+      const esAdmin = rolesAdmin.includes(rol);
+
+      const comentariosFiltrados = data.data.filter((c: IComentarios) =>
+        esAdmin ? c.Tipo === "Requerimiento" : c.Tipo === "Captura"
       );
-      console.log("Data comentarios", data.data)
-
-      state.setComentariosSolicitudInscripcion(data.data);
       
+      console.log("Data comentarios filtrados", comentariosFiltrados)
+
+      state.setComentariosSolicitudInscripcion(comentariosFiltrados);
+
+
+      // state.setComentariosSolicitudInscripcion(data.data);
+
       return data.data;
 
     })

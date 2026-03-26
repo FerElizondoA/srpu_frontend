@@ -250,7 +250,6 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
 
                   const tieneComentarioLocal = !!comentario[val.descripcionTipo];
                   const tieneComentarioBD = !!comentariosBDMap[val.descripcionTipo];
-
                   const esVerde = tieneComentarioLocal || tieneComentarioBD;
 
 
@@ -306,7 +305,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                                   sx={{ ...queries.iconButtonCancelar }}
                                   size="small"
                                   onClick={() => {
-                                    console.log("esVerde", esVerde)
+              
                                     setOpenComentarioApartado({
                                       open: true,
                                       apartado: val.descripcionTipo,

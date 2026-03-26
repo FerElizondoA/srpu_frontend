@@ -23,6 +23,7 @@ import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../../generics/Alertas";
 import { clear } from "@testing-library/user-event/dist/clear";
+import { getSolicitudes } from "../../APIS/cortoplazo/APISInformacionGeneral";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -38,12 +39,14 @@ export function DialogSolicitarModificacion({
   handler,
   openState,
   accion,
-  arrDocsEliminados
+  arrDocsEliminados,
+  // setRecargarSolicitud
 }: {
   handler: Function;
   openState: boolean;
   accion: string;
-  arrDocsEliminados?: IDocsEliminados[]
+  arrDocsEliminados?: IDocsEliminados[];
+  // setRecargarSolicitud?: Function;
 }) {
   const navigate = useNavigate();
 
@@ -105,11 +108,20 @@ export function DialogSolicitarModificacion({
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
       //console.log()
-      addComentario(
-        inscripcion.Id,
-        JSON.stringify(comentarios),
-        "Requerimiento"
-      );
+
+      if (comentarios && Object.keys(comentarios).length > 0) {
+        console.log("AGREGAR COMENTARIO");
+        addComentario(
+          inscripcion.Id,
+          JSON.stringify(comentarios),
+          "Requerimiento"
+        );
+      }
+      // addComentario(
+      //   inscripcion.Id,
+      //   JSON.stringify(comentarios),
+      //   "Requerimiento"
+      // );
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
@@ -127,8 +139,9 @@ export function DialogSolicitarModificacion({
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
+        console.log("HOLA ESTOY AQUI CERCA DEL CREATE NOTIFICATION");
         createNotification(
-          "Crédito simple a corto plazo hola2",
+          "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para  
           ${localStorage.getItem("Rol") === "Autorizador" ?
             accion === "enviar" ?
@@ -140,17 +153,36 @@ export function DialogSolicitarModificacion({
                 : "revisión"
               : "validación"
           }`,
+
           [
             localStorage.getItem("Rol") === "Autorizador"
               ? localStorage.getItem("IdUsuario")!
               : idUsuarioAsignado,
           ],
           inscripcion.Id,
-          "inscripcion"
+          "inscripcion",
+          parseInt(inscripcion.NumeroRegistro),
           //Aqui va el control interno
 
         );
-        window.location.reload();
+
+        // getSolicitudes(
+        //   !rolesAdmin.includes(localStorage.getItem("Rol")!)
+        //     ? "Inscripcion"
+        //     : "Revision",
+        //   (e: IInscripcion[]) => {
+        //     setDatos(e);
+        //   },
+        //   setDatosFiltrados
+        // );
+
+        //BORRA ESA MADRE
+
+        const state = useInscripcionStore.getState();
+
+
+        state.setRecargarSolicitud(true)
+        //window.location.reload();
         Swal.fire({
           confirmButtonColor: "#15212f",
           cancelButtonColor: "rgb(175, 140, 85)",
@@ -198,8 +230,8 @@ export function DialogSolicitarModificacion({
             cleanInscripcion();
             cleanInscripcionModify();
             cleanTablaCondicionesFinancieras();
-
-
+            const state = useInscripcionStore.getState();
+            state.setRecargarSolicitud(true);
             navigate("../ConsultaDeSolicitudes");
 
           })
