@@ -101,8 +101,8 @@ export function DialogSolicitarModificacion({
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
 
-    console.log("HOLA ESTOY EN DIALOG SOLICITAR MODIFICACION");
-    console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
+    // console.log("HOLA ESTOY EN DIALOG SOLICITAR MODIFICACION");
+    // console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
   }, [openState]);
 
   const checkform = () => {
@@ -135,11 +135,10 @@ export function DialogSolicitarModificacion({
               : "5" //Antes 4
             : "6", //Antes 5
         inscripcion.Id,
-        localStorage.getItem("Rol") === "Autorizador"
+        localStorage.getItem("Rol") === "Autorizador" && idUsuarioAsignado === ""
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
-        console.log("HOLA ESTOY AQUI CERCA DEL CREATE NOTIFICATION");
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para  

@@ -20,6 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { differenceInCalendarDays } from "date-fns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { differenceInDays, startOfDay } from "date-fns";
@@ -215,31 +216,50 @@ export function InformacionGeneral() {
   };
 
 
-useEffect(() => {
-  if (!contratacion || !vencimiento) return;
+  // useEffect(() => {
+  //   if (!contratacion || !vencimiento) return;
 
-  const fechaContratacion = new Date(contratacion);
-  const fechaVencimiento = new Date(vencimiento);
+  //   const fechaContratacion = new Date(contratacion);
+  //   const fechaVencimiento = new Date(vencimiento);
 
-  const diff =
-    fechaVencimiento.getTime() - fechaContratacion.getTime();
+  //   const diff =
+  //     fechaVencimiento.getTime() - fechaContratacion.getTime();
 
-  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+  //   const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  if (dias > 365) {
+  //   if (dias > 365) {
 
-    const nuevaFecha = addDays(fechaContratacion, 365);
+  //     const nuevaFecha = addDays(fechaContratacion, 365);
 
-    setVencimiento(nuevaFecha.toISOString());
-    setPlazo(365); // 👈 importante actualizar plazo
+  //     setVencimiento(nuevaFecha.toISOString());
+  //     setPlazo(365); // 👈 importante actualizar plazo
 
-  } else if (dias >= 0) {
+  //   } else if (dias >= 0) {
 
+  //     setPlazo(dias);
+
+  //   }
+
+  // }, [contratacion, vencimiento]);
+
+  const calcularPlazo = (contratacion: string, vencimiento: string) => {
+    if (!contratacion || !vencimiento) return 0;
+
+    const fechaInicio = new Date(contratacion);
+    const fechaFin = new Date(vencimiento);
+
+    // Diferencia + 1 (conteo inclusivo)
+    const dias = differenceInCalendarDays(fechaFin, fechaInicio) + 1;
+
+    return dias > 0 ? dias : 0;
+  };
+
+
+
+  useEffect(() => {
+    const dias = calcularPlazo(contratacion, vencimiento);
     setPlazo(dias);
-
-  }
-
-}, [contratacion, vencimiento]);
+  }, [contratacion, vencimiento]);
 
 
   return (
@@ -422,7 +442,7 @@ useEffect(() => {
               value={vencimiento ? new Date(vencimiento) : null}
               onChange={(date) => setVencimiento(date?.toISOString() || "")}
               minDate={new Date(contratacion)}
-              maxDate={addDays(new Date(contratacion), 365)}
+              maxDate={addDays(new Date(contratacion), 365-1)}
             />
           </LocalizationProvider>
         </Grid>
