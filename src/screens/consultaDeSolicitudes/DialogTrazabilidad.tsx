@@ -57,6 +57,40 @@ export function DialogTrazabilidad(props: Props) {
 
   const Id: string = useInscripcionStore((state) => state.inscripcion.Id);
 
+  const rol = (localStorage.getItem("Rol") || "").trim().toLowerCase();
+
+  const esCapturadorOVerificador =
+    rol === "capturador" || rol === "verificador";
+
+  const esRevisorValidadorAutorizador =
+    rol === "revisor" || rol === "validador" || rol === "autorizador";
+
+  const estatusPermitidos = [
+    "en captura",
+    "en verificación",
+    "inscripción",
+    "inscrito",
+  ];
+
+  const registrosFiltrados = listadoRegistroTrazabilidad.filter((row) => {
+  const estatus = (row.NombreEstatus || "").trim().toLowerCase();
+
+  const esEstatusPermitido = estatusPermitidos.includes(estatus);
+
+  // Capturador / Verificador → SOLO estos estatus
+  if (esCapturadorOVerificador) {
+    return esEstatusPermitido;
+  }
+
+  // Revisor / Validador / Autorizador → EXCLUIR esos estatus
+  if (esRevisorValidadorAutorizador) {
+    return !esEstatusPermitido;
+  }
+
+  // Otros roles → ven todo
+  return true;
+});
+
   useEffect(() => {
     getRegistroTrazabilidad(props.row.Id);
     console.log(listadoRegistroTrazabilidad)
@@ -79,7 +113,7 @@ export function DialogTrazabilidad(props: Props) {
             justifyContent: "center",
           }}
         >
-          Historial de la solicitud
+          Historial de la solicitud hola
         </Typography>
       </DialogTitle>
 
@@ -127,34 +161,67 @@ export function DialogTrazabilidad(props: Props) {
                   <StyledTableCell align="center"></StyledTableCell>
                 </StyledTableRow>
               ) : (
-                listadoRegistroTrazabilidad.map((row, index) => (
-                  <StyledTableRow>
-                    <StyledTableCell align="center">
-                      <Typography>
-                        {row.NombreCompletoUsuarioModificador}
-                      </Typography>
-                    </StyledTableCell>
+                registrosFiltrados.map((row, index) => {
 
-                    <StyledTableCell align="center">
-                      <Typography>{row.NombreEstatus}</Typography>
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center">
-                      <Typography>
-                        {format(new Date(row.FechaModificacion), "PPP", {
-                          locale: es,
-                        })}
-                        {/* {row.FechaModificacion} */}
-                      </Typography>
-                    </StyledTableCell>
-
-                    <StyledTableCell align="center">
-                      <Typography>
-                        {format(new Date(row.FechaModificacion), "hh:mm a", { locale: es })}
-                      </Typography>                    
+                  return (
+                    <StyledTableRow>
+                      <StyledTableCell align="center">
+                        <Typography>
+                          {row.NombreCompletoUsuarioModificador}
+                        </Typography>
+                      </StyledTableCell><StyledTableCell align="center">
+                        <Typography>{row.NombreEstatus}</Typography>
+                      </StyledTableCell><StyledTableCell align="center">
+                        <Typography>
+                          {format(new Date(row.FechaModificacion), "PPP", {
+                            locale: es,
+                          })}
+                        </Typography>
+                      </StyledTableCell><StyledTableCell align="center">
+                        <Typography>
+                          {format(new Date(row.FechaModificacion), "hh:mm a", { locale: es })}
+                        </Typography>
                       </StyledTableCell>
-                  </StyledTableRow>
-                ))
+                    </StyledTableRow>
+                  )
+                })
+
+                //(
+
+                //   <StyledTableRow>
+                //     <StyledTableCell align="center">
+                //       <Typography>
+                //         {row.NombreCompletoUsuarioModificador}
+                //       </Typography>
+                //     </StyledTableCell>
+
+                //     {(localStorage.getItem("Rol") != "Capturador" || localStorage.getItem("Rol") != "Verificador") ? (
+                //       <StyledTableCell align="center">
+                //         <Typography>{row.NombreEstatus}</Typography>
+                //       </StyledTableCell>
+                //     ) : null
+                //     }
+
+                //     <StyledTableCell align="center">
+                //       <Typography>{row.NombreEstatus}</Typography>
+                //     </StyledTableCell>
+
+                //     <StyledTableCell align="center">
+                //       <Typography>
+                //         {format(new Date(row.FechaModificacion), "PPP", {
+                //           locale: es,
+                //         })}
+                //         {/* {row.FechaModificacion} */}
+                //       </Typography>
+                //     </StyledTableCell>
+
+                //     <StyledTableCell align="center">
+                //       <Typography>
+                //         {format(new Date(row.FechaModificacion), "hh:mm a", { locale: es })}
+                //       </Typography>
+                //     </StyledTableCell>
+                //   </StyledTableRow>
+                // ))
               )}
             </TableBody>
           </Table>

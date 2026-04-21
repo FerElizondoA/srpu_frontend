@@ -529,7 +529,7 @@ export function VerBorradorDocumento(props: Props) {
               addComentario(
                 props.rowSolicitud.Id,
                 JSON.stringify(comentarios),
-                "Requerimiento"
+                localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador" ? "Captura" : "Requerimiento"
               ).then(() => {
                 alertaExito(() => { }, "Comentarios guardados con éxito")
                 setOpenGuardaComentarios(false);
