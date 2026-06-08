@@ -130,16 +130,16 @@ export const modulos = [
     fnc: "TiposSolicitudes",
   },
   {
-    label: "Usuarios",
-    fnc: "Usuarios",
-  },
-  {
     label: "Garantia de Pago",
     fnc: "GarantiaDePago",
   },
   {
     label: "Clase de Titulo",
     fnc: "ClaseTitulo",
+  },
+  {
+    label: "Usuarios",
+    fnc: "Usuarios",
   },
 ];
 

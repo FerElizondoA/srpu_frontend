@@ -278,22 +278,28 @@ export function ObligacionesLargoPlazoPage() {
           ) : (
             <Grid container
               width={
-                !inscripcion.NumeroRegistro ? "20%" : query.isTittle ? "10%" : "20%"
+                !inscripcion.NumeroRegistro ? "5%" : query.isTittle ? "10%" : "20%"
               }
               display={"flex"}
               justifyContent={"space-evenly"}
               alignItems={"center"}
             >
-              <Button
-                sx={{ ...queries.buttonContinuar }}
-                onClick={() => {
-                  changeOpenVerComentarios(!openVerComentarios);
-                }}
-              >
+              {inscripcion.NumeroRegistro ?
+                <>
+                  <Button
+                    sx={{ ...queries.buttonContinuar }}
+                    onClick={() => {
+                      changeOpenVerComentarios(!openVerComentarios);
+                    }}
+                  >
 
-                Ver Comentarios
-              </Button>
+                    Ver Comentarios
+                  </Button>
+                </>
+
+                : null}
               <Button
+
                 sx={{ ...queries.buttonContinuar }}
                 onClick={() => {
                   setOpenDialogBorrador(!openDialogBorrador);
