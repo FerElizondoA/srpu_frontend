@@ -8,6 +8,7 @@ import {
   TableBody,
   TableContainer,
   TableHead,
+  TableRow,
   TableSortLabel,
   Tabs,
   Typography,
@@ -143,41 +144,77 @@ export function VerComentariosSolicitud({
             />
           )}
 
-          <Tab
-            label="Comentarios"
-            value={"Comentarios"}
-            sx={{ ...queries.bold_text_Largo_Plazo }}
-          />
+          {!rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+            <Tab
+              label="Comentarios"
+              value={"Comentarios"}
+              sx={{ ...queries.bold_text_Largo_Plazo }}
+            />
+          )}
+
+
         </Tabs>
       </DialogTitle>
-      <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
+      <DialogContent sx={{ display: "flex", justifyContent: "start" }}>
         {menu === "Requerimientos" ? (
           <Grid>
-            {comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0] &&
-              Object.entries(
-                JSON.parse(
-                  comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0]
-                    ?.Comentarios
-                )
-              ).length > 0 ? (
-              Object.entries(
-                JSON.parse(
-                  comentariosSolicitudInscripcion.filter((f) => f.Tipo === "Requerimiento")[0]
-                    ?.Comentarios
-                )
-              ).map(([key, val], index) =>
-                (val as string) === "" ? null : (
-                  <Typography key={index} sx={{ mb: 1 }}>
-                    <strong>{key}:</strong>
-                    {val as string}
-                  </Typography>
-                )
-              )
-            ) : (
-              <Typography sx={{ mb: 1 }}>
-                <strong>Sin requerimientos</strong>
-              </Typography>
-            )}
+            <TableContainer>
+              <Table>
+                <TableHead>
+
+                </TableHead>
+                <TableBody>
+                  {(() => {
+                    // 1. Buscamos el requerimiento y parseamos de forma segura
+                    const reqObj = comentariosSolicitudInscripcion.find((f) => f.Tipo === "Requerimiento");
+
+                    let entries: [string, unknown][] = [];
+                    try {
+                      if (reqObj?.Comentarios) {
+                        entries = Object.entries(JSON.parse(reqObj.Comentarios));
+                      }
+                    } catch (e) {
+                      console.error("Error parseando Comentarios:", e);
+                    }
+
+                    // Filtrar las entries que tengan un valor vacío de una vez
+                    const entriesFiltradas = entries.filter(([_, val]) => (val as string).trim() !== "");
+
+                    // 2. Si hay requerimientos válidos...
+                    if (entriesFiltradas.length > 0) {
+                      return (
+                        <TableRow>
+                          {/* IMPORTANTE: Una sola celda que contendrá todos los saltos de línea */}
+                          <StyledTableCell>
+                            {entriesFiltradas.map(([key, val], index) => (
+                              <Typography
+                                key={index}
+                                component="div" // Evita errores de renderizado con el <br />
+                                sx={{ mb: 2 }}  // Un margen abajo para separar un requerimiento de otro
+                              >
+                                <strong>{key}:</strong> {val as string}
+                              </Typography>
+                            ))}
+                          </StyledTableCell>
+                        </TableRow>
+                      );
+                    }
+
+                    // 3. Si no hay requerimientos...
+                    return (
+                      <TableRow>
+                        <StyledTableCell>
+                          <Typography sx={{ color: "text.secondary", fontStyle: "italic" }}>
+                            <strong>Sin requerimientos</strong>
+                          </Typography>
+                        </StyledTableCell>
+                      </TableRow>
+                    );
+                  })()}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
           </Grid>
         ) : (
           <Grid item>
@@ -270,38 +307,38 @@ export function VerComentariosSolicitud({
 
       <DialogActions>
 
-        {filtroBotonesAccion === true ? 
-         (
-          <>
-            <Button
-              sx={queries.buttonCancelar}
-              onClick={() => {
-                handler(false);
-              }}
-            >
-              Cerrar
-            </Button>
-            {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
-            <Button
-              sx={queries.buttonCancelar}
-              onClick={() => {
-                setOpenDialogEliminar(true);
-              }}
-            >
-              Eliminar Requerimientos
-            </Button>
-            )}
-            <Button
-              sx={queries.buttonContinuar}
-              onClick={() => {
-                changeOpenDialogCrear(!openDialogCrear);
-              }}
-            >
-              Crear nuevo comentario
-            </Button>
-          </>
-        ):null}
-        
+        {filtroBotonesAccion === true ?
+          (
+            <>
+              <Button
+                sx={queries.buttonCancelar}
+                onClick={() => {
+                  handler(false);
+                }}
+              >
+                Cerrar
+              </Button>
+              {/* {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+                <Button
+                  sx={queries.buttonCancelar}
+                  onClick={() => {
+                    setOpenDialogEliminar(true);
+                  }}
+                >
+                  Eliminar Requerimientos
+                </Button>
+              )} */}
+              {/* <Button
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  changeOpenDialogCrear(!openDialogCrear);
+                }}
+              >
+                Crear nuevo comentario
+              </Button> */}
+            </>
+          ) : null}
+
         {/* <Button
           sx={queries.buttonCancelar}
           onClick={() => {

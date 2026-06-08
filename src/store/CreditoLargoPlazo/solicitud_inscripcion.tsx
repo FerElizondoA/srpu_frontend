@@ -17,6 +17,7 @@ import { useMandatoStore } from "../Mandatos/main";
 import { alertaConfirmCancelar } from "../../generics/Alertas";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 import { stat } from "fs";
+import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 
 
 export interface IDataAgregarSolicitud {
@@ -102,12 +103,10 @@ export interface SolicitudInscripcionLargoPlazoSlice {
     idEditor: string,
     estatus: string,
     comentario: string,
-    setDataAsignacion: Function,
+    //setDataAsignacion: Function,
     setIdSolicitud: Function,
     NotificacionEnviar: boolean,
-    idUsuarioAsignado?: string
-
-
+    //idUsuarioAsignado?: string
   ) => void;
 
   modificaSolicitud: (
@@ -404,8 +403,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     idEditor: string,
     estatus: string,
     comentario: string,
-    setDataAsignacion: Function,
-    setIdSolicitud: Function,
+    //setDataAsignacion: Function,
+    setIdSolicitudCreada: Function,
     NotificacionEnviar: boolean,
   ) => {
     const lpState = useLargoPlazoStore.getState();
@@ -534,13 +533,14 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
 
         }
 
+        //Fuentes de Pago   *******************
+
         const fuente = lpState.tablaAsignarFuenteNew[0];
         const fuenteOriginal = lpState.OriginalTablaAsignarFuenteNew[0];
         console.log("fuente", fuente);
         console.log("fuenteOriginal", fuenteOriginal);
 
         lpState.setIdSolicitudBorrador(DataSolicitud.Id)
-        // setIdSolicitudCreada(DataSolicitud.Id);
         console.log("IdSolicitud en inscripcion", data.data.Id);
 
         if (DataSolicitud !== undefined) {
@@ -550,18 +550,22 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
         } else {
           console.log("NO encontro data de la solicitud")
         }
+          // *****************
+        
+        //GUARDAR COMENTARIO DE CREACION DE SOLICITUD   *****************
+        lpState.addComentario(DataSolicitud.Id, JSON.stringify(lpState.comentarios), "Captura");
+        // *****************
 
         setTimeout(() => {
           inscripcionState.cleanSolicitudLargoPlazo();
           lpState.setIdSolicitudBorrador(data.data.Id)
-          //setIdSolicitudCreada(data.data.Id)
+          setIdSolicitudCreada(DataSolicitud.Id)
 
           //inscripcionState.setInscripcion(data.data.)
           alertaConfirmCancelar("La solicitud se guardó con éxito")
 
           inscripcionState.setInscripcion(data.data.data);
 
-          //state.addComentario(data.data.Id, comentario, "Captura");
         }, 3000);
 
         //  inscripcionState.setInscripcion(data.data);
@@ -729,7 +733,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
             data.data.NumeroRegistro
           );
         }
-        
+
         lpState.saveFiles(
           inscripcionState.inscripcion.Id,
           process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/LARGOPLAZO/DOCSOL/${data.data.Id}`,
@@ -1039,6 +1043,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           comentarios: {},
           idComentario: "",
         });
+        getComentariosSolicitudPlazo(data.data.Id, () => { });
+
       })
       .catch((e) => { });
 

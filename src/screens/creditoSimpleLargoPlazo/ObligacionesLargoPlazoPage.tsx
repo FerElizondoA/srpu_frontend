@@ -29,6 +29,7 @@ import { IAutorizaciones } from "../../store/CreditoLargoPlazo/autorizacion";
 import { deleteDocumentos } from "../../generics/interfaces";
 import { IDocsEliminados } from "../../components/ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { VerComentariosSolicitud } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 // "../  /mandatos/dialog/AgregarMandatos";
 export function ObligacionesLargoPlazoPage() {
   const query = {
@@ -41,6 +42,9 @@ export function ObligacionesLargoPlazoPage() {
     isLaptop: useMediaQuery("(min-width: 1140px) and (max-width: 1399px)"),
     isMonitor: useMediaQuery("(min-width: 1400px) and (max-width: 1869px)"),
     isMonitorXL: useMediaQuery("(min-width: 1870px)"),
+
+    isTittle: useMediaQuery("(min-width: 0px) and (max-width: 467px)"),
+
   };
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -89,6 +93,7 @@ export function ObligacionesLargoPlazoPage() {
   // };
 
   const [arrDocsEliminados, setArrDocsEliminados] = useState<IDocsEliminados[]>([]);
+  const [openVerComentarios, changeOpenVerComentarios] = useState(false);
 
   const addArrDocsEliminados = (obj: IDocsEliminados) => {
     console.log('objeto eliminado', obj);
@@ -116,6 +121,8 @@ export function ObligacionesLargoPlazoPage() {
   const inscripcionReestructura: IDatosSolicitudReestructura = useInscripcionStore(
     (state) => state.inscripcionReestructura
   );
+
+
 
 
   useEffect(() => {
@@ -269,27 +276,53 @@ export function ObligacionesLargoPlazoPage() {
               </ThemeProvider>
             </Grid>
           ) : (
-            <Grid
+            <Grid container
               width={
-                !inscripcion.NumeroRegistro
-                  ? "0"
-                  : query.isMobile
-                    ? "10%"
-                    : "20%"
+                !inscripcion.NumeroRegistro ? "20%" : query.isTittle ? "10%" : "20%"
               }
               display={"flex"}
-              justifyContent={"end"}
+              justifyContent={"space-evenly"}
               alignItems={"center"}
             >
               <Button
+                sx={{ ...queries.buttonContinuar }}
+                onClick={() => {
+                  changeOpenVerComentarios(!openVerComentarios);
+                }}
+              >
+
+                Ver Comentarios
+              </Button>
+              <Button
+                sx={{ ...queries.buttonContinuar }}
                 onClick={() => {
                   setOpenDialogBorrador(!openDialogBorrador);
                 }}
-                sx={{ ...queries.buttonContinuar }}
               >
                 Guardar
               </Button>
             </Grid>
+            // <Grid
+            //   width={
+            //     !inscripcion.NumeroRegistro
+            //       ? "0"
+            //       : query.isMobile
+            //         ? "10%"
+            //         : "20%"
+            //   }
+            //   display={"flex"}
+            //   justifyContent={"end"}
+            //   alignItems={"center"}
+            // >
+            //   <Button
+            //     onClick={() => {
+            //       setOpenDialogBorrador(!openDialogBorrador);
+            //     }}
+            //     sx={{ ...queries.buttonContinuar }}
+            //   >
+            //     Guardar
+            //   </Button>
+            // </Grid>
           )}
         </Grid>
 
@@ -402,6 +435,14 @@ export function ObligacionesLargoPlazoPage() {
         handler={setOpenDialogBorrador}
         openState={openDialogBorrador}
       />
+
+      {openVerComentarios && (
+        <VerComentariosSolicitud
+          handler={changeOpenVerComentarios}
+          openState={openVerComentarios}
+          filtroBotonesAccion={false}
+        />
+      )}
 
       <DialogSolicitarReestructura
         handler={setOpenDialogReestructura}

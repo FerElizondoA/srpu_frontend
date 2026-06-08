@@ -32,6 +32,7 @@ export const getListadoUsuarios = () => {
       const state = useCortoPlazoStore.getState();
 
       state.setListadoUsuarios(data.data);
+      console.log("Listado de usuarios:", data.data);
     })
     .catch((r) => {
       Toast.fire({
@@ -40,6 +41,24 @@ export const getListadoUsuarios = () => {
       });
     });
 };
+
+// export const getUsuarioCancelador = (idUsuario: string) => {
+//   return axios
+//     .get(process.env.REACT_APP_APPLICATION_BACK + `/get-usuario-cancelador/${idUsuario}`, {
+//       headers: {
+//         Authorization: localStorage.getItem("jwtToken"),
+//         "Content-Type": "application/json",
+//       },
+//     })
+//     .then(({ data }) => {
+//       console.log("Usuario cancelador:", data.data);
+//       return data.data;
+//     })
+//     .catch((r) => {
+//       console.error("Error fetching cancelador user:", r);
+//       throw r;
+//     });
+// };
 
 export const getRoles = (setState: Function) => {
   axios

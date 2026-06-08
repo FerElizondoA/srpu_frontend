@@ -80,6 +80,13 @@ export function ConfirmacionEnviarSolicitud({
     (state) => state.createAsignacionTipoSolicitud
   );
 
+  const cleanSolicitudLargoPlazo: Function = useInscripcionStore(
+    (state) => state.cleanSolicitudLargoPlazo
+  );
+
+    const [idSolicitudCreada, setIdSolicitudCreada] = useState("");
+  
+
   const [dataAsignacion, setDataAsignacion] = useState<IDataAgregarSolicitud>()
 
 
@@ -181,6 +188,8 @@ export function ConfirmacionEnviarSolicitud({
                         JSON.stringify(comentarios),
                         "Captura"
                       );
+                    } else {
+                      console.log("NO AGREGAR COMENTARIO LARGO PLAZO");
                     }
                     // addComentario(
                     //   solicitud.Id,
@@ -194,6 +203,7 @@ export function ConfirmacionEnviarSolicitud({
                       title: "Mensaje",
                       text: "La solicitud se envió con éxito",
                     });
+                    cleanSolicitudLargoPlazo();
                     cleanSolicitud();
                     cleanInscripcion();
                     cleanInscripcionModify();
@@ -261,10 +271,10 @@ export function ConfirmacionEnviarSolicitud({
                   localStorage.getItem("IdUsuario"),
                   "3",
                   localStorage.getItem("IdUsuario"),
-                  setDataAsignacion
+                  setIdSolicitudCreada,
+                  true
                 )
                   .then((data: any) => {
-
                     if (comentarios && Object.keys(comentarios).length > 0) {
                       addComentario(
                         solicitud.Id,
@@ -306,19 +316,23 @@ export function ConfirmacionEnviarSolicitud({
                 // );
               } else if (localStorage.getItem("Rol") === "Capturador") {
                 crearSolicitud(
-                  localStorage.getItem("IdUsuario"),
-                  "2",
                   idUsuarioAsignado,
-                  setDataAsignacion
+                  "2",
+                  "Se te ha asignado una solicitud de Credito a Largo Plazo",
+                  setIdSolicitudCreada,
+                  true
                 )
                   .then(() => {
-                    if (comentarios && Object.keys(comentarios).length > 0) {
-                      addComentario(
-                        solicitud.Id,
-                        JSON.stringify(comentarios),
-                        "Captura"
-                      );
-                    }
+
+                    // PRUEBA SIN ESTA FUNCIONALIDAD DE COMENTARIOS
+                    // if (comentarios && Object.keys(comentarios).length > 0) {
+                    //    console.log("AGREGAR COMENTARIO LARGO PLAZO", "Solicitud ID: ", idSolicitudCreada, "Comentarios: ", comentarios);
+                    //   addComentario(
+                    //     idSolicitudCreada,
+                    //     JSON.stringify(comentarios),
+                    //     "Captura"
+                    //   );
+                    // }
 
                     // addComentario(
                     //   solicitud.Id,
@@ -333,6 +347,8 @@ export function ConfirmacionEnviarSolicitud({
                       text: "La solicitud se envió con éxito",
                     });
                     cleanSolicitud();
+                    cleanInscripcion();
+                    cleanInscripcionModify();
                     navigate("../ConsultaDeSolicitudes");
                   })
                   .catch(() => {

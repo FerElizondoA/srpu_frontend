@@ -194,7 +194,7 @@ export function ConsultaDeCancelacionesPage() {
     (state) => state.setInscripcion
   );
 
-  
+
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
@@ -477,8 +477,18 @@ export function ConsultaDeCancelacionesPage() {
                 ) : (
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
+                    if ((localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador") &&
+                      (row.Control !== "Capturador" && row.Control !== "Verificador")) {
 
-                    if (row.ControlInterno === "inscripcion") {
+                      chip = (
+                        <Chip
+                          label={"En Revisión Finanzas"}
+                          color="secondary"
+                          variant="outlined"
+                        />
+                      );
+
+                    } else if (row.ControlInterno === "inscripcion") {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -834,8 +844,9 @@ export function ConsultaDeCancelacionesPage() {
                               </IconButton>
                             </Tooltip>
                           )}
-
-                          {localStorage.getItem("IdUsuario") === row.CancelacionInciadoPor && (parseFloat(row.NoEstatus) > 11 && parseFloat(row.NoEstatus) < 20) ?
+                          
+                          {/* localStorage.getItem("IdUsuario") === row.CancelacionInciadoPor && */}
+                          {localStorage.getItem("Rol") === "Verificador" && (parseFloat(row.NoEstatus) > 11 && parseFloat(row.NoEstatus) < 20) ?
                             <Tooltip title="Decistir cancelación">
                               <IconButton
                                 onClick={() => {
@@ -894,7 +905,6 @@ export function ConsultaDeCancelacionesPage() {
                   icon: "success",
                   title: "Se ha desistido la cancelación correctamente.",
                 })
-
                 getDatos(rolUsuario);
                 setOpenDialogConfirmDecistir(false);
                 deleteDocPathCancelaciones(inscripcion.Id);

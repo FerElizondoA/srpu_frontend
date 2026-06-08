@@ -245,6 +245,13 @@ export interface IDatosPorcentajesAcumulados {
   garantiaDePago: string;
 }
 
+export interface IDatosUsuarioCancelacion {
+  Nombre: string;
+  ApellidoPaterno: string;
+  ApellidoMaterno: string;
+  IdUsuarioCancelador: string
+}
+
 
 export interface SolicitudFirmaSlice {
   proceso: string;
@@ -260,6 +267,10 @@ export interface SolicitudFirmaSlice {
   convertirMontosAPalabras: (numeroConFormato: string) => void;
 
 
+
+  usuarioIniciadoCanelacion: IDatosUsuarioCancelacion;
+  setUsuarioIniciadoCancelacion: (usuarioIniciadoCanelacion: IDatosUsuarioCancelacion) => void;
+  
   setUrl: (url: string) => void;
 }
 
@@ -267,6 +278,20 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
   set,
   get
 ) => ({
+
+  usuarioIniciadoCanelacion: {
+    Nombre: "",
+    ApellidoPaterno: "",
+    ApellidoMaterno: "",
+    IdUsuarioCancelador: ""
+  },
+
+  setUsuarioIniciadoCancelacion: (usuarioIniciadoCanelacion: IDatosUsuarioCancelacion) => {
+    set(() => ({
+      usuarioIniciadoCanelacion: usuarioIniciadoCanelacion,
+    }));
+  },
+  
   convertirMontosAPalabras(numeroConFormato: string): string {
 
     function limpiarFormatoMoneda(monto: string): number {
@@ -349,77 +374,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
   },
-
-  // convertirMontosAPalabras(numeroConFormato: string): string {
-
-  //   // Limpia el formato de moneda para extraer solo el número
-  //   function limpiarFormatoMoneda(monto: string): number {
-  //     const montoLimpio = monto.replace(/[^0-9.]/g, '');
-  //     return parseFloat(montoLimpio);
-  //   }
-
-  //   const numeroFloat = limpiarFormatoMoneda(numeroConFormato);
-  //   const parteEntera = Math.floor(numeroFloat); // Parte entera del número
-  //   const centavos = Math.round((numeroFloat - parteEntera) * 100); // Parte decimal (centavos)
-
-  //   const unidades: string[] = ['', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-  //   const especiales: string[] = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve'];
-  //   const decenas: string[] = ['', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-  //   const centenas: string[] = ['', 'cien', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'];
-
-  //   // Función para convertir el número entero a palabras
-  //   function convertirNumeroAPalabras(numero: number): string {
-  //     if (numero === 0) return 'cero';
-  //     if (numero < 10) return unidades[numero];
-  //     if (numero < 20) return especiales[numero - 10];
-  //     if (numero < 100) return convertirDecenas(numero);
-  //     if (numero < 1000) return convertirCentenas(numero);
-  //     if (numero < 1000000) return convertirMiles(numero);
-  //     if (numero < 1000000000000) return convertirMillones(numero);
-
-  //     return 'Número demasiado grande';
-  //   }
-
-  //   function convertirDecenas(numero: number): string {
-  //     const decena = Math.floor(numero / 10);
-  //     const unidad = numero % 10;
-  //     if (numero < 30) {
-  //       return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //     }
-  //     return decenas[decena] + (unidad > 0 ? ' y ' + unidades[unidad] : '');
-  //   }
-
-  //   function convertirCentenas(numero: number): string {
-  //     const centena = Math.floor(numero / 100);
-  //     const resto = numero % 100;
-  //     if (numero === 100) return 'cien';
-  //     return centenas[centena] + (resto > 0 ? ' ' + convertirDecenas(resto) : '');
-  //   }
-
-  //   function convertirMiles(numero: number): string {
-  //     const miles = Math.floor(numero / 1000);
-  //     const resto = numero % 1000;
-  //     if (miles === 1) return 'mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //     return convertirNumeroAPalabras(miles) + ' mil ' + (resto > 0 ? convertirCentenas(resto) : '');
-  //   }
-
-  //   function convertirMillones(numero: number): string {
-  //     const millones = Math.floor(numero / 1000000);
-  //     const resto = numero % 1000000;
-  //     if (millones === 1) return 'un millón ' + (resto > 0 ? convertirMiles(resto) : '');
-  //     return convertirNumeroAPalabras(millones) + ' millones ' + (resto > 0 ? convertirMiles(resto) : '');
-  //   }
-
-  //   // Convertir la parte entera del monto a palabras
-  //   let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
-
-  //   // Agregar "pesos" y manejar los centavos
-  //   const centavosEnPalabras = centavos > 0 ? ` ${centavos}/100 M.N.` : ' 00/100 M.N.';
-  //   parteEnteraEnPalabras += ` pesos${centavosEnPalabras}`;
-
-  //   return parteEnteraEnPalabras;
-  // },
-
+  
   proceso: "",
 
   url: "",
@@ -489,10 +444,11 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
       let validacionReestructura = false
       const inf = JSON.parse(info);
+      console.log("info en changeInfoDoc", inf);
 
       //const stateCortoPlazo = useCortoPlazoStore.getState();
       // const idAcuse = ""
-      // stateCortoPlazo.getIdAcuse(idAcuse)
+      //stateCortoPlazo.getIdAcuse(idAcuse)
 
       const filtro = useInscripcionStore.getState();
       let state: any;
@@ -561,6 +517,8 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       //   }
       // }
       const stateLP = useLargoPlazoStore.getState();
+      console.log("ESTATUS PREVIO PARA EL CAMBIO DE ESTATUS", estatusPrevio);
+      console.log("local storage IdUsuario", localStorage.getItem("IdUsuario"));
       axios
         .post(
           process.env.REACT_APP_APPLICATION_BACK + "/create-firmaDetalle",
@@ -579,6 +537,9 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             FechaDoc: inf.Fecha_doc,
             PathDoc: inf.PathDoc,
             CreadoPor: inf.IdUsuario,
+            
+            CancelacionInciadoPor: localStorage.getItem("IdUsuario"), //REVISAR
+            NoEstatus: estatusPrevio.NoEstatus, //REVISAR
           },
           {
             headers: {
@@ -716,12 +677,18 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             }
           }
 
+          if(tipoFirmaDetalle === "cancelacion" && estatusPrevio.NoEstatus === "12"){
+            // agregar id del usuario 
+          }
+
+
+
           //GeneraAcuse(titulo, mensaje, oficio, state.idSolicitud); 
           GeneraAcuse(titulo, mensaje, oficio, estatusPrevio.Id);
 
           /////////REVISA ESTO FERNANDO///////// ****************
-          console.log("Estatusprevio.ControlInterno", estatusPrevio.ControlInterno)
-          console.log("estatusPrevio.NoEstatus", estatusPrevio.NoEstatus)
+          // console.log("Estatusprevio.ControlInterno", estatusPrevio.ControlInterno)
+          // console.log("estatusPrevio.NoEstatus", estatusPrevio.NoEstatus)
 
 
           //Aqui ira el proceso para tomar el primer ID del usuario verificador con el estatus 2 
@@ -760,7 +727,10 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             estatusPrevio.NoEstatus === "12" ? localStorage.getItem("IdUsuario") : ""
           );
 
-          console.log("stateTrazabilidad.IdPrimerUsuarioEstatus2", stateTrazabilidad.IdPrimerUsuarioEstatus2)
+
+  
+
+          console.log("stateTrazabilidad.IdPrimerUsuarioEstatus2: ", stateTrazabilidad.IdPrimerUsuarioEstatus2)
 
           // cambiaEstatus(
           //   estatusPrevio.ControlInterno === "inscripcion"
@@ -1643,7 +1613,8 @@ export async function GeneraAcuse(
         idRegistro,
         process.env.REACT_APP_APPLICATION_RUTA_ARCHIVOS + `/ACUSE/${idRegistro}`,
         new File([response.data], fileName), //new File([response.data], `Acuse-${oficio}.pdf`)
-        state.idAcuse
+        "fab3bd8a-d1f3-11ef-be73-c4346b72f0ba"
+        // state.idAcuse 
       );
     })
 

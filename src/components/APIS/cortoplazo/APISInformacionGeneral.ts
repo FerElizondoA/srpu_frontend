@@ -60,7 +60,6 @@ export function getSolicitudes(tipoListado: string, setState: Function, setState
       Authorization: localStorage.getItem("jwtToken") || "",
     },
   })
-
     .then(({ data }) => {
       const state = useTrazabilidad.getState()
       // console.log("data solicitudes", data);

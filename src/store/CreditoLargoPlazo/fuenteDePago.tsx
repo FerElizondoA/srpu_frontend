@@ -73,6 +73,7 @@ export interface FuenteDePagoLargoPlazoSlice {
   setTablaResumenMecanismoPago: (tablaResumenMecanismoPago: IDeudorInstrucciones[]) => void;
 
   tablaMecanismoVehiculoPago: IRegistro[];
+  cleanTablaMecanismoVehiculoPago: (tablaMecanismoVehiculoPago: IRegistro[]) => void;
   getMecanismosVehiculosPago: (tabla: string, setState: Function) => void;
 
   tipoMecanismoVehiculoPago: string;
@@ -118,6 +119,11 @@ export interface FuenteDePagoLargoPlazoSlice {
 export const createFuentePagoLargoPLazoSlice: StateCreator<
   FuenteDePagoLargoPlazoSlice
 > = (set, get) => ({
+
+  cleanTablaMecanismoVehiculoPago: () =>
+    set(() => ({
+      tablaMecanismoVehiculoPago: [],
+    })),
 
   getCatalogoClasificacion: async (setState: Function) => {
     await axios

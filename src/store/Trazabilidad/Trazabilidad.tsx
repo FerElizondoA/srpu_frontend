@@ -103,6 +103,7 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
       .then(({ data }) => {
 
         state.setIdPrimerUsuarioEstatus2(data.data);
+        console.log("Primer usuario con estatus 2: ", data.data);
 
       }).catch((error) => {
         console.log("Error al obtener el primer usuario con estatus 2", error);

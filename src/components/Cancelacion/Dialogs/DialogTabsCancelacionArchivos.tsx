@@ -29,6 +29,8 @@ import { DialogAsignacionResumen } from "../../ObligacionesCortoPlazoPage/Dialog
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { DialogSolicitarModificacionCancelacion } from "../../ObligacionesLargoPlazoPage/Dialog/DialogSolicitarModificacionCancelacion";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
+import { IDatosUsuarioCancelacion } from "../../../store/SolicitudFirma/solicitudFirma";
 
 export interface ICancelacionJustificaciones {
   Deleted: number;
@@ -90,6 +92,14 @@ export function TabsCancelacionArchivos({
     (state) => state.cleanCondicionFinanciera
   );
 
+  const usuarioIniciadoCanelacion: IDatosUsuarioCancelacion = useSolicitudFirmaStore(
+    (state) => state.usuarioIniciadoCanelacion
+  );
+
+  
+  const setUsuarioIniciadoCancelacion: Function = useSolicitudFirmaStore(
+    (state) => state.setUsuarioIniciadoCancelacion
+  );
 
 
 
@@ -169,7 +179,7 @@ export function TabsCancelacionArchivos({
     (state) => state.getDetalleInfoUsuario
   );
 
-  console.log("Inscripcion selected in Cancelaciones:", inscripcion);
+  console.log("Inscripcion selected in Cancelaciones:", inscripcion.CancelacionInciadoPor);
 
 
   useEffect(() => {
@@ -204,13 +214,10 @@ export function TabsCancelacionArchivos({
 
   useEffect(() => {
     getDetalleInfoUsuario(rowSolicitud.CancelacionInciadoPor, setDatosUsuarioCancelacion);
-    console.log("rowSolicitud.CancelacionInciadoPor", rowSolicitud.CancelacionInciadoPor);
-
   }, [])
 
   useEffect(() => {
     getPathDocumentosCancelacion(inscripcion.Id, setArchivos);
-    console.log("inscripcion en archivos", rowSolicitud);
   }, [])
 
 
@@ -241,7 +248,7 @@ export function TabsCancelacionArchivos({
           sx={{
             display: "flex",
             alignItems: "center",
-            width: "40%",
+            width: "100%",
             justifyContent:
               // inscripcion.NoEstatus !== "11" ? "space-around" :
               "flex-start",
@@ -308,11 +315,11 @@ export function TabsCancelacionArchivos({
             sx={{
               width: "100%",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <Grid>
+            <Grid ml={2}>
               <Tabs
                 value={tabIndex}
                 onChange={handleChange}
@@ -326,26 +333,31 @@ export function TabsCancelacionArchivos({
                 <Tab label="Solicitud de Cancelación" sx={{ ...queries.bold_text_Largo_Plazo }} />
               </Tabs>
             </Grid>
+
+
             <Grid>
               {
                 (rowSolicitud.NoEstatus === "13" && (localStorage.getItem("Rol") === "Validador" || localStorage.getItem("Rol") === "Autorizador"))
 
                   ?
-                  <ThemeProvider theme={buttonTheme}>
-                    <Button
-                      //disabled={compararComentarios(comentarios, botonVolverFiltro)}
-                      sx={{
-                        ...queries.buttonCancelar,
-                        fontSize: "50%",
-                      }}
-                      onClick={() => {
+                  <Grid container width={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"} >
+                    <ThemeProvider theme={buttonTheme}>
+                      <Button
+                        //disabled={compararComentarios(comentarios, botonVolverFiltro)}
+                        sx={{
+                          ...queries.buttonCancelar,
+                          fontSize: "50%",
+                        }}
+                        onClick={() => {
 
-                        setOpenDialogEnviar(true);
-                      }}
-                    >
-                      Asignar Revisor
-                    </Button>
-                  </ThemeProvider>
+                          setOpenDialogEnviar(true);
+                        }}
+                      >
+                        Asignar Revisor
+                      </Button>
+                    </ThemeProvider>
+                  </Grid>
+
 
                   : null
 
@@ -530,6 +542,7 @@ export function TabsCancelacionArchivos({
           arr={arr}
           CancelacionInciadoPor={datosUsuarioCancelacion}
           cargados={cargados}
+          datosUsuarioCancelacion={datosUsuarioCancelacion}
         />}
 
 

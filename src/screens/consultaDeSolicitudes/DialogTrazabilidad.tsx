@@ -113,7 +113,7 @@ export function DialogTrazabilidad(props: Props) {
             justifyContent: "center",
           }}
         >
-          Historial de la solicitud hola
+          Historial de la solicitud
         </Typography>
       </DialogTitle>
 

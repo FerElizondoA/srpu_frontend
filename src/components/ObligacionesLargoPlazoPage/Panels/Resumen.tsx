@@ -603,7 +603,8 @@ export function Resumen({
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center" }} key={index}>
-                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) 
+                && localStorage.getItem("Rol") === "Revisor")) && (
 
                   <BotonComentario
                     apartado={head.label}
