@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Button, Dialog, Grid, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -37,7 +37,7 @@ export function ComentarioApartado({
 }) {
   const [coment, setComent] = useState({ Apartado: "", Comentario: "" });
 
-  const comentario: any = useLargoPlazoStore((state) => state.comentarios);
+  const comentariosZustand: any = useLargoPlazoStore((state) => state.comentarios);
 
   const newComentario: Function = useLargoPlazoStore(
     (state) => state.newComentario
@@ -89,7 +89,7 @@ export function ComentarioApartado({
 
     setComent({
       Apartado: openState.apartado,
-      Comentario: "",
+      Comentario: comentariosZustand[openState.apartado],
     });
 
   }, [openState.apartado, comentariosBD]);
@@ -106,87 +106,257 @@ export function ComentarioApartado({
   // }, [openState.apartado]);
 
   return (
-    <Dialog
-      fullWidth
-      open={openState.open || false}
-      keepMounted
-      onClose={() => {
-        setOpen(false);
-      }}
-    >
-      <DialogTitle sx={{ color: "#AF8C55" }}>
-        Comentario: <strong>{openState.apartado}</strong>
-      </DialogTitle>
-
-      <DialogContent>
-        {/* <Typography sx={{ display: "flex", justifyContent: "center" }}>
-          {comentario[openState.apartado] || ""}
-        </Typography> */}
-        <TextField
-          // label="Nuevo comentario"
-          label={
-            comentario[openState.apartado]
-              ? "Editar comentario"
-              : "Nuevo comentario"
-          }
-          sx={{ width: "100%", mt: 2 }}
-          value={coment.Comentario}
-          //disabled={reestructura === "con autorizacion"}
-          onChange={(v) => {
-            setComent({
-              Comentario: v.target.value
-                .replaceAll(/[^\w\s]/gi, "")
-                .replaceAll("\n", ""),
-              Apartado: openState.apartado,
-            });
-            // setComent({
-            //   Comentario: v.target.value,
-            //   Apartado: openState.apartado,
-            // });
-          }}
-          multiline
-          rows={2}
-        />
-      </DialogContent>
-
-      <DialogActions>
-        {comentario[openState.apartado] !== "" ? (
-          <Button
-            sx={queries.buttonCancelar}
-            //disabled={reestructura === "con autorizacion"}
-            onClick={() => {
-              removeComentario(openState.apartado);
-              setOpen(false);
-            }}
-          >
-            Eliminar comentario
-          </Button>
-        ) : null}
-        <Button
-          sx={queries.buttonCancelar}
-          //disabled={reestructura}
-          onClick={() => {
-            setComent({ Comentario: "", Apartado: "" });
+        <Dialog
+          fullWidth
+          open={openState.open || false}
+          keepMounted
+          onClose={() => {
             setOpen(false);
           }}
         >
-          Cancelar
-        </Button>
-        <ThemeProvider theme={theme}>
-          <Button
-            sx={queries.buttonContinuar}
-            // disabled={coment.Comentario==="" || coment.Comentario===undefined}
-            onClick={() => {
-              newComentario(coment, openState.tab);
-              setComent({ Comentario: "", Apartado: "" });
-              setOpen(false);
-              console.log("coment.comentario", coment)
-            }}
-          >
-            Aceptar
-          </Button>
-        </ThemeProvider>
-      </DialogActions>
-    </Dialog>
+          <DialogTitle sx={{ color: "#AF8C55" }}>
+            Comentario: <strong>{openState.apartado}</strong>
+          </DialogTitle>
+    
+          <DialogContent>
+    
+            {comentariosPrevios.length > 0 && (
+              <Grid sx={{ width: "100%", mt: 2, height: "15rem", overflowY: "auto" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, mb: 2 }}
+                >
+                  Comentarios asignados
+                </Typography>
+    
+                {comentariosPrevios.map((item, index) => (
+                  <Grid
+                    key={index}
+                    sx={{
+                      mb: 2,
+                      p: 2,
+                      borderRadius: 2,
+                      backgroundColor: "#f5f5f5",
+                      border: "1px solid #e0e0e0",
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                      {item.usuario} • {item.fecha}
+                    </Typography>
+    
+                    <Typography
+                      variant="body2"
+                      sx={{ whiteSpace: "pre-line", mt: 1 }}
+                    >
+                      {item.comentario}
+                    </Typography>
+                  </Grid>
+                  // <Grid
+                  //   key={index}
+                  //   sx={{
+                  //     mb: 2,
+                  //     p: 2,
+                  //     borderRadius: 2,
+                  //     backgroundColor: "#f5f5f5",
+                  //     border: "1px solid #e0e0e0",
+                  //   }}
+                  // >
+                  //   <Typography
+                  //     variant="body2"
+                  //     sx={{ whiteSpace: "pre-line" }}
+                  //   >
+                  //     {comentario}
+                  //   </Typography>
+                  // </Grid>
+                ))}
+              </Grid>
+            )}
+    
+            {comentariosZustand[openState.apartado] && (
+              <Grid sx={{ width: "100%", mt: 3 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, mb: 2 }}
+                >
+                  Comentario agregado
+                </Typography>
+    
+                <Grid
+                  sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    backgroundColor: "#e3f2fd",
+                    border: "1px solid #90caf9",
+                  }}
+                >
+                  <Typography variant="body2">
+                    {comentariosZustand[openState.apartado]}
+                  </Typography>
+                </Grid>
+              </Grid>
+            )}
+    
+    
+    
+            <TextField
+              label={
+                comentariosZustand[openState.apartado]
+                  ? "Editar comentario"
+                  : "Nuevo comentario"
+              }
+              sx={{ width: "100%", mt: 2 }}
+              value={coment.Comentario || ""}
+              onChange={(v) => {
+                setComent({
+                  Comentario: v.target.value
+                    .replaceAll(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s]/g, "")
+                    .replaceAll(/\n/g, ""),
+                  Apartado: openState.apartado,
+                });
+              }}
+              multiline
+            />
+    
+            {/* <TextField
+              label={
+                coment.Comentario !== ""
+                  ? "Editar comentario"
+                  : "Sin comentarios previos"
+              }
+              sx={{ width: "100%", mt: 2 }}
+              value={coment.Comentario || ""}
+              onChange={(v) => {
+                setComent({
+                  Comentario: v.target.value
+                    .replaceAll(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s]/g, "")
+                    .replaceAll(/\n/g, ""),
+                  Apartado: openState.apartado,
+                });
+              }}
+              multiline
+            /> */}
+          </DialogContent>
+    
+          <DialogActions>
+            {comentariosZustand[openState.apartado] !== "" ? (
+    
+              <Button
+                sx={queries.buttonCancelar}
+                onClick={() => {
+                  removeComentario(openState.apartado);
+                  setOpen(false);
+                }}
+              >
+                Eliminar comentario
+              </Button>
+            ) : null}
+            <Button
+              sx={queries.buttonCancelar}
+              onClick={() => {
+                setComent({ Comentario: "", Apartado: "" });
+                setOpen(false);
+              }}
+            >
+              Cancelar
+            </Button>
+    
+            <ThemeProvider theme={theme}>
+              <Button
+                disabled={coment.Comentario === ""}
+                sx={queries.buttonContinuar}
+                onClick={() => {
+                  newComentario(coment, openState.tab);
+                  setComent({ Comentario: "", Apartado: "" });
+                  setOpen(false);
+                }}
+              >
+                Aceptar
+              </Button>
+            </ThemeProvider>
+    
+          </DialogActions>
+        </Dialog>
+    // <Dialog
+    //   fullWidth
+    //   open={openState.open || false}
+    //   keepMounted
+    //   onClose={() => {
+    //     setOpen(false);
+    //   }}
+    // >
+    //   <DialogTitle sx={{ color: "#AF8C55" }}>
+    //     Comentario: <strong>{openState.apartado}</strong>
+    //   </DialogTitle>
+
+    //   <DialogContent>
+    //     {/* <Typography sx={{ display: "flex", justifyContent: "center" }}>
+    //       {comentario[openState.apartado] || ""}
+    //     </Typography> */}
+    //     <TextField
+    //       // label="Nuevo comentario"
+    //       label={
+    //         comentario[openState.apartado]
+    //           ? "Editar comentario"
+    //           : "Nuevo comentario"
+    //       }
+    //       sx={{ width: "100%", mt: 2 }}
+    //       value={coment.Comentario}
+    //       //disabled={reestructura === "con autorizacion"}
+    //       onChange={(v) => {
+    //         setComent({
+    //           Comentario: v.target.value
+    //             .replaceAll(/[^\w\s]/gi, "")
+    //             .replaceAll("\n", ""),
+    //           Apartado: openState.apartado,
+    //         });
+    //         // setComent({
+    //         //   Comentario: v.target.value,
+    //         //   Apartado: openState.apartado,
+    //         // });
+    //       }}
+    //       multiline
+    //       rows={2}
+    //     />
+    //   </DialogContent>
+
+    //   <DialogActions>
+    //     {comentario[openState.apartado] !== "" ? (
+    //       <Button
+    //         sx={queries.buttonCancelar}
+    //         //disabled={reestructura === "con autorizacion"}
+    //         onClick={() => {
+    //           removeComentario(openState.apartado);
+    //           setOpen(false);
+    //         }}
+    //       >
+    //         Eliminar comentario
+    //       </Button>
+    //     ) : null}
+    //     <Button
+    //       sx={queries.buttonCancelar}
+    //       //disabled={reestructura}
+    //       onClick={() => {
+    //         setComent({ Comentario: "", Apartado: "" });
+    //         setOpen(false);
+    //       }}
+    //     >
+    //       Cancelar
+    //     </Button>
+    //     <ThemeProvider theme={theme}>
+    //       <Button
+    //         sx={queries.buttonContinuar}
+    //         // disabled={coment.Comentario==="" || coment.Comentario===undefined}
+    //         onClick={() => {
+    //           newComentario(coment, openState.tab);
+    //           setComent({ Comentario: "", Apartado: "" });
+    //           setOpen(false);
+    //           console.log("coment.comentario", coment)
+    //         }}
+    //       >
+    //         Aceptar
+    //       </Button>
+    //     </ThemeProvider>
+    //   </DialogActions>
+    // </Dialog>
   );
 }

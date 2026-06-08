@@ -31,6 +31,8 @@ import { DialogSolicitarModificacion } from "../Dialog/DialogSolicitarModificaci
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { useReestructuraStore } from "../../../store/Reestructura/main";
 import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
+import { IFile } from "./Documentacion";
+import { Autorizacion } from "./Autorizacion";
 
 interface Head {
   label: string;
@@ -77,6 +79,10 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
   );
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
+  const comentarios: any = useLargoPlazoStore((state) => state.comentarios);
+
+
+
   useEffect(() => {
     getReglas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,6 +103,10 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
         Denominacion: state.informacionGeneral.denominacion,
         InstitucionFinanciera:
           state.informacionGeneral.institucionFinanciera.Descripcion,
+        tablaAsignarFuenteNew: state.tablaAsignarFuenteNew,
+        Autorizacion: state.autorizacionSelect,
+        tablaGastosCostos: state.tablaGastosCostos,
+        Documentacion: state.tablaDocumentos
       };
 
       let importe = "$ 0.00";
@@ -150,16 +160,59 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
       //     }
       //   });
       // }
+
+
+      //mODIFICACION VALIDACIONES
+      // if (solicitud.tablaAsignarFuenteNew === undefined || solicitud.tablaAsignarFuenteNew.length === 0) {
+      //   err = 1;
+      //   errores.push("Sección Tabla Asignación Fuente: Debe asignar al menos una fuente de pago.");
+      // }
+      //   if (
+      //     solicitud.PlazoDias === undefined ||
+      //     solicitud.PlazoDias === 0 ||
+      //     /^[\s]*$/.test(solicitud.PlazoDias)
+      //   ) {
+      //     err = 1;
+      //     errores.push(
+      //       "Sección Información General: El Plazo a Días no puede ser  0."
+      //     );
+      //   }
+
       if (
-        solicitud.PlazoDias === undefined ||
-        solicitud.PlazoDias === 0 ||
-        /^[\s]*$/.test(solicitud.PlazoDias)
+        !solicitud.tablaAsignarFuenteNew ||
+        solicitud.tablaAsignarFuenteNew.length === 0
       ) {
         err = 1;
-        errores.push(
-          "Sección Información General: El Plazo a Días no puede ser  0."
-        );
+        errores.push("Sección Tabla Asignación Fuente: Debe asignar al menos una fuente de pago.");
+      } else {
+        const hayInvalidos = solicitud.tablaAsignarFuenteNew.some((item: any) => {
+          const valor = Number(item.AfectadoTotalIngreso || 0);
+          return valor <= 0;
+        });
+
+        if (hayInvalidos) {
+          err = 1;
+          errores.push(
+            "Sección Tabla Asignación Fuente: Todos los registros deben tener un ingreso mayor a 0."
+          );
+        }
       }
+      if (
+        solicitud.Autorizacion.Id === "" ||
+        solicitud.Autorizacion.Id === undefined
+      ) {
+        err = 1;
+        errores.push("Sección Autorización: Debe asignar una Autorización.");
+      }
+      if (
+        solicitud.tablaGastosCostos.length === 0 ||
+        solicitud.tablaGastosCostos.length === undefined
+      ) {
+        err = 1;
+        errores.push("Sección Gastos y Costos: Debe asignar al menos un gasto o costo.");
+      }
+
+
 
       if (
         solicitud.MontoOriginalContratado === undefined ||
@@ -275,6 +328,18 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
         );
       }
 
+      //**  VUELVELO A POENER BIEN **/
+      // const faltaDocumento = solicitud.Documentacion.some(
+      //   (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      // );
+
+      // if (faltaDocumento) {
+      //   err = 1;
+      //   errores.push(
+      //     "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+      //   );
+      // }
+
       if (err === 0) {
         setOpenDialogEnviar(!openDialogEnviar);
       } else {
@@ -324,6 +389,18 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
           "Sección Información General:Seleccione la Institución Financiera."
         );
       }
+      // //**  VUELVELO A POENER BIEN **/
+      // const faltaDocumento = solicitud.Documentacion.some(
+      //   (doc: IFile) => (doc.nombreArchivo === undefined || doc.nombreArchivo === "")
+      // );
+
+      // if (faltaDocumento) {
+      //   err = 1;
+      //   errores.push(
+      //     "Sección Documentación: Favor de cargar su archivo respectivo en todos los registros obligatorios."
+      //   );
+      // }
+
       if (err === 0) {
         setOpenDialogModificacion(!openDialogModificacion);
       } else {
@@ -632,24 +709,27 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
                     ) : null}
 
 
-
-                    <Grid
-                      mb={2}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                    >
-                      <Button
-                        sx={queries.buttonContinuarSolicitudInscripcion}
-                        onClick={() => {
-                          infoValidaciones("Enviar");
-                        }}
+                    {Object.keys(comentarios).length > 0 && localStorage.getItem("Rol") === "Verificador"
+                      ? null
+                      : <Grid
+                        mb={2}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
                       >
-                        {localStorage.getItem("Rol") === "Verificador"
-                          ? "Finalizar"
-                          : "Enviar"}
-                      </Button>
-                    </Grid>
+                        <Button
+                          sx={queries.buttonContinuarSolicitudInscripcion}
+                          onClick={() => {
+                            infoValidaciones("Enviar");
+                          }}
+                        >
+                          {localStorage.getItem("Rol") === "Verificador"
+                            ? "Finalizar"
+                            : "Enviar"}
+                        </Button>
+                      </Grid>
+
+                    }
 
                     {openDialogBorrador && (
                       <DialogGuardarBorrador

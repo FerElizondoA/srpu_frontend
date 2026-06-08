@@ -77,7 +77,7 @@ export function ObligacionesCortoPlazoPage() {
 
   useEffect(() => {
     if (inscripcion.Id !== "") {
-      getComentariosSolicitudPlazo(inscripcion.Id,  () => { });
+      getComentariosSolicitudPlazo(inscripcion.Id, () => { });
     }
   }, [inscripcion.Id]);
 
@@ -106,7 +106,7 @@ export function ObligacionesCortoPlazoPage() {
           display={"flex"}
           width={"100%"}
           justifyContent={
-             "space-evenly"
+            "space-evenly"
           }
         >
           {inscripcion.NumeroRegistro && (
@@ -126,10 +126,11 @@ export function ObligacionesCortoPlazoPage() {
             </Grid>
           )}
           <Grid
-            mr={3}
+            // mr={3}
+            ml={!inscripcion.NumeroRegistro ? 8 : undefined}
             width={
               !inscripcion.NumeroRegistro
-                ? "50%"
+                ? "90%"
                 : query.isTittle
                   ? "60%"
                   : "30%"
@@ -137,7 +138,7 @@ export function ObligacionesCortoPlazoPage() {
             display={"flex"}
             justifyContent={
               !inscripcion.NumeroRegistro
-                ? "end"
+                ? "center"
                 : query.isTittle
                   ? "center"
                   : "center"
@@ -157,23 +158,26 @@ export function ObligacionesCortoPlazoPage() {
 
           <Grid container
             width={
-              !inscripcion.NumeroRegistro ? "20%" : query.isTittle ? "10%" : "20%"
+              !inscripcion.NumeroRegistro ? "5%" : query.isTittle ? "10%" : "20%"
             }
             display={"flex"}
             justifyContent={"space-evenly"}
             alignItems={"center"}
           >
-            <Button
-              sx={{ ...queries.buttonContinuar }}
-              onClick={() => {
-                changeOpenVerComentarios(!openVerComentarios);
-              }}
-            >
+            {inscripcion.NumeroRegistro && (
+              <Button
+                sx={{ ...queries.buttonContinuar }}
+                onClick={() => {
+                  changeOpenVerComentarios(!openVerComentarios);
+                }}
+              >
 
-              Ver Comentarios
-            </Button>
+                Ver Comentarios
+              </Button>
+            )}
+
             <Button
-              sx={{ ...queries.buttonContinuar }}
+              sx={{ ...queries.buttonContinuar}}
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
               }}

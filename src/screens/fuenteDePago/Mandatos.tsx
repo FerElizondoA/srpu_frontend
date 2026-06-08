@@ -136,6 +136,10 @@ export function Mandatos() {
   const tablaMecanismoVehiculoPago: IRegistro[] = useLargoPlazoStore(
     (state) => state.tablaMecanismoVehiculoPago
   );
+
+    const cleanTablaMecanismoVehiculoPago: Function = useLargoPlazoStore(
+    (state) => state.cleanTablaMecanismoVehiculoPago
+  );
   const [mandatos, setMandatos] = useState<IDatosMandatos[]>([]);
 
 
@@ -144,7 +148,9 @@ export function Mandatos() {
 
 
   useEffect(() => {
-    getMecanismosVehiculosPago("Mandato", () => { })
+    cleanTablaMecanismoVehiculoPago()
+
+    //  getMecanismosVehiculosPago("Mandato", () => { })
     getOrganismos();
 
     //getMandatos(setMandatos);

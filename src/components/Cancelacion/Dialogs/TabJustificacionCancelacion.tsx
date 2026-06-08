@@ -40,12 +40,14 @@ export function TabJustificacionCancelacion({
   DetailPathCancelaciones,
   arr,
   CancelacionInciadoPor,
-  cargados
+  cargados,
+  datosUsuarioCancelacion
 }: {
   DetailPathCancelaciones?: ICancelacionJustificaciones[];
   arr: IFileCancelaciones[];
   CancelacionInciadoPor: IUsuarioCancelacion
   cargados: boolean;
+  datosUsuarioCancelacion: IUsuarioCancelacion
 }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
   const [fileSelected, setFileSelected] = useState<any>("");
@@ -60,8 +62,8 @@ export function TabJustificacionCancelacion({
     },
     {
       label: "Usuario Solicitante",
-      //value: "JOSÉ V. PÉREZ ALONSO"
-      value: DetailPathCancelaciones?.[0]?.FechaCreacion !== undefined ?CancelacionInciadoPor.Nombre + " " + CancelacionInciadoPor.ApellidoPaterno + " " + CancelacionInciadoPor.ApellidoMaterno : "No iniciado el proceso",
+     // value: "Iris Lechuga Verificador"
+      value: datosUsuarioCancelacion?.Nombre ? datosUsuarioCancelacion.Nombre + " " + datosUsuarioCancelacion.ApellidoPaterno + " " + datosUsuarioCancelacion.ApellidoMaterno : "No iniciado el proceso",
     },
     {
       label: "Acreditación de la cancelación",

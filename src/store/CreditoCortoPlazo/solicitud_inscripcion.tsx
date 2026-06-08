@@ -651,7 +651,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
           Ruta: Ruta,
           NombreIdentificador: NombreIdentificador,
           NombreArchivo: NombreArchivo,
-          TpoDoc: TpoDoc //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
+          TpoDoc: acuse === "" ? TpoDoc : acuse  //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
           // TpoDoc: state.idAcuse //COMO SE TRAEN LOS ARCHIVOS?!??????? SINO JALA 
         },
         {
@@ -662,6 +662,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
       )
       .then((r) => {
         console.log("r: ", r.data);
+        acuse = ""
 
         //saveFiles("", Ruta);
       })

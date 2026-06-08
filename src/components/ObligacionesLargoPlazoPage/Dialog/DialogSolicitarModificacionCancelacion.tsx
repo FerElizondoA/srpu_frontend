@@ -17,12 +17,13 @@ import { useNavigate } from "react-router-dom";
 import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
-import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import { CambiaEstatus, IDatosUsuarioCancelacion } from "../../../store/SolicitudFirma/solicitudFirma";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../../generics/Alertas";
 import { clear } from "@testing-library/user-event/dist/clear";
+import { useSolicitudFirmaStore } from "../../../store/SolicitudFirma/main";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -94,6 +95,16 @@ export function DialogSolicitarModificacionCancelacion({
     (state) => state.cleanCondicionFinanciera
   );
 
+    const usuarioIniciadoCanelacion: IDatosUsuarioCancelacion = useSolicitudFirmaStore(
+      (state) => state.usuarioIniciadoCanelacion
+    );
+  
+    
+    const setUsuarioIniciadoCancelacion: Function = useSolicitudFirmaStore(
+      (state) => state.setUsuarioIniciadoCancelacion
+    );
+  
+
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -119,7 +130,7 @@ export function DialogSolicitarModificacionCancelacion({
             ? "15"
             : (localStorage.getItem("Rol") === "Validador" && accion === "enviar")
               ? "16"
-              : "", //////Revisarlo alv fer
+              : "15", //////Revisarlo alv fer
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador"
           ? localStorage.getItem("IdUsuario")!
@@ -430,6 +441,9 @@ export function DialogSolicitarModificacionCancelacion({
           variant="text"
           sx={queries.buttonContinuar}
           onClick={() => {
+            // setUsuarioIniciadoCancelacion({
+              
+            // })
             checkform();
           }}
         >

@@ -38,7 +38,6 @@ export interface IInscripcion {
   IdPathDoc?: string;
   CountReestructuras?: string;
   CancelacionInciadoPor?: string;
-
 }
 
 export interface ICredito {
@@ -551,7 +550,9 @@ export const createInscripcionSlice: StateCreator<InscripcionSlice> = (
     return await axios({
       method: "get",
       url: process.env.REACT_APP_APPLICATION_BACK + "/detail-usuario",
-      params: { IdUsuario: Id },
+      params: { 
+        IdUsuario: Id
+       },
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("jwtToken") || "",
