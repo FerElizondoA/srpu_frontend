@@ -73,6 +73,9 @@ const heads: Head[] = [
   {
     label: "Ente público obligado",
   },
+  {
+    label: "Prelación/Porcentaje",
+  },
 ];
 
 const headsCondiciones: Head[] = [
@@ -93,6 +96,9 @@ const headsCondiciones: Head[] = [
   },
   {
     label: "Comisiones",
+  },
+   {
+    label: "Periodo de Gracia",
   },
 ];
 
@@ -348,7 +354,7 @@ export function Resumen({
     const boton = (
       <Tooltip title="Añadir comentario a este apartado">
         <IconButton
-          size="small" 
+          size="small"
           onClick={() => {
             setOpenComentarioApartado({
               open: true,
@@ -437,21 +443,21 @@ export function Resumen({
             <Divider color="lightGrey"></Divider>
             {encabezado.map((head, index) => (
               <Grid sx={{ display: "flex", alignItems: "center", mt: 2 }} key={index}>
-                {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
-                localStorage.getItem("Rol") === "Revisor")) && (
+                {(activaAccion || (activacionComentariosRevisor.includes(estatus) &&
+                  localStorage.getItem("Rol") === "Revisor")) && (
 
-                  <BotonComentario
-                    apartado={head.label}
-                    tab="TabEncabezado"
-                    activaAccion={activaAccion}
-                    estatus={estatus}
-                    activacionComentariosRevisor={activacionComentariosRevisor}
-                    comentarios={comentarios}
-                    comentariosBDMap={comentariosBDMap}
-                    setOpenComentarioApartado={setOpenComentarioApartado}
-                  />
+                    <BotonComentario
+                      apartado={head.label}
+                      tab="TabEncabezado"
+                      activaAccion={activaAccion}
+                      estatus={estatus}
+                      activacionComentariosRevisor={activacionComentariosRevisor}
+                      comentarios={comentarios}
+                      comentariosBDMap={comentariosBDMap}
+                      setOpenComentarioApartado={setOpenComentarioApartado}
+                    />
 
-                )}
+                  )}
                 <Typography sx={{ ...queries.medium_text, mb: 2, ml: 2 }}>
                   <strong>{head.label}: </strong>
                   {head.label.includes("Fecha")
@@ -479,22 +485,22 @@ export function Resumen({
             {infoGeneral.map((head, index) => {
 
               return (
-                <Grid sx={{ display: "flex", alignItems: "center", mt: 2 }} 
-                key={index}>
-                  {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
-                  localStorage.getItem("Rol") === "Revisor")) && (
-                    
-                    <BotonComentario
-                      apartado={head.label}
-                      tab="TabInformaciónGeneral"
-                      activaAccion={activaAccion}
-                      estatus={estatus}
-                      activacionComentariosRevisor={activacionComentariosRevisor}
-                      comentarios={comentarios}
-                      comentariosBDMap={comentariosBDMap}
-                      setOpenComentarioApartado={setOpenComentarioApartado}
-                    />
-                  )}
+                <Grid sx={{ display: "flex", alignItems: "center", mt: 2 }}
+                  key={index}>
+                  {(activaAccion || (activacionComentariosRevisor.includes(estatus) &&
+                    localStorage.getItem("Rol") === "Revisor")) && (
+
+                      <BotonComentario
+                        apartado={head.label}
+                        tab="TabInformaciónGeneral"
+                        activaAccion={activaAccion}
+                        estatus={estatus}
+                        activacionComentariosRevisor={activacionComentariosRevisor}
+                        comentarios={comentarios}
+                        comentariosBDMap={comentariosBDMap}
+                        setOpenComentarioApartado={setOpenComentarioApartado}
+                      />
+                    )}
 
                   <Typography sx={{ ...queries.medium_text, mb: 2, ml: 2 }}>
                     <strong>{head.label}: </strong>
@@ -509,42 +515,42 @@ export function Resumen({
 
           <Grid item display="flex" height={350} mt={2} mb={2} width={"100%"}>
             <Grid mt={2} mr={2}>
-              {(activaAccion || (activacionComentariosRevisor.includes(estatus) && 
-              localStorage.getItem("Rol") === "Revisor")) && (
-                <BotonComentario
-                  apartado="Tabla Obligado Solidario / Aval"
-                  tab="TabInformaciónGeneral"
-                  activaAccion={activaAccion}
-                  estatus={estatus}
-                  activacionComentariosRevisor={activacionComentariosRevisor}
-                  comentarios={comentarios}
-                  comentariosBDMap={comentariosBDMap}
-                  setOpenComentarioApartado={setOpenComentarioApartado}
-                />
+              {(activaAccion || (activacionComentariosRevisor.includes(estatus) &&
+                localStorage.getItem("Rol") === "Revisor")) && (
+                  <BotonComentario
+                    apartado="Tabla Obligado Solidario / Aval"
+                    tab="TabInformaciónGeneral"
+                    activaAccion={activaAccion}
+                    estatus={estatus}
+                    activacionComentariosRevisor={activacionComentariosRevisor}
+                    comentarios={comentarios}
+                    comentariosBDMap={comentariosBDMap}
+                    setOpenComentarioApartado={setOpenComentarioApartado}
+                  />
 
 
-                // <Tooltip title="Añadir comentario a este apartado">
-                //   <IconButton
-                //     color={
-                //       comentarios["Tabla Obligado Solidario / Aval"] || tieneComentariosPrevios("Tabla Obligado Solidario / Aval")
-                //         ? // ||
-                //         // comentariosRegistro["Tabla Obligado Solidario / Aval"]
-                //         "success"
-                //         : "primary"
-                //     }
-                //     size="small"
-                //     onClick={() => {
-                //       setOpenComentarioApartado({
-                //         open: true,
-                //         apartado: "Tabla Obligado Solidario / Aval",
-                //         tab: "TabInformaciónGeneral",
-                //       });
-                //     }}
-                //   >
-                //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                //   </IconButton>
-                // </Tooltip>
-              )}
+                  // <Tooltip title="Añadir comentario a este apartado">
+                  //   <IconButton
+                  //     color={
+                  //       comentarios["Tabla Obligado Solidario / Aval"] || tieneComentariosPrevios("Tabla Obligado Solidario / Aval")
+                  //         ? // ||
+                  //         // comentariosRegistro["Tabla Obligado Solidario / Aval"]
+                  //         "success"
+                  //         : "primary"
+                  //     }
+                  //     size="small"
+                  //     onClick={() => {
+                  //       setOpenComentarioApartado({
+                  //         open: true,
+                  //         apartado: "Tabla Obligado Solidario / Aval",
+                  //         tab: "TabInformaciónGeneral",
+                  //       });
+                  //     }}
+                  //   >
+                  //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
+                  //   </IconButton>
+                  // </Tooltip>
+                )}
             </Grid>
 
             <Paper sx={{ width: "96%" }}>
@@ -570,7 +576,7 @@ export function Resumen({
                     <TableHead>
                       <TableRow>
                         {heads.map((head, index) => (
-                          <StyledTableCell key={index}>
+                          <StyledTableCell key={index} align="center">
                             {head.label}
                           </StyledTableCell>
                         ))}
@@ -581,11 +587,14 @@ export function Resumen({
                       {tablaObligados.map((row: any, index: number) => {
                         return (
                           <StyledTableRow key={index}>
-                            <StyledTableCell component="th">
+                            <StyledTableCell component="th" align="center">
                               {row.tipoEntePublicoObligado}
                             </StyledTableCell>
-                            <StyledTableCell component="th">
+                            <StyledTableCell component="th" align="center">
                               {row.entePublicoObligado}
+                            </StyledTableCell>
+                            <StyledTableCell component="th" align="center">
+                              {row.prelacionPorcentaje}%
                             </StyledTableCell>
                           </StyledTableRow>
                         );
@@ -608,11 +617,19 @@ export function Resumen({
                       <StyledTableRow>
                         <StyledTableCell component="th" align="left">
                           <Typography sx={{ padding: "1px 4px 1px 45px" }}>
+                          
+                          </Typography>
+                        </StyledTableCell>
+                        <StyledTableCell component="th" align="left">
+                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
                             NO APLICA
                           </Typography>
                         </StyledTableCell>
-
-                        <StyledTableCell component="th"></StyledTableCell>
+                        <StyledTableCell component="th" align="left">
+                          <Typography sx={{ padding: "1px 4px 1px 45px" }}>
+                            
+                          </Typography>
+                        </StyledTableCell>
                       </StyledTableRow>
                     </TableBody>
                   </Table>
@@ -689,7 +706,7 @@ export function Resumen({
                       <TableHead>
                         <TableRow>
                           {headsCondiciones.map((head, index) => (
-                            <StyledTableCell key={index}>
+                            <StyledTableCell key={index} align="center">
                               <TableSortLabel>{head.label}</TableSortLabel>
                             </StyledTableCell>
                           ))}
@@ -702,7 +719,7 @@ export function Resumen({
                               <StyledTableCell align="center">
                                 <Button
                                   onClick={() => {
-                                    setRowDisposicion(row.disposicion);
+                                    setRowTasa(row.tasaInteres);
                                     setOpenDisposicion(true);
                                   }}
                                 >
@@ -747,6 +764,10 @@ export function Resumen({
                                   <InfoOutlinedIcon />
                                 </Button>
                               </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {row.pagosDeCapital.periodoGracia === true ? "Aplica" : "N/A"} 
+                              </StyledTableCell>
                             </StyledTableRow>
                           );
                         })}
@@ -760,19 +781,25 @@ export function Resumen({
                         maxWidth={"lg"}
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenTasa(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+
+                          <Grid display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>
+                              Tasa de Interés
+                            </Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenTasa(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
@@ -797,6 +824,7 @@ export function Resumen({
                                       <StyledTableCell
                                         component="th"
                                         scope="row"
+                                        align="center"
                                       >
                                         {lightFormat(
                                           new Date(row.fechaPrimerPago),
@@ -832,33 +860,38 @@ export function Resumen({
                         onClose={() => {
                           setOpenComision(false);
                         }}
-                        maxWidth={"lg"}
+                        maxWidth={"xl"}
+
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenComision(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          <Grid container display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>Comisiones</Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenComision(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
+
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
                         >
-                          <TableContainer sx={{ maxHeight: "400px" }}>
+                          <TableContainer sx={{ maxHeight: "400px", whidth: "35rem" }}>
                             <Table>
-                              <TableHead sx={{ maxHeight: "200px" }}>
+                              <TableHead sx={{ maxHeight: "200px", whidth: "35rem" }}>
                                 <TableRow>
                                   {headsComision.map((head, index) => (
-                                    <StyledTableCell key={index}>
-                                      <TableSortLabel>
+                                    <StyledTableCell key={index} >
+                                      <TableSortLabel >
                                         {head.label}
                                       </TableSortLabel>
                                     </StyledTableCell>
@@ -875,6 +908,15 @@ export function Resumen({
                                       >
                                         {row.tipoDeComision?.Descripcion || "N/A"}
                                       </StyledTableCell>
+
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                        align="center"
+                                      >
+                                        {row.tipoDeComision?.detallOtrasComisiones || "N/A"}
+                                      </StyledTableCell>
+
                                       <StyledTableCell align="center">
                                         {row?.fechaComision !== "N/A"
                                           ? format(new Date(row?.fechaComision), "dd/MM/yyyy")
@@ -883,6 +925,15 @@ export function Resumen({
                                       <StyledTableCell align="center">
                                         {row.periodicidadDePago?.Descripcion || "N/A"}
                                       </StyledTableCell>
+
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                        align="center"
+                                      >
+                                        {row.periodicidadDePago?.detallePerfilEspecifico || "N/A"}
+                                      </StyledTableCell>
+
                                       <StyledTableCell align="center">
                                         {row.porcentaje}
                                       </StyledTableCell>
@@ -909,19 +960,26 @@ export function Resumen({
                         maxWidth={"lg"}
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenDisposicion(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          <Grid display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>
+                              Disposición(es)
+                            </Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenDisposicion(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+
+                          </Grid>
+
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
@@ -940,19 +998,27 @@ export function Resumen({
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {rowDisposicion.map((row, index) => {
+                                {rowTasa.map((row, index) => {
                                   return (
                                     <StyledTableRow key={index}>
                                       <StyledTableCell align="center">
-                                        {lightFormat(
-                                          new Date(row.fechaDisposicion),
-                                          "dd-MM-yyyy"
-                                        )}
+                                        {row?.fechaDisposicion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.importe}
+                                        {row?.importe}
                                       </StyledTableCell>
                                     </StyledTableRow>
+                                    // <StyledTableRow key={index}>
+                                    //   <StyledTableCell align="center">
+                                    //     {lightFormat(
+                                    //       new Date(row.fechaDisposicion),
+                                    //       "dd-MM-yyyy"
+                                    //     )}
+                                    //   </StyledTableCell>
+                                    //   <StyledTableCell align="center">
+                                    //     {row.importe}
+                                    //   </StyledTableCell>
+                                    // </StyledTableRow>
                                   );
                                 })}
                               </TableBody>

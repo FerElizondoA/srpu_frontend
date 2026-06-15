@@ -48,6 +48,10 @@ const heads: {
     {
       label: "Ente Público Obligado",
     },
+    {
+      label: "Prelación/Porcentaje",
+    },
+
   ];
 
 export const moneyMask = (value: string) => {
@@ -134,9 +138,19 @@ export function InformacionGeneral() {
       (state) => state.generalObligadoSolidarioAval.entePublicoObligado
     );
 
+  const actualizarPrelacion: Function = useCortoPlazoStore(
+    (state) => state.updatePrelacionPorcentaje
+  );
+
+  const [errorPrelacion, setErrorPrelacion] = useState<number | null>(null);
+
+
   // TABLA OBLIGADO SOLIDARIO AVAL
   const tablaObligados: any = useCortoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
+  );
+    const setTablaObligadoSolidarioAval: Function = useCortoPlazoStore(
+    (state) => state.setTablaObligadoSolidarioAval
   );
 
   const addObligadoSolidarioAval: Function = useCortoPlazoStore(
@@ -261,6 +275,53 @@ export function InformacionGeneral() {
     setPlazo(dias);
   }, [contratacion, vencimiento]);
 
+  useEffect(() => {
+    if (!contratacion || !vencimiento) return;
+
+    const fechaContratacion = new Date(contratacion);
+    const fechaVencimiento = new Date(vencimiento);
+
+    const fechaMaxima = addDays(fechaContratacion, 364);
+
+    if (fechaVencimiento > fechaMaxima) {
+      setVencimiento(fechaMaxima.toISOString());
+    }
+  }, [contratacion]);
+
+  useEffect(() => {
+    if (!contratacion || !vencimiento) return;
+
+    const fechaContratacionDate =
+      new Date(contratacion);
+
+    const fechaVencimientoDate =
+      new Date(vencimiento);
+
+    const fechaMaximaVencimiento =
+      addDays(fechaContratacionDate, 364);
+
+    // Si vencimiento quedó antes de contratación
+    if (
+      fechaVencimientoDate <
+      fechaContratacionDate
+    ) {
+      setVencimiento(
+        fechaContratacionDate.toISOString()
+      );
+
+      return;
+    }
+
+    // Si vencimiento supera el máximo permitido
+    if (
+      fechaVencimientoDate >
+      fechaMaximaVencimiento
+    ) {
+      setVencimiento(
+        fechaMaximaVencimiento.toISOString()
+      );
+    }
+  }, [contratacion]);
 
   return (
     <Grid
@@ -311,8 +372,20 @@ export function InformacionGeneral() {
               sx={{ width: "100%" }}
               value={new Date(contratacion)}
               onChange={(date) => {
-                setContratacion(date?.toString() || "");
+                if (!date) return;
+
+                const fechaMinima = subDays(new Date(), 365);
+
+                if (date < fechaMinima) {
+                  setContratacion(fechaMinima.toISOString());
+                  return;
+                }
+
+                setContratacion(date.toISOString());
               }}
+              // onChange={(date) => {
+              //   setContratacion(date?.toString() || "");
+              // }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
             />
@@ -440,9 +513,47 @@ export function InformacionGeneral() {
               }
               sx={{ width: "100%" }}
               value={vencimiento ? new Date(vencimiento) : null}
-              onChange={(date) => setVencimiento(date?.toISOString() || "")}
+              // onChange={(date) => setVencimiento(date?.toISOString() || "")}
+              // onChange={(date) => {
+              //   if (!date) return;
+
+              //   const fechaMaxima = addDays(
+              //     new Date(contratacion),
+              //     364
+              //   );
+
+              //   if (date > fechaMaxima) {
+              //     setVencimiento(fechaMaxima.toISOString());
+              //     return;
+              //   }
+
+              //   setVencimiento(date.toISOString());
+              // }}
+              onChange={(date) => {
+                if (!date) return;
+
+                const fechaContratacionDate =
+                  new Date(contratacion);
+
+                const fechaMaxima =
+                  addDays(fechaContratacionDate, 364);
+
+                let fechaFinal = date;
+
+                if (date < fechaContratacionDate) {
+                  fechaFinal = fechaContratacionDate;
+                }
+
+                if (date > fechaMaxima) {
+                  fechaFinal = fechaMaxima;
+                }
+
+                setVencimiento(
+                  fechaFinal.toISOString()
+                );
+              }}
               minDate={new Date(contratacion)}
-              maxDate={addDays(new Date(contratacion), 365-1)}
+              maxDate={addDays(new Date(contratacion), 365 - 1)}
             />
           </LocalizationProvider>
         </Grid>
@@ -618,6 +729,17 @@ export function InformacionGeneral() {
             onChange={(event, text) => {
               if (text === "NO APLICA") {
                 cleanObligadoSolidarioAval();
+                setObligadoSolidarioAval({
+                  obligadoSolidario: obligadoSolidario,
+                  tipoEntePublicoObligado: {
+                    Id: "",
+                    Descripcion: "",
+                  },
+                  entePublicoObligado: {
+                    Id: "",
+                    Descripcion: "",
+                  },
+                })
               }
               setObligadoSolidario(text!);
             }}
@@ -761,6 +883,7 @@ export function InformacionGeneral() {
             }
             variant="outlined"
             onClick={() => {
+              addRows();
               setObligadoSolidarioAval({
                 obligadoSolidario: "SI APLICA",
                 tipoEntePublicoObligado: "",
@@ -769,7 +892,7 @@ export function InformacionGeneral() {
                   Descripcion: "",
                 },
               });
-              addRows();
+              
             }}
           >
             Agregar
@@ -818,6 +941,7 @@ export function InformacionGeneral() {
                     <StyledTableCell />
                     <StyledTableCell align="center">NO APLICA</StyledTableCell>
                     <StyledTableCell />
+                    <StyledTableCell />
                   </StyledTableRow>
                 ) : (
                   tablaObligados.map((row: any, index: number) => {
@@ -838,6 +962,71 @@ export function InformacionGeneral() {
                         </StyledTableCell>
                         <StyledTableCell align="center" component="th">
                           {row.entePublicoObligado}
+                        </StyledTableCell>
+
+                        <StyledTableCell align="center" component="th">
+                          <TextField
+                            variant="outlined"
+                            fullWidth
+                            type="number"
+                            error={errorPrelacion === index}
+                            helperText={
+                              errorPrelacion === index
+                                ? "Suma total no puede superar el 100%"
+                                : ""
+                            }
+                            sx={{
+                              width: "15rem",
+                              //Quita las flechas de los input number
+                              "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                                WebkitAppearance: "none",
+                                margin: 0,
+                              },
+                              "& input[type=number]": {
+                                MozAppearance: "textfield",
+                              },
+                            }}
+                            onKeyDown={(e) => { //Validacion de no agregar esos caracteres
+                              if (["e", "E", "+", "-"].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                            value={row.prelacionPorcentaje === 0 ? "" : row.prelacionPorcentaje}
+                            onChange={(e) => {
+                              const valor = Number(e.target.value);
+
+                              const sumaOtros = tablaObligados
+                                .reduce(
+                                  (
+                                    acc: number,
+                                    item: { prelacionPorcentaje: number },
+                                    i: number
+                                  ) => {
+                                    if (i !== index) {
+                                      return acc + Number(item.prelacionPorcentaje);
+                                    }
+                                    return acc;
+                                  },
+                                  0
+                                );
+
+                              if (valor + sumaOtros > 100) {
+                                setErrorPrelacion(index);
+                                return;
+                              }
+
+                              setErrorPrelacion(null);
+
+                              const nuevaTabla = [...tablaObligados];
+                              nuevaTabla[index].prelacionPorcentaje = valor;
+
+                              setTablaObligadoSolidarioAval(nuevaTabla);
+                            }}
+                            inputProps={{
+                              min: 0,
+                              max: 100,
+                            }}
+                          />
                         </StyledTableCell>
                       </StyledTableRow>
                     );

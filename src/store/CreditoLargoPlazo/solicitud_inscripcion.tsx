@@ -423,9 +423,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       informacionGeneral: {
         informacionGeneral: lpState.informacionGeneral,
         obligadosSolidarios: lpState.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+          ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
+            prelacionPorcentaje: prelacionPorcentaje ?? 0,
           })
         ),
         destinoGastosCostos: lpState.tablaGastosCostos,
@@ -609,9 +610,10 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
       informacionGeneral: {
         informacionGeneral: lpState.informacionGeneral,
         obligadosSolidarios: lpState.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+          ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
+            prelacionPorcentaje: prelacionPorcentaje ?? 0,
           })
         ),
         //destinoGastosCostos: lpState.tablaGastosCostos,

@@ -51,28 +51,38 @@ import {
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Tipo de Comisión",
-  },
-  {
-    label: "Fecha de Comisión",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Porcentaje",
-  },
-  {
-    label: "Monto",
-  },
-  {
-    label: "IVA",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Tipo de Comisión",
+    },
+
+    {
+      label: "Descripción de la Comisión",
+    },
+
+    {
+      label: "Fecha de Comisión",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+
+    {
+      label: "Detalle del Perfil Específico",
+    },
+
+    {
+      label: "Porcentaje %",
+    },
+    {
+      label: "Monto",
+    },
+    {
+      label: "IVA",
+    },
+  ];
 
 export function ComisionesTasaEfectiva() {
   // GET CATALOGOS
@@ -112,6 +122,9 @@ export function ComisionesTasaEfectiva() {
   const addComision: Function = useCortoPlazoStore(
     (state) => state.addComision
   );
+  const cleanComisiones: Function = useCortoPlazoStore(
+    (state) => state.cleanComisiones
+  );
   const setTablaComisiones: Function = useCortoPlazoStore(
     (state) => state.setTablaComisiones
   );
@@ -122,6 +135,15 @@ export function ComisionesTasaEfectiva() {
   const setNoAplica: Function = useCortoPlazoStore(
     (state) => state.setNoAplica
   );
+
+
+
+  const mostrarOtrasComisiones =
+    comision.tipoDeComision.Descripcion === "Otras comisiones";
+
+  const mostrarPerfilEspecifico =
+    comision.periodicidadDePago.Descripcion === "Perfil Especifico"; // falta coma en el catálogo
+
 
   React.useEffect(() => {
     catalogoTiposComision.length <= 0 && getTiposComision();
@@ -312,6 +334,7 @@ export function ComisionesTasaEfectiva() {
                 onChange={(v) => {
                   setNoAplica();
                   setTablaComisiones([]);
+                  cleanComisiones();
                 }}
               />
             }
@@ -356,12 +379,26 @@ export function ComisionesTasaEfectiva() {
             onChange={(event, text) => {
               setComision({
                 ...comision,
-                tipoDeComision: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
-                },
+                tipoDeComision: text
+                  ? {
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
+                  }
+                  : {
+                    Id: "",
+                    Descripcion: "",
+                  },
               });
             }}
+            // onChange={(event, text) => {
+            //   setComision({
+            //     ...comision,
+            //     tipoDeComision: {
+            //       Id: text?.Id,
+            //       Descripcion: text?.Descripcion,
+            //     },
+            //   });
+            // }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -374,7 +411,40 @@ export function ComisionesTasaEfectiva() {
               value.Descripcion === ""
             }
           />
+          {mostrarOtrasComisiones && (
+            <Grid item mt={4}
+            // xs={10} sm={4} md={4} lg={4} xl={4}
+            >
+              <InputLabel sx={{ ...queries.medium_text, mb: 2 }}>
+                Descripción de la Comisión
+              </InputLabel>
+
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={comision.tipoDeComision.detallOtrasComisiones}
+                maxRows={3}
+                minRows={2}
+                multiline
+                onChange={(e) => {
+                  const valor = e.target.value
+                    .replace(/[<>]/g, "")
+                    .replace(/script/gi, "")
+                    .replace(/javascript:/gi, "");
+
+                  setComision({
+                    ...comision,
+                    tipoDeComision: {
+                      ...comision.tipoDeComision,
+                      detallOtrasComisiones: valor,
+                    },
+                  });
+                }}
+              />
+            </Grid>
+          )}
         </Grid>
+
         <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
           <InputLabel sx={queries.medium_text}>Periodicidad de Pago</InputLabel>
           <Autocomplete
@@ -397,10 +467,15 @@ export function ComisionesTasaEfectiva() {
             onChange={(event, text) =>
               setComision({
                 ...comision,
-                periodicidadDePago: {
-                  Id: text?.Id,
-                  Descripcion: text?.Descripcion,
-                },
+                periodicidadDePago: text
+                  ? {
+                    Id: text.Id,
+                    Descripcion: text.Descripcion,
+                  }
+                  : {
+                    Id: "",
+                    Descripcion: "",
+                  },
               })
             }
             renderInput={(params) => (
@@ -415,6 +490,39 @@ export function ComisionesTasaEfectiva() {
               value.Descripcion === ""
             }
           />
+
+          {mostrarPerfilEspecifico && (
+            <Grid item mt={4}
+            //xs={10} sm={4} md={4} lg={4} xl={4}
+            >
+              <InputLabel sx={{ ...queries.medium_text, mb: 2 }}>
+                Detalle del Perfil Específico
+              </InputLabel>
+
+              <TextField
+                fullWidth
+                variant="outlined"
+                maxRows={3}
+                minRows={2}
+                multiline
+                value={comision.periodicidadDePago.detallePerfilEspecifico}
+                onChange={(e) => {
+                  const valor = e.target.value
+                    .replace(/[<>]/g, "")
+                    .replace(/script/gi, "")
+                    .replace(/javascript:/gi, "");
+
+                  setComision({
+                    ...comision,
+                    periodicidadDePago: {
+                      ...comision.periodicidadDePago,
+                      detallePerfilEspecifico: valor,
+                    },
+                  });
+                }}
+              />
+            </Grid>
+          )}
         </Grid>
       </Grid>
 
@@ -470,27 +578,27 @@ export function ComisionesTasaEfectiva() {
               radioValue === "Porcentaje Fijo"
                 ? comision.porcentaje
                 : parseFloat(comision.monto) <= 0
-                ? ""
-                : moneyMask(comision.monto)
+                  ? ""
+                  : moneyMask(comision.monto)
             }
             onChange={(v) => {
-               const expRegular = /^\d*\.?\d*$/;
+              const expRegular = /^\d*\.?\d*$/;
               if (
                 !noAplica &&
-                
+
                 // (validator.isNumeric(v.target.value.replace(/\D/g, "")) ||
                 //   v.target.value === "") &&
                 // parseInt(v.target.value.replace(/\D/g, "")) <
                 //   9999999999999999 &&
                 radioValue === "Porcentaje Fijo"
               ) {
-              if (expRegular.test(v.target.value) || v.target.value === "") {
-                setComision({
-                  ...comision,
-                  porcentaje: v.target.value,
-                  monto: "N/A",
-                });
-              }
+                if (expRegular.test(v.target.value) || v.target.value === "") {
+                  setComision({
+                    ...comision,
+                    porcentaje: v.target.value,
+                    monto: "N/A",
+                  });
+                }
               } else {
                 setComision({
                   ...comision,
@@ -588,11 +696,21 @@ export function ComisionesTasaEfectiva() {
                 comision.periodicidadDePago.Descripcion === "" ||
                 (radioValue === "Porcentaje Fijo" &&
                   comision.porcentaje === "") ||
-                (radioValue === "Monto Fijo" && comision.monto === "")
+                (radioValue === "Monto Fijo" && comision.monto === "") ||
+                (
+                  comision.tipoDeComision.Descripcion === "Otras comisiones" &&
+                  comision.tipoDeComision.detallOtrasComisiones.trim() === ""
+                )
+                ||
+                (
+                  comision.periodicidadDePago.Descripcion === "Perfil Especifico" &&
+                  comision.periodicidadDePago.detallePerfilEspecifico.trim() === ""
+                )
               }
               variant="outlined"
               onClick={() => {
                 addComision(comision);
+                cleanComisiones();
               }}
             >
               Agregar
@@ -648,6 +766,11 @@ export function ComisionesTasaEfectiva() {
                       <StyledTableCell align="center">
                         {row.tipoDeComision?.Descripcion || "N/A"}
                       </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {row.tipoDeComision?.detallOtrasComisiones || "N/A"}
+                      </StyledTableCell>
+
                       <StyledTableCell align="center">
                         {row?.fechaComision !== "N/A"
                           ? format(new Date(row?.fechaComision), "dd/MM/yyyy")
@@ -656,8 +779,13 @@ export function ComisionesTasaEfectiva() {
                       <StyledTableCell align="center">
                         {row.periodicidadDePago?.Descripcion || "N/A"}
                       </StyledTableCell>
+
                       <StyledTableCell align="center">
-                        {row.porcentaje}
+                        {row.periodicidadDePago?.detallePerfilEspecifico || "N/A"}
+                      </StyledTableCell>
+
+                      <StyledTableCell align="center">
+                        {row.porcentaje === "N/A" ? "N/A" : row.porcentaje + " %"}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         {row.monto.toString()}

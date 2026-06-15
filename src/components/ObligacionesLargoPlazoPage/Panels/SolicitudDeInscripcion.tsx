@@ -119,7 +119,7 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
 
       for (let i = 0; i < state.tablaCondicionesFinancieras.length; i++) {
         const item = state.tablaCondicionesFinancieras[0];
-        importe = item.disposicion[0].importe;
+        importe = item.tasaInteres[0].importe;
         numeroDePago = item.pagosDeCapital.numeroDePago;
         PeriocidadDePago = item.pagosDeCapital.periodicidadDePago.Descripcion;
         TasaDeInteres = item.tasaInteres;

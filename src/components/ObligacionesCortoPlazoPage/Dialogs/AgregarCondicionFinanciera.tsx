@@ -95,6 +95,18 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.cleanCondicionFinanciera
   );
 
+  const cleanTablaTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.cleanTablaTasaInteres
+  );
+
+    const monto: number = useCortoPlazoStore(
+      (state) => state.informacionGeneral.monto
+    );
+
+  const cleanDisposicion: Function = useCortoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
+
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
       <AppBar sx={{ position: "relative" }}>
@@ -104,6 +116,8 @@ export function AgregarCondicionFinanciera(props: Props) {
             onClick={() => {
               props.handler(false);
               cleanCondicionFinanciera();
+              cleanTablaTasaInteres();
+              cleanDisposicion(monto);
             }}
             sx={{ color: "white" }}
           >
@@ -120,11 +134,11 @@ export function AgregarCondicionFinanciera(props: Props) {
             <ThemeProvider theme={buttonTheme}>
               <Button
                 disabled={
-                  tablaComisiones.length === 0 || 
+                  tablaComisiones.length === 0 ||
                   tablaTasaInteres.length === 0 ||
                   pagosDeCapital.numeroDePago === 0 ||
-                  pagosDeCapital.numeroDePago <= 0  ||
-                  pagosDeCapital.periodicidadDePago.Descripcion === ""              
+                  pagosDeCapital.numeroDePago <= 0 ||
+                  pagosDeCapital.periodicidadDePago.Descripcion === ""
                 }
                 sx={queries.buttonContinuar}
                 onClick={() => {
@@ -132,7 +146,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                   if (props.accion === "Agregar") {
                     addCondicionFinanciera({
                       pagosDeCapital: pagosDeCapital,
-                      disposicion: tablaDisposicion,
+                      //disposicion: tablaDisposicion,
                       tasaInteres: tablaTasaInteres,
 
                       tasaEfectiva: tasaEfectiva,
@@ -150,6 +164,7 @@ export function AgregarCondicionFinanciera(props: Props) {
                     });
                     props.handler(false);
                     cleanCondicionFinanciera();
+                    cleanTablaTasaInteres();
                   }
                 }}
               >

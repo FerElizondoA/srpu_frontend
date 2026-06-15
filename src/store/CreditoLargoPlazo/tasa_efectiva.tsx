@@ -46,8 +46,19 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
 
   comision: {
     fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
-    tipoDeComision: { Id: "", Descripcion: "" },
-    periodicidadDePago: { Id: "", Descripcion: "" },
+
+    tipoDeComision: {
+      Id: "",
+      Descripcion: "",
+      detallOtrasComisiones: "",
+    },
+
+    periodicidadDePago: {
+      Id: "",
+      Descripcion: "",
+      detallePerfilEspecifico: "",
+    },
+
     monto: "0",
     porcentaje: "",
     iva: false,

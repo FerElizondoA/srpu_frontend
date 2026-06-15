@@ -56,6 +56,7 @@ export interface ISolicitudLargoPlazo {
     obligadosSolidarios: {
       entePublicoObligado: { Id: string; Descripcion: string };
       tipoEntePublicoObligado: { Id: string; Descripcion: string };
+      prelacionPorcentaje: number;
     }[];
     destinoGastosCostos: IGastosCostos[];
   };

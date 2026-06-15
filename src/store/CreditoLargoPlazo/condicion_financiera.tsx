@@ -48,23 +48,28 @@ export const createCondicionFinancieraSlice: StateCreator<
     useLargoPlazoStore.setState({
       radioValue: 1,
       tasasParciales: condicionFinanciera.tasaInteres.length > 1,
-      disposicionesParciales: condicionFinanciera.disposicion.length > 1,
+      //disposicionesParciales: condicionFinanciera.disposicion.length > 1,
 
       noAplica: condicionFinanciera.comisiones[0]?.monto === "N/A",
 
       pagosDeCapital: condicionFinanciera.pagosDeCapital,
-      tablaDisposicion: condicionFinanciera.disposicion,
+      //tablaDisposicion: condicionFinanciera.disposicion,
       tasaDeInteres:
         condicionFinanciera.tasaInteres.length === 1
           ? condicionFinanciera.tasaInteres[0]
           : {
-              tasaFija: "",
-              fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
-              diasEjercicio: { Id: "", Descripcion: "" },
-              periocidadPago: { Id: "", Descripcion: "" },
-              tasaReferencia: { Id: "", Descripcion: "" },
-              sobreTasa: 0,
-            },
+            //Nuevoo Campo Inicio
+            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            importe: "$ 0.00",
+            montoDisposición: "$ 0.00",
+            //Nuevo Campo Fin
+            tasaFija: "",
+            fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+            diasEjercicio: { Id: "", Descripcion: "" },
+            periocidadPago: { Id: "", Descripcion: "" },
+            tasaReferencia: { Id: "", Descripcion: "" },
+            sobreTasa: 0,
+          },
       tablaTasaInteres: condicionFinanciera.tasaInteres,
 
       tasaEfectiva: condicionFinanciera.tasaEfectiva,
@@ -102,6 +107,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         periodicidadDePago: { Id: "", Descripcion: "" },
         numeroDePago: 1,
+        periodoGracia: false,
       },
       disposicion: {
         fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
@@ -110,6 +116,10 @@ export const createCondicionFinancieraSlice: StateCreator<
       },
       tablaDisposicion: [],
       tasaDeInteres: {
+        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        importe: "$ 0.00",
+        montoDisposición: "$ 0.00",
+
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
@@ -125,8 +135,18 @@ export const createCondicionFinancieraSlice: StateCreator<
       },
       comision: {
         fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
-        tipoDeComision: { Id: "", Descripcion: "" },
-        periodicidadDePago: { Id: "", Descripcion: "" },
+
+        tipoDeComision: {
+          Id: "",
+          Descripcion: "",
+          detallOtrasComisiones: "",
+        },
+
+        periodicidadDePago: {
+          Id: "",
+          Descripcion: "",
+          detallePerfilEspecifico: "",
+        },
         monto: "0",
         porcentaje: "",
         iva: false,

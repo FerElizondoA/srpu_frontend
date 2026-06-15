@@ -14,6 +14,7 @@ import { useLargoPlazoStore } from "../CreditoLargoPlazo/main";
 import { useFideicomisoStore } from "../Fideicomiso/main";
 import Swal from "sweetalert2";
 import { useTrazabilidad } from "../Trazabilidad/main";
+import { ICondicionFinanciera } from "../CreditoCortoPlazo/condicion_financiera";
 
 export interface IDataFirmaDetalle {
   Id: string;
@@ -270,7 +271,7 @@ export interface SolicitudFirmaSlice {
 
   usuarioIniciadoCanelacion: IDatosUsuarioCancelacion;
   setUsuarioIniciadoCancelacion: (usuarioIniciadoCanelacion: IDatosUsuarioCancelacion) => void;
-  
+
   setUrl: (url: string) => void;
 }
 
@@ -291,7 +292,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       usuarioIniciadoCanelacion: usuarioIniciadoCanelacion,
     }));
   },
-  
+
   convertirMontosAPalabras(numeroConFormato: string): string {
 
     function limpiarFormatoMoneda(monto: string): number {
@@ -374,7 +375,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
     return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
   },
-  
+
   proceso: "",
 
   url: "",
@@ -537,7 +538,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             FechaDoc: inf.Fecha_doc,
             PathDoc: inf.PathDoc,
             CreadoPor: inf.IdUsuario,
-            
+
             CancelacionInciadoPor: localStorage.getItem("IdUsuario"), //REVISAR
             NoEstatus: estatusPrevio.NoEstatus, //REVISAR
           },
@@ -677,7 +678,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             }
           }
 
-          if(tipoFirmaDetalle === "cancelacion" && estatusPrevio.NoEstatus === "12"){
+          if (tipoFirmaDetalle === "cancelacion" && estatusPrevio.NoEstatus === "12") {
             // agregar id del usuario 
           }
 
@@ -728,7 +729,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           );
 
 
-  
+
 
           console.log("stateTrazabilidad.IdPrimerUsuarioEstatus2: ", stateTrazabilidad.IdPrimerUsuarioEstatus2)
 
@@ -1024,7 +1025,9 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
   const MontoALetras = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
 
-
+  const cantidadPeriodoGracia = (solicitud.condicionesFinancieras ?? []).filter(
+    (condicion: ICondicionFinanciera) => condicion.pagosDeCapital?.periodoGracia === true
+  ).length;
 
   await axios
     .post(
@@ -1057,6 +1060,11 @@ export async function ConsultaSolicitud(setUrl: Function) {
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
 
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
+
+
+        //AQUI NECESITO SABER CUANTAS CONDICIOENS FINANCIERAS HABILITARON EL PERIODO DE GRACIA
+        periodoGracia: cantidadPeriodoGracia,
+
 
         tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
 
@@ -1628,8 +1636,8 @@ export const CambiaEstatus = (
   IdCancelacionInciaiado?: string
 ) => {
   const state = useTrazabilidad.getState();
-console.log("Editor ID en cambia estatus", IdEditor);
-console.log("state.IdPrimerUsuarioEstatus2 en cambia estatus", state.IdPrimerUsuarioEstatus2)
+  console.log("Editor ID en cambia estatus", IdEditor);
+  console.log("state.IdPrimerUsuarioEstatus2 en cambia estatus", state.IdPrimerUsuarioEstatus2)
   return axios
     .post(
       process.env.REACT_APP_APPLICATION_BACK + "/cambiaEstatus",

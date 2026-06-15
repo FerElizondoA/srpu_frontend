@@ -12,6 +12,7 @@ import {
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { getListadoUsuarios } from "../../APIS/solicitudesUsuarios/Solicitudes-Usuarios";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
+import { addDays, parse } from "date-fns";
 
 export function Encabezado() {
   const tipoCredito: { Id: string; Descripcion: string } = useCortoPlazoStore(
@@ -279,7 +280,7 @@ export function Encabezado() {
           >
 
           </TextField>
-          
+
           {/* <Select
             disabled={
               datosActualizar.length > 0 &&
@@ -425,8 +426,31 @@ export function Encabezado() {
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
               onChange={(date) => {
-                changeEncabezado({ ...encabezado, fechaContratacion: date });
+                if (!date) return;
+
+                const hoy = new Date();
+                const fechaMinima = subDays(hoy, 365);
+
+                let fechaFinal = date;
+
+                if (date < fechaMinima) {
+                  fechaFinal = fechaMinima;
+                }
+
+                if (date > hoy) {
+                  fechaFinal = hoy;
+                }
+
+                changeEncabezado({
+                  ...encabezado,
+                  fechaContratacion: fechaFinal,
+                });
               }}
+              // onChange={(date) => {
+
+
+              //   changeEncabezado({ ...encabezado, fechaContratacion: date });
+              // }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
             />

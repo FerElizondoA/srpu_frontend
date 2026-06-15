@@ -1423,7 +1423,7 @@ export function Resumen({
                               <StyledTableCell align="center">
                                 <Button
                                   onClick={() => {
-                                    setRowDisposicion(row.disposicion);
+                                    //setRowDisposicion(row.tasas);
                                     setOpenDisposicion(true);
                                   }}
                                 >

@@ -31,11 +31,11 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { addDays } from "date-fns";
+import { addDays, parse } from "date-fns";
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
-import { format } from "date-fns";
+import { format, differenceInDays, differenceInMonths } from "date-fns";
 import es from "date-fns/locale/es";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import validator from "validator";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -57,6 +57,14 @@ const heads: readonly {
     {
       label: "Borrar",
     },
+    //NUEVOS INICIO
+    {
+      label: "Fecha de Disposición"
+    },
+    {
+      label: "Importe de Disposición",
+    },
+    //NUEVOS FIN
     {
       label: "Fecha de Primer Pago",
     },
@@ -191,12 +199,133 @@ export function DisposicionPagosCapital() {
     (state) => state.cleanDisposicion
   );
 
+  const cleanTablaTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.cleanTablaTasaInteres
+  );
+  const cleanTasaInteres: Function = useCortoPlazoStore(
+    (state) => state.cleanTasaInteres
+  );
+
+  const fechaVencimiento: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaVencimiento
+  );
+
+  const fechaVencimientoDate = new Date(fechaVencimiento);
+  const fechaPrimerPagoDate = parse(
+    pagosDeCapital.fechaPrimerPago,
+    "MM/dd/yyyy",
+    new Date()
+  );
+
+  const mesesDisponibles =
+    differenceInMonths(
+      fechaVencimientoDate,
+      fechaPrimerPagoDate
+    ) + 1;
+
+  const obtenerMaxPagos = () => {
+    if (
+      !pagosDeCapital.fechaPrimerPago ||
+      !fechaVencimiento
+    ) {
+      return 0;
+    }
+
+    const fechaPrimerPagoDate = parse(
+      pagosDeCapital.fechaPrimerPago,
+      "MM/dd/yyyy",
+      new Date()
+    );
+
+    const fechaVencimientoDate = new Date(
+      fechaVencimiento
+    );
+
+    const mesesDisponibles =
+      differenceInMonths(
+        fechaVencimientoDate,
+        fechaPrimerPagoDate
+      ) + 1;
+
+    switch (pagosDeCapital.periodicidadDePago.Descripcion) {
+      case "Pago único":
+        return 1;
+
+      case "Mensual":
+        return mesesDisponibles;
+
+      case "Trimestral":
+        return Math.floor((mesesDisponibles - 1) / 3) + 1;
+
+      case "Cuatrimestral":
+        return Math.floor((mesesDisponibles - 1) / 4) + 1;
+
+      case "Semestral":
+        return Math.floor((mesesDisponibles - 1) / 6) + 1;
+
+      case "Anual":
+        return Math.floor((mesesDisponibles - 1) / 12) + 1;
+
+      default:
+        return 0;
+    }
+  };
+
   // const moneyMask = (value: string) => {
   //   const floatValue = parseFloat(value).toFixed(2); // Aseguramos siempre dos decimales
   //   return floatValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formateamos el número con comas
   // };
 
+  const diasDisponibles =
+    differenceInDays(
+      new Date(fechaVencimiento),
+      new Date(pagosDeCapital.fechaPrimerPago)
+    ) + 1;
 
+  // const obtenerMaxPagos = () => {
+  //   if (
+  //     !pagosDeCapital.fechaPrimerPago ||
+  //     !fechaVencimiento
+  //   ) {
+  //     return 0;
+  //   }
+
+  //   const fechaPrimerPagoDate = new Date(
+  //     pagosDeCapital.fechaPrimerPago
+  //   );
+
+  //   const fechaVencimientoDate = new Date(
+  //     fechaVencimiento
+  //   );
+
+  //   const diasDisponibles = differenceInDays(
+  //     fechaVencimientoDate,
+  //     fechaPrimerPagoDate
+  //   ) + 1;
+
+  //   switch (pagosDeCapital.periodicidadDePago.Descripcion) {
+  //     case "Pago único":
+  //       return 1;
+
+  //     case "Mensual":
+  //       return Math.floor(diasDisponibles / 30) + 1;
+
+  //     case "Trimestral":
+  //       return Math.floor(diasDisponibles / 90);
+
+  //     case "Cuatrimestral":
+  //       return Math.floor(diasDisponibles / 120);
+
+  //     case "Semestral":
+  //       return Math.floor(diasDisponibles / 180);
+
+  //     case "Anual":
+  //       return Math.floor(diasDisponibles / 365);
+
+  //     default:
+  //       return 0;
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -230,24 +359,8 @@ export function DisposicionPagosCapital() {
     }
   };
 
-  useEffect(() => {
-    if (tasasParciales === false) {
-      // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
-      setTablaTasaInteres([tasaDeInteres]);
-    }
-  }, [tasasParciales, tasaDeInteres]);
 
-  useEffect(() => {
-    if (disposicionesParciales === false) {
-      setDisposicion({ ...disposicion, importe: moneyMask(monto.toString()) });
-      setTablaDisposicion([
-        {
-          fechaDisposicion: disposicion.fechaDisposicion,
-          importe: moneyMask(monto.toString()),
-        },
-      ]);
-    }
-  }, [monto, disposicionesParciales]);
+
 
   const [restante, setRestante] = useState(0); // en pesos
 
@@ -261,7 +374,7 @@ export function DisposicionPagosCapital() {
   const toCents = (n: number) => Math.round(n * 100);
 
   useEffect(() => {
-    const totalImporteCents = tablaDisposicion.reduce((acc, it) => {
+    const totalImporteCents = tablaTasaInteres.reduce((acc, it) => {
       const importePesos = parseMoney(it.importe);
       return acc + toCents(importePesos);
     }, 0);
@@ -270,7 +383,7 @@ export function DisposicionPagosCapital() {
     const nuevoRestanteCents = montoCents - totalImporteCents;
 
     setRestante(nuevoRestanteCents / 100); // guardas en pesos
-  }, [tablaDisposicion, monto]);
+  }, [tablaTasaInteres, monto]);
 
 
   const validacionBotonAgregar = (valorFormateado: string) => {
@@ -278,6 +391,112 @@ export function DisposicionPagosCapital() {
     const valorNumerico = valorFormateado.replace(/[^\d.-]/g, "");
     return (parseFloat(valorNumerico)); // Convierte la cadena a número flotante
   };
+
+  // useEffect(() => {
+  //   console.log("Días disponibles:", diasDisponibles);
+  //   console.log("Fecha Primer Pago:", pagosDeCapital.fechaPrimerPago);
+  //   console.log("Fecha Vencimiento:", fechaVencimiento);
+  //   console.log("Fecha de contratacion", fechaContratacion);
+
+  //   const fechaPrimerPagoDate = new Date(pagosDeCapital.fechaPrimerPago);
+  //   const fechaVencimientoDate = new Date(fechaVencimiento);
+
+  //   console.log("Primer Pago Date:", fechaPrimerPagoDate);
+  //   console.log("Vencimiento Date:", fechaVencimientoDate);
+  // }, [pagosDeCapital.fechaPrimerPago, fechaVencimiento, pagosDeCapital.periodicidadDePago]);
+
+
+  useEffect(() => {
+    console.log("Primer Pago:", fechaPrimerPagoDate);
+    console.log("Vencimiento:", fechaVencimientoDate);
+    console.log("Meses disponibles:", mesesDisponibles);
+    console.log("Máximo pagos:", obtenerMaxPagos());
+  }, [pagosDeCapital.fechaPrimerPago, fechaVencimiento, pagosDeCapital.periodicidadDePago])
+
+  useEffect(() => {
+    const primerPago = new Date(pagosDeCapital.fechaPrimerPago);
+    const vencimiento = new Date(fechaVencimiento);
+
+    if (primerPago > vencimiento) {
+      setPagosDeCapital((prev: any) => ({
+        ...prev,
+        fechaPrimerPago: format(vencimiento, "MM/dd/yyyy"),
+      }));
+    }
+  }, [fechaVencimiento]);
+
+  useEffect(() => {
+    if (
+      !pagosDeCapital.fechaPrimerPago ||
+      !fechaVencimiento
+    ) {
+      return;
+    }
+
+    const fechaPrimerPagoActual =
+      parse(
+        pagosDeCapital.fechaPrimerPago,
+        "MM/dd/yyyy",
+        new Date()
+      );
+
+    const fechaVencimientoDate =
+      new Date(fechaVencimiento);
+
+    if (
+      fechaPrimerPagoActual >
+      fechaVencimientoDate
+    ) {
+      setPagosDeCapital({
+        ...pagosDeCapital,
+        fechaPrimerPago: format(
+          fechaVencimientoDate,
+          "MM/dd/yyyy"
+        ),
+      });
+    }
+  }, [
+    fechaVencimiento,
+    pagosDeCapital.fechaPrimerPago,
+  ]);
+
+  useEffect(() => {
+    if (disposicionesParciales === false) {
+      // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
+      setTablaTasaInteres([tasaDeInteres]);
+    }
+  }, [disposicionesParciales, tasaDeInteres]);
+
+
+  useEffect(() => {
+    if (disposicionesParciales === false) {
+      // setDisposicion({ ...disposicion, importe: moneyMask(monto.toString()) });
+
+      // setTablaDisposicion([
+      //   {
+      //     fechaDisposicion: disposicion.fechaDisposicion,
+      //     importe: moneyMask(monto.toString()),
+      //   },])
+
+      setTasaInteres({ ...tasaDeInteres, importe: moneyMask(monto.toString()) });
+      setTablaTasaInteres([
+        {
+          fechaDisposicion: tasaDeInteres.fechaDisposicion,
+          importe: moneyMask(monto.toString()),
+        },
+      ]);
+    }
+  }, [monto, disposicionesParciales]);
+
+
+  // useEffect(() => {
+
+
+  //   setPagosDeCapital({
+  //     ...pagosDeCapital,
+  //     numeroDePago: 0,
+  //   });
+  // }, [pagosDeCapital.periodicidadDePago])
 
   return (
     <Grid
@@ -344,7 +563,7 @@ export function DisposicionPagosCapital() {
           justifyContent={"space-evenly"}
           alignItems={"center"}
         >
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
             mb={{
               xs: 3,
               sm: 0,
@@ -361,21 +580,79 @@ export function DisposicionPagosCapital() {
               adapterLocale={es}
             >
               <DesktopDatePicker
+                sx={{ width: "100%" }}
                 minDate={new Date(fechaContratacion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                maxDate={new Date(fechaVencimiento)}
+                value={new Date(pagosDeCapital.fechaPrimerPago)}
+                onChange={(date) => {
+                  if (!date) return;
+
+                  const fechaContratacionDate =
+                    new Date(fechaContratacion);
+
+                  const fechaVencimientoDate =
+                    new Date(fechaVencimiento);
+
+                  let fechaFinal = date;
+
+                  if (date < fechaContratacionDate) {
+                    fechaFinal = fechaContratacionDate;
+                  }
+
+                  if (date > fechaVencimientoDate) {
+                    fechaFinal = fechaVencimientoDate;
+                  }
+
+                  setPagosDeCapital({
+                    ...pagosDeCapital,
+                    fechaPrimerPago: format(
+                      fechaFinal,
+                      "MM/dd/yyyy"
+                    ),
+                  });
+                }}
+              // onChange={(date) => {
+              //   if (!date) return;
+
+              //   const vencimiento = new Date(fechaVencimiento);
+
+              //   if (date > vencimiento) {
+              //     date = vencimiento;
+              //   }
+
+              //   setPagosDeCapital({
+              //     ...pagosDeCapital,
+              //     fechaPrimerPago: format(date, "MM/dd/yyyy"),
+              //   });
+              // }}
+              // onChange={(date) =>
+
+              //   setPagosDeCapital({
+              //     ...pagosDeCapital,
+              //     fechaPrimerPago: format(date!, "MM/dd/yyyy"),
+              //   })
+              // }
+              />
+              {/* <DesktopDatePicker
+                // minDate={new Date(fechaContratacion)}
+                // maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                minDate={new Date(fechaVencimiento)}
+                maxDate={new Date(addDays(new Date(fechaVencimiento), 365))}
                 sx={{ width: "100%" }}
                 value={new Date(pagosDeCapital.fechaPrimerPago)}
-                onChange={(date) =>
+                onChange={(date) => {
+
                   setPagosDeCapital({
                     ...pagosDeCapital,
                     fechaPrimerPago: format(date!, "MM/dd/yyyy"),
                   })
                 }
-              />
+                }
+              /> */}
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
             mb={{
               xs: 3,
               sm: 0,
@@ -411,6 +688,7 @@ export function DisposicionPagosCapital() {
                     Id: text?.Id,
                     Descripcion: text?.Descripcion,
                   },
+                   numeroDePago: 0
                 })
               }
               renderInput={(params) => (
@@ -427,21 +705,37 @@ export function DisposicionPagosCapital() {
             />
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Número de Pagos</InputLabel>
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+            <InputLabel sx={{ ...queries.medium_text }}>
+              <Grid container display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
+                Número de Pagos
+              </Grid>
+            </InputLabel>
             <TextField
+              helperText={`Máximo permitido: ${obtenerMaxPagos()}`}
               placeholder="0"
               value={
                 pagosDeCapital.numeroDePago <= 0
                   ? ""
                   : pagosDeCapital.numeroDePago.toString()
               }
+              // onChange={(v) => {
+              //   setPagosDeCapital({
+              //     ...pagosDeCapital,
+              //     numeroDePago: v.target.value,
+              //   });
+              // }}
               onChange={(v) => {
-                setPagosDeCapital({
-                  ...pagosDeCapital,
-                  numeroDePago: v.target.value,
-                });
+                const valor = Number(v.target.value);
+
+                if (valor <= obtenerMaxPagos() || v.target.value === "") {
+                  setPagosDeCapital({
+                    ...pagosDeCapital,
+                    numeroDePago: v.target.value,
+                  });
+                }
               }}
+
               fullWidth
               InputLabelProps={{
                 style: {
@@ -455,6 +749,37 @@ export function DisposicionPagosCapital() {
               }}
               variant="standard"
             />
+            {/* <InputLabel
+              sx={{
+                ...queries.medium_text,
+                color: "#AF8C55",
+              }}
+            >
+              <Typography color="red" fontSize={"0.8rem"}>
+                Máximo permitido: {obtenerMaxPagos()}
+              </Typography>
+            </InputLabel> */}
+          </Grid>
+
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+            <FormControlLabel
+              label="Periodo de Gracia"
+              control={
+                <Checkbox
+                  checked={pagosDeCapital.periodoGracia}
+                  onChange={(v) => {
+                    setPagosDeCapital({
+                      ...pagosDeCapital,
+                      periodoGracia: !pagosDeCapital.periodoGracia,
+                    });
+                    // setDisposicionesParciales();
+                    // if (disposicionesParciales === false) {
+                    //   removeDisposicion(0)
+                    // }
+                  }}
+                />
+              }
+            ></FormControlLabel>
           </Grid>
         </Grid>
       </Grid>
@@ -462,11 +787,11 @@ export function DisposicionPagosCapital() {
       <Grid container direction="column" width={"100%"} alignItems={"center"}
         //height={disposicionesParciales === false ? "16rem": "35rem"}
         height={{
-          xs: disposicionesParciales === false ? "16rem" : "38rem",
-          sm: disposicionesParciales === false ? "16rem" : "35rem",
-          md: disposicionesParciales === false ? "16rem" : "35rem",
-          lg: disposicionesParciales === false ? "12rem" : "35rem",
-          xl: disposicionesParciales === false ? "12rem" : "28rem" /* */
+          xs: "16rem",
+          sm: "16rem",
+          md: "16rem",
+          lg: "9rem",
+          xl: "9rem"  /* */
         }}
       // height={ disposicionesParciales === false ? 2 : 3 }
 
@@ -486,6 +811,7 @@ export function DisposicionPagosCapital() {
             width={"100%"}
           >
             <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+              display={"flex"} justifyContent={"space-evenly"} alignItems={"center"}
               mb={{
                 xs: 3,
                 // sm: ,
@@ -500,7 +826,9 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
+                      console.log()
                       setDisposicionesParciales();
+                      setTablaTasaInteres([])
                       if (disposicionesParciales === false) {
                         removeDisposicion(0)
                       }
@@ -508,6 +836,8 @@ export function DisposicionPagosCapital() {
                   />
                 }
               ></FormControlLabel>
+
+
             </Grid>
 
             <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
@@ -530,10 +860,15 @@ export function DisposicionPagosCapital() {
                   sx={{ width: "100%" }}
                   value={new Date(disposicion.fechaDisposicion)}
                   onChange={(date) => {
-                    setDisposicion({
-                      ...disposicion,
+
+                    setTasaInteres({
+                      ...tasaDeInteres,
                       fechaDisposicion: format(date!, "MM/dd/yyyy"),
                     });
+                    // setDisposicion({
+                    //   ...disposicion,
+                    //   fechaDisposicion: format(date!, "MM/dd/yyyy"),
+                    // });
                   }}
                   minDate={new Date(fechaContratacion)}
                   maxDate={new Date(addDays(new Date(), 365))}
@@ -550,7 +885,7 @@ export function DisposicionPagosCapital() {
               <Grid justifyContent={"space-between"}>
 
                 {validacionBotonAgregar(
-                  disposicion.importe.toString()
+                  tasaDeInteres?.importe.toString()
                 ) >
                   restante && disposicionesParciales ? <InputLabel>
                   <Typography sx={{
@@ -574,16 +909,17 @@ export function DisposicionPagosCapital() {
                         : ""
                       )
                     }
-                    value={disposicion.importe}
+                    value={tasaDeInteres.importe}
                     onChange={(v) => {
                       const valornuevo = v.target.value;
                       console.log("valorNuevo", valornuevo);
 
-                      setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
+                      setTasaInteres({ ...tasaDeInteres, importe: moneyMask(valornuevo) });
+                      //setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
                     }}
                     error={
                       validacionBotonAgregar(
-                        disposicion.importe.toString()
+                        tasaDeInteres.importe.toString()
                       ) >
                       restante
                     }
@@ -605,7 +941,7 @@ export function DisposicionPagosCapital() {
             </Grid>
           </Grid>
 
-          {disposicionesParciales && (
+          {/* {disposicionesParciales && (
 
             <Grid
               container
@@ -616,9 +952,9 @@ export function DisposicionPagosCapital() {
 
               <ThemeProvider theme={buttonTheme}>
                 <Tooltip title={validacionBotonAgregar(
-                  disposicion.importe.toString()
+                  tasaDeInteres.importe.toString()
                 ) >
-                  restante ? "Favor de ingresar un numero menor" : "345"}>
+                  restante ? "Favor de ingresar un numero menor" : ""}>
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
@@ -628,10 +964,10 @@ export function DisposicionPagosCapital() {
                     }}
                     disabled={
                       validacionBotonAgregar(
-                        disposicion.importe.toString()
+                        tasaDeInteres.importe.toString()
                       ) === 0 ||
                       validacionBotonAgregar(
-                        disposicion.importe.toString()
+                        tasaDeInteres.importe.toString()
                       ) >
                       restante
                     }
@@ -715,7 +1051,7 @@ export function DisposicionPagosCapital() {
             </Grid>
 
 
-          )}
+          )} */}
         </Grid>
       </Grid>
 
@@ -773,7 +1109,7 @@ export function DisposicionPagosCapital() {
                 </Grid>
               </RadioGroup>
             </FormControl>
-            <Grid item>
+            {/* <Grid item>
               <FormControlLabel
                 label="Agregar Tasas"
                 control={
@@ -786,7 +1122,7 @@ export function DisposicionPagosCapital() {
                   />
                 }
               ></FormControlLabel>
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Grid container display={"flex"} justifyContent={"center"} mb={2}>
@@ -1162,7 +1498,7 @@ export function DisposicionPagosCapital() {
                 </Grid>
               </Grid>
             )}
-            {tasasParciales && (
+            {disposicionesParciales && (
               <Grid
                 container
                 // sx={queries.tablaDisposicionPagosCapital}
@@ -1173,24 +1509,34 @@ export function DisposicionPagosCapital() {
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
-                      mt: 2,
+
                       mb: 2,
                       width: "15vh",
                     }}
                     disabled={
-                      tasaDeInteres.fechaPrimerPago === "" ||
-                      tasaDeInteres.diasEjercicio.Descripcion === "" ||
-                      tasaDeInteres.periocidadPago.Descripcion === "" ||
+                      tasaDeInteres?.fechaPrimerPago === "" ||
+                      tasaDeInteres?.diasEjercicio?.Descripcion === "" ||
+                      tasaDeInteres?.periocidadPago?.Descripcion === "" ||
                       (radioValue === 1 &&
-                        tasaDeInteres.tasaFija.toString() === "") ||
+                        tasaDeInteres?.tasaFija?.toString() === "") ||
                       (radioValue === 2 &&
-                        tasaDeInteres.tasaReferencia.toString() === "") ||
+                        tasaDeInteres?.tasaReferencia?.toString() === "") ||
                       (radioValue === 2 &&
-                        tasaDeInteres.sobreTasa.toString() === "")
+                        tasaDeInteres?.sobreTasa?.toString() === "") ||
+
+                      validacionBotonAgregar(
+                        tasaDeInteres?.importe?.toString()
+                      ) === 0 ||
+                      validacionBotonAgregar(
+                        tasaDeInteres?.importe?.toString()
+                      ) >
+                      restante
                     }
                     variant="outlined"
                     onClick={() => {
+                      cleanTasaInteres();
                       addTasaInteres(tasaDeInteres);
+
                     }}
                   >
                     Agregar
@@ -1201,7 +1547,7 @@ export function DisposicionPagosCapital() {
                   width={"100%"}
                   display={"flex"}
                   justifyContent={"center"}
-                  height={"14rem"}
+                  height={"16rem"}
                 >
                   <Paper sx={{ width: "88%", height: "100%" }}>
                     <TableContainer
@@ -1247,29 +1593,45 @@ export function DisposicionPagosCapital() {
                                       </IconButton>
                                     </Tooltip>
                                   </StyledTableCell>
+
                                   <StyledTableCell
                                     align="center"
                                     component="th"
                                   >
-                                    {row.fechaPrimerPago}
+                                    {row?.fechaDisposicion}
+                                  </StyledTableCell>
+
+                                  <StyledTableCell
+                                    align="center"
+                                    component="th"
+                                  >
+                                    {row?.importe}
+                                  </StyledTableCell>
+
+
+                                  <StyledTableCell
+                                    align="center"
+                                    component="th"
+                                  >
+                                    {row?.fechaPrimerPago}
                                   </StyledTableCell>
                                   <StyledTableCell
                                     align="center"
                                     component="th"
                                   >
-                                    {row.tasaFija}
+                                    {row?.tasaFija}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.periocidadPago.Descripcion}
+                                    {row?.periocidadPago?.Descripcion}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.tasaReferencia.Descripcion || "N/A"}
+                                    {row?.tasaReferencia?.Descripcion || "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.sobreTasa}
+                                    {row?.sobreTasa}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.diasEjercicio.Descripcion}
+                                    {row?.diasEjercicio?.Descripcion}
                                   </StyledTableCell>
                                 </StyledTableRow>
                               );

@@ -171,7 +171,6 @@ export function ObligacionesCortoPlazoPage() {
                   changeOpenVerComentarios(!openVerComentarios);
                 }}
               >
-
                 Ver Comentarios
               </Button>
             )}

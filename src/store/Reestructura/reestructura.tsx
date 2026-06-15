@@ -285,9 +285,10 @@ export const createReestructura: StateCreator<ReestructuraSlice> = (set, get) =>
       informacionGeneral: {
         informacionGeneral: lpState.informacionGeneral,
         obligadosSolidarios: lpState.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+          ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
+            prelacionPorcentaje,
           })
         ),
         destinoGastosCostos: lpState.tablaGastosCostos,

@@ -153,9 +153,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       informacionGeneral: {
         informacionGeneral: state.informacionGeneral,
         obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+          ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
+            prelacionPorcentaje,
           })
         ),
       },
@@ -265,9 +266,10 @@ export const createSolicitudInscripcionSlice: StateCreator<
       informacionGeneral: {
         informacionGeneral: state.informacionGeneral,
         obligadosSolidarios: state.tablaObligadoSolidarioAval.map(
-          ({ entePublicoObligado, tipoEntePublicoObligado }) => ({
+          ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
+            prelacionPorcentaje,
           })
         ),
       },

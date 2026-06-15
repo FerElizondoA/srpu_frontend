@@ -7,10 +7,30 @@ export interface ITasaEfectiva {
   tasaEfectiva: string;
   //diasEjercicio: { Id: string; Descripcion: string };
 }
+// export interface IComisiones {
+//   fechaComision: string;
+//   tipoDeComision: { Id: string; Descripcion: string, detallOtrasComisiones: "", };
+//   periodicidadDePago: { Id: string; Descripcion: string, detallePerfilEspecifico: "", };
+//   porcentaje: string;
+//   monto: string;
+//   iva: boolean;
+// }
+
 export interface IComisiones {
   fechaComision: string;
-  tipoDeComision: { Id: string; Descripcion: string };
-  periodicidadDePago: { Id: string; Descripcion: string };
+
+  tipoDeComision: {
+    Id: string;
+    Descripcion: string;
+    detallOtrasComisiones: string;
+  };
+
+  periodicidadDePago: {
+    Id: string;
+    Descripcion: string;
+    detallePerfilEspecifico: string;
+  };
+
   porcentaje: string;
   monto: string;
   iva: boolean;
@@ -25,11 +45,12 @@ export interface TasaEfectivaSlice {
 
   comision: IComisiones;
   setComision: (comisiones: IComisiones) => void;
+  cleanComisiones: () => void;
   tablaComisiones: IComisiones[];
 
   addComision: (newComision: IComisiones) => void;
   setTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
-  cleanComision: () => void;
+  cleanTablaComision: () => void;
   removeComision: (index: number) => void;
 
   catalogoTiposComision: ICatalogo[];
@@ -56,14 +77,50 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
       tasaEfectiva: tasaEfectiva,
     })),
 
+
   comision: {
     fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
-    tipoDeComision: { Id: "", Descripcion: "" },
-    periodicidadDePago: { Id: "", Descripcion: "" },
+
+    tipoDeComision: {
+      Id: "",
+      Descripcion: "",
+      detallOtrasComisiones: "",
+    },
+
+    periodicidadDePago: {
+      Id: "",
+      Descripcion: "",
+      detallePerfilEspecifico: "",
+    },
     monto: "0",
     porcentaje: "",
     iva: false,
   },
+
+
+  cleanComisiones: () =>
+    set((state) => ({
+      comision: {
+        fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
+
+        tipoDeComision: {
+          Id: "",
+          Descripcion: "",
+          detallOtrasComisiones: "",
+        },
+
+        periodicidadDePago: {
+          Id: "",
+          Descripcion: "",
+          detallePerfilEspecifico: "",
+        },
+
+        monto: "0",
+        porcentaje: "",
+        iva: false,
+      },
+    })),
+
   setComision: (comision: IComisiones) =>
     set(() => ({
       comision: comision,
@@ -80,7 +137,7 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
   setTablaComisiones: (newTablaComisiones: IComisiones[]) =>
     set(() => ({ tablaComisiones: newTablaComisiones })),
 
-  cleanComision: () => set((state) => ({ tablaComisiones: [] })),
+  cleanTablaComision: () => set((state) => ({ tablaComisiones: [] })),
 
   removeComision: (index: number) =>
     set((state) => ({

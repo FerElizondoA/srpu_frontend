@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  TextField,
   ThemeProvider,
   Tooltip,
   Typography,
@@ -70,10 +71,16 @@ export const headsComision: readonly {
       label: "Tipo de comisión",
     },
     {
+      label: "Descripción de la Comisión",
+    },
+    {
       label: "Fecha de primer pago",
     },
     {
       label: "Periodicidad de Pago",
+    },
+    {
+      label: "Detalle del Perfil Específico",
     },
     {
       label: "Porcentaje",
@@ -123,6 +130,9 @@ const heads: readonly {
     },
     {
       label: "Comisiones",
+    },
+    {
+      label: "Periodo de Gracia",
     },
   ];
 
@@ -186,11 +196,11 @@ export function CondicionesFinancieras() {
   const calcularSumaTotal = () => {
     const suma = tablaCondicionesFinancieras.reduce((acumulado, condicion) => {
       // Sumamos todos los importes de las disposiciones de la condición actual
-      const sumaDisposicion = condicion.disposicion.reduce((sum, disp) => {
+      const sumaDisposicion = condicion.tasaInteres.reduce((sum, disp) => {
         return sum + parseFloat(disp.importe || '0'); // Convertir importe de string a número
       }, 0);
       console.log("acumulado + sumaDisposicion", acumulado, sumaDisposicion);
-      
+
       return acumulado + sumaDisposicion; // Sumar al acumulado total
 
     }, 0);
@@ -211,13 +221,13 @@ export function CondicionesFinancieras() {
   // useEffect(() => {
   //   const sumaTotal = tablaCondicionesFinancieras.disposicion.importe.map()
   //   setnumDisposicionTotal(tablaCondicionesFinancieras.disposicion.importe.map(heads, index) =>(
-      
+
   //   ))
 
   //   console.log("tablaCondicionesFinancieras", tablaCondicionesFinancieras)
-    
+
   // }, [tablaCondicionesFinancieras, !openFiltroMonto])
-  
+
 
 
 
@@ -325,10 +335,10 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.disposicion.length > 1
+                        {row.tasaInteres.length > 1
                           ? null
                           : format(
-                            new Date(row.disposicion[0].fechaDisposicion),
+                            new Date(row.tasaInteres[0].fechaDisposicion),
                             "dd/MM/yyyy"
                           )}
                       </StyledTableCell>
@@ -338,17 +348,17 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.disposicion.length > 1 ? (
+                        {row.tasaInteres.length > 1 ? (
                           <Button
                             onClick={() => {
-                              setRowDisposicion(row.disposicion);
+                              setRowTasa(row.tasaInteres);
                               setOpenDisposicion(true);
                             }}
                           >
                             <InfoOutlinedIcon />
                           </Button>
                         ) : (
-                          row.disposicion[0].importe
+                          row.tasaInteres[0].importe
                         )}
                       </StyledTableCell>
                       <StyledTableCell
@@ -381,6 +391,8 @@ export function CondicionesFinancieras() {
                       >
                         <Button
                           onClick={() => {
+                            console.log("ROW CONDICION FINANCIER COMPLETA", row)
+
                             setRowTasa(row.tasaInteres);
                             setOpenTasa(true);
                           }}
@@ -395,6 +407,7 @@ export function CondicionesFinancieras() {
                         {
                           <Button
                             onClick={() => {
+
                               setRowComision(row.comisiones);
                               setOpenComision(true);
                             }}
@@ -402,6 +415,13 @@ export function CondicionesFinancieras() {
                             <InfoOutlinedIcon />
                           </Button>
                         }
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
+                        {row.pagosDeCapital.periodoGracia === true ? "Aplica" : "N/A"}
                       </StyledTableCell>
                     </StyledTableRow>
                   );
@@ -416,6 +436,16 @@ export function CondicionesFinancieras() {
                 maxWidth={"lg"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography
+                    sx={{
+                      ...queries.bold_text_Titulos,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      justifyContent: "center"
+                    }}>
+                    Tasa de Interés
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenTasa(false);
@@ -436,7 +466,7 @@ export function CondicionesFinancieras() {
                       <TableHead sx={{ maxHeight: "200px" }}>
                         <TableRow>
                           {headsTasa.map((head, index) => (
-                            <StyledTableCell key={index}>
+                            <StyledTableCell key={index} align="center">
                               <TableSortLabel>{head.label}</TableSortLabel>
                             </StyledTableCell>
                           ))}
@@ -444,32 +474,35 @@ export function CondicionesFinancieras() {
                       </TableHead>
                       <TableBody>
                         {rowTasa.map((row, index) => {
+                          console.log("|ROW TASA|", row)
                           return (
                             <StyledTableRow key={index}>
-                              <StyledTableCell component="th" scope="row">
+                              <StyledTableCell component="th" scope="row" align="center">
                                 {lightFormat(
-                                  new Date(row.fechaPrimerPago),
+                                  new Date(row?.fechaPrimerPago),
                                   "dd-MM-yyyy"
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaFija}
+                                {row?.tasaFija === "" ? "N/A" : row?.tasaFija}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periocidadPago.Descripcion}
+                                {row?.periocidadPago?.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaReferencia.Descripcion || "N/A"}
+                                {row?.tasaReferencia?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.sobreTasa === 0 || row.sobreTasa === null
-                                  ? "N/A"
-                                  : row.sobreTasa
-                                } %
+                                {row?.sobreTasa === 0 || row?.sobreTasa === null || row?.sobreTasa.toString() === "N/A"
+                                  ? row?.sobreTasa
+                                  : row?.sobreTasa + "%"
+                                }
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.diasEjercicio.Descripcion}
+                                {row?.diasEjercicio?.Descripcion}
                               </StyledTableCell>
+
+
                             </StyledTableRow>
                           );
                         })}
@@ -484,9 +517,19 @@ export function CondicionesFinancieras() {
                 onClose={() => {
                   setOpenComision(false);
                 }}
-                maxWidth={"lg"}
+                maxWidth={"xl"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography
+                    sx={{
+                      ...queries.bold_text_Titulos,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      justifyContent: "center"
+                    }}>
+                    Comisiones
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenComision(false);
@@ -517,9 +560,14 @@ export function CondicionesFinancieras() {
                         {rowComision.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
-                              <StyledTableCell component="th" scope="row">
-                                {row.tipoDeComision?.Descripcion || "N/A"}
+                              <StyledTableCell component="th" scope="row" align="center">
+                                {row?.tipoDeComision?.Descripcion || "N/A"}
                               </StyledTableCell>
+
+                              <StyledTableCell component="th" scope="row" align="center">
+                                {row?.tipoDeComision?.detallOtrasComisiones || "N/A"}
+                              </StyledTableCell>
+
                               <StyledTableCell align="center">
                                 {row?.fechaComision !== "N/A"
                                   ? format(
@@ -529,16 +577,21 @@ export function CondicionesFinancieras() {
                                   : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periodicidadDePago?.Descripcion || "N/A"}
+                                {row?.periodicidadDePago?.Descripcion || "N/A"}
+                              </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {row?.periodicidadDePago?.detallePerfilEspecifico || "N/A"}
+                              </StyledTableCell>
+
+                              <StyledTableCell align="center">
+                                {row?.porcentaje} %
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.porcentaje} %
+                                {row?.monto}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.monto}
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                {row.iva === true ? "Aplica" : "N/A"}
+                                {row?.iva === true ? "Aplica" : "N/A"}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -557,6 +610,16 @@ export function CondicionesFinancieras() {
                 maxWidth={"lg"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography
+                    sx={{
+                      ...queries.bold_text_Titulos,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      justifyContent: "center"
+                    }}>
+                    Importe de disposición
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenDisposicion(false);
@@ -584,14 +647,14 @@ export function CondicionesFinancieras() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rowDisposicion.map((row, index) => {
+                        {rowTasa.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {row.fechaDisposicion}
+                                {row?.fechaDisposicion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.importe}
+                                {row?.importe}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -651,7 +714,7 @@ export function CondicionesFinancieras() {
           <DialogContent>
             <Typography sx={{
               ...queries.text,
-              color:"red"
+              color: "red"
 
             }}>
               * Favor de Ingresar <strong>Monto Original</strong> contratado en informacion general

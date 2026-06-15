@@ -15,6 +15,7 @@ export interface IInformacionGeneral {
 export interface IObligadoSolidarioAval {
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
   entePublicoObligado: { Id: string; Descripcion: string };
+  prelacionPorcentaje: number;
 }
 
 export interface InformacionGeneralSlice {
@@ -25,6 +26,7 @@ export interface InformacionGeneralSlice {
   generalObligadoSolidarioAval: {
     tipoEntePublicoObligado: { Id: string; Descripcion: string };
     entePublicoObligado: { Id: string; Descripcion: string };
+    prelacionPorcentaje: number;
   };
   tablaObligadoSolidarioAval: IObligadoSolidarioAval[];
 
@@ -49,6 +51,8 @@ export interface InformacionGeneralSlice {
     entePublicoObligado: { Id: string; Descripcion: string }
   ) => void;
 
+  updatePrelacionPorcentaje: (index: number, valor: number) => void;
+
   cleanObligadoSolidarioAval: () => void;
 
   removeObligadoSolidarioAval: (index: number) => void;
@@ -64,6 +68,19 @@ export const createInformacionGeneralSlice: StateCreator<
 > = (set, get) => ({
 
 
+  updatePrelacionPorcentaje: (index: number, valor: number) =>
+    set((state) => ({
+      tablaObligadoSolidarioAval: state.tablaObligadoSolidarioAval.map(
+        (item, i) =>
+          i === index
+            ? {
+              ...item,
+              prelacionPorcentaje: valor,
+            }
+            : item
+      ),
+    })),
+
   informacionGeneral: {
     fechaContratacion: new Date().toString(),
     fechaVencimiento: new Date().toString(),
@@ -77,6 +94,7 @@ export const createInformacionGeneralSlice: StateCreator<
   generalObligadoSolidarioAval: {
     tipoEntePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
     entePublicoObligado: { Id: "", Descripcion: "" }, // Descripcion: "NO APLICA"
+    prelacionPorcentaje: 0,
   },
   tablaObligadoSolidarioAval: [],
 
@@ -149,7 +167,7 @@ export const createInformacionGeneralSlice: StateCreator<
     await axios
       .get(
         process.env.REACT_APP_APPLICATION_BACK +
-          "/get-institucionesFinancieras",
+        "/get-institucionesFinancieras",
         {
           headers: {
             Authorization: localStorage.getItem("jwtToken"),

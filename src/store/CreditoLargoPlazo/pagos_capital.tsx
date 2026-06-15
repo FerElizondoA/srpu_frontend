@@ -76,6 +76,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
     periodicidadDePago: { Id: "", Descripcion: "" },
     numeroDePago: 1,
+    periodoGracia: false,
   },
   setPagosDeCapital: (pagosDeCapital: IPagosDeCapital) => {
     set((state) => ({
@@ -95,6 +96,11 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   tablaDisposicion: [],
 
   tasaDeInteres: {
+    fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+    importe: "$ 0.00",
+    montoDisposición: "$ 0.00",
+
+
     tasaFija: "",
     fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
     diasEjercicio: { Id: "", Descripcion: "" },

@@ -298,10 +298,10 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.disposicion.length >= 1
+                        {row.tasaInteres.length >= 1
                           ? null
                           : format(
-                            new Date(row.disposicion[0].fechaDisposicion),
+                            new Date(row.tasaInteres[0].fechaDisposicion),
                             "dd/MM/yyyy"
                           )}
                       </StyledTableCell>
@@ -311,17 +311,17 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.disposicion.length > 1 ? (
+                        {row.tasaInteres.length > 1 ? (
                           <Button
                             onClick={() => {
-                              setRowDisposicion(row.disposicion);
-                              setOpenDisposicion(true);
+                              setRowTasa(row.tasaInteres);
+                              setOpenTasa(true);
                             }}
                           >
                             <InfoOutlinedIcon />
                           </Button>
                         ) : (
-                          row.disposicion[0].importe
+                          row.tasaInteres[0].importe
                         )}
                       </StyledTableCell>
                       <StyledTableCell
@@ -419,27 +419,27 @@ export function CondicionesFinancieras() {
                         {rowTasa.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
-                              <StyledTableCell component="th" scope="row">
+                              {/* <StyledTableCell component="th" scope="row">
                                 {lightFormat(
-                                  new Date(row.fechaPrimerPago),
+                                  new Date(row?.fechaPrimerPago),
                                   "dd-MM-yyyy"
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaFija}
+                                {row?.tasaFija}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periocidadPago.Descripcion}
+                                {row.periocidadPago?.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaReferencia.Descripcion}
+                                {row.tasaReferencia?.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.sobreTasa}
+                                {row?.sobreTasa}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.diasEjercicio.Descripcion}
-                              </StyledTableCell>
+                                {row.diasEjercicio?.Descripcion}
+                              </StyledTableCell> */}
                             </StyledTableRow>
                           );
                         })}
@@ -488,7 +488,7 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell component="th" scope="row">
-                                {row.tipoDeComision?.Descripcion || "N/A"}
+                                {row?.tipoDeComision?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row?.fechaComision !== "N/A"
@@ -499,16 +499,16 @@ export function CondicionesFinancieras() {
                                   : "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periodicidadDePago?.Descripcion || "N/A"}
+                                {row?.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.porcentaje}
+                                {row?.porcentaje}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.monto}
+                                {row?.monto}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.iva}
+                                {row?.iva}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -554,14 +554,14 @@ export function CondicionesFinancieras() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rowDisposicion.map((row, index) => {
+                        {rowTasa.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {row.fechaDisposicion}
+                                {row?.fechaDisposicion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.importe}
+                                {row?.importe}
                               </StyledTableCell>
                             </StyledTableRow>
                           );

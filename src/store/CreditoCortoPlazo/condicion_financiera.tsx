@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 export interface ICondicionFinanciera {
   pagosDeCapital: IPagosDeCapital;
-  disposicion: IDisposicion[];
+  //disposicion: IDisposicion[];
   tasaInteres: ITasaInteres[];
 
   tasaEfectiva: ITasaEfectiva;
@@ -47,6 +47,8 @@ export const createCondicionFinancieraSlice: StateCreator<
   tablaCondicionesFinancieras: [],
 
   addCondicionFinanciera: (condicion: ICondicionFinanciera) => {
+    console.log("Condición financiera agregada:", condicion)
+
     set((state) => ({
       tablaCondicionesFinancieras: [
         ...state.tablaCondicionesFinancieras,
@@ -59,24 +61,33 @@ export const createCondicionFinancieraSlice: StateCreator<
     useCortoPlazoStore.setState({
       radioValue: 1,
       tasasParciales: condicionFinanciera.tasaInteres.length > 1,
-      disposicionesParciales: condicionFinanciera.disposicion.length > 1,
+      //disposicionesParciales: condicionFinanciera.disposicion.length > 1,
 
-      noAplica: condicionFinanciera.comisiones[0]?.tipoDeComision.Descripcion === "N/A" ?  true : false,
+      noAplica: condicionFinanciera.comisiones[0]?.tipoDeComision.Descripcion === "N/A" ? true : false,
 
       pagosDeCapital: condicionFinanciera.pagosDeCapital,
-      tablaDisposicion: condicionFinanciera.disposicion,
+      // tablaDisposicion: condicionFinanciera.disposicion,
+
+      disposicionesParciales: condicionFinanciera.tasaInteres.length > 1 ? true : false,
       tasaDeInteres:
         condicionFinanciera.tasaInteres.length === 1
           ? condicionFinanciera.tasaInteres[0]
           : {
-              tasaFija: "",
-              fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
-              diasEjercicio: { Id: "", Descripcion: "" },
-              periocidadPago: { Id: "", Descripcion: "" },
-              tasaReferencia: { Id: "", Descripcion: "" },
-              sobreTasa: 0,
-            },
+            //Nuevos Campos Inicio
+            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            importe: "$ 0.00",
+            montoDisposición: "$ 0.00",
+            //  Nuevos Campos Fin REVISALO
+            tasaFija: "",
+            fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+            diasEjercicio: { Id: "", Descripcion: "" },
+            periocidadPago: { Id: "", Descripcion: "" },
+            tasaReferencia: { Id: "", Descripcion: "" },
+            sobreTasa: 0,
+          },
+          // disposicionesParciales: condicionFinanciera.tasaInteres.length > 1 ? true : false,
       tablaTasaInteres: condicionFinanciera.tasaInteres,
+
 
       tasaEfectiva: condicionFinanciera.tasaEfectiva,
       tablaComisiones: condicionFinanciera.comisiones,
@@ -112,7 +123,8 @@ export const createCondicionFinancieraSlice: StateCreator<
       pagosDeCapital: {
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         periodicidadDePago: { Id: "", Descripcion: "" },
-        numeroDePago: 1,
+        numeroDePago: 0,
+        periodoGracia: false,
       },
       disposicion: {
         fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
@@ -121,6 +133,13 @@ export const createCondicionFinancieraSlice: StateCreator<
       },
       tablaDisposicion: [],
       tasaDeInteres: {
+        //Nuevos Campos Inicio
+        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        importe: "$ 0.00",
+        montoDisposición: "$ 0.00",
+        //Nuevos Campos Fin
+
+
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
@@ -134,14 +153,27 @@ export const createCondicionFinancieraSlice: StateCreator<
         tasaEfectiva: "",
         //diasEjercicio: { Id: "", Descripcion: "" },
       },
+
       comision: {
         fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
-        tipoDeComision: { Id: "", Descripcion: "" },
-        periodicidadDePago: { Id: "", Descripcion: "" },
+
+        tipoDeComision: {
+          Id: "",
+          Descripcion: "",
+          detallOtrasComisiones: "",
+        },
+
+        periodicidadDePago: {
+          Id: "",
+          Descripcion: "",
+          detallePerfilEspecifico: "",
+        },
+
         monto: "0",
         porcentaje: "",
         iva: false,
       },
+
       tablaComisiones: [],
     });
   },
