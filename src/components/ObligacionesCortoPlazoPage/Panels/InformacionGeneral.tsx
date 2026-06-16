@@ -20,11 +20,11 @@ import {
   Typography,
 } from "@mui/material";
 
-import { differenceInCalendarDays } from "date-fns";
+import { differenceInCalendarDays, startOfDay, addDays } from "date-fns";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { differenceInDays, startOfDay } from "date-fns";
-import { addDays, subDays } from "date-fns/esm";
+import { differenceInDays } from "date-fns";
+import { subDays } from "date-fns/esm";
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
@@ -149,7 +149,7 @@ export function InformacionGeneral() {
   const tablaObligados: any = useCortoPlazoStore(
     (state) => state.tablaObligadoSolidarioAval
   );
-    const setTablaObligadoSolidarioAval: Function = useCortoPlazoStore(
+  const setTablaObligadoSolidarioAval: Function = useCortoPlazoStore(
     (state) => state.setTablaObligadoSolidarioAval
   );
 
@@ -278,50 +278,32 @@ export function InformacionGeneral() {
   useEffect(() => {
     if (!contratacion || !vencimiento) return;
 
-    const fechaContratacion = new Date(contratacion);
-    const fechaVencimiento = new Date(vencimiento);
+    const fechaContratacionDate = startOfDay(
+      new Date(contratacion)
+    );
 
-    const fechaMaxima = addDays(fechaContratacion, 364);
+    const fechaVencimientoDate = startOfDay(
+      new Date(vencimiento)
+    );
 
-    if (fechaVencimiento > fechaMaxima) {
-      setVencimiento(fechaMaxima.toISOString());
-    }
-  }, [contratacion]);
+    const fechaMaxima = addDays(
+      fechaContratacionDate,
+      364
+    );
 
-  useEffect(() => {
-    if (!contratacion || !vencimiento) return;
-
-    const fechaContratacionDate =
-      new Date(contratacion);
-
-    const fechaVencimientoDate =
-      new Date(vencimiento);
-
-    const fechaMaximaVencimiento =
-      addDays(fechaContratacionDate, 364);
-
-    // Si vencimiento quedó antes de contratación
-    if (
-      fechaVencimientoDate <
-      fechaContratacionDate
-    ) {
+    if (fechaVencimientoDate < fechaContratacionDate) {
       setVencimiento(
         fechaContratacionDate.toISOString()
       );
-
       return;
     }
 
-    // Si vencimiento supera el máximo permitido
-    if (
-      fechaVencimientoDate >
-      fechaMaximaVencimiento
-    ) {
+    if (fechaVencimientoDate > fechaMaxima) {
       setVencimiento(
-        fechaMaximaVencimiento.toISOString()
+        fechaMaxima.toISOString()
       );
     }
-  }, [contratacion]);
+  }, [contratacion, vencimiento]);
 
   return (
     <Grid
@@ -513,44 +495,11 @@ export function InformacionGeneral() {
               }
               sx={{ width: "100%" }}
               value={vencimiento ? new Date(vencimiento) : null}
-              // onChange={(date) => setVencimiento(date?.toISOString() || "")}
-              // onChange={(date) => {
-              //   if (!date) return;
-
-              //   const fechaMaxima = addDays(
-              //     new Date(contratacion),
-              //     364
-              //   );
-
-              //   if (date > fechaMaxima) {
-              //     setVencimiento(fechaMaxima.toISOString());
-              //     return;
-              //   }
-
-              //   setVencimiento(date.toISOString());
-              // }}
               onChange={(date) => {
+                console.log("Cambio de fecha:", date);
                 if (!date) return;
 
-                const fechaContratacionDate =
-                  new Date(contratacion);
-
-                const fechaMaxima =
-                  addDays(fechaContratacionDate, 364);
-
-                let fechaFinal = date;
-
-                if (date < fechaContratacionDate) {
-                  fechaFinal = fechaContratacionDate;
-                }
-
-                if (date > fechaMaxima) {
-                  fechaFinal = fechaMaxima;
-                }
-
-                setVencimiento(
-                  fechaFinal.toISOString()
-                );
+                setVencimiento(date.toISOString());
               }}
               minDate={new Date(contratacion)}
               maxDate={addDays(new Date(contratacion), 365 - 1)}
@@ -892,7 +841,7 @@ export function InformacionGeneral() {
                   Descripcion: "",
                 },
               });
-              
+
             }}
           >
             Agregar

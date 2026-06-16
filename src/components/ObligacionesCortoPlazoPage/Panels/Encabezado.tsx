@@ -426,6 +426,7 @@ export function Encabezado() {
               sx={{ width: "100%" }}
               value={new Date(fechaContratacion)}
               onChange={(date) => {
+                console.log("Fecha contratacion", fechaContratacion)
                 if (!date) return;
 
                 const hoy = new Date();
