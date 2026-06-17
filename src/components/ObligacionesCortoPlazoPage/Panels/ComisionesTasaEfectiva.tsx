@@ -26,7 +26,6 @@ import {
   Typography,
 } from "@mui/material";
 import validator from "validator";
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -39,7 +38,7 @@ import { StyledTableCell, StyledTableRow } from "../../CustomComponents";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { ICatalogo } from "../../Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { moneyMask } from "./InformacionGeneral";
@@ -144,6 +143,14 @@ export function ComisionesTasaEfectiva() {
   const mostrarPerfilEspecifico =
     comision.periodicidadDePago.Descripcion === "Perfil Especifico"; // falta coma en el catálogo
 
+
+  const fechaContratacion: string = useCortoPlazoStore(
+    (state) => state.encabezado.fechaContratacion
+  );
+
+  const fechaVencimiento: string = useCortoPlazoStore(
+    (state) => state.informacionGeneral.fechaVencimiento
+  );
 
   React.useEffect(() => {
     catalogoTiposComision.length <= 0 && getTiposComision();
@@ -345,6 +352,8 @@ export function ComisionesTasaEfectiva() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               sx={{ width: "100%" }}
+              minDate={new Date(fechaContratacion)}
+              maxDate={new Date(fechaVencimiento)}
               disabled={noAplica}
               value={new Date(comision.fechaComision)}
               onChange={(date) => {
@@ -753,14 +762,19 @@ export function ComisionesTasaEfectiva() {
                     <StyledTableRow key={index}>
                       <StyledTableCell align="center">
                         {!noAplica && (
-                          <Tooltip title="Eliminar">
-                            <IconButton
-                              type="button"
-                              onClick={() => removeComision(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
+
+                       
+                            <Tooltip title="Eliminar">
+                              <IconButton
+                                type="button"
+                                onClick={() => removeComision(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+
+                     
+
                         )}
                       </StyledTableCell>
                       <StyledTableCell align="center">

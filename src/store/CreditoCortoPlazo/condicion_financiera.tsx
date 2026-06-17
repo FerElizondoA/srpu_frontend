@@ -74,18 +74,21 @@ export const createCondicionFinancieraSlice: StateCreator<
           ? condicionFinanciera.tasaInteres[0]
           : {
             //Nuevos Campos Inicio
-            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            Disposiciones: {
+              fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+              fechaIndicativa: false
+            },
             importe: "$ 0.00",
             montoDisposición: "$ 0.00",
             //  Nuevos Campos Fin REVISALO
             tasaFija: "",
             fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
             diasEjercicio: { Id: "", Descripcion: "" },
-            periocidadPago: { Id: "", Descripcion: "" },
+            periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
             tasaReferencia: { Id: "", Descripcion: "" },
             sobreTasa: 0,
           },
-          // disposicionesParciales: condicionFinanciera.tasaInteres.length > 1 ? true : false,
+      // disposicionesParciales: condicionFinanciera.tasaInteres.length > 1 ? true : false,
       tablaTasaInteres: condicionFinanciera.tasaInteres,
 
 
@@ -134,7 +137,10 @@ export const createCondicionFinancieraSlice: StateCreator<
       tablaDisposicion: [],
       tasaDeInteres: {
         //Nuevos Campos Inicio
-        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        Disposiciones: {
+          fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+          fechaIndicativa: false
+        },
         importe: "$ 0.00",
         montoDisposición: "$ 0.00",
         //Nuevos Campos Fin
@@ -143,7 +149,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
-        periocidadPago: { Id: "", Descripcion: "" },
+        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0},
         tasaReferencia: { Id: "", Descripcion: "" },
         sobreTasa: 0,
       },

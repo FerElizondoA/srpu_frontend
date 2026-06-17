@@ -1002,7 +1002,10 @@ export function Resumen({
                                   return (
                                     <StyledTableRow key={index}>
                                       <StyledTableCell align="center">
-                                        {row?.fechaDisposicion}
+                                        {row?.Disposiciones?.fechaDisposicion}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row?.importe}

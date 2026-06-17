@@ -17,7 +17,11 @@ export interface IDisposicion {
 export interface ITasaInteres {
 
   //Nuevos Campos Inicio
-  fechaDisposicion: string;
+  Disposiciones: {
+    fechaDisposicion: string
+    fechaIndicativa: boolean
+  }
+
   importe: string;
   montoDisposición: string;
   //Nuevos Campos Fin
@@ -25,7 +29,7 @@ export interface ITasaInteres {
   fechaPrimerPago: string;
   tasaFija: string;
   diasEjercicio: { Id: string; Descripcion: string };
-  periocidadPago: { Id: string; Descripcion: string };
+  periocidadPago: { Id: string; Descripcion: string; detallePeriodicidadPago:number };
   tasaReferencia: { Id: string; Descripcion: string };
   sobreTasa: number;
 }
@@ -40,6 +44,8 @@ export interface PagosCapitalSlice {
   disposicionesParciales: boolean;
   setDisposicionesParciales: () => void;
 
+
+
   pagosDeCapital: IPagosDeCapital;
   setPagosDeCapital: (pagosDeCapital: IPagosDeCapital) => void;
 
@@ -48,7 +54,7 @@ export interface PagosCapitalSlice {
   tablaDisposicion: IDisposicion[];
 
   tasaDeInteres: ITasaInteres;
-  setTasaInteres: (tasaDeInteres: ITasaInteres) => void;
+  setTasaInteres: (tasaDeInteres: ITasaInteres | ((prev: ITasaInteres) => ITasaInteres)) => void;
   cleanTasaInteres: () => void;
   tablaTasaInteres: ITasaInteres[];
 
@@ -121,36 +127,56 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   cleanTasaInteres: () => {
     set((state) => ({
       tasaDeInteres: {
-        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        // fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        // fechaDisposicionIndicativa: false,
+        Disposiciones: {
+          fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+          fechaIndicativa: false
+        },
+
         importe: "$ 0.00",
         montoDisposición: "$ 0.00",
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
-        periocidadPago: { Id: "", Descripcion: "" },
+        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago:0 },
         tasaReferencia: { Id: "", Descripcion: "" },
         sobreTasa: 0,
-      }}));
+      }
+    }));
   },
 
   tasaDeInteres: {
 
-    fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+    //fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+    //fechaDisposicionIndicativa: false,
+    Disposiciones: {
+      fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+      fechaIndicativa: false
+    },
+
     importe: "$ 0.00",
     montoDisposición: "$ 0.00",
 
     tasaFija: "",
     fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
     diasEjercicio: { Id: "", Descripcion: "" },
-    periocidadPago: { Id: "", Descripcion: "" },
+    periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
     tasaReferencia: { Id: "", Descripcion: "" },
     sobreTasa: 0,
   },
-  setTasaInteres: (tasaDeInteres: ITasaInteres) => {
+  setTasaInteres: (tasa) =>
     set((state) => ({
-      tasaDeInteres: tasaDeInteres,
-    }));
-  },
+      tasaDeInteres:
+        typeof tasa === "function"
+          ? tasa(state.tasaDeInteres)
+          : tasa,
+    })),
+  // setTasaInteres: (tasaDeInteres: ITasaInteres) => {
+  //   set((state) => ({
+  //     tasaDeInteres: tasaDeInteres,
+  //   }));
+  // },
   tablaTasaInteres: [],
 
   addDisposicion: (Disposicion: IDisposicion) =>

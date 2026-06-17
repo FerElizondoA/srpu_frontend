@@ -27,6 +27,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -62,6 +63,9 @@ const heads: readonly {
       label: "Fecha de Disposición"
     },
     {
+      label: "Fecha Indicativa"
+    },
+    {
       label: "Importe de Disposición",
     },
     //NUEVOS FIN
@@ -73,6 +77,9 @@ const heads: readonly {
     },
     {
       label: "Periodicidad de Pago",
+    },
+    {
+      label: "Detalle Periocidad de Pago",
     },
     {
       label: "Tasa de Referencia",
@@ -392,6 +399,71 @@ export function DisposicionPagosCapital() {
     return (parseFloat(valorNumerico)); // Convierte la cadena a número flotante
   };
 
+  const heredarInteres = (registro: ITasaInteres) => {
+
+    // Es tasa fija
+    if (registro.tasaFija !== "N/A") {
+
+      setRadioValue(1);
+
+      setTasaInteres({
+        ...tasaDeInteres,
+
+        fechaPrimerPago: registro.fechaPrimerPago,
+        tasaFija: registro.tasaFija,
+
+        diasEjercicio: {
+          Id: registro.diasEjercicio.Id,
+          Descripcion: registro.diasEjercicio.Descripcion,
+        },
+
+        periocidadPago: {
+          Id: registro.periocidadPago.Id,
+          Descripcion: registro.periocidadPago.Descripcion,
+          detallePeriodicidadPago: registro.periocidadPago.detallePeriodicidadPago,
+        },
+
+        tasaReferencia: {
+          Id: "",
+          Descripcion: "",
+        },
+
+        sobreTasa: "",
+      });
+
+    } else {
+
+      // Es tasa variable
+      setRadioValue(2);
+
+      setTasaInteres({
+        ...tasaDeInteres,
+
+        fechaPrimerPago: registro.fechaPrimerPago,
+
+        periocidadPago: {
+          Id: registro.periocidadPago.Id,
+          Descripcion: registro.periocidadPago.Descripcion,
+          detallePeriodicidadPago: registro.periocidadPago.detallePeriodicidadPago,
+        },
+
+        tasaReferencia: {
+          Id: registro.tasaReferencia.Id,
+          Descripcion: registro.tasaReferencia.Descripcion,
+        },
+
+        sobreTasa: registro.sobreTasa,
+
+        diasEjercicio: {
+          Id: registro.diasEjercicio.Id,
+          Descripcion: registro.diasEjercicio.Descripcion,
+        },
+
+        tasaFija: "",
+      });
+    }
+  };
+
   // useEffect(() => {
   //   console.log("Días disponibles:", diasDisponibles);
   //   console.log("Fecha Primer Pago:", pagosDeCapital.fechaPrimerPago);
@@ -465,6 +537,7 @@ export function DisposicionPagosCapital() {
       // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
       setTablaTasaInteres([tasaDeInteres]);
     }
+    console.log("TABLA", tasaDeInteres)
   }, [disposicionesParciales, tasaDeInteres]);
 
 
@@ -478,10 +551,18 @@ export function DisposicionPagosCapital() {
       //     importe: moneyMask(monto.toString()),
       //   },])
 
-      setTasaInteres({ ...tasaDeInteres, importe: moneyMask(monto.toString()) });
+      // setTasaInteres({ ...tasaDeInteres, importe: moneyMask(monto.toString()) });
+      setTasaInteres((prev: any) => ({
+        ...prev,
+        importe: moneyMask(monto.toString()),
+      }));
       setTablaTasaInteres([
         {
-          fechaDisposicion: tasaDeInteres.fechaDisposicion,
+          Disposiciones: {
+            fechaDisposicion: tasaDeInteres.Disposiciones?.fechaDisposicion,
+            fechaIndicativa: tasaDeInteres.Disposiciones?.fechaIndicativa
+          },
+
           importe: moneyMask(monto.toString()),
         },
       ]);
@@ -688,7 +769,7 @@ export function DisposicionPagosCapital() {
                     Id: text?.Id,
                     Descripcion: text?.Descripcion,
                   },
-                   numeroDePago: 0
+                  numeroDePago: 0
                 })
               }
               renderInput={(params) => (
@@ -810,7 +891,7 @@ export function DisposicionPagosCapital() {
             alignItems={"center"}
             width={"100%"}
           >
-            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+            <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
               display={"flex"} justifyContent={"space-evenly"} alignItems={"center"}
               mb={{
                 xs: 3,
@@ -840,7 +921,7 @@ export function DisposicionPagosCapital() {
 
             </Grid>
 
-            <Grid item xs={10} sm={5} md={5} lg={3} xl={3}
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
               mb={{
                 xs: 3,
                 // sm: ,
@@ -858,12 +939,14 @@ export function DisposicionPagosCapital() {
               >
                 <DesktopDatePicker
                   sx={{ width: "100%" }}
-                  value={new Date(disposicion.fechaDisposicion)}
+                  value={new Date(tasaDeInteres.Disposiciones.fechaDisposicion)}
                   onChange={(date) => {
 
                     setTasaInteres({
                       ...tasaDeInteres,
-                      fechaDisposicion: format(date!, "MM/dd/yyyy"),
+                      Disposiciones: {
+                        fechaDisposicion: format(date!, "MM/dd/yyyy"),
+                      }
                     });
                     // setDisposicion({
                     //   ...disposicion,
@@ -871,12 +954,42 @@ export function DisposicionPagosCapital() {
                     // });
                   }}
                   minDate={new Date(fechaContratacion)}
-                  maxDate={new Date(addDays(new Date(), 365))}
+
+                  maxDate={new Date(fechaVencimiento)}
+
+                // maxDate={new Date(addDays(new Date(), 365))}
                 />
               </LocalizationProvider>
+
+              <Grid>
+                {/* Te quedaste aqui */}
+                <FormControlLabel
+                  label="Fecha Indicativa"
+                  control={
+                    <Checkbox
+                      checked={tasaDeInteres.Disposiciones?.fechaIndicativa ?? false}
+                      onChange={() => {
+                        const nuevaFechaIndicativa =
+                          !(tasaDeInteres.Disposiciones?.fechaIndicativa ?? false);
+
+                        console.log("nuevaFechaIndicativa", nuevaFechaIndicativa)
+
+                        setTasaInteres({
+                          ...tasaDeInteres,
+                          Disposiciones: {
+                            ...(tasaDeInteres.Disposiciones ?? {}),
+                            fechaIndicativa: nuevaFechaIndicativa,
+                          },
+                        });
+                      }}
+                    />
+                  }
+                ></FormControlLabel>
+              </Grid>
             </Grid>
 
-            <Grid item xs={10} sm={6} md={6} lg={3} xl={3}
+
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
               mb={{
                 xs: 3,
               }}
@@ -1151,8 +1264,10 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
+                      // minDate={new Date(fechaContratacion)}
+                      // maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                       minDate={new Date(fechaContratacion)}
-                      maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                      maxDate={new Date(fechaVencimiento)}
                       sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) => {
@@ -1282,11 +1397,24 @@ export function DisposicionPagosCapital() {
                       setTasaInteres({
                         ...tasaDeInteres,
                         periocidadPago: {
-                          Id: text?.Id,
-                          Descripcion: text?.Descripcion,
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                          detallePeriodicidadPago:
+                            text?.Descripcion === "Perfil Especifico"
+                              ? tasaDeInteres.periocidadPago.detallePeriodicidadPago
+                              : 0,
                         },
                       })
                     }
+                    // onChange={(event, text) =>
+                    //   setTasaInteres({
+                    //     ...tasaDeInteres,
+                    //     periocidadPago: {
+                    //       Id: text?.Id,
+                    //       Descripcion: text?.Descripcion,
+                    //     },
+                    //   })
+                    // }
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -1299,6 +1427,59 @@ export function DisposicionPagosCapital() {
                       value.Descripcion === ""
                     }
                   />
+                  {
+                    tasaDeInteres.periocidadPago?.Descripcion === "Perfil Especifico" && (
+                      <Grid item >
+                        <InputLabel sx={queries.medium_text}>
+                          Detalle de Periodicidad
+                        </InputLabel>
+
+                        <TextField
+                          placeholder="0"
+
+                          value={
+                            tasaDeInteres.periocidadPago.detallePeriodicidadPago || ""
+                          }
+                          onChange={(v) => {
+                            const valor = v.target.value;
+
+                            const soloNumeros = /^\d*$/;
+
+                            if (
+                              soloNumeros.test(valor) &&
+                              valor.length <= 5
+                            ) {
+                              setTasaInteres({
+                                ...tasaDeInteres,
+                                periocidadPago: {
+                                  ...tasaDeInteres.periocidadPago,
+                                  detallePeriodicidadPago:
+                                    valor === "" ? 0 : Number(valor),
+                                },
+                              });
+                            }
+                          }}
+                          fullWidth
+                          variant="outlined"
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            maxLength: 5,
+                          }}
+                          sx={{
+                            "& input[type=number]": {
+                              MozAppearance: "textfield",
+                            },
+                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                            {
+                              WebkitAppearance: "none",
+                              margin: 0,
+                            },
+                          }}
+                        />
+                      </Grid>
+                    )
+                  }
                 </Grid>
               </Grid>
             ) : (
@@ -1319,6 +1500,10 @@ export function DisposicionPagosCapital() {
                   >
                     <DesktopDatePicker
                       sx={{ width: "100%" }}
+                      // minDate={new Date(fechaContratacion)}
+                      // maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
+                      minDate={new Date(fechaContratacion)}
+                      maxDate={new Date(fechaVencimiento)}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
@@ -1350,12 +1535,25 @@ export function DisposicionPagosCapital() {
                       );
                     }}
                     value={tasaDeInteres.periocidadPago}
+                    // onChange={(event, text) =>
+                    //   setTasaInteres({
+                    //     ...tasaDeInteres,
+                    //     periocidadPago: {
+                    //       Id: text?.Id,
+                    //       Descripcion: text?.Descripcion,
+                    //     },
+                    //   })
+                    // }
                     onChange={(event, text) =>
                       setTasaInteres({
                         ...tasaDeInteres,
                         periocidadPago: {
-                          Id: text?.Id,
-                          Descripcion: text?.Descripcion,
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                          detallePeriodicidadPago:
+                            text?.Descripcion === "Perfil Especifico"
+                              ? tasaDeInteres.periocidadPago.detallePeriodicidadPago
+                              : 0,
                         },
                       })
                     }
@@ -1371,6 +1569,74 @@ export function DisposicionPagosCapital() {
                       value.Descripcion === ""
                     }
                   />
+                  {
+                    tasaDeInteres.periocidadPago?.Descripcion === "Perfil Especifico" && (
+                      <Grid item >
+                        <InputLabel sx={queries.medium_text}>
+                          Detalle de Periodicidad
+                        </InputLabel>
+
+                        <TextField
+                          placeholder="0"
+                          value={
+                            tasaDeInteres.periocidadPago.detallePeriodicidadPago || ""
+                          }
+                          onChange={(v) => {
+                            const valor = v.target.value;
+
+                            const soloNumeros = /^\d*$/;
+
+                            if (
+                              soloNumeros.test(valor) &&
+                              valor.length <= 5
+                            ) {
+                              setTasaInteres({
+                                ...tasaDeInteres,
+                                periocidadPago: {
+                                  ...tasaDeInteres.periocidadPago,
+                                  detallePeriodicidadPago:
+                                    valor === "" ? 0 : Number(valor),
+                                },
+                              });
+                            }
+                          }}
+                          // onChange={(v) => {
+                          //   const valor = v.target.value;
+
+                          //   const soloNumeros = /^\d*$/;
+
+                          //   if (soloNumeros.test(valor)) {
+                          //     setTasaInteres({
+                          //       ...tasaDeInteres,
+                          //       periocidadPago: {
+                          //         ...tasaDeInteres.periocidadPago,
+                          //         detallePeriodicidadPago:
+                          //           valor === "" ? 0 : Number(valor),
+                          //       },
+                          //     });
+                          //   }
+                          // }}
+                          fullWidth
+                          variant="outlined"
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            maxLength: 5,
+                          }}
+                          sx={{
+                            "& input[type=number]": {
+                              MozAppearance: "textfield",
+                            },
+                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                            {
+                              WebkitAppearance: "none",
+                              margin: 0,
+                            },
+                          }}
+                        />
+                      </Grid>
+                    )
+                  }
                 </Grid>
 
                 <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
@@ -1509,7 +1775,6 @@ export function DisposicionPagosCapital() {
                   <Button
                     sx={{
                       ...queries.buttonContinuarSolicitudInscripcion,
-
                       mb: 2,
                       width: "15vh",
                     }}
@@ -1534,9 +1799,9 @@ export function DisposicionPagosCapital() {
                     }
                     variant="outlined"
                     onClick={() => {
-                      cleanTasaInteres();
                       addTasaInteres(tasaDeInteres);
 
+                      cleanTasaInteres();
                     }}
                   >
                     Agregar
@@ -1582,23 +1847,41 @@ export function DisposicionPagosCapital() {
                               return (
                                 <StyledTableRow key={index}>
                                   <StyledTableCell align="center">
-                                    <Tooltip title="Eliminar">
-                                      <IconButton
-                                        type="button"
-                                        onClick={() => {
-                                          removeTasaInteres(index);
-                                        }}
-                                      >
-                                        <DeleteIcon />
-                                      </IconButton>
-                                    </Tooltip>
+
+                                    <Grid display={"flex"} justifyContent={"space-evenly"}>
+                                      <Tooltip title="Eliminar">
+                                        <IconButton
+                                          type="button"
+                                          onClick={() => {
+                                            removeTasaInteres(index);
+                                          }}
+                                        >
+                                          <DeleteIcon />
+                                        </IconButton>
+                                      </Tooltip>
+
+                                      <Tooltip title="Heredar Interés">
+                                        <IconButton
+                                          onClick={() => heredarInteres(row)}
+                                        >
+                                          <BorderColorIcon />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </Grid>
                                   </StyledTableCell>
 
                                   <StyledTableCell
                                     align="center"
                                     component="th"
                                   >
-                                    {row?.fechaDisposicion}
+                                    {row?.Disposiciones?.fechaDisposicion}
+                                  </StyledTableCell>
+
+                                  <StyledTableCell
+                                    align="center"
+                                    component="th"
+                                  >
+                                    {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
                                   </StyledTableCell>
 
                                   <StyledTableCell
@@ -1623,6 +1906,9 @@ export function DisposicionPagosCapital() {
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {row?.periocidadPago?.Descripcion}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row?.periocidadPago?.Descripcion === "Perfil Especifico" ? row?.periocidadPago?.detallePeriodicidadPago : "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {row?.tasaReferencia?.Descripcion || "N/A"}

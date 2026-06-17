@@ -301,7 +301,7 @@ export function CondicionesFinancieras() {
                         {row.tasaInteres.length >= 1
                           ? null
                           : format(
-                            new Date(row.tasaInteres[0].fechaDisposicion),
+                            new Date(row.tasaInteres[0].Disposiciones?.fechaDisposicion),
                             "dd/MM/yyyy"
                           )}
                       </StyledTableCell>
@@ -558,7 +558,10 @@ export function CondicionesFinancieras() {
                           return (
                             <StyledTableRow key={index}>
                               <StyledTableCell align="center">
-                                {row?.fechaDisposicion}
+                                {row?.Disposiciones?.fechaDisposicion}
+                              </StyledTableCell>
+                               <StyledTableCell align="center">
+                                {row?.Disposiciones?.fechaIndicativa === true ? "Aplica": "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row?.importe}

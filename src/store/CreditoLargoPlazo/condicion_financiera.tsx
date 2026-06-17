@@ -59,14 +59,17 @@ export const createCondicionFinancieraSlice: StateCreator<
           ? condicionFinanciera.tasaInteres[0]
           : {
             //Nuevoo Campo Inicio
-            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            Disposiciones: {
+              fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+              fechaIndicativa: false
+            },
             importe: "$ 0.00",
             montoDisposición: "$ 0.00",
             //Nuevo Campo Fin
             tasaFija: "",
             fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
             diasEjercicio: { Id: "", Descripcion: "" },
-            periocidadPago: { Id: "", Descripcion: "" },
+            periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0},
             tasaReferencia: { Id: "", Descripcion: "" },
             sobreTasa: 0,
           },
@@ -116,14 +119,17 @@ export const createCondicionFinancieraSlice: StateCreator<
       },
       tablaDisposicion: [],
       tasaDeInteres: {
-        fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+        Disposiciones: {
+          fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+          fechaIndicativa: false
+        },
         importe: "$ 0.00",
         montoDisposición: "$ 0.00",
 
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
-        periocidadPago: { Id: "", Descripcion: "" },
+        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
         tasaReferencia: { Id: "", Descripcion: "" },
         sobreTasa: 0,
       },
