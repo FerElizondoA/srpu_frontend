@@ -62,9 +62,9 @@ const heads: readonly {
     {
       label: "Fecha de Disposición"
     },
-    {
-      label: "Fecha Indicativa"
-    },
+    // {
+    //   label: "Fecha Indicativa"
+    // },
     {
       label: "Importe de Disposición",
     },
@@ -569,6 +569,17 @@ export function DisposicionPagosCapital() {
     }
   }, [monto, disposicionesParciales]);
 
+  useEffect(() => {
+    setTasaInteres({
+      ...tasaDeInteres,
+      Disposiciones: {
+        ...(tasaDeInteres.Disposiciones ?? {}),
+        fechaIndicativa: false,
+      },
+    });
+  }, [disposicionesParciales === true])
+
+
 
   // useEffect(() => {
 
@@ -853,7 +864,7 @@ export function DisposicionPagosCapital() {
                       ...pagosDeCapital,
                       periodoGracia: !pagosDeCapital.periodoGracia,
                     });
-                    // setDisposicionesParciales();
+
                     // if (disposicionesParciales === false) {
                     //   removeDisposicion(0)
                     // }
@@ -907,7 +918,6 @@ export function DisposicionPagosCapital() {
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
-                      console.log()
                       setDisposicionesParciales();
                       setTablaTasaInteres([])
                       if (disposicionesParciales === false) {
@@ -965,15 +975,13 @@ export function DisposicionPagosCapital() {
                 {/* Te quedaste aqui */}
                 <FormControlLabel
                   label="Fecha Indicativa"
+                  disabled={disposicionesParciales === true}
                   control={
                     <Checkbox
                       checked={tasaDeInteres.Disposiciones?.fechaIndicativa ?? false}
                       onChange={() => {
                         const nuevaFechaIndicativa =
                           !(tasaDeInteres.Disposiciones?.fechaIndicativa ?? false);
-
-                        console.log("nuevaFechaIndicativa", nuevaFechaIndicativa)
-
                         setTasaInteres({
                           ...tasaDeInteres,
                           Disposiciones: {
@@ -1238,7 +1246,7 @@ export function DisposicionPagosCapital() {
             </Grid> */}
           </Grid>
 
-          <Grid container display={"flex"} justifyContent={"center"} mb={2}>
+          <Grid container display={"flex"} justifyContent={"center"} mb={1}>
             {radioValue === 1 ? (
               <Grid item container display="flex" justifyContent="space-evenly">
                 <Grid
@@ -1270,6 +1278,11 @@ export function DisposicionPagosCapital() {
                       maxDate={new Date(fechaVencimiento)}
                       sx={{ width: "100%" }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
+                      slotProps={{
+                        popper: {
+                          placement: "top-start",
+                        },
+                      }}
                       onChange={(date) => {
                         setTasaInteres({
                           ...tasaDeInteres,
@@ -1504,6 +1517,11 @@ export function DisposicionPagosCapital() {
                       // maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                       minDate={new Date(fechaContratacion)}
                       maxDate={new Date(fechaVencimiento)}
+                      slotProps={{
+                        popper: {
+                          placement: "top-start",
+                        },
+                      }}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
@@ -1877,12 +1895,12 @@ export function DisposicionPagosCapital() {
                                     {row?.Disposiciones?.fechaDisposicion}
                                   </StyledTableCell>
 
-                                  <StyledTableCell
+                                  {/* <StyledTableCell
                                     align="center"
                                     component="th"
                                   >
                                     {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
-                                  </StyledTableCell>
+                                  </StyledTableCell> */}
 
                                   <StyledTableCell
                                     align="center"

@@ -67,7 +67,7 @@ export const FirmaConUrl = () => {
         `Solicitud lista para asignar a usuario revisor`,
         usuariosDestino ,// ← AQUÍ ESTÁ LA CORRECCIÓN
         inscripcion.Id,
-        "Revision",
+        "Asignacion",
         parseInt(inscripcion.NumeroRegistro) //numero registro solicitud
       );
 

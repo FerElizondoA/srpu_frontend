@@ -275,8 +275,38 @@ export function InformacionGeneral() {
     setPlazo(dias);
   }, [contratacion, vencimiento]);
 
-  useEffect(() => {
-    if (!contratacion || !vencimiento) return;
+  // useEffect(() => {
+  //   if (!contratacion || !vencimiento) return;
+
+  //   const fechaContratacionDate = startOfDay(
+  //     new Date(contratacion)
+  //   );
+
+  //   const fechaVencimientoDate = startOfDay(
+  //     new Date(vencimiento)
+  //   );
+
+  //   const fechaMaxima = addDays(
+  //     fechaContratacionDate,
+  //     364
+  //   );
+
+  //   if (fechaVencimientoDate < fechaContratacionDate) {
+  //     setVencimiento(
+  //       fechaContratacionDate.toISOString()
+  //     );
+  //     return;
+  //   }
+
+  //   if (fechaVencimientoDate > fechaMaxima) {
+  //     setVencimiento(
+  //       fechaMaxima.toISOString()
+  //     );
+  //   }
+  // }, [contratacion, vencimiento]);
+
+  const validarFechaVencimiento = () => {
+    if (!vencimiento || !contratacion) return;
 
     const fechaContratacionDate = startOfDay(
       new Date(contratacion)
@@ -291,19 +321,18 @@ export function InformacionGeneral() {
       364
     );
 
+    let fechaFinal = fechaVencimientoDate;
+
     if (fechaVencimientoDate < fechaContratacionDate) {
-      setVencimiento(
-        fechaContratacionDate.toISOString()
-      );
-      return;
+      fechaFinal = fechaContratacionDate;
     }
 
     if (fechaVencimientoDate > fechaMaxima) {
-      setVencimiento(
-        fechaMaxima.toISOString()
-      );
+      fechaFinal = fechaMaxima;
     }
-  }, [contratacion, vencimiento]);
+
+    setVencimiento(fechaFinal.toISOString());
+  };
 
   return (
     <Grid
@@ -489,20 +518,19 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
-              disabled={
-                datosActualizar.length > 0 &&
-                !datosActualizar.includes("Fecha de Vencimiento")
-              }
-              sx={{ width: "100%" }}
               value={vencimiento ? new Date(vencimiento) : null}
+              sx={{width:"100%"}}
               onChange={(date) => {
-                console.log("Cambio de fecha:", date);
                 if (!date) return;
-
                 setVencimiento(date.toISOString());
               }}
               minDate={new Date(contratacion)}
-              maxDate={addDays(new Date(contratacion), 365 - 1)}
+              maxDate={addDays(new Date(contratacion), 364)}
+              slotProps={{
+                textField: {
+                  onBlur: validarFechaVencimiento,
+                },
+              }}
             />
           </LocalizationProvider>
         </Grid>

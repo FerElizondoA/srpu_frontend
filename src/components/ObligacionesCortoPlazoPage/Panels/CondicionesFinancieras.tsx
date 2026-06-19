@@ -99,9 +99,9 @@ export const headsDisposicion: readonly {
     {
       label: "Fecha de Disposición",
     },
-    {
-      label: "Fecha Indicativa",
-    },
+    // {
+    //   label: "Fecha Indicativa",
+    // },
     {
       label: "Importe de disposición",
     },
@@ -656,9 +656,9 @@ export function CondicionesFinancieras() {
                               <StyledTableCell align="center">
                                 {row?.Disposiciones?.fechaDisposicion}
                               </StyledTableCell>
-                              <StyledTableCell align="center">
+                              {/* <StyledTableCell align="center">
                                 {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
-                              </StyledTableCell>
+                              </StyledTableCell> */}
                               <StyledTableCell align="center">
                                 {row?.importe}
                               </StyledTableCell>

@@ -212,8 +212,11 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
 
 
   const routerControlInterno = (controlInterno: string) => {
+    // console.log("controlInterno: ", controlInterno)
     switch (controlInterno) {
       case "inscripcion":
+
+      case "Asignacion" : navigate("../ConsultaDeSolicitudes"); fnc(); break;
 
       case "revision": navigate("../ConsultaDeSolicitudes"); fnc(); break;
 
@@ -1004,6 +1007,7 @@ export function LateralMenu({ fnc = () => { } }: { fnc?: Function }) {
 
                         <Button
                           onClick={() => {
+                            console.log("noti", noti)
                             setIdSolicitudNotificacion(noti.IdSolicitud)
                             routerControlInterno(noti.ControlInterno)
                             consultaListaNotificaciones(true)
