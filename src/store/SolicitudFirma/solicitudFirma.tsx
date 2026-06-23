@@ -1017,7 +1017,7 @@ export async function GeneraFormatoReestructura(
     .catch((err) => { }); // aqui
 }
 
-export async function ConsultaSolicitud(setUrl: Function) {
+export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  Verificacion
   let inscripcion: IInscripcion = useInscripcionStore?.getState()?.inscripcion;
   let solicitud: ISolicitudLargoPlazo = JSON?.parse(inscripcion?.Solicitud);
 
@@ -1047,9 +1047,13 @@ export async function ConsultaSolicitud(setUrl: Function) {
 
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
-        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
-          locale: es,
-        }),
+        // fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
+        //   locale: es,
+        // }),
+        fechaContratacion: format(
+          new Date(solicitud.encabezado.fechaContratacion),
+          "dd/MM/yyyy"
+        ),
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
 
@@ -1066,7 +1070,13 @@ export async function ConsultaSolicitud(setUrl: Function) {
         periodoGracia: cantidadPeriodoGracia,
 
 
-        tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
+        // tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
+        tasaInteres:
+          solicitud.condicionesFinancieras[0]?.tasaInteres?.find(
+            (item) =>
+              item?.tasaFija &&
+              item.tasaFija !== "N/A"
+          )?.tasaFija || "",
 
         comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
 
@@ -1449,12 +1459,15 @@ export async function ConsultaConstancia(
   Solicitud: string,
   NoOficio: string,
   setUrl: Function,
-  montoOriginal: string
+  montoOriginal: string,
+  IdClaveInscripcion?: string
+
 ) {
   // const state = useCortoPlazoStore.getState();
   // const MontoALetras = state.convertirMontosAPalabras(montoOriginal.toString());
 
   const solicitud: any = JSON.parse(Solicitud);
+  console.log("SOLICITUD DATOS", solicitud)
 
   await axios
     .post(
@@ -1468,24 +1481,31 @@ export async function ConsultaConstancia(
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
         }),
-        tipoDocumento: solicitud.encabezado.tipoDocumento.Descripcion,
+        tipoDocumento: solicitud.encabezado.tipoCredito.Descripcion,
+        // fechaContratacion: format(
+        //   new Date(solicitud.encabezado.fechaContratacion),
+        //   "PPP",
+        //   {
+        //     locale: es,
+        //   }
+        // ),
         fechaContratacion: format(
           new Date(solicitud.encabezado.fechaContratacion),
-          "PPP",
-          {
-            locale: es,
-          }
+          "dd/MM/yyyy"
         ),
-        claveInscripcion: "claveInscripcion",
+        claveInscripcion: IdClaveInscripcion,//NUEVO
+
         fechaClave: format(new Date(), "PPP", {
           locale: es,
         }),
         entePublicoObligado:
           solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         obligadoSolidarioAval:
+
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
-            ? solicitud.informacionGeneral.obligadosSolidarios
+            ? solicitud.informacionGeneral.obligadosSolidarios[0].entePublicoObligado
             : ["No Aplica"],
+
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
@@ -1496,10 +1516,17 @@ export async function ConsultaConstancia(
 
 
         amortizaciones: "No Aplica",
-        tasaInteres: "tasaInteres",
-        tasaEfectiva: "tasaEfectiva",
+
+        tasaInteres: 
+          solicitud.condicionesFinancieras[0]?.tasaInteres?.find(
+            (item :any) =>
+              item?.tasaFija &&
+              item.tasaFija !== "N/A"
+          )?.tasaFija || "",
+
+        tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva.tasaEfectiva,
         mecanismoVehiculoDePago: "No Aplica",
-        fuentePago: "fuentePago",
+        fuentePago: "No Aplica",
         garantiaDePago: "No Aplica",
         instrumentoDerivado: "No Aplica",
         financiamientosARefinanciar: ["financiamientosARefinanciar"],

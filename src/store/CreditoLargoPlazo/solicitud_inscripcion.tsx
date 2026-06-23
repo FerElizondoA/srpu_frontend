@@ -190,8 +190,8 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
     })),
 
   inscripcion: {
-    servidorPublicoDirigido: "Rosalba Aguilar Díaz",
-    cargo: "Directora de Deuda Pública y Planeación Financiera",
+    servidorPublicoDirigido: "Cristian Jesús Alonso Salas",
+    cargo: "Titular de la Dirección de Deuda Pública y Planeación Financiera",
   },
 
   reglasAplicables: [],

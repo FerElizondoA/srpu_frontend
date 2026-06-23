@@ -734,6 +734,7 @@ export function ConsultaDeSolicitudPage() {
                                 <IconButton
                                   type="button"
                                   onClick={() => {
+                                    console.log("SUPER ROW", row)
                                     // console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {
@@ -765,7 +766,8 @@ export function ConsultaDeSolicitudPage() {
                                             row.Solicitud,
                                             row.NumeroRegistro,
                                             setUrl,
-                                            convertirMontosAPalabras(row.MontoOriginalContratado)
+                                            convertirMontosAPalabras(row.MontoOriginalContratado),
+                                            row.IdClaveInscripcion
                                           );
                                           navigate("../firmaUrl");
                                         }
