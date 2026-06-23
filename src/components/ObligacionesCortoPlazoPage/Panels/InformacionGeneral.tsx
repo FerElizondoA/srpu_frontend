@@ -949,7 +949,7 @@ export function InformacionGeneral() {
                             error={errorPrelacion === index}
                             helperText={
                               errorPrelacion === index
-                                ? "Suma total no puede superar el 100%"
+                                ? "Suma total no puede superar el 100"
                                 : ""
                             }
                             sx={{

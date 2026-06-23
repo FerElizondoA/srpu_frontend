@@ -1076,7 +1076,7 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
             (item) =>
               item?.tasaFija &&
               item.tasaFija !== "N/A"
-          )?.tasaFija || "",
+          )?.tasaFija || "N/A",
 
         comisiones: solicitud.condicionesFinancieras[0]?.comisiones[0]?.porcentaje,
 
@@ -1522,7 +1522,7 @@ export async function ConsultaConstancia(
             (item :any) =>
               item?.tasaFija &&
               item.tasaFija !== "N/A"
-          )?.tasaFija || "",
+          )?.tasaFija || "N/A",
 
         tasaEfectiva: solicitud.condicionesFinancieras[0].tasaEfectiva.tasaEfectiva,
         mecanismoVehiculoDePago: "No Aplica",

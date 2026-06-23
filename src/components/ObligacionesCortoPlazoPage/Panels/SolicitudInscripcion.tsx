@@ -199,21 +199,26 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
 
         if (existePrelacionVacia) {
           errores.push(
-            "Sección Obligado Solidario / Aval: Todos los registros deben tener un porcentaje de prelación mayor a 0%."
+            "Sección Obligado Solidario / Aval: Todos los registros deben tener un porcentaje de prelación mayor a 0."
           );
-        } else {
-          const totalPrelacion = tablaObligados.reduce(
-            (total: number, item: { prelacionPorcentaje: number }) =>
-              total + item.prelacionPorcentaje,
-            0
-          );
+        } 
 
-          if (totalPrelacion !== 100) {
-            errores.push(
-              "Sección Obligado Solidario / Aval: La suma de los porcentajes de prelación debe ser exactamente 100%."
-            );
-          }
-        }
+        //LUEGO REVISAMOS
+        
+        // else {
+        //   const totalPrelacion = tablaObligados.reduce(
+        //     (total: number, item: { prelacionPorcentaje: number }) =>
+        //       total + item.prelacionPorcentaje,
+        //     0
+        //   );
+
+        //   if (totalPrelacion !== 100) {
+        //     errores.push(
+        //       "Sección Obligado Solidario / Aval: La suma de los porcentajes de prelación debe ser exactamente 100%."
+        //     );
+        //   }
+        // }
+
       }
 
       //**  VUELVELO A POENER BIEN **/

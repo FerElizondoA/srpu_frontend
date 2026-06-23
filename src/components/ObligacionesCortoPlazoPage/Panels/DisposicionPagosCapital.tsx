@@ -62,9 +62,9 @@ const heads: readonly {
     {
       label: "Fecha de Disposición"
     },
-    // {
-    //   label: "Fecha Indicativa"
-    // },
+    {
+      label: "Fecha Indicativa"
+    },
     {
       label: "Importe de Disposición",
     },
@@ -975,7 +975,7 @@ export function DisposicionPagosCapital() {
                 {/* Te quedaste aqui */}
                 <FormControlLabel
                   label="Fecha Indicativa"
-                  disabled={disposicionesParciales === true}
+                  //disabled={disposicionesParciales === true}
                   control={
                     <Checkbox
                       checked={tasaDeInteres.Disposiciones?.fechaIndicativa ?? false}
@@ -1895,12 +1895,12 @@ export function DisposicionPagosCapital() {
                                     {row?.Disposiciones?.fechaDisposicion}
                                   </StyledTableCell>
 
-                                  {/* <StyledTableCell
+                                  <StyledTableCell
                                     align="center"
                                     component="th"
                                   >
                                     {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
-                                  </StyledTableCell> */}
+                                  </StyledTableCell>
 
                                   <StyledTableCell
                                     align="center"

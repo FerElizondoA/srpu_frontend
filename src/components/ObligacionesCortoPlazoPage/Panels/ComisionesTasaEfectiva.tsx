@@ -435,11 +435,24 @@ export function ComisionesTasaEfectiva() {
                 maxRows={3}
                 minRows={2}
                 multiline
+                inputProps={{
+                  maxLength: 500,
+                }}
+                helperText={`${comision.tipoDeComision.detallOtrasComisiones?.length || 0}/500`}
+                FormHelperTextProps={{
+                  sx: {
+                    color:
+                      (comision.tipoDeComision.detallOtrasComisiones?.length || 0) >= 500
+                        ? "error.main"
+                        : "inherit",
+                  },
+                }}
                 onChange={(e) => {
                   const valor = e.target.value
                     .replace(/[<>]/g, "")
                     .replace(/script/gi, "")
-                    .replace(/javascript:/gi, "");
+                    .replace(/javascript:/gi, "")
+                    .slice(0, 500);
 
                   setComision({
                     ...comision,
@@ -514,12 +527,25 @@ export function ComisionesTasaEfectiva() {
                 maxRows={3}
                 minRows={2}
                 multiline
+                inputProps={{
+                  maxLength: 500,
+                }}
+                helperText={`${comision.periodicidadDePago.detallePerfilEspecifico?.length || 0}/500`}
+                FormHelperTextProps={{
+                  sx: {
+                    color:
+                      (comision.periodicidadDePago.detallePerfilEspecifico?.length || 0) >= 500
+                        ? "error.main"
+                        : "inherit",
+                  },
+                }}
                 value={comision.periodicidadDePago.detallePerfilEspecifico}
                 onChange={(e) => {
                   const valor = e.target.value
                     .replace(/[<>]/g, "")
                     .replace(/script/gi, "")
-                    .replace(/javascript:/gi, "");
+                    .replace(/javascript:/gi, "")
+                    .slice(0, 500);
 
                   setComision({
                     ...comision,
@@ -763,17 +789,17 @@ export function ComisionesTasaEfectiva() {
                       <StyledTableCell align="center">
                         {!noAplica && (
 
-                       
-                            <Tooltip title="Eliminar">
-                              <IconButton
-                                type="button"
-                                onClick={() => removeComision(index)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
 
-                     
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              type="button"
+                              onClick={() => removeComision(index)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+
+
 
                         )}
                       </StyledTableCell>
