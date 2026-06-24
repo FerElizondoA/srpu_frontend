@@ -108,7 +108,7 @@ export const createCondicionFinancieraSlice: StateCreator<
 
       pagosDeCapital: {
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
-        periodicidadDePago: { Id: "", Descripcion: "" },
+        periodicidadDePago: { Id: "", Descripcion: "",  detallePeriodicidadPago: ""  },
         numeroDePago: 1,
         periodoGracia: false,
       },

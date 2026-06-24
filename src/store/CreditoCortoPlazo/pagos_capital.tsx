@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 export interface IPagosDeCapital {
   fechaPrimerPago: string;
-  periodicidadDePago: { Id: string; Descripcion: string };
+  periodicidadDePago: { Id: string; Descripcion: string; detallePeriodicidadPago: string };
   numeroDePago: number;
   periodoGracia: boolean;
 }
@@ -29,7 +29,7 @@ export interface ITasaInteres {
   fechaPrimerPago: string;
   tasaFija: string;
   diasEjercicio: { Id: string; Descripcion: string };
-  periocidadPago: { Id: string; Descripcion: string; detallePeriodicidadPago:number };
+  periocidadPago: { Id: string; Descripcion: string; detallePeriodicidadPago: number };
   tasaReferencia: { Id: string; Descripcion: string };
   sobreTasa: number;
 }
@@ -65,7 +65,7 @@ export interface PagosCapitalSlice {
 
   addTasaInteres: (newTasaInteres: ITasaInteres) => void;
   setTablaTasaInteres: (tasaInteresTable: ITasaInteres[]) => void;
-  cleanTablaTasaInteres: () => void;
+  cleanTablaTasaInteres: (monto: string) => void;
   removeTasaInteres: (index: number) => void;
 
   catalogoPeriocidadDePago: ICatalogo[];
@@ -103,7 +103,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
 
   pagosDeCapital: {
     fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
-    periodicidadDePago: { Id: "", Descripcion: "" },
+    periodicidadDePago: { Id: "", Descripcion: "", detallePeriodicidadPago: "" },
     numeroDePago: 0,
     periodoGracia: false,
   },
@@ -139,7 +139,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         tasaFija: "",
         fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
         diasEjercicio: { Id: "", Descripcion: "" },
-        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago:0 },
+        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
         tasaReferencia: { Id: "", Descripcion: "" },
         sobreTasa: 0,
       }
@@ -197,6 +197,25 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         },
       ],
     })),
+  cleanTablaTasaInteres: (monto: string) =>
+    set(() => ({
+      tablaTasaInteres: [
+        {
+          Disposiciones: {
+            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            fechaIndicativa: false,
+          },
+          importe: monto,
+          montoDisposición: "$ 0.00",
+          tasaFija: "",
+          fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+          diasEjercicio: { Id: "", Descripcion: "" },
+          periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
+          tasaReferencia: { Id: "", Descripcion: "" },
+          sobreTasa: 0,
+        },
+      ],
+    })),
   removeDisposicion: (index: number) =>
     set((state) => ({
       tablaDisposicion: state.tablaDisposicion.filter((_, i) => i !== index),
@@ -208,7 +227,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     })),
   setTablaTasaInteres: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
-  cleanTablaTasaInteres: () => set((state) => ({ tablaTasaInteres: [] })),
+
   removeTasaInteres: (index: number) =>
     set((state) => ({
       tablaTasaInteres: state.tablaTasaInteres.filter((_, i) => i !== index),

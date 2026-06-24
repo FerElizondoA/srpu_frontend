@@ -62,7 +62,7 @@ export const moneyMask = (value: string) => {
   const result = new Intl.NumberFormat("en-US", options).format(
     parseInt(value) / 100
   );
-  return "$ " + result;
+  return "$" + result;
 };
 
 export function InformacionGeneral() {

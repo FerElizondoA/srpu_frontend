@@ -265,7 +265,7 @@ export interface SolicitudFirmaSlice {
   setProceso: (estatus: string) => void;
   changeInfoDoc: (info: string, cambiaEstatus: Function) => void;
 
-  convertirMontosAPalabras: (numeroConFormato: string) => void;
+  convertirMontosAPalabras: (numeroConFormato: string) => string;
 
 
 
@@ -948,8 +948,8 @@ export async function GeneraFormatoReestructura(
     institucionFinanciera:
       solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
-    montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-    montoOriginalPalabras: MontoALetras,
+    montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.replace("$ ", "$"),
+    montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
     saldoVigente: solicitud.informacionGeneral.destinoGastosCostos[0].saldoVigente,
     saldoVigenteLetra: saldoVigenteLetra,
@@ -986,8 +986,8 @@ export async function GeneraFormatoReestructura(
         obligadoSolidarioAval: SolicitudReestructura.obligadoSolidarioAval,
         institucionFinanciera: SolicitudReestructura.institucionFinanciera,
 
-        montoOriginalContratado: SolicitudReestructura.montoOriginalContratado,
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalContratado: SolicitudReestructura.montoOriginalContratado.replace("$ ", "$"),
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         saldoVigente: SolicitudReestructura.saldoVigente,
         saldoVigenteLetra: saldoVigenteLetra,
@@ -1035,7 +1035,7 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
 
   const state = useCortoPlazoStore.getState();
 
-  const MontoALetras = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
+  const MontoALetras: string = state.convertirMontosAPalabras(solicitud?.informacionGeneral?.informacionGeneral?.monto.toString());
 
   const cantidadPeriodoGracia = (solicitud.condicionesFinancieras ?? []).filter(
     (condicion: ICondicionFinanciera) => condicion.pagosDeCapital?.periodoGracia === true
@@ -1057,25 +1057,29 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
 
         organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
 
-        tipoCredito: solicitud.encabezado.tipoCredito.Descripcion,
+       tipoCredito: solicitud.encabezado.tipoCredito?.Descripcion?.trim() ?? "",
 
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
         fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
           locale: es,
         }),
+
         // fechaContratacion: format(
         //   new Date(solicitud.encabezado.fechaContratacion),
         //   "dd/MM/yyyy"
         // ),
 
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),
 
-        montoOriginalPalabras: MontoALetras,
+        // montoOriginalPalabras: MontoALetras,
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
 
-        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        // destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion.replace(/\.$/, ""),
+
 
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
 
@@ -1172,8 +1176,8 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
           locale: es, // YAA FALTA MODIFICAR TAL VEZ
         }),
 
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,// YAA
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),// YAA
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         entePublicoObligado:
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
@@ -1183,7 +1187,9 @@ export async function ConsultaSolicitudReestructura(setUrl: Function) {
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
             ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
             : ["No Aplica"],
-        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        // destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion.replace(/\.$/, ""),
+
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
 
         periodoFinanciamiento: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.PeriodoFinanciamiento,
@@ -1293,8 +1299,8 @@ export async function ConsultaRequerimientosReestructura(
             ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
             : ["No Aplica"],
 
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
         saldoVigenteLetra: saldoVigenteLetra,
@@ -1367,7 +1373,7 @@ export async function ConsultaRequerimientos(
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         montoOriginalContratado: solicitud.informacionGeneral.monto,
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
         cargoDirectorGeneral:
@@ -1435,7 +1441,7 @@ export async function RegistroEstatalReestructura(
 
         acreditante: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         monto: solicitud.informacionGeneral.informacionGeneral.monto,
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         //modificaciones: solicitud.modificaciones,
 
@@ -1482,6 +1488,7 @@ export async function ConsultaConstancia(
 
   const solicitud: any = JSON.parse(Solicitud);
   console.log("SOLICITUD DATOS", solicitud)
+  console.log("montoOriginal.replace", montoOriginal.replace("$ ", "$"),)
 
   await axios
     .post(
@@ -1495,7 +1502,7 @@ export async function ConsultaConstancia(
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
         }),
-        tipoDocumento: solicitud.encabezado.tipoCredito.Descripcion,
+        tipoDocumento: solicitud.encabezado.tipoCredito?.Descripcion?.trim() ?? "",
         fechaContratacion: format(
           new Date(solicitud.encabezado.fechaContratacion),
           "PPP",
@@ -1523,10 +1530,12 @@ export async function ConsultaConstancia(
 
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
-        montoOriginalPalabras: montoOriginal,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.replace("$ ", "$"),
+        montoOriginalPalabras: montoOriginal.replace("$ ", "$"),
 
-        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        // destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
+        destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion.replace(/\.$/, ""),
+
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
 
         amortizaciones: solicitud.condicionesFinancieras[0].pagosDeCapital.numeroDePago,
@@ -1867,8 +1876,8 @@ export async function AnularCancelacionSolicitud(
 
     institucionFinanciera:
       solicitud.informacionGeneral.institucionFinanciera.Descripcion,
-    montoOriginalContratado: solicitud.informacionGeneral.monto,
-    montoOriginalPalabras: MontoALetras,
+    montoOriginalContratado: solicitud.informacionGeneral.monto.replace("$ ", "$"),
+    montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
     causaAnulacion: causaAnulacion,
   };
 
@@ -1907,8 +1916,8 @@ export async function AnularCancelacionSolicitud(
         ),
         entePublicoObligado: SolicitudCancelacion.entePublicoObligado,
         institucionFinanciera: SolicitudCancelacion.institucionFinanciera,
-        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado,
-        montoOriginalPalabras: MontoALetras,
+        montoOriginalContratado: SolicitudCancelacion.montoOriginalContratado.replace("$ ", "$"),
+        montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
         causaAnulacion: SolicitudCancelacion.causaAnulacion,
       },
       {

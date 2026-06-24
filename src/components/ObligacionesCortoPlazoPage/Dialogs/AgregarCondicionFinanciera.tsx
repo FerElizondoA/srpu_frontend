@@ -116,7 +116,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             onClick={() => {
               props.handler(false);
               cleanCondicionFinanciera();
-              cleanTablaTasaInteres();
+              cleanTablaTasaInteres(monto);
               cleanDisposicion(monto);
             }}
             sx={{ color: "white" }}

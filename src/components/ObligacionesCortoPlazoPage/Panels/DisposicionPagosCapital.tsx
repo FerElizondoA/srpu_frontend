@@ -543,15 +543,7 @@ export function DisposicionPagosCapital() {
 
   useEffect(() => {
     if (disposicionesParciales === false) {
-      // setDisposicion({ ...disposicion, importe: moneyMask(monto.toString()) });
 
-      // setTablaDisposicion([
-      //   {
-      //     fechaDisposicion: disposicion.fechaDisposicion,
-      //     importe: moneyMask(monto.toString()),
-      //   },])
-
-      // setTasaInteres({ ...tasaDeInteres, importe: moneyMask(monto.toString()) });
       setTasaInteres((prev: any) => ({
         ...prev,
         importe: moneyMask(monto.toString()),
@@ -575,15 +567,21 @@ export function DisposicionPagosCapital() {
       Disposiciones: {
         ...(tasaDeInteres.Disposiciones ?? {}),
         fechaIndicativa: false,
+
       },
+      importe: restante * 100 === 0 ? "$0.00" : moneyMask(monto.toString())
     });
   }, [disposicionesParciales === true])
 
+  useEffect(() => {
+    setTasaInteres({
+      ...tasaDeInteres,
+      importe: moneyMask(monto.toString())
+    });
+  }, [])
 
 
   // useEffect(() => {
-
-
   //   setPagosDeCapital({
   //     ...pagosDeCapital,
   //     numeroDePago: 0,
@@ -635,11 +633,16 @@ export function DisposicionPagosCapital() {
     >
       <Grid container mt={2} direction="column"
         height={{
-          xs: "20rem",
-          sm: "10rem",
-          md: "10rem",
-          lg: "10rem",
-          xl: "10rem"
+          xs: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "30rem" : "20rem",
+          sm: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          md: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          lg: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          xl: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem"
         }}
       >
         <Grid item >
@@ -777,12 +780,23 @@ export function DisposicionPagosCapital() {
                 setPagosDeCapital({
                   ...pagosDeCapital,
                   periodicidadDePago: {
-                    Id: text?.Id,
-                    Descripcion: text?.Descripcion,
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                    detallePeriodicidadPago: "",
                   },
-                  numeroDePago: 0
+                  numeroDePago: 0,
                 })
               }
+              // onChange={(event, text) =>
+              //   setPagosDeCapital({
+              //     ...pagosDeCapital,
+              //     periodicidadDePago: {
+              //       Id: text?.Id,
+              //       Descripcion: text?.Descripcion,
+              //     },
+              //     numeroDePago: 0
+              //   })
+              // }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -795,6 +809,49 @@ export function DisposicionPagosCapital() {
                 value.Descripcion === ""
               }
             />
+            {pagosDeCapital.periodicidadDePago?.Descripcion ===
+              "Perfil Especifico" && (
+                <Grid >
+                  <InputLabel sx={{ ...queries.medium_text, mb: 2 }}>
+                    Detalle de la Periodicidad
+                  </InputLabel>
+
+                  <TextField
+                    fullWidth
+                    multiline
+                    minRows={2}
+                    maxRows={2}
+                    variant="outlined"
+                    value={
+                      pagosDeCapital.periodicidadDePago
+                        ?.detallePeriodicidadPago || ""
+                    }
+                    helperText={`${pagosDeCapital.periodicidadDePago
+                      ?.detallePeriodicidadPago?.length || 0
+                      } / 500 caracteres`}
+                    onChange={(e) => {
+                      let valor = e.target.value;
+
+                      valor = valor
+                        .replace(/[<>]/g, "")
+                        .replace(/script/gi, "")
+                        .replace(/javascript:/gi, "");
+
+                      if (valor.length > 500) {
+                        valor = valor.substring(0, 500);
+                      }
+
+                      setPagosDeCapital({
+                        ...pagosDeCapital,
+                        periodicidadDePago: {
+                          ...pagosDeCapital.periodicidadDePago,
+                          detallePeriodicidadPago: valor,
+                        },
+                      });
+                    }}
+                  />
+                </Grid>
+              )}
           </Grid>
 
           <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
@@ -804,7 +861,24 @@ export function DisposicionPagosCapital() {
               </Grid>
             </InputLabel>
             <TextField
-              helperText={`Máximo permitido: ${obtenerMaxPagos()}`}
+              onKeyDown={(e) => {
+                if (
+                  ["e", "E", "+", "-", "."].includes(e.key)
+                ) {
+                  e.preventDefault();
+                }
+              }}
+              inputProps={{
+                inputMode: "numeric",
+                pattern: "[0-9]*",
+              }}
+              //helperText={`Máximo permitido: ${obtenerMaxPagos()}`}
+              helperText={
+                pagosDeCapital.periodicidadDePago
+                  ?.Descripcion === "Perfil Especifico"
+                  ? "La cantidad de pagos será determinada conforme al detalle capturado."
+                  : `Máximo permitido: ${obtenerMaxPagos()}`
+              }
               placeholder="0"
               value={
                 pagosDeCapital.numeroDePago <= 0
@@ -819,13 +893,27 @@ export function DisposicionPagosCapital() {
               // }}
               onChange={(v) => {
                 const valor = Number(v.target.value);
+                const esPerfilEspecifico =
+                  pagosDeCapital.periodicidadDePago
+                    ?.Descripcion === "Perfil Especifico";
 
-                if (valor <= obtenerMaxPagos() || v.target.value === "") {
+                if (
+                  esPerfilEspecifico ||
+                  valor <= obtenerMaxPagos() ||
+                  v.target.value === ""
+                ) {
                   setPagosDeCapital({
                     ...pagosDeCapital,
                     numeroDePago: v.target.value,
                   });
                 }
+
+                // if (valor <= obtenerMaxPagos() || v.target.value === "") {
+                //   setPagosDeCapital({
+                //     ...pagosDeCapital,
+                //     numeroDePago: v.target.value,
+                //   });
+                // }
               }}
 
               fullWidth
@@ -841,16 +929,6 @@ export function DisposicionPagosCapital() {
               }}
               variant="standard"
             />
-            {/* <InputLabel
-              sx={{
-                ...queries.medium_text,
-                color: "#AF8C55",
-              }}
-            >
-              <Typography color="red" fontSize={"0.8rem"}>
-                Máximo permitido: {obtenerMaxPagos()}
-              </Typography>
-            </InputLabel> */}
           </Grid>
 
           <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>

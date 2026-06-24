@@ -692,7 +692,7 @@ export function CondicionesFinancieras() {
             sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
-              if (moneyMask(monto.toString()) === "$ 0.00") {
+              if (moneyMask(monto.toString()) === "$0.00") {
                 setOpenFiltroMonto(true)
               } else {
                 changeOpenAgregarState(!openAgregarCondicion);
