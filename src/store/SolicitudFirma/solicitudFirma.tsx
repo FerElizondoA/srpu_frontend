@@ -367,7 +367,19 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
       return convertirNumeroAPalabras(billones) + ' billones ' + (resto > 0 ? convertirMilesDeMillones(resto) : '');
     }
 
-    let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+    // let parteEnteraEnPalabras = convertirNumeroAPalabras(parteEntera);
+
+    // const centavosEnPalabras = centavos > 0
+    //   ? ` ${centavos.toString().padStart(2, '0')}/100 M.N.`
+    //   : ' 00/100 M.N.';
+
+    // return `${parteEnteraEnPalabras} pesos${centavosEnPalabras}`;
+    let parteEnteraEnPalabras =
+      convertirNumeroAPalabras(parteEntera);
+
+    parteEnteraEnPalabras =
+      parteEnteraEnPalabras.charAt(0).toUpperCase() +
+      parteEnteraEnPalabras.slice(1);
 
     const centavosEnPalabras = centavos > 0
       ? ` ${centavos.toString().padStart(2, '0')}/100 M.N.`
@@ -1045,15 +1057,17 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
 
         organismoServidorPublico: solicitud.encabezado.organismo.Organismo,
 
+        tipoCredito: solicitud.encabezado.tipoCredito.Descripcion,
+
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
 
-        // fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
-        //   locale: es,
-        // }),
-        fechaContratacion: format(
-          new Date(solicitud.encabezado.fechaContratacion),
-          "dd/MM/yyyy"
-        ),
+        fechaContratacion: format(new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion), "PPP", {
+          locale: es,
+        }),
+        // fechaContratacion: format(
+        //   new Date(solicitud.encabezado.fechaContratacion),
+        //   "dd/MM/yyyy"
+        // ),
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto,
 
@@ -1482,24 +1496,25 @@ export async function ConsultaConstancia(
           locale: es,
         }),
         tipoDocumento: solicitud.encabezado.tipoCredito.Descripcion,
-        // fechaContratacion: format(
-        //   new Date(solicitud.encabezado.fechaContratacion),
-        //   "PPP",
-        //   {
-        //     locale: es,
-        //   }
-        // ),
         fechaContratacion: format(
           new Date(solicitud.encabezado.fechaContratacion),
-          "dd/MM/yyyy"
+          "PPP",
+          {
+            locale: es,
+          }
         ),
+        // fechaContratacion: format(
+        //   new Date(solicitud.encabezado.fechaContratacion),
+        //   "dd/MM/yyyy"
+        // ),
         claveInscripcion: IdClaveInscripcion,//NUEVO
 
         fechaClave: format(new Date(), "PPP", {
           locale: es,
         }),
         entePublicoObligado:
-          solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+          solicitud.encabezado.organismo.Organismo, //sE MODIFICO
+
         obligadoSolidarioAval:
 
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
@@ -1518,9 +1533,9 @@ export async function ConsultaConstancia(
 
         // amortizaciones: "No Aplica",
 
-        tasaInteres: 
+        tasaInteres:
           solicitud.condicionesFinancieras[0]?.tasaInteres?.find(
-            (item :any) =>
+            (item: any) =>
               item?.tasaFija &&
               item.tasaFija !== "N/A"
           )?.tasaFija || "N/A",
