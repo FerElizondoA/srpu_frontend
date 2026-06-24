@@ -250,16 +250,16 @@ export function VerBorradorDocumento(props: Props) {
               setOpenDialogConfirmacionVolver(true)
 
             }
-
           }}
         >
           Volver
         </Button>
         <Grid container sx={{
           display: "flex",
-          width: "60%",
+          
           justifyContent: "space-evenly"
         }}
+        width={{xs: "95%", sm:"85%" , md: "75%", lg:"65%" , xl: "55%"}}
         >
           {
             (props.rowSolicitud.NoEstatus === "4" && (localStorage.getItem("Rol") === "Validador" || localStorage.getItem("Rol") === "Autorizador"))
@@ -419,8 +419,7 @@ export function VerBorradorDocumento(props: Props) {
                       setAccion("requerimiento");
                     }}
                   >
-                    Requerimiento/Prevención
-
+                    Prevención
                   </Button>
                   : null
                 }
