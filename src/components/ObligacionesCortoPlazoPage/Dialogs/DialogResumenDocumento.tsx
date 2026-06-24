@@ -39,8 +39,8 @@ type Props = {
   handler: Function;
   openState: boolean;
   rowSolicitud: IInscripcion;
- //setRecargarSolicitud: Function;
- //recargarSolicitud: boolean;
+  //setRecargarSolicitud: Function;
+  //recargarSolicitud: boolean;
   rowId: string;
 };
 
@@ -174,12 +174,11 @@ export function VerBorradorDocumento(props: Props) {
   }
 
   const [openDialogEnviar, setOpenDialogEnviar] = useState(false);
-
   // useEffect(() => {
   // props.handler(false);
   // console.log("hola me cerre")
   // }, [!props.recargarSolicitud ])
-  
+
 
   return (
 
@@ -324,7 +323,7 @@ export function VerBorradorDocumento(props: Props) {
           {
             // (["9", "17", "25"].includes(props.rowSolicitud.NoEstatus) && localStorage.getItem("Rol") === "Autorizador") ||
 
-            (["10", "19", "26"].includes(props.rowSolicitud.NoEstatus) &&
+            ((["10", "19", "26"].includes(props.rowSolicitud.NoEstatus) &&
               localStorage.getItem("Rol") === "Autorizador") ||
 
               (props.rowSolicitud.NoEstatus === "5" &&
@@ -333,18 +332,45 @@ export function VerBorradorDocumento(props: Props) {
               ) ||
 
               (localStorage.getItem("IdUsuario") === props.rowSolicitud.IdEditor &&
-                rolesAdmin.includes(localStorage.getItem("Rol")!))
-
+                rolesAdmin.includes(localStorage.getItem("Rol")!)))
               ?
-              <Grid sx={{ width: "50%", display: "flex", justifyContent: "space-between" }}
+              <Grid sx={{ width: "75%", display: "flex", justifyContent: "space-between" }}
               // justifyContent={"space-evenly"}
               // sx={{ width: "50rem", display: "flex" }}
               >
 
-                {localStorage.getItem("Rol") !== "Revisor" && (
+                {(localStorage.getItem("Rol") !== "Revisor" && props.rowSolicitud.ControlInterno !== "Desechado" &&
+                  props.rowSolicitud.NoEstatus != "10"
+                ) && (
+                    <Button
+                      sx={{
+                        ...queries.buttonCancelar,
+                        fontSize: "50%",
+                      }}
+                      onClick={() => {
+                        // if (compararComentarios(comentarios, botonVolverFiltro) === false) {
+                        //   setOpenDialogConfirmacionVolver(true)
+                        //   setConfirmBotonAccionComentario(true)
+                        // } else {
+                        //   setOpenDialogRegresar(true);
+                        //   setAccion("modificar");
+                        // }
+                        setOpenDialogRegresar(true);
+                        setAccion("modificar");
+                      }}
+                    >
+                      {`Devolver para ${localStorage.getItem("Rol") === "Autorizador"
+                        ? "validación"
+                        : "revisión"
+                        }`}
+                    </Button>
+                  )}
+
+                {props.rowSolicitud.Control !== "Desechado" && props.rowSolicitud.NoEstatus != "10"
+                  ?
                   <Button
                     sx={{
-                      ...queries.buttonCancelar,
+                      ...queries.buttonContinuar,
                       fontSize: "50%",
                     }}
                     onClick={() => {
@@ -353,46 +379,66 @@ export function VerBorradorDocumento(props: Props) {
                       //   setConfirmBotonAccionComentario(true)
                       // } else {
                       //   setOpenDialogRegresar(true);
-                      //   setAccion("modificar");
+                      //   setAccion("enviar");
                       // }
                       setOpenDialogRegresar(true);
-                      setAccion("modificar");
+                      setAccion("enviar");
+
                     }}
                   >
-                    {`Devolver para ${localStorage.getItem("Rol") === "Autorizador"
-                      ? "validación"
-                      : "revisión"
-                      }`}
-                  </Button>
-                )}
-
-                <Button
-                  sx={{
-                    ...queries.buttonContinuar,
-                    fontSize: "50%",
-                  }}
-                  onClick={() => {
-                    // if (compararComentarios(comentarios, botonVolverFiltro) === false) {
-                    //   setOpenDialogConfirmacionVolver(true)
-                    //   setConfirmBotonAccionComentario(true)
-                    // } else {
-                    //   setOpenDialogRegresar(true);
-                    //   setAccion("enviar");
-                    // }
-                    setOpenDialogRegresar(true);
-                    setAccion("enviar");
-
-                  }}
-                >
-                  Confirmar{" "}
-                  {localStorage.getItem("Rol") === "Validador"
+                    Confirmar{" "}
+                    {/* {localStorage.getItem("Rol") === "Validador"
                     ? "Validación"
                     : (localStorage.getItem("Rol") === "Revisor" && props.rowSolicitud.NoEstatus === "5" && props.rowSolicitud.IdEditor === localStorage.getItem("IdUsuario"))
                       ? "Revisión"
                       : Object.keys(comentarios).length > 0
                         ? "Solicitud de Requerimientos"
+                        : "Autorización"} */}
+                    {localStorage.getItem("Rol") === "Validador"
+                      ? "Validación"
+                      : (localStorage.getItem("Rol") === "Revisor" && props.rowSolicitud.NoEstatus === "5" && props.rowSolicitud.IdEditor === localStorage.getItem("IdUsuario"))
+                        ? "Revisión"
                         : "Autorización"}
-                </Button>
+
+
+                  </Button>
+
+                  : null
+
+                }
+
+
+
+                {localStorage.getItem("Rol") === "Autorizador" && ["7", "16", "25"].includes(props.rowSolicitud.NoEstatus) ?
+                  <Button sx={{
+                    ...queries.buttonContinuar,
+                    fontSize: "50%",
+                  }}
+                    onClick={() => {
+                      setOpenDialogRegresar(true);
+                      setAccion("requerimiento");
+                    }}
+                  >
+                    Requerimiento/Prevención
+
+                  </Button>
+                  : null
+                }
+                {localStorage.getItem("Rol") === "Autorizador" && ["7", "16", "25"].includes(props.rowSolicitud.NoEstatus) ?
+                  <Button sx={{
+                    ...queries.buttonContinuar,
+                    fontSize: "50%",
+                  }}
+                    onClick={() => {
+                      setOpenDialogRegresar(true);
+                      setAccion("desechamiento");
+                    }}
+                  >
+                    Desechamiento
+                  </Button>
+                  : null
+                }
+
               </Grid>
 
               : null
@@ -620,7 +666,7 @@ export function VerBorradorDocumento(props: Props) {
           handler={setOpenDialogRegresar}
           openState={openDialogRegresar}
           accion={accion}
-          //setRecargarSolicitud={props.setRecargarSolicitud}
+        //setRecargarSolicitud={props.setRecargarSolicitud}
         />
       )}
     </Dialog>

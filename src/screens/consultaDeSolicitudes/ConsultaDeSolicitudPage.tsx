@@ -580,7 +580,17 @@ export function ConsultaDeSolicitudPage() {
                           />
                         </Tooltip>
                       );
-                    } else {
+                    } else if (row.ControlInterno === "desechado") {
+                      chip = (
+                        <Chip
+                          label={row.Estatus}
+                          color="info"
+                          variant="outlined"
+                        />
+                      );
+                    }
+
+                    else {
                       chip = (
                         <Chip
                           label={row.Estatus}
@@ -713,6 +723,7 @@ export function ConsultaDeSolicitudPage() {
                             <IconButton
                               type="button"
                               onClick={() => {
+                                console.log("ROW CONTROL: ", row.Control)
                                 cleanSolicitudCortoPlazo();
                                 cleanSolicitudLargoPlazo();
                                 cleanInscripcion();
@@ -727,14 +738,17 @@ export function ConsultaDeSolicitudPage() {
                             </IconButton>
                           </Tooltip>
 
-                          {localStorage.getItem("Rol") === row.Control &&
+
+                          {
+                            ((localStorage.getItem("Rol") === "Autorizador" && row.Control === "Desechado") || localStorage.getItem("Rol") === row.Control)
+                            &&
                             // ["3", "7", "9"].includes(row.NoEstatus) && (
-                            ["3", "8", "10"].includes(row.NoEstatus) && (
+                            ["3", "8", "10", "29"].includes(row.NoEstatus) && (
                               <Tooltip title="Firmar documento">
                                 <IconButton
                                   type="button"
                                   onClick={() => {
-                                    console.log("SUPER ROW", row)
+                                    //console.log("SUPER ROW", row)
                                     // console.log("convertirMontosAPalabras", convertirMontosAPalabras(row.MontoOriginalContratado))
                                     setInscripcion(row);
                                     if (row.NoEstatus === "3") {

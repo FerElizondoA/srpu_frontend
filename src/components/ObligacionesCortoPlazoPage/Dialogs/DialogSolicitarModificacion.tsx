@@ -107,7 +107,9 @@ export function DialogSolicitarModificacion({
 
   const checkform = () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
-      //console.log()
+
+      //export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
+
 
       if (comentarios && Object.keys(comentarios).length > 0) {
         console.log("AGREGAR COMENTARIO");
@@ -117,35 +119,38 @@ export function DialogSolicitarModificacion({
           "Requerimiento"
         );
       }
-      // addComentario(
-      //   inscripcion.Id,
-      //   JSON.stringify(comentarios),
-      //   "Requerimiento"
-      // );
+
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
-            ? Object.keys(comentarios).length > 0
-              ? "8" //Antes 7
-              : "10" //Antes 9
-            : "6" //Antes 5
+            ? "10"
+            : accion === "requerimiento"
+              ? "8"
+              : accion === "desechamiento" //Puede que no lo ocupes
+                ? "29"
+                : "6"   //SINO SE OCUPA LO DE ARRIBA ESTE ES EL ESTATUS QUE DEBE QUEDAR POR DEFAULT
           : localStorage.getItem("Rol") === "Validador"
             ? accion === "enviar"
               ? "7" //Antes 6
               : "5" //Antes 4
             : "6", //Antes 5
+
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador" && idUsuarioAsignado === ""
           ? localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
+
+
         createNotification(
           "Crédito simple a corto plazo",
           `Se te ha asignado una solicitud para  
-          ${localStorage.getItem("Rol") === "Autorizador" ?
-            accion === "enviar" ?
-              "firmar" :
-              "validación"
+          ${localStorage.getItem("Rol") === "Autorizador" 
+            ?accion === "enviar" 
+              ?"firmar"
+              : accion === "desechamiento"
+                  ? "desechamiento"
+                  : "validación"
             : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
                 ? "autorización"
@@ -162,8 +167,9 @@ export function DialogSolicitarModificacion({
           "inscripcion",
           parseInt(inscripcion.NumeroRegistro),
           //Aqui va el control interno
-
         );
+
+
 
         // getSolicitudes(
         //   !rolesAdmin.includes(localStorage.getItem("Rol")!)
@@ -321,21 +327,20 @@ export function DialogSolicitarModificacion({
         handler(false);
       }}
     >
-      {localStorage.getItem("Rol") === "Autorizador" && accion === "enviar" ? (
-        <DialogTitle>
-          <Typography sx={queries.bold_text}>
-            {Object.keys(comentarios).length > 0 ? "" : "Inscripción"}
-          </Typography>
-        </DialogTitle>
-      ) : (
-        <DialogTitle>
-          <Typography sx={queries.bold_text}>Asignar a: </Typography>
-        </DialogTitle>
-      )}
+
+      <DialogTitle>
+        <Typography sx={queries.bold_text}>
+          {localStorage.getItem("Rol") === "Autorizador" && (accion === "enviar" || accion === "requerimiento")
+            ? "Inscripción"
+            : localStorage.getItem("Rol") === "Autorizador" && accion === "desechamiento" ? "Desechamiento" : "Asignar a: "}
+
+        </Typography>
+      </DialogTitle>
+
 
       <DialogContent>
         {localStorage.getItem("Rol") === "Autorizador" &&
-          accion === "enviar" ? null : (
+          (accion === "enviar" || accion === "requerimiento" || accion === "desechamiento") ? null : (
           <Grid mb={2}>
             <FormControl fullWidth>
               <TextField
@@ -424,21 +429,25 @@ export function DialogSolicitarModificacion({
           </Typography>
         )}
 
-        {Object.values(comentarios).every(val => val === "") ? (
-          <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
-            {rolesAdmin.includes(localStorage.getItem("Rol")!)
-              ? " Sin Requerimientos"
-              : "Sin Comentarios"}
+        {accion === "desechamiento" ?
+          <Typography sx={{ ...queries.text, display: "flex", justifyContent: "center" }}>
+            ¿Desea desechar esta solicitud?
           </Typography>
-        ) : (
-          Object.entries(comentarios).map(([key, val], index) =>
-            val === "" ? null : (
-              <Typography sx={{ fontSize: "1.5ch" }} key={index}>
-                <strong>{key}:</strong> {val as string}
-              </Typography>
+          : Object.values(comentarios).every(val => val === "") ? (
+            <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
+              {rolesAdmin.includes(localStorage.getItem("Rol")!)
+                ? " Sin Requerimientos"
+                : "Sin Comentarios"}
+            </Typography>
+          ) : (
+            Object.entries(comentarios).map(([key, val], index) =>
+              val === "" ? null : (
+                <Typography sx={{ fontSize: "1.5ch" }} key={index}>
+                  <strong>{key}:</strong> {val as string}
+                </Typography>
+              )
             )
-          )
-        )}
+          )}
         {/* {Object.entries(comentarios).map(([key, val], index) =>
           (val as string) === "" ? null : (
             <Typography
