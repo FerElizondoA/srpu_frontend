@@ -25,8 +25,12 @@ export async function getPathDocumentos(
       if (!data.data[0].error) {
         setState(data.data);
       }
+      // console.log("data Informacion archivos", data)
     })
-    .catch((error) => { });
+    .catch((error) => {
+      // console.log(" ERROR DOCUMENTO ", error)
+
+     });
 }
 
 export async function getPathDocumentosCancelacion(

@@ -1514,8 +1514,9 @@ export async function ConsultaConstancia(
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
 
+        amortizaciones: solicitud.condicionesFinancieras[0].pagosDeCapital.numeroDePago,
 
-        amortizaciones: "No Aplica",
+        // amortizaciones: "No Aplica",
 
         tasaInteres: 
           solicitud.condicionesFinancieras[0]?.tasaInteres?.find(
