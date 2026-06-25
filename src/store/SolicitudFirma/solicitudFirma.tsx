@@ -1292,14 +1292,14 @@ export async function ConsultaRequerimientosReestructura(
           locale: es,
         }),
 
-        entePublicoObligado: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        entePublicoObligado: solicitud.encabezado.organismo.Organismo,
         institucionFinanciera: solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
         obligadoSolidarioAval:
           solicitud.informacionGeneral.obligadosSolidarios.length > 0
             ? solicitud.informacionGeneral.obligadosSolidarios[0].tipoEntePublicoObligado
             : ["No Aplica"],
 
-        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.replace("$ ", "$"),
         montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         saldoVigente: solicitud.SolicitudReestructuracion.ReestructuraDeclaratorias.SalgoVigente,
@@ -1357,6 +1357,8 @@ export async function ConsultaRequerimientos(
         servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
         cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
         organismo: solicitud.encabezado.organismo.Organismo,
+
+        tipoCredito:solicitud.encabezado.tipoCredito?.Descripcion?.trim() ?? "",
         oficioSolicitud: NoOficio,
         fechaSolicitud: format(new Date(), "PPP", {
           locale: es,
@@ -1372,7 +1374,7 @@ export async function ConsultaRequerimientos(
           solicitud.encabezado.tipoEntePublico.TipoEntePublico,
         institucionFinanciera:
           solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
-        montoOriginalContratado: solicitud.informacionGeneral.monto,
+        montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),
         montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
         comentarios: JSON.stringify(Requerimientos),
         directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,

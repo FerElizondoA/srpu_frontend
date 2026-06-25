@@ -289,15 +289,20 @@ export function ConsultaDeSolicitudPage() {
   const requerimientos = (
     Solicitud: string,
     noRegistro: string,
-    Requerimiento: any
+    Requerimiento?: any,
+    tieneComentarios: boolean = false
   ) => {
     let a: any = {};
 
-    Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
-      return a[v]
-        ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
-        : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
-    });
+    if (tieneComentarios === true) {
+      Object.keys(JSON.parse(Requerimiento?.Comentarios)).map((v) => {
+        return a[v]
+          ? (a[v] = a[v] + ` ; ` + JSON.parse(Requerimiento?.Comentarios)[v])
+          : (a = { ...a, [v]: JSON.parse(Requerimiento?.Comentarios)[v] });
+      });
+    }
+
+
 
     setProceso("actualizacion");
     ConsultaRequerimientos(Solicitud, a, noRegistro, setUrl);
@@ -756,36 +761,38 @@ export function ConsultaDeSolicitudPage() {
                                       ConsultaSolicitud(setUrl);
                                       setProceso("Por Firmar");
                                       navigate("../firmaUrl");
-                                    } else {
+                                    } else if (row.NoEstatus === "8") {
                                       getComentariosSolicitudPlazo(
                                         row.Id,
                                         () => { }
                                       ).then((data) => {
-                                        if (
-                                          data.filter(
-                                            (a: any) =>
-                                              a.Tipo === "Requerimiento"
-                                          ).length > 0
-                                        ) {
-                                          requerimientos(
-                                            row.Solicitud,
-                                            row.NumeroRegistro,
-                                            data.filter(
+                                        console.log("REQUERIMIENTO DOCUMENTOS", data)
+                                        // if (data.filter((a: any) => a.Tipo === "Requerimiento").length > 0) {
+                                        requerimientos(
+                                          row.Solicitud,
+                                          row.NumeroRegistro,
+
+                                          data.filter((a: any) => a.Tipo === "Requerimiento").length > 0
+                                            ? data.filter(
                                               (a: any) =>
                                                 a.Tipo === "Requerimiento"
                                             )[0]
-                                          );
-                                        } else {
-                                          ConsultaConstancia(
-                                            row.Solicitud,
-                                            row.NumeroRegistro,
-                                            setUrl,
-                                            convertirMontosAPalabras(row.MontoOriginalContratado),
-                                            row.IdClaveInscripcion
-                                          );
-                                          navigate("../firmaUrl");
-                                        }
+                                            : {},
+                                            data.filter((a: any) => a.Tipo === "Requerimiento").length > 0 ? true : false
+                                          
+
+                                        );
+                                        // }
                                       });
+                                    } else {
+                                      ConsultaConstancia(
+                                        row.Solicitud,
+                                        row.NumeroRegistro,
+                                        setUrl,
+                                        convertirMontosAPalabras(row.MontoOriginalContratado),
+                                        row.IdClaveInscripcion
+                                      );
+                                      navigate("../firmaUrl");
                                     }
                                   }
                                   }

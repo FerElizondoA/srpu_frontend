@@ -545,7 +545,7 @@ export function VerBorradorDocumento(props: Props) {
       </DialogContent>
 
       <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>
-        <DialogTitle>Guardar comentarios</DialogTitle>
+        <DialogTitle>  comentarios</DialogTitle>
         <DialogContent>
 
           {!hayComentarios && (

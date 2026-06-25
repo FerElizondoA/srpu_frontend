@@ -76,19 +76,37 @@ export interface SolicitudInscripcionSlice {
   ) => void;
 
   setIdSolicitudBorrador: (IdSolicitudBorrador: string) => void;
-  IdSolicitudBorrador: string
-
+  IdSolicitudBorrador: string;
 
   // comentariosSolicitudInscrpcion: { [key: string]: string };
   // setComentariosSolicitudInscrpcion: (comentario: [IComentarios]) => void;
   comentariosSolicitudInscripcion: IComentarios[];
   setComentariosSolicitudInscripcion: (comentarios: IComentarios[]) => void;
 
+  eliminarComentariosBD: (IdComentarioEliminar: string) => void;
+  setIdComentarioEiminar: (IdComentarioEliminar: string) => void;
+  IdComentarioEliminar: string;
+
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
+  IdComentarioEliminar: "",
+
+  eliminarComentariosBD: (IdComentarioEliminar: string) => {
+    set(() => ({
+      IdComentarioEliminar: IdComentarioEliminar,
+    }));
+  },
+
+  setIdComentarioEiminar: (IdComentarioEliminar: string) => {
+    set(() => ({
+      IdComentarioEliminar: IdComentarioEliminar,
+    }));
+  },
+
+
   comentariosSolicitudInscripcion: [],
 
   setComentariosSolicitudInscripcion: (comentarios: IComentarios[]) => {
@@ -104,7 +122,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
   IdSolicitudBorrador: "",
 
   inscripcion: {
-     servidorPublicoDirigido: "Cristian Jesús Alonso Salas",
+    servidorPublicoDirigido: "Cristian Jesús Alonso Salas",
     cargo: "Titular de la Dirección de Deuda Pública y Planeación Financiera",
   },
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Dialog, Grid, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
+import { Button, Dialog, Grid, IconButton, TextField, ThemeProvider, Typography, createTheme } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
 import { IComentarios } from "./DialogComentariosSolicitud";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 const theme = createTheme({
   components: {
@@ -22,6 +24,22 @@ const theme = createTheme({
     },
   },
 });
+export interface IComentarioPrevio {
+
+  id: string;
+
+  usuario: string;
+
+  fecha: string;
+
+  comentario: string;
+
+  apartado: string;
+
+  jsonOriginal: Record<string, string>;
+
+}
+
 export function ComentarioApartado({
   setOpen,
   openState,
@@ -47,6 +65,13 @@ export function ComentarioApartado({
     (state) => state.removeComentario);
 
 
+  const setIdComentarioEiminar: Function = useCortoPlazoStore(
+    (state) => state.setIdComentarioEiminar);
+
+  const eliminarComentariosBD: Function = useCortoPlazoStore(
+    (state) => state.eliminarComentariosBD);
+
+
 
   // const comentariosRegistro: any = useCortoPlazoStore(
   //   (state) => state.comentariosRegistro
@@ -59,7 +84,11 @@ export function ComentarioApartado({
   const filtroComentarios: boolean = useCortoPlazoStore(
     (state) => state.filtroComentarios
   );
+  useEffect(() => {
 
+    console.log("comentariosBD: ", comentariosBD)
+
+  }, []);
 
 
 
@@ -107,9 +136,22 @@ export function ComentarioApartado({
 
   ///***** */
   //const [comentariosPrevios, setComentariosPrevios] = useState<string[]>([]);
-  const [comentariosPrevios, setComentariosPrevios] = useState<
-    { usuario: string; fecha: string; comentario: string }[]
+
+
+
+
+  // const [comentariosPrevios, setComentariosPrevios] = useState<
+  //   { usuario: string; fecha: string; comentario: string }[]
+  // >([]);
+
+  const [comentariosPrevios, setComentariosPrevios] = useState<IComentarioPrevio[]>([]);
+  const [comentariosEliminar, setComentariosEliminar] = useState<
+    {
+      id: string;
+      apartado: string;
+    }[]
   >([]);
+
 
   //**** */
   // useEffect(() => {
@@ -166,17 +208,20 @@ export function ComentarioApartado({
   useEffect(() => {
     if (!openState.apartado) return;
 
-    const encontrados: { usuario: string; fecha: string; comentario: string }[] = [];
+    const encontrados: IComentarioPrevio[] = [];
 
     comentariosBD.forEach((c) => {
       try {
-        const parsed = JSON.parse(c.Comentarios);
+        const parsed = JSON.parse(c.Comentarios) as Record<string, string>;
 
         if (parsed[openState.apartado]) {
           encontrados.push({
+            id: c.Id,
             usuario: c.Nombre,
             fecha: new Date(c.FechaCreacion).toLocaleDateString(),
             comentario: parsed[openState.apartado],
+            apartado: openState.apartado,
+            jsonOriginal: parsed,
           });
         }
       } catch { }
@@ -222,27 +267,6 @@ export function ComentarioApartado({
             </Typography>
 
             {comentariosPrevios.map((item, index) => (
-              <Grid
-                key={index}
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  borderRadius: 2,
-                  backgroundColor: "#f5f5f5",
-                  border: "1px solid #e0e0e0",
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                  {item.usuario} • {item.fecha}
-                </Typography>
-
-                <Typography
-                  variant="body2"
-                  sx={{ whiteSpace: "pre-line", mt: 1 }}
-                >
-                  {item.comentario}
-                </Typography>
-              </Grid>
               // <Grid
               //   key={index}
               //   sx={{
@@ -253,13 +277,55 @@ export function ComentarioApartado({
               //     border: "1px solid #e0e0e0",
               //   }}
               // >
+              //   <Typography variant="caption" sx={{ fontWeight: 600 }}>
+              //     {item.usuario} • {item.fecha}
+              //   </Typography>
+
               //   <Typography
               //     variant="body2"
-              //     sx={{ whiteSpace: "pre-line" }}
+              //     sx={{ whiteSpace: "pre-line", mt: 1 }}
               //   >
-              //     {comentario}
+              //     {item.comentario}
               //   </Typography>
               // </Grid>
+              <Grid
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: "#f5f5f5",
+                  border: "1px solid #e0e0e0",
+                }}
+              >
+                <Grid
+                  display="flex"
+                  justifyContent="space-between"
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {item.usuario} • {item.fecha}
+                  </Typography>
+
+                  <IconButton
+                    onClick={() => {
+                      setIdComentarioEiminar(item.id);//Esto es solo para recordarme que tengo que hacer pero puedes quitar o cambiar el nombre si lo deseas
+                      eliminarComentariosBD(item.id);//Esto es solo para recordarme que tengo que hacer pero puedes quitar o cambiar el nombre si lo deseas
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
+
+                <Typography
+                  variant="body2"
+                  sx={{ whiteSpace: "pre-line", mt: 1 }}
+                >
+                  {item.comentario}
+                </Typography>
+              </Grid>
+
             ))}
           </Grid>
         )}
@@ -308,25 +374,6 @@ export function ComentarioApartado({
           }}
           multiline
         />
-
-        {/* <TextField
-          label={
-            coment.Comentario !== ""
-              ? "Editar comentario"
-              : "Sin comentarios previos"
-          }
-          sx={{ width: "100%", mt: 2 }}
-          value={coment.Comentario || ""}
-          onChange={(v) => {
-            setComent({
-              Comentario: v.target.value
-                .replaceAll(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,\s]/g, "")
-                .replaceAll(/\n/g, ""),
-              Apartado: openState.apartado,
-            });
-          }}
-          multiline
-        /> */}
       </DialogContent>
 
       <DialogActions>
