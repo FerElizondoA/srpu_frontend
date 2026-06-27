@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   ThemeProvider,
   Typography,
@@ -64,6 +65,20 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.removeComentario);
 
 
+
+  const comentariosEliminar = useCortoPlazoStore(
+    state => state.comentariosEliminar
+  );
+
+  const setComentariosEliminar = useCortoPlazoStore(
+    state => state.setComentariosEliminar
+  );
+
+  const removeComentarioEliminar = useCortoPlazoStore(
+    state => state.removeComentarioEliminar
+  );
+
+
   // REQUERIMIENTOS
   React.useEffect(() => {
     if (props.rowSolicitud.Id !== "") {
@@ -114,6 +129,10 @@ export function VerBorradorDocumento(props: Props) {
     (state) => state.addComentario
   );
 
+  const actualizarComentarios: Function = useCortoPlazoStore(
+    (state) => state.actualizarComentarios
+  );
+
   const [openDialogRegresar, setOpenDialogRegresar] = useState(false);
 
   const [openDialogConfirmacionVolver, setOpenDialogConfirmacionVolver] = useState(false);
@@ -139,6 +158,7 @@ export function VerBorradorDocumento(props: Props) {
 
 
   const comentario: any = useCortoPlazoStore((state) => state.comentarios);
+  const hayComentariosEliminar = comentariosEliminar.length > 0;
 
   const [comentariosAuxOriginal, setComentariosAuxOriginal] = useState(comentarios);
 
@@ -179,6 +199,49 @@ export function VerBorradorDocumento(props: Props) {
   // console.log("hola me cerre")
   // }, [!props.recargarSolicitud ])
 
+
+  const construirRegistrosActualizar = () => {
+    const registrosActualizar: {
+      id: string;
+      comentarios: string;
+      accion: "UPDATE" | "DELETE";
+    }[] = [];
+
+    comentariosEliminar.forEach((comentario) => {
+      const nuevoJson = {
+        ...comentario.jsonOriginal,
+      };
+
+      delete nuevoJson[comentario.apartado];
+
+      if (Object.keys(nuevoJson).length > 0) {
+        registrosActualizar.push({
+          id: comentario.id,
+          comentarios: JSON.stringify(nuevoJson),
+          accion: "UPDATE",
+        });
+      } else {
+        registrosActualizar.push({
+          id: comentario.id,
+          comentarios: "",
+          accion: "DELETE",
+        });
+      }
+    });
+
+    return registrosActualizar;
+  };
+
+  const cleanComentariosEliminar = useCortoPlazoStore(
+    state => state.cleanComentariosEliminar
+  );
+
+  useEffect(() => {
+    cleanComentariosEliminar();
+  }, [props.rowSolicitud.Id]);
+  useEffect(() => {
+    cleanComentariosEliminar();
+  }, []);
 
   return (
 
@@ -256,10 +319,10 @@ export function VerBorradorDocumento(props: Props) {
         </Button>
         <Grid container sx={{
           display: "flex",
-          
+
           justifyContent: "space-evenly"
         }}
-        width={{xs: "95%", sm:"85%" , md: "75%", lg:"65%" , xl: "55%"}}
+          width={{ xs: "95%", sm: "85%", md: "75%", lg: "65%", xl: "55%" }}
         >
           {
             (props.rowSolicitud.NoEstatus === "4" && (localStorage.getItem("Rol") === "Validador" || localStorage.getItem("Rol") === "Autorizador"))
@@ -302,12 +365,17 @@ export function VerBorradorDocumento(props: Props) {
               ?
               <ThemeProvider theme={buttonTheme}>
                 <Button
-                  disabled={compararComentarios(comentarios, botonVolverFiltro)}
+                  disabled={
+                    compararComentarios(comentarios, botonVolverFiltro) &&
+                    comentariosEliminar.length === 0
+                  }
                   sx={{
                     ...queries.buttonCancelar,
                     fontSize: "50%",
                   }}
                   onClick={() => {
+
+
                     setOpenGuardaComentarios(true);
                     console.log("comentariosAuxOriginal", comentarios)
 
@@ -545,47 +613,136 @@ export function VerBorradorDocumento(props: Props) {
       </DialogContent>
 
       <Dialog open={openGuardaComentarios} fullWidth maxWidth={"md"}>
-        <DialogTitle>  comentarios</DialogTitle>
+        <DialogTitle sx={{
+          ...queries.bold_text_Titulos, display: "flex",
+          justifyContent: "Center"
+        }}>Comentarios Modificados</DialogTitle>
         <DialogContent>
 
-          {!hayComentarios && (
-            <Typography>Se borraron todos los comentarios</Typography>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+
+
+            }}
+          >
+            Comentarios nuevos
+          </Typography>
+
+          {Object.entries(comentarios).length === 0 ? (
+
+            <Typography color="text.secondary">
+              No hay comentarios nuevos.
+            </Typography>
+
+          ) : (
+
+            Object.entries(comentarios).map(([key, val], index) => (
+
+              (val as string) === ""
+                ? null
+                : (
+                  <Typography key={index}>
+                    <strong>{key}:</strong> {val as string}
+                  </Typography>
+                )
+
+            ))
+
           )}
-          {Object.entries(comentarios).map(([key, val], index) =>
-            (val as string) === "" ? null : (
-              <Typography key={index}>
-                <strong>{key}:</strong>
-                {val as string}
+
+          <Divider sx={{ my: 3 }} />
+
+          <Typography
+            sx={{
+              fontWeight: 600,
+              mb: 2,
+              color: "error.main"
+            }}
+          >
+            Comentarios que se eliminarán
+          </Typography>
+
+          {comentariosEliminar.length === 0 ? (
+
+            <Typography color="text.secondary">
+              No hay comentarios para eliminar.
+            </Typography>
+
+          ) : (
+
+            comentariosEliminar.map((item, index) => (
+
+              <Typography
+                key={index}
+                sx={{
+                  textDecoration: "line-through",
+                  color: "error.main"
+                }}
+              >
+                <strong>{item.apartado}</strong>
+
+                {" : "}
+
+                {item.jsonOriginal[item.apartado]}
               </Typography>
-            )
+
+            ))
+
           )}
+
         </DialogContent>
 
         <DialogActions>
           <Button
             sx={queries.buttonCancelar}
-            onClick={() => setOpenGuardaComentarios(false)}
+            onClick={() => {
+              cleanComentariosEliminar();
+              setOpenGuardaComentarios(false)
+            }}
           >
             Cancelar
           </Button>
+
           <Button
             sx={queries.buttonContinuar}
-            onClick={() => {
-              addComentario(
-                props.rowSolicitud.Id,
-                JSON.stringify(comentarios),
-                localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador" ? "Captura" : "Requerimiento"
-              ).then(() => {
-                alertaExito(() => { }, "Comentarios guardados con éxito")
+            onClick={async () => {
+              try {
+                const registrosActualizar = construirRegistrosActualizar();
+
+                if (registrosActualizar.length > 0) {
+                  await actualizarComentarios(registrosActualizar);
+                }
+
+                if (Object.keys(comentarios).length > 0) {
+                  await addComentario(
+                    props.rowSolicitud.Id,
+                    JSON.stringify(comentarios),
+                    localStorage.getItem("Rol") === "Capturador" ||
+                      localStorage.getItem("Rol") === "Verificador"
+                      ? "Captura"
+                      : "Requerimiento"
+                  );
+                }
+
+
+                alertaExito(
+                  () => { },
+                  "Comentarios guardados con éxito"
+                );
                 setOpenGuardaComentarios(false);
                 props.handler(false);
                 setTimeout(() => {
-                  props.handler(true)
-
+                  props.handler(true);
                 }, 100);
-
-              });
+                cleanComentariosEliminar();
+              }
+              catch (error) {
+                console.error(error);
+              }
             }}
+
           >
             Confirmar
           </Button>

@@ -15,6 +15,7 @@ import { ISoporteDocumentalFuentePago } from "../Fideicomiso/fideicomiso";
 import { createNotification } from "../../components/LateralMenu/APINotificaciones";
 import { IComentarios } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
 import { getComentariosSolicitudPlazo } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
+import { IComentarioPrevio } from "../../components/ObligacionesCortoPlazoPage/Dialogs/DialogComentarioApartado";
 
 export interface SolicitudInscripcionSlice {
   inscripcion: {
@@ -57,6 +58,14 @@ export interface SolicitudInscripcionSlice {
     tipo: string
   ) => void;
 
+  actualizarComentarios: (
+    registros: {
+      id: string;
+      comentarios: string;
+      accion: "UPDATE" | "DELETE";
+    }[]
+  ) => Promise<any>;
+
   eliminarRequerimientos: (Id: string, setState: Function) => void;
 
   deleteFiles: (ruta: string) => void;
@@ -83,28 +92,88 @@ export interface SolicitudInscripcionSlice {
   comentariosSolicitudInscripcion: IComentarios[];
   setComentariosSolicitudInscripcion: (comentarios: IComentarios[]) => void;
 
-  eliminarComentariosBD: (IdComentarioEliminar: string) => void;
-  setIdComentarioEiminar: (IdComentarioEliminar: string) => void;
-  IdComentarioEliminar: string;
+  comentariosEliminar: {
+    id: string;
+    apartado: string;
+    jsonOriginal: Record<string, string>;
+  }[];
+
+  setComentariosEliminar: (
+    comentario: {
+      id: string;
+      apartado: string;
+      jsonOriginal: Record<string, string>;
+    }
+  ) => void;
+
+  removeComentarioEliminar: (
+    id: string,
+    apartado: string
+  ) => void;
+
+  cleanComentariosEliminar: () => void;
+
+  // eliminarComentariosBD: (IdComentarioEliminar: string) => void;
+  // setIdComentarioEiminar: (IdComentarioEliminar: string) => void;
+  // IdComentarioEliminar: string;
 
 }
 
 export const createSolicitudInscripcionSlice: StateCreator<
   SolicitudInscripcionSlice
 > = (set, get) => ({
-  IdComentarioEliminar: "",
+  comentariosEliminar: [],
 
-  eliminarComentariosBD: (IdComentarioEliminar: string) => {
-    set(() => ({
-      IdComentarioEliminar: IdComentarioEliminar,
+  setComentariosEliminar: (comentario) => {
+
+    set((state) => {
+
+      const existe = state.comentariosEliminar.some(c =>
+        c.id === comentario.id &&
+        c.apartado === comentario.apartado
+      );
+      
+      if (existe) {
+        return state;
+      }
+      return {
+        comentariosEliminar: [
+          ...state.comentariosEliminar,
+          comentario
+        ]
+      };
+    });
+  },
+
+  removeComentarioEliminar: (id, apartado) => {
+    set((state) => ({
+      comentariosEliminar:
+        state.comentariosEliminar.filter(
+          c =>
+            !(c.id === id && c.apartado === apartado)
+        )
     }));
   },
 
-  setIdComentarioEiminar: (IdComentarioEliminar: string) => {
-    set(() => ({
-      IdComentarioEliminar: IdComentarioEliminar,
-    }));
+  cleanComentariosEliminar: () => {
+    set({
+      comentariosEliminar: []
+    });
   },
+
+  // IdComentarioEliminar: "",
+
+  // eliminarComentariosBD: (IdComentarioEliminar: string) => {
+  //   set(() => ({
+  //     IdComentarioEliminar: IdComentarioEliminar,
+  //   }));
+  // },
+
+  // setIdComentarioEiminar: (IdComentarioEliminar: string) => {
+  //   set(() => ({
+  //     IdComentarioEliminar: IdComentarioEliminar,
+  //   }));
+  // },
 
 
   comentariosSolicitudInscripcion: [],
@@ -438,6 +507,20 @@ export const createSolicitudInscripcionSlice: StateCreator<
       })
       .catch((e) => { });
 
+  },
+  actualizarComentarios: async (registros) => {
+    return axios.post(
+      process.env.REACT_APP_APPLICATION_BACK + "/actualizar-comentarios",
+      {
+        Registros: registros,
+        ModificadoPor: localStorage.getItem("IdUsuario")
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken")
+        }
+      }
+    );
   },
 
   eliminarRequerimientos: async (Id: string, setState: Function) => {

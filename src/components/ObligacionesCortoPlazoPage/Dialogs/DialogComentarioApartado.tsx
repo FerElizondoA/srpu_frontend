@@ -65,11 +65,11 @@ export function ComentarioApartado({
     (state) => state.removeComentario);
 
 
-  const setIdComentarioEiminar: Function = useCortoPlazoStore(
-    (state) => state.setIdComentarioEiminar);
+  // const setIdComentarioEiminar: Function = useCortoPlazoStore(
+  //   (state) => state.setIdComentarioEiminar);
 
-  const eliminarComentariosBD: Function = useCortoPlazoStore(
-    (state) => state.eliminarComentariosBD);
+  // const eliminarComentariosBD: Function = useCortoPlazoStore(
+  //   (state) => state.eliminarComentariosBD);
 
 
 
@@ -145,12 +145,26 @@ export function ComentarioApartado({
   // >([]);
 
   const [comentariosPrevios, setComentariosPrevios] = useState<IComentarioPrevio[]>([]);
-  const [comentariosEliminar, setComentariosEliminar] = useState<
-    {
-      id: string;
-      apartado: string;
-    }[]
-  >([]);
+
+  const comentariosEliminar = useCortoPlazoStore(
+    state => state.comentariosEliminar
+  );
+
+  const setComentariosEliminar = useCortoPlazoStore(
+    state => state.setComentariosEliminar
+  );
+
+  const removeComentarioEliminar = useCortoPlazoStore(
+    state => state.removeComentarioEliminar
+  );
+
+  // const [comentariosEliminar, setComentariosEliminar] = useState<
+  //   {
+  //     id: string;
+  //     apartado: string;
+  //     jsonOriginal: Record<string, string>;
+  //   }[]
+  // >([]);
 
 
   //**** */
@@ -242,6 +256,7 @@ export function ComentarioApartado({
   // }, [])
 
 
+
   return (
     <Dialog
       fullWidth
@@ -266,67 +281,80 @@ export function ComentarioApartado({
               Comentarios asignados
             </Typography>
 
-            {comentariosPrevios.map((item, index) => (
-              // <Grid
-              //   key={index}
-              //   sx={{
-              //     mb: 2,
-              //     p: 2,
-              //     borderRadius: 2,
-              //     backgroundColor: "#f5f5f5",
-              //     border: "1px solid #e0e0e0",
-              //   }}
-              // >
-              //   <Typography variant="caption" sx={{ fontWeight: 600 }}>
-              //     {item.usuario} • {item.fecha}
-              //   </Typography>
-
-              //   <Typography
-              //     variant="body2"
-              //     sx={{ whiteSpace: "pre-line", mt: 1 }}
-              //   >
-              //     {item.comentario}
-              //   </Typography>
-              // </Grid>
-              <Grid
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  borderRadius: 2,
-                  backgroundColor: "#f5f5f5",
-                  border: "1px solid #e0e0e0",
-                }}
-              >
+            {comentariosPrevios.map((item, index) => {
+              const marcado = comentariosEliminar.some(x =>
+                x.id === item.id &&
+                x.apartado === item.apartado
+              );
+              return (
                 <Grid
-                  display="flex"
-                  justifyContent="space-between"
+                  sx={{
+                    mb: 2,
+                    p: 2,
+                    borderRadius: 2,
+                    backgroundColor: "#f5f5f5",
+                    border: "1px solid #e0e0e0",
+                  }}
                 >
-                  <Typography
-                    variant="caption"
-                    sx={{ fontWeight: 600 }}
+                  <Grid
+                    display="flex"
+                    justifyContent="space-between"
                   >
-                    {item.usuario} • {item.fecha}
-                  </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: 600 }}
+                    >
+                      {item.usuario} • {item.fecha}
+                    </Typography>
 
-                  <IconButton
-                    onClick={() => {
-                      setIdComentarioEiminar(item.id);//Esto es solo para recordarme que tengo que hacer pero puedes quitar o cambiar el nombre si lo deseas
-                      eliminarComentariosBD(item.id);//Esto es solo para recordarme que tengo que hacer pero puedes quitar o cambiar el nombre si lo deseas
+                    {localStorage.getItem("Rol") === "Autorizador" ?
+                      <IconButton
+                        onClick={() => {
+                          const existe = comentariosEliminar.find(x =>
+                            x.id === item.id &&
+                            x.apartado === item.apartado
+                          );
+
+                          if (existe) {
+                            removeComentarioEliminar(
+                              item.id,
+                              item.apartado);
+                          } else {
+                            setComentariosEliminar({
+                              id: item.id,
+                              apartado: item.apartado,
+                              jsonOriginal: item.jsonOriginal,
+                            });
+                          }
+                        }}
+                      >
+                        <DeleteIcon
+                          color={marcado ? "error" : "inherit"} />
+                      </IconButton>
+                      : null}
+
+
+                  </Grid>
+
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      whiteSpace: "pre-line",
+                      mt: 1,
+                      textDecoration: marcado
+                        ? "line-through"
+                        : "none",
+                      opacity: marcado
+                        ? 0.45
+                        : 1
                     }}
                   >
-                    <DeleteIcon />
-                  </IconButton>
+                    {item.comentario}
+                  </Typography>
                 </Grid>
 
-                <Typography
-                  variant="body2"
-                  sx={{ whiteSpace: "pre-line", mt: 1 }}
-                >
-                  {item.comentario}
-                </Typography>
-              </Grid>
-
-            ))}
+              )
+            })}
           </Grid>
         )}
 
@@ -392,11 +420,12 @@ export function ComentarioApartado({
         <Button
           sx={queries.buttonCancelar}
           onClick={() => {
+
             setComent({ Comentario: "", Apartado: "" });
             setOpen(false);
           }}
         >
-          Cancelar
+          Cerrar
         </Button>
 
         <ThemeProvider theme={theme}>
@@ -404,6 +433,12 @@ export function ComentarioApartado({
             disabled={coment.Comentario === ""}
             sx={queries.buttonContinuar}
             onClick={() => {
+
+              // removeComentarioEliminar(
+              //   item.id,
+              //   openState.apartado
+              // );
+
               newComentario(coment, openState.tab);
               setComent({ Comentario: "", Apartado: "" });
               setOpen(false);
