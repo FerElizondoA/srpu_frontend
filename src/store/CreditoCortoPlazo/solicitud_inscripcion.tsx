@@ -308,7 +308,7 @@ export const createSolicitudInscripcionSlice: StateCreator<
         // console.log("Solicitud creada, ID: ", data.data.Id);
         // console.log("Comentario a agregar CREAR NUEVO: ", comentario);
 
-        state.addComentario(data.data.Id, JSON.stringify(state.comentarios), "Captura");
+        //state.addComentario(data.data.Id, JSON.stringify(state.comentarios), "Captura");
 
         setTimeout(() => {
           inscripcionState.cleanSolicitudCortoPlazo();

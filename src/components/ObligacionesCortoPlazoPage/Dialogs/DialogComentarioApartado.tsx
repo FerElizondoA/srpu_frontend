@@ -84,13 +84,10 @@ export function ComentarioApartado({
   const filtroComentarios: boolean = useCortoPlazoStore(
     (state) => state.filtroComentarios
   );
-  useEffect(() => {
 
-    console.log("comentariosBD: ", comentariosBD)
-
-  }, []);
-
-
+  // useEffect(() => {
+  //   console.log("comentariosBD: ", comentariosBD)
+  // }, []);
 
   useEffect(() => {
     // comentariosRegistro[openState.apartado] &&
@@ -136,13 +133,11 @@ export function ComentarioApartado({
 
   ///***** */
   //const [comentariosPrevios, setComentariosPrevios] = useState<string[]>([]);
-
-
-
-
   // const [comentariosPrevios, setComentariosPrevios] = useState<
   //   { usuario: string; fecha: string; comentario: string }[]
   // >([]);
+
+  
 
   const [comentariosPrevios, setComentariosPrevios] = useState<IComentarioPrevio[]>([]);
 

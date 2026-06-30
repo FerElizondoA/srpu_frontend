@@ -30,6 +30,8 @@ import { DialogGuardarBorrador } from "../Dialogs/DialogGuardarBorrador";
 import { DialogSolicitarModificacion } from "../Dialogs/DialogSolicitarModificacion";
 import { IDocsEliminados } from "./InterfacesCortoPlazo";
 import { IFile } from "./Documentacion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 
 interface Head {
   label: string;
@@ -79,12 +81,43 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
     (state) => state.tablaObligadoSolidarioAval
   );
 
+
+  const organismo = useCortoPlazoStore( //es donde proviene el insciso F) 
+    (state) => state.encabezado.organismo.Organismo
+  );
+
+  const obtenerDescripcionRegla = (descripcion: string) => {
+
+    if (
+      descripcion.includes(
+        "Municipio de Guadalupe."
+      )
+    ) {
+      return descripcion.replace(
+        "Municipio de Guadalupe.",
+        organismo + "."
+      );
+    }
+
+    return descripcion;
+  };
+
   const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
 
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
+
   useEffect(() => {
+    // console.log("inscripcion.Solicitud", inscripcion.Solicitud)
+
+    // const solicitud = JSON.parse(inscripcion?.Solicitud);
+    // if(solicitud.inscripcion.declaratorias)
     catalogoReglas.length <= 0 && getReglas();
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -201,10 +234,10 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
           errores.push(
             "Sección Obligado Solidario / Aval: Todos los registros deben tener un porcentaje de prelación mayor a 0."
           );
-        } 
+        }
 
         //LUEGO REVISAMOS
-        
+
         // else {
         //   const totalPrelacion = tablaObligados.reduce(
         //     (total: number, item: { prelacionPorcentaje: number }) =>
@@ -609,7 +642,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
                             <StyledTableCell padding="checkbox">
                               <Checkbox
                                 checked={reglasAplicables.includes(
-                                  row.Descripcion
+                                  obtenerDescripcionRegla(row.Descripcion)
                                 )}
                                 disabled={
                                   (checkObj[1] === true && index === 2) ||
@@ -629,13 +662,13 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
                                     });
 
                                   v.target.checked
-                                    ? arrReglas.push(row.Descripcion)
-                                    : removeRegla(row.Descripcion);
+                                    ? arrReglas.push(obtenerDescripcionRegla(row.Descripcion))
+                                    : removeRegla(obtenerDescripcionRegla(row.Descripcion));
                                   setReglasAplicables(arrReglas);
                                 }}
                               />
                             </StyledTableCell>
-                            <StyledTableCell>{row.Descripcion}</StyledTableCell>
+                            <StyledTableCell>{obtenerDescripcionRegla(row.Descripcion)}</StyledTableCell>
                           </StyledTableRow>
                         );
                       })}

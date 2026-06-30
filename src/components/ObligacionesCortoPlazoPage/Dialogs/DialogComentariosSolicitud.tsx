@@ -114,7 +114,7 @@ export function VerComentariosSolicitud({
         width: "100%"
       }}
       fullWidth
-      // maxWidth={"lg"}
+     maxWidth={"md"}
       open={openState}
       keepMounted
       TransitionComponent={Transition}
@@ -157,8 +157,10 @@ export function VerComentariosSolicitud({
       </DialogTitle>
       <DialogContent sx={{ display: "flex", justifyContent: "start" }}>
         {menu === "Requerimientos" ? (
-          <Grid>
-            <TableContainer>
+          <Grid container width={"10rem"}>
+            <TableContainer
+            sx={{width:"20rem"}}
+            >
               <Table>
                 <TableHead>
 
@@ -220,14 +222,14 @@ export function VerComentariosSolicitud({
           <Grid item>
             <TableContainer component={Paper}>
               <Table
-                //sx={{ minWidth: 650 }}
+                sx={{ minWidth: "52rem" }}
                 size="small"
                 aria-label="a dense table"
               >
                 <TableHead>
                   <StyledTableRow>
                     {heads.map((head, index) => (
-                      <StyledTableCell key={index}>
+                      <StyledTableCell key={index} align="center">
                         <TableSortLabel sx={{ color: "#AF8C55" }}>
                           {head.label}{" "}
                         </TableSortLabel>
@@ -245,6 +247,7 @@ export function VerComentariosSolicitud({
                         return (
                           <StyledTableRow key={index}>
                             <StyledTableCell
+                            align="center"
                               sx={{
                                 fontSize: "1.5ch",
                                 width: "30%",
@@ -254,6 +257,7 @@ export function VerComentariosSolicitud({
                             </StyledTableCell>
 
                             <StyledTableCell
+                            align="center"
                               sx={{
                                 fontSize: "1.5ch",
                                 width: "20%",
@@ -266,6 +270,7 @@ export function VerComentariosSolicitud({
                             </StyledTableCell>
 
                             <StyledTableCell
+                            align="center"
                               sx={{
                                 fontSize: "1.5ch",
                                 width: "50%",
@@ -318,7 +323,7 @@ export function VerComentariosSolicitud({
               >
                 Cerrar
               </Button>
-              {/* {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
+              {rolesAdmin.includes(localStorage.getItem("Rol")!) && (
                 <Button
                   sx={queries.buttonCancelar}
                   onClick={() => {
@@ -327,15 +332,15 @@ export function VerComentariosSolicitud({
                 >
                   Eliminar Requerimientos
                 </Button>
-              )} */}
-              {/* <Button
+              )} 
+               <Button
                 sx={queries.buttonContinuar}
                 onClick={() => {
                   changeOpenDialogCrear(!openDialogCrear);
                 }}
               >
                 Crear nuevo comentario
-              </Button> */}
+              </Button>
             </>
           ) : null}
 
