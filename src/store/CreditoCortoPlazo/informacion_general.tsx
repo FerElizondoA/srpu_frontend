@@ -15,7 +15,7 @@ export interface IInformacionGeneral {
 export interface IObligadoSolidarioAval {
   tipoEntePublicoObligado: { Id: string; Descripcion: string };
   entePublicoObligado: { Id: string; Descripcion: string };
-  prelacionPorcentaje: number;
+  prelacionPorcentaje: string;
 }
 
 export interface InformacionGeneralSlice {
@@ -51,7 +51,7 @@ export interface InformacionGeneralSlice {
     entePublicoObligado: { Id: string; Descripcion: string }
   ) => void;
 
-  updatePrelacionPorcentaje: (index: number, valor: number) => void;
+  updatePrelacionPorcentaje: (index: number, descripcion: string) => void;
 
   cleanObligadoSolidarioAval: () => void;
 
@@ -68,14 +68,14 @@ export const createInformacionGeneralSlice: StateCreator<
 > = (set, get) => ({
 
 
-  updatePrelacionPorcentaje: (index: number, valor: number) =>
+  updatePrelacionPorcentaje: (index: number, descripcion: string) =>
     set((state) => ({
       tablaObligadoSolidarioAval: state.tablaObligadoSolidarioAval.map(
         (item, i) =>
           i === index
             ? {
               ...item,
-              prelacionPorcentaje: valor,
+              prelacionPorcentaje: descripcion,
             }
             : item
       ),

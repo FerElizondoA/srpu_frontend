@@ -426,7 +426,7 @@ export const createSolicitudInscripcionLargoPlazoSlice: StateCreator<
           ({ entePublicoObligado, tipoEntePublicoObligado, prelacionPorcentaje }) => ({
             entePublicoObligado,
             tipoEntePublicoObligado,
-            prelacionPorcentaje: prelacionPorcentaje ?? 0,
+            prelacionPorcentaje: prelacionPorcentaje || "",
           })
         ),
         destinoGastosCostos: lpState.tablaGastosCostos,

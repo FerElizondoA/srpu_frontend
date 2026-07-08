@@ -77,9 +77,9 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
     (state) => state.reglasAplicables
   );
 
-  const tablaObligados: { prelacionPorcentaje: number }[] = useCortoPlazoStore(
-    (state) => state.tablaObligadoSolidarioAval
-  );
+   const tablaObligados: { prelacionPorcentaje: string }[] = useCortoPlazoStore(
+     (state) => state.tablaObligadoSolidarioAval
+   );
 
 
   const organismo = useCortoPlazoStore( //es donde proviene el insciso F) 
@@ -226,8 +226,9 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
 
       if (tablaObligados.length > 0) {
         const existePrelacionVacia = tablaObligados.some(
-          (item: { prelacionPorcentaje: number }) =>
-            item.prelacionPorcentaje <= 0
+          (item: { prelacionPorcentaje: string }) =>
+            item.prelacionPorcentaje === "" 
+          //|| item.prelacionPorcentaje === "0"
         );
 
         if (existePrelacionVacia) {
@@ -347,8 +348,6 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
           "Sección Solicitud de Inscripción: Agregar al menos una regla."
         );
       }
-
-
 
       if (err === 0) {
         setOpenDialogEnviar(!openDialogEnviar);

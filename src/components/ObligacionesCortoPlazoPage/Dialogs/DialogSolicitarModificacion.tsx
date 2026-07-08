@@ -311,15 +311,23 @@ export function DialogSolicitarModificacion({
     handler(false);
   };
 
+  const tituloDialog = (accion: string) => {
+    switch (accion) {
+      case "enviar":
+        return "Esta por confirmar la solicitud, ¿Desea continuar?";
+      case "requerimiento":
+        return "Esta por confirmar una solicitud de prevención, ¿Desea continuar?";
+      case "desechamiento":
+        return "Esta por desechar la solicitud, ¿Desea continuar?";
+      default:
+        return "Favor de asignar a un usuario para validacion:";
+    }
+  }
 
-  useEffect(() => {
-
-    console.log("COMENTARIOS", comentarios)
-
-  }, [])
 
   return (
     <Dialog
+       maxWidth={"md"}
       fullWidth
       open={openState}
       keepMounted
@@ -328,11 +336,9 @@ export function DialogSolicitarModificacion({
       }}
     >
 
-      <DialogTitle>
+      <DialogTitle sx={{ display: "flex", justifyContent: "center" }}>
         <Typography sx={queries.bold_text}>
-          {localStorage.getItem("Rol") === "Autorizador" && (accion === "enviar" || accion === "requerimiento")
-            ? "Inscripción"
-            : localStorage.getItem("Rol") === "Autorizador" && accion === "desechamiento" ? "Desechamiento" : "Asignar a: "}
+          {tituloDialog(accion)}
 
         </Typography>
       </DialogTitle>
@@ -429,11 +435,7 @@ export function DialogSolicitarModificacion({
           </Typography>
         )}
 
-        {accion === "desechamiento" ?
-          <Typography sx={{ ...queries.text, display: "flex", justifyContent: "center" }}>
-            ¿Desea desechar esta solicitud?
-          </Typography>
-          : Object.values(comentarios).every(val => val === "") ? (
+        {Object.values(comentarios).every(val => val === "") ? (
             <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
               {rolesAdmin.includes(localStorage.getItem("Rol")!)
                 ? " Sin Requerimientos"

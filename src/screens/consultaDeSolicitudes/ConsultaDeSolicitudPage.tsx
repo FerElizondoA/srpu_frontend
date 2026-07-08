@@ -206,7 +206,6 @@ export function ConsultaDeSolicitudPage() {
   );
   const setInscripcion: Function = useInscripcionStore(
     (state) => state.setInscripcion
-
   );
 
   const [openTrazabilidad, setOpenTrazabilidad] = useState(false);

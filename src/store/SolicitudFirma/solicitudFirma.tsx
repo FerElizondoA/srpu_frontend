@@ -1072,23 +1072,20 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
 
         montoOriginalContratado: solicitud.informacionGeneral.informacionGeneral.monto.toString().replace("$ ", "$"),
 
-        // montoOriginalPalabras: MontoALetras,
+        
         montoOriginalPalabras: MontoALetras.replace("$ ", "$"),
 
         entePublicoObligado: solicitud.informacionGeneral.obligadosSolidarios,
 
-        // destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion,
         destino: solicitud.informacionGeneral.informacionGeneral.destino.Descripcion.replace(/\.$/, ""),
 
 
         plazo: solicitud.informacionGeneral.informacionGeneral.plazo,
 
 
-        //AQUI NECESITO SABER CUANTAS CONDICIOENS FINANCIERAS HABILITARON EL PERIODO DE GRACIA
         periodoGracia: cantidadPeriodoGracia,
 
 
-        // tasaInteres: solicitud.condicionesFinancieras[0]?.tasaInteres[0]?.tasaFija,
         tasaInteres:
           solicitud.condicionesFinancieras[0]?.tasaInteres?.find(
             (item) =>

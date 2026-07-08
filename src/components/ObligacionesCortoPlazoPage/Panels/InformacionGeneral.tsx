@@ -126,6 +126,12 @@ export function InformacionGeneral() {
     (state) => state.setInformacionGeneral
   );
 
+  const updatePrelacionPorcentaje: Function = useCortoPlazoStore(
+    (state) => state.updatePrelacionPorcentaje
+  );
+
+
+
   // OBLIGADO SOLIDARIO AVAL
 
   const generalTipoEntePublico: { Id: string; Descripcion: string } =
@@ -519,7 +525,7 @@ export function InformacionGeneral() {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
               value={vencimiento ? new Date(vencimiento) : null}
-              sx={{width:"100%"}}
+              sx={{ width: "100%" }}
               onChange={(date) => {
                 if (!date) return;
                 setVencimiento(date.toISOString());
@@ -945,13 +951,11 @@ export function InformacionGeneral() {
                           <TextField
                             variant="outlined"
                             fullWidth
-                            type="number"
-                            error={errorPrelacion === index}
-                            helperText={
-                              errorPrelacion === index
-                                ? "Suma total no puede superar el 100"
-                                : ""
-                            }
+                            type="text"
+                            inputProps={{
+                              maxLength: 100
+                            }}
+                            helperText={`${row?.prelacionPorcentaje ? row.prelacionPorcentaje.length : 0}/100 caracteres (Máximo 100)`}
                             sx={{
                               width: "15rem",
                               //Quita las flechas de los input number
@@ -963,46 +967,19 @@ export function InformacionGeneral() {
                                 MozAppearance: "textfield",
                               },
                             }}
-                            onKeyDown={(e) => { //Validacion de no agregar esos caracteres
-                              if (["e", "E", "+", "-"].includes(e.key)) {
-                                e.preventDefault();
-                              }
-                            }}
-                            value={row.prelacionPorcentaje === 0 ? "" : row.prelacionPorcentaje}
+
+                            value={row.prelacionPorcentaje}
                             onChange={(e) => {
-                              const valor = Number(e.target.value);
+                              const value = e.target.value;
 
-                              const sumaOtros = tablaObligados
-                                .reduce(
-                                  (
-                                    acc: number,
-                                    item: { prelacionPorcentaje: number },
-                                    i: number
-                                  ) => {
-                                    if (i !== index) {
-                                      return acc + Number(item.prelacionPorcentaje);
-                                    }
-                                    return acc;
-                                  },
-                                  0
-                                );
-
-                              if (valor + sumaOtros > 100) {
-                                setErrorPrelacion(index);
-                                return;
+                              if (
+                                value.length <= 50 &&
+                                /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,;:()¿?¡!$%&/\-'"#]*$/.test(value)
+                              ) {
+                                updatePrelacionPorcentaje(index, value);
                               }
-
-                              setErrorPrelacion(null);
-
-                              const nuevaTabla = [...tablaObligados];
-                              nuevaTabla[index].prelacionPorcentaje = valor;
-
-                              setTablaObligadoSolidarioAval(nuevaTabla);
                             }}
-                            inputProps={{
-                              min: 0,
-                              max: 100,
-                            }}
+
                           />
                         </StyledTableCell>
                       </StyledTableRow>
