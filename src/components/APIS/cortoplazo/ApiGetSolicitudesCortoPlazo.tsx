@@ -54,7 +54,7 @@ export function getComentariosSolicitudPlazo(
       //         !rolesAdmin.includes(localStorage.getItem("Rol")!))
       //   )
       // );
-      console.log("Data comentarios completos", data.data)
+   //   console.log("Data comentarios completos", data.data)
 
       const rol = localStorage.getItem("Rol") || "";
       const esAdmin = rolesAdmin.includes(rol);
@@ -63,7 +63,7 @@ export function getComentariosSolicitudPlazo(
         esAdmin ? c.Tipo === "Requerimiento" : c.Tipo === "Captura"
       );
       
-      console.log("Data comentarios filtrados", comentariosFiltrados)
+      // console.log("Data comentarios filtrados", comentariosFiltrados)
 
       state.setComentariosSolicitudInscripcion(comentariosFiltrados);
 

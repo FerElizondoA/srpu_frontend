@@ -77,9 +77,9 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
     (state) => state.reglasAplicables
   );
 
-   const tablaObligados: { prelacionPorcentaje: string }[] = useCortoPlazoStore(
-     (state) => state.tablaObligadoSolidarioAval
-   );
+  const tablaObligados: { prelacionPorcentaje: string }[] = useCortoPlazoStore(
+    (state) => state.tablaObligadoSolidarioAval
+  );
 
 
   const organismo = useCortoPlazoStore( //es donde proviene el insciso F) 
@@ -93,10 +93,13 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         "Municipio de Guadalupe."
       )
     ) {
+      console.log("Se encontró el texto a reemplazar en la descripción de la regla.");
       return descripcion.replace(
         "Municipio de Guadalupe.",
         organismo + "."
       );
+    } else {
+      console.log("No se encontró el texto a reemplazar en la descripción de la regla.");
     }
 
     return descripcion;
@@ -227,7 +230,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
       if (tablaObligados.length > 0) {
         const existePrelacionVacia = tablaObligados.some(
           (item: { prelacionPorcentaje: string }) =>
-            item.prelacionPorcentaje === "" 
+            item.prelacionPorcentaje === ""
           //|| item.prelacionPorcentaje === "0"
         );
 
