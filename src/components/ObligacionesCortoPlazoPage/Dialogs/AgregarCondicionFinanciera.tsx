@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { queries } from "../../../queries";
 
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -32,6 +32,7 @@ import {
 import { buttonTheme } from "../../mandatos/dialog/AgregarMandatos";
 import { ComisionesTasaEfectiva } from "../Panels/ComisionesTasaEfectiva";
 import { DisposicionPagosCapital } from "../Panels/DisposicionPagosCapital";
+import { moneyMask } from "../Panels/InformacionGeneral";
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -107,6 +108,22 @@ export function AgregarCondicionFinanciera(props: Props) {
     (state) => state.cleanDisposicion
   );
 
+    // // TASA DE INTERES
+    // const tasaDeInteres: ITasaInteres = useCortoPlazoStore(
+    //   (state) => state.tasaDeInteres
+    // );
+    // const setTasaInteres: Function = useCortoPlazoStore(
+    //   (state) => state.setTasaInteres
+    // );
+
+    // useEffect(() => {
+    //   console.log("HOLA MONTO", monto)
+    //     setTasaInteres({
+    //       ...tasaDeInteres,
+    //       importe: moneyMask(monto.toString())
+    //     });
+    // }, [])
+
   return (
     <Dialog fullScreen open={props.openState} TransitionComponent={Transition}>
       <AppBar sx={{ position: "relative" }}>
@@ -115,7 +132,7 @@ export function AgregarCondicionFinanciera(props: Props) {
             edge="start"
             onClick={() => {
               props.handler(false);
-              cleanCondicionFinanciera();
+              cleanCondicionFinanciera(monto);
               cleanTablaTasaInteres(monto);
               cleanDisposicion(monto);
             }}

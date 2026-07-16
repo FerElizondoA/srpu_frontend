@@ -428,7 +428,7 @@ export function DisposicionPagosCapital() {
           Descripcion: "",
         },
 
-        sobreTasa: "",
+        sobreTasa: "N/A",
       });
 
     } else {
@@ -478,12 +478,12 @@ export function DisposicionPagosCapital() {
   // }, [pagosDeCapital.fechaPrimerPago, fechaVencimiento, pagosDeCapital.periodicidadDePago]);
 
 
-  useEffect(() => {
-    console.log("Primer Pago:", fechaPrimerPagoDate);
-    console.log("Vencimiento:", fechaVencimientoDate);
-    console.log("Meses disponibles:", mesesDisponibles);
-    console.log("Máximo pagos:", obtenerMaxPagos());
-  }, [pagosDeCapital.fechaPrimerPago, fechaVencimiento, pagosDeCapital.periodicidadDePago])
+  // useEffect(() => {
+  //   console.log("Primer Pago:", fechaPrimerPagoDate);
+  //   console.log("Vencimiento:", fechaVencimientoDate);
+  //   console.log("Meses disponibles:", mesesDisponibles);
+  //   console.log("Máximo pagos:", obtenerMaxPagos());
+  // }, [pagosDeCapital.fechaPrimerPago, fechaVencimiento, pagosDeCapital.periodicidadDePago])
 
   useEffect(() => {
     const primerPago = new Date(pagosDeCapital.fechaPrimerPago);
@@ -532,13 +532,21 @@ export function DisposicionPagosCapital() {
     pagosDeCapital.fechaPrimerPago,
   ]);
 
-  useEffect(() => {
-    if (disposicionesParciales === false) {
-      // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
-      setTablaTasaInteres([tasaDeInteres]);
-    }
-    console.log("TABLA", tasaDeInteres)
-  }, [disposicionesParciales, tasaDeInteres]);
+  // useEffect(() => {
+  //   setTasaInteres((prev: any) => ({
+  //     ...prev,
+  //     importe: moneyMask(monto.toString()),
+  //   }));
+  //   setTablaTasaInteres([
+  //     {
+  //       Disposiciones: {
+  //         fechaDisposicion: tasaDeInteres.Disposiciones?.fechaDisposicion,
+  //         fechaIndicativa: tasaDeInteres.Disposiciones?.fechaIndicativa
+  //       },
+  //       importe: moneyMask(monto.toString()),
+  //     },0
+  //   ]);
+  // }, []);
 
 
   useEffect(() => {
@@ -554,31 +562,44 @@ export function DisposicionPagosCapital() {
             fechaDisposicion: tasaDeInteres.Disposiciones?.fechaDisposicion,
             fechaIndicativa: tasaDeInteres.Disposiciones?.fechaIndicativa
           },
-
           importe: moneyMask(monto.toString()),
         },
       ]);
+      console.log("HOLA X1", tasaDeInteres.importe)
+      console.log("TABLA X1", tasaDeInteres)
+
     }
-  }, [monto, disposicionesParciales]);
+  }, [monto, disposicionesParciales === false]);
 
-  useEffect(() => {
-    setTasaInteres({
-      ...tasaDeInteres,
-      Disposiciones: {
-        ...(tasaDeInteres.Disposiciones ?? {}),
-        fechaIndicativa: false,
+  // useEffect(() => {
+  //   setTasaInteres({
+  //     ...tasaDeInteres,
+  //     Disposiciones: {
+  //       ...(tasaDeInteres.Disposiciones ?? {}),
+  //       fechaIndicativa: false,
 
-      },
-      importe: restante * 100 === 0 ? "$0.00" : moneyMask(monto.toString())
-    });
-  }, [disposicionesParciales === true])
+  //     },
+  //     importe: restante * 100 === 0 ? "$0.00" : moneyMask(monto.toString())
+  //   });
 
-  useEffect(() => {
-    setTasaInteres({
-      ...tasaDeInteres,
-      importe: moneyMask(monto.toString())
-    });
-  }, [])
+  //   console.log("HOLA X2", tasaDeInteres.importe)
+  //   console.log("TABLA X2", tasaDeInteres)
+  // }, [disposicionesParciales === true])
+
+  // useEffect(() => {
+  //   if (tablaTasaInteres.length === 0 && disposicionesParciales === false) {
+  //     setTasaInteres({
+  //       ...tasaDeInteres,
+  //       importe: moneyMask(monto.toString())
+  //     });
+  //     console.log("HOLA X3", tasaDeInteres.importe)
+  //     console.log("TABLA X3", tasaDeInteres)
+  //   }
+  // }, [])
+
+
+
+
 
 
   // useEffect(() => {
@@ -1108,7 +1129,7 @@ export function DisposicionPagosCapital() {
                         : ""
                       )
                     }
-                    value={tasaDeInteres.importe}
+                    value={moneyMask(String(tasaDeInteres.importe))}
                     onChange={(v) => {
                       const valornuevo = v.target.value;
                       console.log("valorNuevo", valornuevo);
@@ -1117,6 +1138,7 @@ export function DisposicionPagosCapital() {
                       //setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
                     }}
                     error={
+                      disposicionesParciales === false ? false :
                       validacionBotonAgregar(
                         tasaDeInteres.importe.toString()
                       ) >
@@ -1382,13 +1404,23 @@ export function DisposicionPagosCapital() {
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
 
                   <TextField
+                    type="text"
                     placeholder="0"
                     value={tasaDeInteres.tasaFija}
-                    onChange={(v) => {
-                      setTasaInteres({
-                        ...tasaDeInteres,
-                        tasaFija: v.target.value,
-                      });
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      // Solo números y un punto decimal opcional
+                      if (/^\d*\.?\d*$/.test(value)) {
+                        setTasaInteres({
+                          ...tasaDeInteres,
+                          tasaFija: value,
+                        });
+                      }
+                    }}
+                    inputProps={{
+                      inputMode: "decimal",
+                      maxLength: 10,
                     }}
                     fullWidth
                     InputLabelProps={{
@@ -1793,7 +1825,7 @@ export function DisposicionPagosCapital() {
                       ) {
                         setTasaInteres({
                           ...tasaDeInteres,
-                          sobreTasa: v.target.value || "",
+                          sobreTasa: v.target.value || "N/A",
                         });
                       }
                     }}
@@ -2010,7 +2042,7 @@ export function DisposicionPagosCapital() {
                                     {row?.tasaReferencia?.Descripcion || "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row?.sobreTasa}
+                                    {row?.sobreTasa || "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {row?.diasEjercicio?.Descripcion}

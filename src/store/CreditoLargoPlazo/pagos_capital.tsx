@@ -109,7 +109,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     diasEjercicio: { Id: "", Descripcion: "" },
     periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
     tasaReferencia: { Id: "", Descripcion: "" },
-    sobreTasa: 0,
+    sobreTasa: "",
   },
   setTasaInteres: (tasaDeInteres: ITasaInteres) => {
     set((state) => ({

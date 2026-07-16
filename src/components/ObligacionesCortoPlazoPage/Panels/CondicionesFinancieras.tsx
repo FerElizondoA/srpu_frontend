@@ -230,7 +230,12 @@ export function CondicionesFinancieras() {
   //   console.log("tablaCondicionesFinancieras", tablaCondicionesFinancieras)
 
   // }, [tablaCondicionesFinancieras, !openFiltroMonto])
-
+    const tasaDeInteres: ITasaInteres = useCortoPlazoStore(
+      (state) => state.tasaDeInteres
+    );
+    const setTasaInteres: Function = useCortoPlazoStore(
+      (state) => state.setTasaInteres
+    );
 
 
 
@@ -496,8 +501,8 @@ export function CondicionesFinancieras() {
                                 {row?.tasaReferencia?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row?.sobreTasa === 0 || row?.sobreTasa === null || row?.sobreTasa.toString() === "N/A"
-                                  ? row?.sobreTasa
+                                {row?.sobreTasa === "" || row?.sobreTasa === null || row?.sobreTasa.toString() === "N/A"
+                                  ? row?.sobreTasa=== "" ?"N/A" : row?.sobreTasa + "%"
                                   : row?.sobreTasa + "%"
                                 }
                               </StyledTableCell>

@@ -204,7 +204,8 @@ export function ConfirmacionEnviarSolicitud({
                     //   "inscripcion"
                     // );
                   })
-                  .catch(() => {
+                  .catch((error: any) => {
+                    console.log("Error al modificar la solicitud x1:", error);
                     alertaError("Ocurrió un error, inténtelo de nuevo")
                   });
               } else if (localStorage.getItem("Rol") === "Capturador") {
@@ -238,8 +239,8 @@ export function ConfirmacionEnviarSolicitud({
                     //   "inscripcion"
                     // );
                   })
-                  .catch(() => {
-
+                  .catch((error: any) => {
+                    console.log("Error al modificar la solicitud x2:", error);
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }
@@ -280,7 +281,8 @@ export function ConfirmacionEnviarSolicitud({
                     // );
                     navigate("../ConsultaDeSolicitudes");
                   })
-                  .catch(() => {
+                  .catch((error: any) => {
+                    console.log("Error al modificar la solicitud x3:", error);
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
 
@@ -320,7 +322,8 @@ export function ConfirmacionEnviarSolicitud({
                     cleanSolicitudCortoPlazo();
                     navigate("../ConsultaDeSolicitudes");
                   })
-                  .catch(() => {
+                  .catch((error: any) => {
+                    console.log("Error al modificar la solicitud x4:", error);
                     alertaConfirmCancelarError("Ocurrió un error, inténtelo de nuevo")
                   });
               }

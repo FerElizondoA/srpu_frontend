@@ -832,7 +832,7 @@ export function Resumen({
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaFija}
+                                        {row.tasaFija  === "" ? "N/A" : row.tasaFija + "%"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.periocidadPago.Descripcion}
@@ -841,7 +841,7 @@ export function Resumen({
                                         {row.tasaReferencia.Descripcion === "" ? "N/A" : row.tasaReferencia.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.sobreTasa}
+                                        {row.sobreTasa === "" ? "N/A" : row.sobreTasa + "%"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.diasEjercicio.Descripcion}

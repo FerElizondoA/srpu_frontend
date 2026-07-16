@@ -3,6 +3,7 @@ import { useCortoPlazoStore } from "./main";
 import { IDisposicion, IPagosDeCapital, ITasaInteres } from "./pagos_capital";
 import { IComisiones, ITasaEfectiva } from "./tasa_efectiva";
 import { format } from "date-fns";
+import { moneyMask } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 export interface ICondicionFinanciera {
   pagosDeCapital: IPagosDeCapital;
@@ -29,7 +30,7 @@ export interface CondicionFinancieraSlice {
 
   removeCondicionFinanciera: (index: number) => void;
 
-  cleanCondicionFinanciera: () => void;
+  cleanCondicionFinanciera: (monto: string) => void;
 
   setTablaCondicionesFinancieras: (condiciones: ICondicionFinanciera[]) => void;
 }
@@ -86,7 +87,7 @@ export const createCondicionFinancieraSlice: StateCreator<
             diasEjercicio: { Id: "", Descripcion: "" },
             periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
             tasaReferencia: { Id: "", Descripcion: "" },
-            sobreTasa: 0,
+            sobreTasa: "",
           },
       // disposicionesParciales: condicionFinanciera.tasaInteres.length > 1 ? true : false,
       tablaTasaInteres: condicionFinanciera.tasaInteres,
@@ -115,7 +116,7 @@ export const createCondicionFinancieraSlice: StateCreator<
       ),
     })),
 
-  cleanCondicionFinanciera: () => {
+  cleanCondicionFinanciera: (monto: string) => {
     useCortoPlazoStore.setState({
       radioValue: 1,
       tasasParciales: false,
@@ -151,7 +152,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         diasEjercicio: { Id: "", Descripcion: "" },
         periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0},
         tasaReferencia: { Id: "", Descripcion: "" },
-        sobreTasa: 0,
+        sobreTasa: "",
       },
       tablaTasaInteres: [],
 

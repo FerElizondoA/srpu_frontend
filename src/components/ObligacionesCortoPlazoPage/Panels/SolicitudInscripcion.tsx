@@ -93,14 +93,11 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
         "Municipio de Guadalupe."
       )
     ) {
-      console.log("Se encontró el texto a reemplazar en la descripción de la regla.");
       return descripcion.replace(
         "Municipio de Guadalupe.",
         organismo + "."
       );
-    } else {
-      console.log("No se encontró el texto a reemplazar en la descripción de la regla.");
-    }
+    } 
 
     return descripcion;
   };

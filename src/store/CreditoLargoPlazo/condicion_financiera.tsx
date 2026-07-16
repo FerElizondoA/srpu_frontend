@@ -71,7 +71,7 @@ export const createCondicionFinancieraSlice: StateCreator<
             diasEjercicio: { Id: "", Descripcion: "" },
             periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0},
             tasaReferencia: { Id: "", Descripcion: "" },
-            sobreTasa: 0,
+            sobreTasa: "",
           },
       tablaTasaInteres: condicionFinanciera.tasaInteres,
 
@@ -131,7 +131,7 @@ export const createCondicionFinancieraSlice: StateCreator<
         diasEjercicio: { Id: "", Descripcion: "" },
         periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
         tasaReferencia: { Id: "", Descripcion: "" },
-        sobreTasa: 0,
+        sobreTasa: "",
       },
       tablaTasaInteres: [],
 

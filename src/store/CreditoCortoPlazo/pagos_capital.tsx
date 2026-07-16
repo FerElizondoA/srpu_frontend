@@ -2,6 +2,7 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { format } from "date-fns";
+import { moneyMask } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 
 export interface IPagosDeCapital {
   fechaPrimerPago: string;
@@ -31,7 +32,7 @@ export interface ITasaInteres {
   diasEjercicio: { Id: string; Descripcion: string };
   periocidadPago: { Id: string; Descripcion: string; detallePeriodicidadPago: number };
   tasaReferencia: { Id: string; Descripcion: string };
-  sobreTasa: number;
+  sobreTasa: string;
 }
 
 export interface PagosCapitalSlice {
@@ -141,7 +142,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         diasEjercicio: { Id: "", Descripcion: "" },
         periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
         tasaReferencia: { Id: "", Descripcion: "" },
-        sobreTasa: 0,
+        sobreTasa: "",
       }
     }));
   },
@@ -163,7 +164,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     diasEjercicio: { Id: "", Descripcion: "" },
     periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
     tasaReferencia: { Id: "", Descripcion: "" },
-    sobreTasa: 0,
+    sobreTasa: "",
   },
   setTasaInteres: (tasa) =>
     set((state) => ({
@@ -192,7 +193,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
       tablaDisposicion: [
         {
           fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
-          importe: monto,
+          importe: moneyMask(monto.toString()),
           montoDisposición: "$ 0.00",
         },
       ],
@@ -205,14 +206,14 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
             fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
             fechaIndicativa: false,
           },
-          importe: monto,
+          importe: moneyMask(monto.toString()),
           montoDisposición: "$ 0.00",
           tasaFija: "",
           fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
           diasEjercicio: { Id: "", Descripcion: "" },
           periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
           tasaReferencia: { Id: "", Descripcion: "" },
-          sobreTasa: 0,
+          sobreTasa: "",
         },
       ],
     })),
