@@ -327,8 +327,8 @@ export function ConsultaDeSolicitudPage() {
 
 
   return (
-    <Grid container flexDirection="column" justifyContent={"space-between"}>
-      <Grid item width={"100%"}>
+    <Grid container flexDirection="column" height="100vh" overflow="hidden">
+      <Grid item width={"100%"} flexShrink={0}>
         <LateralMenu fnc={getDatos} />
       </Grid>
 
@@ -367,6 +367,7 @@ export function ConsultaDeSolicitudPage() {
         justifyContent={"center"}
         alignItems={"center"}
         height={60}
+        flexShrink={0}
       >
         <Typography
           sx={{
@@ -422,20 +423,33 @@ export function ConsultaDeSolicitudPage() {
         </Paper>
       </Grid> */}
 
-      <BarraFiltros
-        Lista={datos}
-        setStateFiltered={setDatosFiltrados}
-        CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
-      />
+      <Grid flexShrink={0}>
+        <BarraFiltros
+          Lista={datos}
+          setStateFiltered={setDatosFiltrados}
+          CamposFecha={["FechaContratacion", "FechaRequerimientos"]}
+        />
+      </Grid>
 
       <Grid container display={"flex"} justifyContent={"center"}
-        mt={{ xs: 3, sm: 3, md: 3, lg: 0 }}
+        mt={{ xs: 1, sm: 1, md: 1, lg: 0 }}
+        flexGrow={1}
+        height={0}
+        minHeight={0}
+        overflow="hidden"
       >
-        <Paper sx={{ width: "100%" }}>
+        <Paper sx={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}>
           <TableContainer
             sx={{
-              //height: 520,
-
+              flexGrow: 1,
+              height: 0,
+              minHeight: 0,
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -446,22 +460,6 @@ export function ConsultaDeSolicitudPage() {
                 backgroundColor: "#AF8C55",
                 outline: "1px solid slategrey",
                 borderRadius: 1,
-              },
-              height: "35rem",
-              "@media (min-width: 480px)": {
-                height: "30.5rem",
-              },
-              "@media (min-width: 768px)": {
-                height: "30.5rem",
-              },
-              "@media (min-width: 1140px)": {
-                height: "30.5rem",
-              },
-              "@media (min-width: 1400px)": {
-                height: "30.5rem",
-              },
-              "@media (min-width: 1870px)": {
-                height: "44.5rem",
               },
             }}
           >

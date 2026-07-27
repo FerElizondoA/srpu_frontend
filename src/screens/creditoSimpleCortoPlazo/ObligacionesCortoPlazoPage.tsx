@@ -105,20 +105,50 @@ export function ObligacionesCortoPlazoPage() {
           mt={2}
           display={"flex"}
           width={"100%"}
-          justifyContent={
-            "space-evenly"
-          }
+          justifyContent={{
+            xs: inscripcion.NumeroRegistro ? "center" : "space-between",
+            sm: "space-between",
+            md: "space-between",
+          }}
+          alignItems={"center"}
+          flexWrap={"wrap"}
+          gap={1}
+          px={{
+            xs: inscripcion.NumeroRegistro ? 0 : 2,
+            sm: 2,
+            md: 4,
+          }}
+          sx={{ position: "relative" }}
         >
           {inscripcion.NumeroRegistro && (
             <Grid
-              width={query.isTittle ? "15%" : "20%"}
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "auto",
+                  md: "auto",
+                },
+                order: {
+                  xs: 0,
+                  sm: 1,
+                  md: 0,
+                },
+              }}
               display={"flex"}
-              justifyContent={"start"}
+              justifyContent={{
+                xs: "center",
+                sm: "flex-start",
+                md: "flex-start",
+              }}
               alignItems={"center"}
             >
               <Typography
                 sx={{
                   ...queries.bold_text,
+                  fontSize: {
+                    xs: "0.8rem",
+                    sm: "1rem",
+                  },
                 }}
               >
                 <strong>{`Número de Registro: ${inscripcion.NumeroRegistro || IdSolicitudBorrador}`}</strong>
@@ -126,47 +156,92 @@ export function ObligacionesCortoPlazoPage() {
             </Grid>
           )}
           <Grid
-            // mr={3}
-            ml={!inscripcion.NumeroRegistro ? 8 : undefined}
-            width={
-              !inscripcion.NumeroRegistro
-                ? "90%"
-                : query.isTittle
-                  ? "60%"
-                  : "30%"
-            }
+            sx={{
+              width: {
+                xs: inscripcion.NumeroRegistro ? "100%" : "auto",
+                sm: inscripcion.NumeroRegistro ? "100%" : "auto",
+                md: "auto",
+              },
+              order: {
+                xs: -1,
+                sm: inscripcion.NumeroRegistro ? 0 : -1,
+                md: 0,
+              },
+              flex: {
+                md: 1,
+              },
+              position: {
+                xs: "relative",
+                sm: !inscripcion.NumeroRegistro ? "absolute" : "relative",
+                md: !inscripcion.NumeroRegistro ? "absolute" : "relative",
+              },
+              left: {
+                xs: !inscripcion.NumeroRegistro ? "20%" : "auto",
+                sm: !inscripcion.NumeroRegistro ? "50%" : "auto",
+                md: !inscripcion.NumeroRegistro ? "50%" : "auto",
+              },
+              transform: {
+                xs: "none",
+                sm: !inscripcion.NumeroRegistro ? "translateX(-50%)" : "none",
+                md: !inscripcion.NumeroRegistro ? "translateX(-50%)" : "none",
+              },
+              zIndex: {
+                xs: "auto",
+                sm: !inscripcion.NumeroRegistro ? 0 : "auto",
+                md: !inscripcion.NumeroRegistro ? 0 : "auto",
+              },
+            }}
             display={"flex"}
-            justifyContent={
-              !inscripcion.NumeroRegistro
-                ? "center"
-                : query.isTittle
-                  ? "center"
-                  : "center"
-            }
-            // justifyContent={"center"}
+            justifyContent={"center"}
             alignItems={"center"}
           >
             <Typography
               sx={{
                 color: "#AF8C55",
                 ...queries.bold_text_Largo_Plazo.tituloCredito,
+                fontSize: {
+                  xs: "1rem",
+                  sm: "1.2rem",
+                  md: "1.5rem",
+                },
               }}
             >
               Crédito Simple a Corto Plazo
             </Typography>
           </Grid>
 
-          <Grid container
-            width={
-              !inscripcion.NumeroRegistro ? "5%" : query.isTittle ? "10%" : "20%"
-            }
+          <Grid
+            container
+            sx={{
+              width: {
+                xs: inscripcion.NumeroRegistro ? "100%" : "auto",
+                sm: inscripcion.NumeroRegistro ? "auto" : "auto",
+                md: inscripcion.NumeroRegistro ? "auto" : "100%",
+              },
+              order: {
+                xs: 1,
+                sm: inscripcion.NumeroRegistro ? 2 : 1,
+                md: 1,
+              },
+            }}
             display={"flex"}
-            justifyContent={"space-evenly"}
+            justifyContent={{
+              xs: "center",
+              sm: "flex-end",
+              md: "flex-end",
+            }}
             alignItems={"center"}
+            gap={1}
           >
             {inscripcion.NumeroRegistro && (
               <Button
-                sx={{ ...queries.buttonContinuar }}
+                sx={{
+                  ...queries.buttonContinuar,
+                  fontSize: {
+                    xs: "0.7rem",
+                    sm: "0.9rem",
+                  },
+                }}
                 onClick={() => {
                   changeOpenVerComentarios(!openVerComentarios);
                 }}
@@ -176,7 +251,13 @@ export function ObligacionesCortoPlazoPage() {
             )}
 
             <Button
-              sx={{ ...queries.buttonContinuar}}
+              sx={{
+                ...queries.buttonContinuar,
+                fontSize: {
+                  xs: "0.7rem",
+                  sm: "0.9rem",
+                },
+              }}
               onClick={() => {
                 setOpenDialogBorrador(!openDialogBorrador);
               }}
@@ -192,6 +273,7 @@ export function ObligacionesCortoPlazoPage() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            mt: { xs: 2, sm: 2, md: 0 },
           }}
         >
           <Tabs

@@ -293,6 +293,8 @@ export function VehiculoDePago({
         display={"flex"}
         justifyContent={"space-evenly"}
         mt={2}
+        mb={{ xs: 2, md: 0 }}
+        gap={{ xs: 3, sm: 3, md: 0 }}
       >
         <Grid item xs={10} sm={4.5} md={3} lg={3} xl={3}>
           <InputLabel sx={queries.medium_text}>

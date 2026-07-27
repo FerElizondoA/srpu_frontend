@@ -3,7 +3,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { subDays } from "date-fns/esm";
 import es from "date-fns/locale/es";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { queries } from "../../../queries";
 import {
   IEncabezado,
@@ -63,6 +63,10 @@ export function Encabezado() {
     (state) => state.checkBoxOtroTipoSolicitud
   );
 
+  const [fechaContratacionLocal, setFechaContratacionLocal] = useState(fechaContratacion);
+  const [errorFechaContratacion, setErrorFechaContratacion] = useState(false);
+  const [mensajeErrorFecha, setMensajeErrorFecha] = useState("");
+
   const changeCheckBoxOtroTipoSolicitud: Function = useCortoPlazoStore(
     (state) => state.changeCheckBoxOtroTipoSolicitud
   );
@@ -76,6 +80,10 @@ export function Encabezado() {
     getTiposSolicitudes()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setFechaContratacionLocal(fechaContratacion);
+  }, [fechaContratacion]);
 
   return (
     <Grid container height={"30rem"}>
@@ -235,7 +243,7 @@ export function Encabezado() {
           }
         </Grid>
 
-        <Grid item xs={10} md={3} lg={3}>
+        {/* <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Documento</InputLabel>
 
           <TextField
@@ -261,7 +269,7 @@ export function Encabezado() {
               },
             }}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
@@ -306,17 +314,6 @@ export function Encabezado() {
             ))}
           </Select>
         </Grid>
-
-
-      </Grid>
-
-      <Grid
-        item
-        container
-        display={"flex"}
-        justifyContent={"space-evenly"}
-        alignItems={"center"}
-      >
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Cargo del Solicitante
@@ -346,6 +343,17 @@ export function Encabezado() {
             }}
           />
         </Grid>
+
+      </Grid>
+
+      <Grid
+        item
+        container
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+      >
+
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>Tipo de Ente Público</InputLabel>
 
@@ -404,12 +412,6 @@ export function Encabezado() {
             }}
           />
         </Grid>
-
-
-      </Grid>
-
-      <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
-
         <Grid item xs={10} md={3} lg={3}>
           <InputLabel sx={queries.medium_text}>
             Fecha de Contratación
@@ -423,16 +425,42 @@ export function Encabezado() {
                   !datosActualizar.includes("Fecha de Contratación"))
               }
               sx={{ width: "100%" }}
-              value={new Date(fechaContratacion)}
+              value={new Date(fechaContratacionLocal)}
               onChange={(date) => {
-                changeEncabezado({ ...encabezado, fechaContratacion: date });
+                const hoy = new Date();
+                const minDate = subDays(hoy, 365);
+                
+                setFechaContratacionLocal(date?.toString() || fechaContratacion);
+                
+                if (date && new Date(date) > hoy) {
+                  setErrorFechaContratacion(true);
+                  setMensajeErrorFecha("La fecha de contratación no puede ser posterior a hoy");
+                } else if (date && new Date(date) < minDate) {
+                  setErrorFechaContratacion(true);
+                  setMensajeErrorFecha("La fecha de contratación no puede ser mayor a 365 días");
+                } else {
+                  setErrorFechaContratacion(false);
+                  setMensajeErrorFecha("");
+                  changeEncabezado({ ...encabezado, fechaContratacion: date });
+                }
               }}
               minDate={new Date(subDays(new Date(), 365))}
               maxDate={new Date()}
+              slotProps={{
+                textField: {
+                  error: errorFechaContratacion,
+                  helperText: mensajeErrorFecha,
+                },
+              }}
             />
           </LocalizationProvider>
         </Grid>
       </Grid>
+{/* 
+      <Grid container display={"flex"} justifyContent={"center"} width={"100%"} alignItems={"center"} >
+
+
+      </Grid> */}
     </Grid>
   );
 }

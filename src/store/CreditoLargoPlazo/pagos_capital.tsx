@@ -2,6 +2,7 @@ import axios from "axios";
 import { StateCreator } from "zustand";
 import { ICatalogo } from "../../components/Interfaces/InterfacesCplazo/CortoPlazo/encabezado/IListEncabezado";
 import { format } from "date-fns";
+import { moneyMask } from "../../components/ObligacionesCortoPlazoPage/Panels/InformacionGeneral";
 import {
   IDisposicion,
   IPagosDeCapital,
@@ -26,7 +27,8 @@ export interface PagosCapitalSlice {
   tablaDisposicion: IDisposicion[];
 
   tasaDeInteres: ITasaInteres;
-  setTasaInteres: (tasaDeInteres: ITasaInteres) => void;
+  setTasaInteres: (tasaDeInteres: ITasaInteres | ((prev: ITasaInteres) => ITasaInteres)) => void;
+  cleanTasaInteres: () => void;
   tablaTasaInteres: ITasaInteres[];
 
   addDisposicion: (Disposicion: IDisposicion) => void;
@@ -36,7 +38,7 @@ export interface PagosCapitalSlice {
 
   addTasaInteres: (newTasaInteres: ITasaInteres) => void;
   setTablaTasaInteres: (tasaInteresTable: ITasaInteres[]) => void;
-  cleanTasaInteres: () => void;
+  cleanTablaTasaInteres: (monto: string) => void;
   removeTasaInteres: (index: number) => void;
 
   catalogoPeriocidadDePago: ICatalogo[];
@@ -74,7 +76,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
 
   pagosDeCapital: {
     fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
-    periodicidadDePago: { Id: "", Descripcion: "",  detallePeriodicidadPago: "" },
+    periodicidadDePago: { Id: "", Descripcion: "", detallePeriodicidadPago: "" },
     numeroDePago: 1,
     periodoGracia: false,
   },
@@ -111,11 +113,13 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     tasaReferencia: { Id: "", Descripcion: "" },
     sobreTasa: "",
   },
-  setTasaInteres: (tasaDeInteres: ITasaInteres) => {
+  setTasaInteres: (tasa) =>
     set((state) => ({
-      tasaDeInteres: tasaDeInteres,
-    }));
-  },
+      tasaDeInteres:
+        typeof tasa === "function"
+          ? tasa(state.tasaDeInteres)
+          : tasa,
+    })),
   tablaTasaInteres: [],
 
   addDisposicion: (Disposicion: IDisposicion) =>
@@ -147,7 +151,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     })),
   setTablaTasaInteres: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
-  cleanTasaInteres: () => set((state) => ({ tablaTasaInteres: [] })),
+
   removeTasaInteres: (index: number) =>
     set((state) => ({
       tablaTasaInteres: state.tablaTasaInteres.filter((_, i) => i !== index),
@@ -156,6 +160,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
   catalogoPeriocidadDePago: [],
   catalogoTasaReferencia: [],
   catalogoDiasEjercicio: [],
+
   getPeriocidadPago: async () => {
     await axios
       .get(process.env.REACT_APP_APPLICATION_BACK + "/get-periodicidadDePago", {
@@ -169,6 +174,46 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
         }));
       });
   },
+  
+  cleanTasaInteres: () => {
+    set((state) => ({
+      tasaDeInteres: {
+        Disposiciones: {
+          fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+          fechaIndicativa: false
+        },
+        importe: "$ 0.00",
+        montoDisposición: "$ 0.00",
+        tasaFija: "",
+        fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+        diasEjercicio: { Id: "", Descripcion: "" },
+        periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
+        tasaReferencia: { Id: "", Descripcion: "" },
+        sobreTasa: "",
+      }
+    }));
+  },
+  cleanTablaTasaInteres: (monto: string) =>
+    set(() => ({
+      tablaTasaInteres: [
+        {
+          Disposiciones: {
+            fechaDisposicion: format(new Date(), "MM/dd/yyyy").toString(),
+            fechaIndicativa: false,
+          },
+          importe: moneyMask(monto.toString()),
+          montoDisposición: "$ 0.00",
+          tasaFija: "",
+          fechaPrimerPago: format(new Date(), "MM/dd/yyyy").toString(),
+          diasEjercicio: { Id: "", Descripcion: "" },
+          periocidadPago: { Id: "", Descripcion: "", detallePeriodicidadPago: 0 },
+          tasaReferencia: { Id: "", Descripcion: "" },
+          sobreTasa: "",
+        },
+      ],
+    })),
+
+
 
   getTasaReferencia: async () => {
     await axios

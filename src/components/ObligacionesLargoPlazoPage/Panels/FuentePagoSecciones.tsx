@@ -193,13 +193,17 @@ export function FuentePagoSecciones() {
 
   return (
     <Grid container direction="column">
-      <Grid item width={"100%"} display={"flex"}>
+      <Grid item width={"100%"} display={"flex"} flexWrap={"wrap"} justifyContent={"center"} gap={2} sx={{ position: "relative" }}>
 
         <Grid sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          width: "12%",
+          position: { xs: "relative", sm: "relative", md: "absolute" },
+          left: { xs: "auto", sm: "auto", md: 16 },
+          order: { xs: 1, sm: 1, md: 0 },
+          mt: { xs: 2, sm: 2, md: 0 },
+          zIndex: { xs: "auto", sm: "auto", md: 1 },
         }}>
           <ThemeProvider theme={buttonTheme}>
             <Button sx={{ ...queries.buttonContinuar }}
@@ -224,7 +228,7 @@ export function FuentePagoSecciones() {
           variant={query.isScrollable ? "scrollable" : "standard"}
           scrollButtons="auto"
           allowScrollButtonsMobile
-          sx={{ width: "70%", display: "flex", justifyContent: "space-evenly" }}
+          sx={{ width: { xs: "100%", sm: "100%", md: "100%" }, display: "flex", justifyContent: "space-evenly", order: { xs: 0, sm: 0, md: 1 } }}
         >
           <Tab
             label="mecanismo o vehiculo de pago"

@@ -165,10 +165,15 @@ export function InformacionGeneral() {
   const [contratacion, setContratacion] = useState(fechaContratacion);
 
   const [vencimiento, setVencimiento] = useState(fechaVencimiento);
+  const [errorFechaVencimiento, setErrorFechaVencimiento] = useState(false);
 
   const [plazoD, setPlazo] = useState(0);
 
   useEffect(() => {
+    if (errorFechaVencimiento) {
+      return;
+    }
+
     const res =
       differenceInDays(
         startOfDay(new Date(vencimiento)),
@@ -346,8 +351,23 @@ export function InformacionGeneral() {
               }
               sx={{ width: "100%" }}
               value={new Date(vencimiento)}
-              onChange={(date) => setVencimiento(date?.toString() || "")}
+              onChange={(date) => {
+                if (date && new Date(date) < startOfDay(new Date(contratacion))) {
+                  setErrorFechaVencimiento(true);
+                } else {
+                  setErrorFechaVencimiento(false);
+                }
+                setVencimiento(date?.toString() || "");
+              }}
               minDate={new Date(addDays(new Date(contratacion), 0))}
+              slotProps={{
+                textField: {
+                  error: errorFechaVencimiento,
+                  helperText: errorFechaVencimiento
+                    ? "La fecha de vencimiento no puede ser menor a la fecha de contratación"
+                    : "",
+                },
+              }}
             />
           </LocalizationProvider>
         </Grid>

@@ -17,7 +17,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
 
@@ -72,10 +72,16 @@ export const headsComision: readonly {
       label: "Tipo de comisión",
     },
     {
+      label: "Descripción de la Comisión",
+    },
+    {
       label: "Fecha de primer pago",
     },
     {
       label: "Periodicidad de Pago",
+    },
+    {
+      label: "Detalle del Perfil Específico",
     },
     {
       label: "Porcentaje",
@@ -93,6 +99,9 @@ export const headsDisposicion: readonly {
 }[] = [
     {
       label: "Fecha de Disposición",
+    },
+    {
+      label: "Fecha Indicativa",
     },
     {
       label: "Importe de disposición",
@@ -126,6 +135,9 @@ const heads: readonly {
     {
       label: "Comisiones",
     },
+    {
+      label: "Periodo de Gracia",
+    },
   ];
 
 export function CondicionesFinancieras() {
@@ -155,12 +167,6 @@ export function CondicionesFinancieras() {
     (state) => state.removeCondicionFinanciera
   );
 
-  const cleanCondicionFinanciera: Function = useLargoPlazoStore(
-    (state) => state.cleanCondicionFinanciera
-  );
-
-
-
   const [rowTasa, setRowTasa] = useState<Array<ITasaInteres>>([]);
   const [rowComision, setRowComision] = useState<Array<IComisiones>>([]);
   const [rowDisposicion, setRowDisposicion] = useState<Array<IDisposicion>>([]);
@@ -176,6 +182,11 @@ export function CondicionesFinancieras() {
     (state) => state.datosActualizar
   );
 
+  const radioValue: number = useLargoPlazoStore((state) => state.radioValue);
+  const setRadioValue: Function = useLargoPlazoStore(
+    (state) => state.setRadioValue
+  );
+
   let disable =
     datosActualizar.length < 0 &&
     (!datosActualizar.includes("Tabla Condiciones Financieras") ||
@@ -189,37 +200,48 @@ export function CondicionesFinancieras() {
     (state) => state.informacionGeneral.monto
   );
 
+  const [sumaTotal, setSumaTotal] = useState(0);
+
+  const calcularSumaTotal = () => {
+    const suma = tablaCondicionesFinancieras.reduce((acumulado, condicion) => {
+      const sumaDisposicion = condicion.tasaInteres.reduce((sum, disp) => {
+        return sum + parseFloat(disp.importe || '0');
+      }, 0);
+      return acumulado + sumaDisposicion;
+    }, 0);
+    return suma;
+  };
+
+  useEffect(() => {
+    const total = calcularSumaTotal();
+    setSumaTotal(total);
+  }, [tablaCondicionesFinancieras, !openFiltroMonto]);
+
   return (
     <Grid
       container
+      flexDirection="column"
       sx={{
-        height: "30rem",
-        "@media (min-width: 480px)": {
-          height: "39rem",
-        },
-
-        "@media (min-width: 768px)": {
-          height: "48rem",
-        },
-
-        "@media (min-width: 1140px)": {
-          height: "31rem",
-        },
-
-        "@media (min-width: 1400px)": {
-          height: "31rem",
-        },
-
-        "@media (min-width: 1870px)": {
-          height: "44rem",
-        },
+        height: "100%",
+        width: "100%",
       }}
     >
-      <Grid container height={"100%"}>
-        <Paper sx={{ height: "100%", width: "100%" }}>
+      <Grid container flexGrow={1} minHeight={0}>
+        <Paper elevation={3} sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", borderRadius: 2 }}>
           <TableContainer
             sx={{
               width: "100%",
+              flexGrow: 1,
+              minHeight: {
+                xs: "20rem",
+                sm: "25rem",
+                md: "25rem",
+                lg: "28rem",
+                xl: "30rem",
+                "@media (min-width: 1870px)": {
+                  minHeight: "38rem",
+                },
+              },
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -266,9 +288,8 @@ export function CondicionesFinancieras() {
 
                               changeOpenAgregarState(!openAgregarCondicion);
                               setIndexRegistro(index);
-                              cleanCondicionFinanciera()
                               loadCondicionFinanciera(row);
-                              loadCondicionFinanciera()
+                              setRadioValue(row.tasaInteres[0].tasaFija === "N/A" ? 2 : 1)
                               console.log("row", row)
 
                             }}
@@ -298,7 +319,7 @@ export function CondicionesFinancieras() {
                         component="th"
                         scope="row"
                       >
-                        {row.tasaInteres.length >= 1
+                        {row.tasaInteres.length > 1
                           ? null
                           : format(
                             new Date(row.tasaInteres[0].Disposiciones?.fechaDisposicion),
@@ -315,7 +336,7 @@ export function CondicionesFinancieras() {
                           <Button
                             onClick={() => {
                               setRowTasa(row.tasaInteres);
-                              setOpenTasa(true);
+                              setOpenDisposicion(true);
                             }}
                           >
                             <InfoOutlinedIcon />
@@ -376,6 +397,12 @@ export function CondicionesFinancieras() {
                           </Button>
                         }
                       </StyledTableCell>
+                      <StyledTableCell
+                        sx={{ padding: "1px 30px 1px 0" }}
+                        align="center"
+                      >
+                        {row.pagosDeCapital.periodoGracia === true ? "Aplica" : "N/A"}
+                      </StyledTableCell>
                     </StyledTableRow>
                   );
                 })}
@@ -389,6 +416,15 @@ export function CondicionesFinancieras() {
                 maxWidth={"lg"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography sx={{
+                    ...queries.bold_text_Titulos,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    justifyContent: "center"
+                  }}>
+                    Tasa de Interés
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenTasa(false);
@@ -419,27 +455,30 @@ export function CondicionesFinancieras() {
                         {rowTasa.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
-                              {/* <StyledTableCell component="th" scope="row">
+                              <StyledTableCell component="th" scope="row" align="center">
                                 {lightFormat(
                                   new Date(row?.fechaPrimerPago),
                                   "dd-MM-yyyy"
                                 )}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row?.tasaFija}
+                                {row?.tasaFija === "" ? "N/A" : row?.tasaFija}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.periocidadPago?.Descripcion}
+                                {row?.periocidadPago?.Descripcion}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.tasaReferencia?.Descripcion}
+                                {row?.tasaReferencia?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row?.sobreTasa}
+                                {row?.sobreTasa === "" || row?.sobreTasa === null || row?.sobreTasa.toString() === "N/A"
+                                  ? row?.sobreTasa === "" ? "N/A" : row?.sobreTasa + "%"
+                                  : row?.sobreTasa + "%"
+                                }
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row.diasEjercicio?.Descripcion}
-                              </StyledTableCell> */}
+                                {row?.diasEjercicio?.Descripcion}
+                              </StyledTableCell>
                             </StyledTableRow>
                           );
                         })}
@@ -457,6 +496,15 @@ export function CondicionesFinancieras() {
                 maxWidth={"lg"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography sx={{
+                    ...queries.bold_text_Titulos,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    justifyContent: "center"
+                  }}>
+                    Comisiones
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenComision(false);
@@ -487,8 +535,11 @@ export function CondicionesFinancieras() {
                         {rowComision.map((row, index) => {
                           return (
                             <StyledTableRow key={index}>
-                              <StyledTableCell component="th" scope="row">
+                              <StyledTableCell component="th" scope="row" align="center">
                                 {row?.tipoDeComision?.Descripcion || "N/A"}
+                              </StyledTableCell>
+                              <StyledTableCell component="th" scope="row" align="center">
+                                {row?.tipoDeComision?.detallOtrasComisiones || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row?.fechaComision !== "N/A"
@@ -502,13 +553,16 @@ export function CondicionesFinancieras() {
                                 {row?.periodicidadDePago?.Descripcion || "N/A"}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row?.porcentaje}
+                                {row?.periodicidadDePago?.detallePerfilEspecifico || "N/A"}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row?.porcentaje} %
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {row?.monto}
                               </StyledTableCell>
                               <StyledTableCell align="center">
-                                {row?.iva}
+                                {row?.iva === true ? "Aplica" : "N/A"}
                               </StyledTableCell>
                             </StyledTableRow>
                           );
@@ -527,6 +581,15 @@ export function CondicionesFinancieras() {
                 maxWidth={"lg"}
               >
                 <DialogTitle sx={{ m: 0, p: 2 }}>
+                  <Typography sx={{
+                    ...queries.bold_text_Titulos,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    justifyContent: "center"
+                  }}>
+                    Importe de disposición
+                  </Typography>
                   <IconButton
                     onClick={() => {
                       setOpenDisposicion(false);
@@ -585,6 +648,8 @@ export function CondicionesFinancieras() {
         md={12}
         lg={12}
         height={"4rem"}
+        flexShrink={0}
+        mt={1}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
@@ -595,7 +660,7 @@ export function CondicionesFinancieras() {
             sx={queries.buttonContinuar}
             variant="outlined"
             onClick={() => {
-              if (moneyMask(monto.toString()) === "$ 0.00") {
+              if (moneyMask(monto.toString()) === "$0.00") {
                 setOpenFiltroMonto(true)
               } else {
                 changeOpenAgregarState(!openAgregarCondicion);

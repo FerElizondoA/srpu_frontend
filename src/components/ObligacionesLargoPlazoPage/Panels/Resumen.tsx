@@ -25,6 +25,7 @@ import {
   Typography,
 } from "@mui/material";
 import { format, lightFormat } from "date-fns";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useEffect, useMemo, useState } from "react";
 import { queries } from "../../../queries";
 import { ICondicionFinanciera } from "../../../store/CreditoCortoPlazo/condicion_financiera";
@@ -99,6 +100,9 @@ const headsCondiciones: Head[] = [
   },
   {
     label: "Comisiones",
+  },
+  {
+    label: "Periodo de Gracia",
   },
 ];
 
@@ -1231,32 +1235,19 @@ export function Resumen({
 
           <Grid item display="flex" height={500} mt={2} mb={2} width={"100%"}>
             <Grid mt={2}>
-              {/* Revisar */}
               {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
-                //reestructura !== "con autorizacion" ?
 
-                <Tooltip title="Añadir comentario a este apartado">
-                  <IconButton
-                    color={
-                      comentarios["Tabla Obligado Solidario / Aval"] &&
-                        comentarios["Tabla Obligado Solidario / Aval"] !== ""
-                        ? "success"
-                        : "primary"
-                    }
-                    size="small"
-                    onClick={() => {
-                      setOpenComentarioApartado({
-                        open: true,
-                        apartado: "Tabla Obligado Solidario / Aval",
-                        tab: "TabInformaciónGeneral",
-                      });
-                    }}
-                  >
-                    <CommentIcon fontSize="small" sx={{ mr: 2, mb: 2 }} />
-                  </IconButton>
-                </Tooltip>
+                <BotonComentario
+                  apartado="Tabla Fuente de Pago"
+                  tab="TabFuentePago"
+                  activaAccion={activaAccion}
+                  estatus={estatus}
+                  activacionComentariosRevisor={activacionComentariosRevisor}
+                  comentarios={comentarios}
+                  comentariosBDMap={comentariosBDMap}
+                  setOpenComentarioApartado={setOpenComentarioApartado}
+                />
               )
-                // : null
               }
             </Grid>
 
@@ -1423,7 +1414,7 @@ export function Resumen({
                               <StyledTableCell align="center">
                                 <Button
                                   onClick={() => {
-                                    //setRowDisposicion(row.tasas);
+                                    setRowTasa(row.tasaInteres);
                                     setOpenDisposicion(true);
                                   }}
                                 >
@@ -1468,6 +1459,9 @@ export function Resumen({
                                   <InfoOutlinedIcon />
                                 </Button>
                               </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {row.pagosDeCapital.periodoGracia === true ? "Aplica" : "N/A"}
+                              </StyledTableCell>
                             </StyledTableRow>
                           );
                         })}
@@ -1481,19 +1475,24 @@ export function Resumen({
                         maxWidth={"lg"}
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenTasa(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          <Grid display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>
+                              Tasa de Interés
+                            </Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenTasa(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
@@ -1518,6 +1517,7 @@ export function Resumen({
                                       <StyledTableCell
                                         component="th"
                                         scope="row"
+                                        align="center"
                                       >
                                         {lightFormat(
                                           new Date(row.fechaPrimerPago),
@@ -1525,16 +1525,16 @@ export function Resumen({
                                         )}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaFija}
+                                        {row.tasaFija === "" ? "N/A" : row.tasaFija + "%"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.periocidadPago.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.tasaReferencia.Descripcion}
+                                        {row.tasaReferencia.Descripcion === "" ? "N/A" : row.tasaReferencia.Descripcion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.sobreTasa}
+                                        {row.sobreTasa === "" ? "N/A" : row.sobreTasa + "%"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
                                         {row.diasEjercicio.Descripcion}
@@ -1553,29 +1553,32 @@ export function Resumen({
                         onClose={() => {
                           setOpenComision(false);
                         }}
-                        maxWidth={"lg"}
+                        maxWidth={"xl"}
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenComision(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          <Grid container display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>Comisiones</Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenComision(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
                         >
-                          <TableContainer sx={{ maxHeight: "400px" }}>
+                          <TableContainer sx={{ maxHeight: "400px", whidth: "35rem" }}>
                             <Table>
-                              <TableHead sx={{ maxHeight: "200px" }}>
+                              <TableHead sx={{ maxHeight: "200px", whidth: "35rem" }}>
                                 <TableRow>
                                   {headsComision.map((head, index) => (
                                     <StyledTableCell key={index}>
@@ -1594,17 +1597,34 @@ export function Resumen({
                                         component="th"
                                         scope="row"
                                       >
-                                        {row.tipoDeComision.Descripcion}
+                                        {row.tipoDeComision?.Descripcion || "N/A"}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                        align="center"
+                                      >
+                                        {row.tipoDeComision?.detallOtrasComisiones || "N/A"}
+                                      </StyledTableCell>
+
+                                      <StyledTableCell align="center">
+                                        {row?.fechaComision !== "N/A"
+                                          ? format(new Date(row?.fechaComision), "dd/MM/yyyy")
+                                          : "N/A"}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {lightFormat(
-                                          new Date(row.fechaComision),
-                                          "dd-MM-yyyy"
-                                        )}
+                                        {row.periodicidadDePago?.Descripcion || "N/A"}
                                       </StyledTableCell>
-                                      <StyledTableCell align="center">
-                                        {row.periodicidadDePago.Descripcion}
+
+                                      <StyledTableCell
+                                        component="th"
+                                        scope="row"
+                                        align="center"
+                                      >
+                                        {row.periodicidadDePago?.detallePerfilEspecifico || "N/A"}
                                       </StyledTableCell>
+
                                       <StyledTableCell align="center">
                                         {row.porcentaje}
                                       </StyledTableCell>
@@ -1612,7 +1632,7 @@ export function Resumen({
                                         {row.monto}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.iva}
+                                        {row.iva === false ? "Aplica" : "N/A"}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -1631,19 +1651,24 @@ export function Resumen({
                         maxWidth={"lg"}
                       >
                         <DialogTitle sx={{ m: 0, p: 2 }}>
-                          <IconButton
-                            onClick={() => {
-                              setOpenDisposicion(false);
-                            }}
-                            sx={{
-                              position: "absolute",
-                              right: 8,
-                              top: 8,
-                              color: "black",
-                            }}
-                          >
-                            <CloseIcon />
-                          </IconButton>
+                          <Grid display={"flex"} justifyContent={"space-evenly"}>
+                            <Typography sx={{ ...queries.bold_text }}>
+                              Disposición(es)
+                            </Typography>
+                            <IconButton
+                              onClick={() => {
+                                setOpenDisposicion(false);
+                              }}
+                              sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "black",
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Grid>
                         </DialogTitle>
                         <DialogContent
                           sx={{ display: "flex", flexDirection: "row" }}
@@ -1662,17 +1687,17 @@ export function Resumen({
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {rowDisposicion.map((row, index) => {
+                                {rowTasa.map((row, index) => {
                                   return (
                                     <StyledTableRow key={index}>
                                       <StyledTableCell align="center">
-                                        {lightFormat(
-                                          new Date(row.fechaDisposicion),
-                                          "dd-MM-yyyy"
-                                        )}
+                                        {row?.Disposiciones?.fechaDisposicion}
                                       </StyledTableCell>
                                       <StyledTableCell align="center">
-                                        {row.importe}
+                                        {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
+                                      </StyledTableCell>
+                                      <StyledTableCell align="center">
+                                        {row?.importe}
                                       </StyledTableCell>
                                     </StyledTableRow>
                                   );
@@ -1741,7 +1766,28 @@ export function Resumen({
 
         {/* <Divider color="lightGrey"></Divider> */}
         <Grid mt={5} mb={4} width={"100%"}>
-          <Typography sx={queries.bold_text}>Documentación</Typography>
+
+          <Grid display={"flex"} >
+            {localStorage.getItem("Rol") === "Revisor" ||
+              localStorage.getItem("Rol") === "Validador" ||
+              localStorage.getItem("Rol") === "Autorizador" ?
+
+              <BotonComentario
+                apartado="Documentación"
+                tab="TabDocumentacion"
+                activaAccion={activaAccion}
+                estatus={estatus}
+                activacionComentariosRevisor={activacionComentariosRevisor}
+                comentarios={comentarios}
+                comentariosBDMap={comentariosBDMap}
+                setOpenComentarioApartado={setOpenComentarioApartado}
+              />
+
+              : null}
+
+            <Typography sx={queries.bold_text}>Documentación</Typography>
+          </Grid>
+
           <Grid
             sx={{
               flexDirection: "row",
@@ -1766,12 +1812,10 @@ export function Resumen({
                   {documentos.map((row, index) => {
                     return (
                       <StyledTableRow key={index}>
-                        {activaAccion && reestructura !== "con autorizacion" ||
-                          (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")
-                          ? (
-
+                        {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+                          <StyledTableCell sx={{ width: "5%" }}>
                             <BotonComentario
-                              apartado="Documentación"
+                              apartado={row.descripcionTipo}
                               tab="TabDocumentacion"
                               activaAccion={activaAccion}
                               estatus={estatus}
@@ -1780,29 +1824,8 @@ export function Resumen({
                               comentariosBDMap={comentariosBDMap}
                               setOpenComentarioApartado={setOpenComentarioApartado}
                             />
-                            // <Tooltip title="Añadir comentario a este apartado">
-                            //   <IconButton
-                            //     color={
-                            //       comentarios[row.descripcionTipo] &&
-                            //         comentarios[row.descripcionTipo] !== ""
-                            //         ? "success"
-                            //         : "primary"
-                            //     }
-                            //     size="small"
-                            //     onClick={() => {
-                            //       setOpenComentarioApartado({
-                            //         open: true,
-                            //         apartado: row.descripcionTipo,
-                            //         tab: "TabDocumentacion",
-                            //       });
-                            //     }}
-                            //   >
-                            //     <CommentIcon fontSize="small" sx={{ mr: 2 }} />
-                            //   </IconButton>
-                            // </Tooltip>
-                          ) : (
-                            "No disponible para reestructura"
-                          )}
+                          </StyledTableCell>
+                        )}
 
                         {row.descripcionTipo === undefined ? (
                           <StyledTableCell
@@ -1814,12 +1837,16 @@ export function Resumen({
                             Faltante
                           </StyledTableCell>
                         ) : (
-                          <StyledTableCell>
+                          <StyledTableCell
+                            onClick={() => {
+                              console.log(row);
+                            }}
+                          >
                             {row.descripcionTipo}
                           </StyledTableCell>
                         )}
 
-                        {row.nombreArchivo === undefined ? (
+                        {row.nombreArchivo === undefined || row.nombreArchivo === '' ? (
                           <StyledTableCell
                             sx={{
                               bgcolor: "rgb(255 0 0 / 24%)",
@@ -1831,34 +1858,39 @@ export function Resumen({
                         ) : (
                           <StyledTableCell>{row.nombreArchivo}</StyledTableCell>
                         )}
-                        {row.nombreArchivo === undefined ? null : (
+
+                        {row.nombreArchivo === undefined || row.nombreArchivo === '' ? null : (
                           <StyledTableCell>
                             <Tooltip title={"Ver Documento"}>
-                              {/* {cargados ? (
-                                <CircularProgress />
-                              ) : ( */}
-                              <IconButton
-                                onClick={async () => {
-                                  console.log("row?.archivo?.name", row?.archivo)
-                                  let base64String = '';
-                                  try {
-                                    if (row.archivo instanceof File) {
-                                      base64String = await convertFileToBase64(row.archivo);
-                                    } else {
-                                      base64String = row.archivo;
-                                    }
+                              {
+                                row?.archivo?.name === "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" && cargados ? (
+                                  <CircularProgress />
+                                ) : (
 
-                                    const dataUri = `data:application/pdf;base64,${base64String}`;
-                                    setFileSelected(dataUri);
-                                  } catch (error) {
-                                    console.error("Error al convertir el archivo a Base64", error);
-                                  }
+                                  <IconButton
+                                    onClick={
+                                      async () => {
+                                        console.log("row?.archivo?.name", row?.archivo)
+                                        let base64String = '';
+                                        try {
+                                          if (row.archivo instanceof File) {
+                                            base64String = await convertFileToBase64(row.archivo);
+                                          } else {
+                                            base64String = row.archivo;
+                                          }
 
-                                  setShowModalPrevia(true);
-                                }}
-                              >
-                                <FileOpenIcon></FileOpenIcon>
-                              </IconButton>
+                                          const dataUri = `data:application/pdf;base64,${base64String}`;
+                                          setFileSelected(dataUri);
+                                        } catch (error) {
+                                          console.error("Error al convertir el archivo a Base64", error);
+                                        }
+
+                                        setShowModalPrevia(true);
+                                      }}
+                                  >
+                                    <FileOpenIcon />
+                                  </IconButton>
+                                )}
                             </Tooltip>
                           </StyledTableCell>
                         )}

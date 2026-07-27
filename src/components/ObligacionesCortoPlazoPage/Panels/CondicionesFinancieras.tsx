@@ -242,34 +242,28 @@ export function CondicionesFinancieras() {
   return (
     <Grid
       container
+      flexDirection="column"
       sx={{
-        height: "30rem",
-        "@media (min-width: 480px)": {
-          height: "39rem",
-        },
-
-        "@media (min-width: 768px)": {
-          height: "48rem",
-        },
-
-        "@media (min-width: 1140px)": {
-          height: "31rem",
-        },
-
-        "@media (min-width: 1400px)": {
-          height: "31rem",
-        },
-
-        "@media (min-width: 1870px)": {
-          height: "44rem",
-        },
+        height: "100%",
+        width: "100%",
       }}
     >
-      <Grid container height={"100%"}>
-        <Paper sx={{ height: "100%", width: "100%" }}>
+      <Grid container flexGrow={1} minHeight={0}>
+        <Paper elevation={3} sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", borderRadius: 2 }}>
           <TableContainer
             sx={{
               width: "100%",
+              flexGrow: 1,
+              minHeight: {
+                xs: "20rem",
+                sm: "25rem",
+                md: "25rem",
+                lg: "28rem",
+                xl: "30rem",
+                "@media (min-width: 1870px)": {
+                  minHeight: "38rem",
+                },
+              },
               overflow: "auto",
               "&::-webkit-scrollbar": {
                 width: ".5vw",
@@ -686,6 +680,8 @@ export function CondicionesFinancieras() {
         md={12}
         lg={12}
         height={"4rem"}
+        flexShrink={0}
+        mt={1}
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}

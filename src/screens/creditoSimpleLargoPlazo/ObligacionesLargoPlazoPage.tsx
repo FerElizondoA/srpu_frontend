@@ -139,23 +139,54 @@ export function ObligacionesLargoPlazoPage() {
 
       <Grid item container direction="column" width={"100%"}>
         <Grid
+          container
           mt={2}
           width={"100%"}
           display={"flex"}
-          justifyContent={
-            !inscripcion.NumeroRegistro ? "center" : "space-evenly"
-          }
+          justifyContent={{
+            xs: inscripcion.NumeroRegistro ? "center" : "space-between",
+            sm: "space-between",
+            md: "space-between",
+          }}
+          alignItems={"center"}
+          flexWrap={"wrap"}
+          gap={1}
+          px={{
+            xs: inscripcion.NumeroRegistro ? 0 : 2,
+            sm: 2,
+            md: 4,
+          }}
+          sx={{ position: "relative" }}
         >
           {inscripcion.NumeroRegistro && (
             <Grid
-              width={query.isMobile ? "20%" : "20%"}
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "auto",
+                  md: "auto",
+                },
+                order: {
+                  xs: 0,
+                  sm: 1,
+                  md: 0,
+                },
+              }}
               display={"flex"}
-              justifyContent={"start"}
+              justifyContent={{
+                xs: "center",
+                sm: "flex-start",
+                md: "flex-start",
+              }}
               alignItems={"center"}
             >
               <Typography
                 sx={{
                   ...queries.bold_text,
+                  fontSize: {
+                    xs: "0.8rem",
+                    sm: "1rem",
+                  },
                 }}
               >
                 <strong>{`Número de Registro: ${inscripcion.NumeroRegistro}`}</strong>
@@ -163,41 +194,51 @@ export function ObligacionesLargoPlazoPage() {
             </Grid>
           )}
           <Grid
-            width={
-              reestructura !== ""
-                ? query.isMobile
-                  ? "70%"
-                  : query.isMiniTablet
-                    ? "60%"
-                    : query.isTablet
-                      ? "50%"
-                      : query.isLaptop
-                        ? "60%"
-                        : query.isMonitor
-                          ? "38%"
-                          : query.isMonitorXL
-                            ? "32%"
-                            : !inscripcion.NumeroRegistro
-                              ? "90%"
-                              : query.isMobile
-                                ? "60%"
-                                : "50%"
-                : "90%"
-            }
+            sx={{
+              width: {
+                xs: inscripcion.NumeroRegistro ? "100%" : "auto",
+                sm: inscripcion.NumeroRegistro ? "100%" : "auto",
+                md: "auto",
+              },
+              order: {
+                xs: -1,
+                sm: inscripcion.NumeroRegistro ? 0 : -1,
+                md: 0,
+              },
+              position: {
+                xs: "relative",
+                sm: !inscripcion.NumeroRegistro ? "absolute" : "relative",
+                md: !inscripcion.NumeroRegistro ? "absolute" : "relative",
+              },
+              left: {
+                xs: !inscripcion.NumeroRegistro ? "20%" : "auto",
+                sm: !inscripcion.NumeroRegistro ? "50%" : "auto",
+                md: !inscripcion.NumeroRegistro ? "50%" : "auto",
+              },
+              transform: {
+                xs: "none",
+                sm: !inscripcion.NumeroRegistro ? "translateX(-50%)" : "none",
+                md: !inscripcion.NumeroRegistro ? "translateX(-50%)" : "none",
+              },
+              zIndex: {
+                xs: "auto",
+                sm: !inscripcion.NumeroRegistro ? 0 : "auto",
+                md: !inscripcion.NumeroRegistro ? 0 : "auto",
+              },
+            }}
             display={"flex"}
-            justifyContent={
-              reestructura !== "" ? "end" : "center"
-            }
-            alignItems={
-              reestructura !== "" && query.isMobile
-                ? "center"
-                : "center"
-            }
+            justifyContent={"center"}
+            alignItems={"center"}
           >
             <Typography
               sx={{
                 color: "#AF8C55",
                 ...queries.bold_text_Largo_Plazo.tituloCredito,
+                fontSize: {
+                  xs: "1rem",
+                  sm: "1.2rem",
+                  md: "1.5rem",
+                },
               }}
             >
               Crédito Simple a Largo Plazo
@@ -206,36 +247,27 @@ export function ObligacionesLargoPlazoPage() {
 
           {reestructura !== "" ? (
             <Grid
-              display={"flex"}
-              justifyContent={"end"}
               sx={{
-                width: "35%",
-                height: "2rem",
-                "@media (min-width: 480px)": {
-                  width: "32%",
+                width: {
+                  xs: inscripcion.NumeroRegistro ? "100%" : "auto",
+                  sm: "auto",
+                  md: inscripcion.NumeroRegistro ? "auto" : "100%",
                 },
-
-                "@media (min-width: 768px)": {
-                  width: "35%",
-                  height: "2.5rem",
-                },
-
-                "@media (min-width: 1140px)": {
-                  width: "35%",
-                  height: "2.5rem",
-                },
-
-                "@media (min-width: 1400px)": {
-                  width: "35%",
-                },
-
-                "@media (min-width: 1870px)": {
-                  width: "35%",
+                order: {
+                  xs: 1,
+                  sm: inscripcion.NumeroRegistro ? 2 : 1,
+                  md: 1,
                 },
               }}
+              display={"flex"}
+              justifyContent={{
+                xs: "center",
+                sm: "flex-end",
+                md: "flex-end",
+              }}
+              alignItems={"center"}
             >
               <ThemeProvider theme={buttonTheme}>
-
                 <Tooltip title="hola">
                   <Button
                     onClick={() => {
@@ -263,44 +295,67 @@ export function ObligacionesLargoPlazoPage() {
                         backgroundColor: "rgba(47, 47, 47, 0.4)",
                         color: "#000",
                       },
-                      //fontSize: "90%",
                       borderRadius: "0.8vh",
                       textTransform: "capitalize",
-                      fontSize: "80%",
+                      fontSize: {
+                        xs: "0.7rem",
+                        sm: "0.8rem",
+                      },
                     }}
                   >
                     Finalizar Reestructuracion
                   </Button>
                 </Tooltip>
-
               </ThemeProvider>
             </Grid>
           ) : (
-            <Grid container
-              width={
-                !inscripcion.NumeroRegistro ? "5%" : query.isTittle ? "10%" : "20%"
-              }
+            <Grid
+              container
+              sx={{
+                width: {
+                  xs: inscripcion.NumeroRegistro ? "100%" : "auto",
+                  sm: "auto",
+                  md: inscripcion.NumeroRegistro ? "auto" : "100%",
+                },
+                order: {
+                  xs: 1,
+                  sm: inscripcion.NumeroRegistro ? 2 : 1,
+                  md: 1,
+                },
+              }}
               display={"flex"}
-              justifyContent={"space-evenly"}
+              justifyContent={{
+                xs: "center",
+                sm: "flex-end",
+                md: "flex-end",
+              }}
               alignItems={"center"}
+              gap={1}
             >
-              {inscripcion.NumeroRegistro ?
-                <>
-                  <Button
-                    sx={{ ...queries.buttonContinuar }}
-                    onClick={() => {
-                      changeOpenVerComentarios(!openVerComentarios);
-                    }}
-                  >
-
-                    Ver Comentarios
-                  </Button>
-                </>
-
-                : null}
+              {inscripcion.NumeroRegistro && (
+                <Button
+                  sx={{
+                    ...queries.buttonContinuar,
+                    fontSize: {
+                      xs: "0.7rem",
+                      sm: "0.9rem",
+                    },
+                  }}
+                  onClick={() => {
+                    changeOpenVerComentarios(!openVerComentarios);
+                  }}
+                >
+                  Ver Comentarios
+                </Button>
+              )}
               <Button
-
-                sx={{ ...queries.buttonContinuar }}
+                sx={{
+                  ...queries.buttonContinuar,
+                  fontSize: {
+                    xs: "0.7rem",
+                    sm: "0.9rem",
+                  },
+                }}
                 onClick={() => {
                   setOpenDialogBorrador(!openDialogBorrador);
                 }}
@@ -308,27 +363,6 @@ export function ObligacionesLargoPlazoPage() {
                 Guardar
               </Button>
             </Grid>
-            // <Grid
-            //   width={
-            //     !inscripcion.NumeroRegistro
-            //       ? "0"
-            //       : query.isMobile
-            //         ? "10%"
-            //         : "20%"
-            //   }
-            //   display={"flex"}
-            //   justifyContent={"end"}
-            //   alignItems={"center"}
-            // >
-            //   <Button
-            //     onClick={() => {
-            //       setOpenDialogBorrador(!openDialogBorrador);
-            //     }}
-            //     sx={{ ...queries.buttonContinuar }}
-            //   >
-            //     Guardar
-            //   </Button>
-            // </Grid>
           )}
         </Grid>
 
@@ -338,6 +372,7 @@ export function ObligacionesLargoPlazoPage() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            mt: { xs: 2, sm: 2, md: 0 },
           }}
         >
           <Tabs

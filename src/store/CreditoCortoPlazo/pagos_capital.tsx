@@ -226,6 +226,7 @@ export const createPagosCapitalSlice: StateCreator<PagosCapitalSlice> = (
     set((state) => ({
       tablaTasaInteres: [...state.tablaTasaInteres, newTasaInteres],
     })),
+    
   setTablaTasaInteres: (tasaInteres: ITasaInteres[]) =>
     set(() => ({ tablaTasaInteres: tasaInteres })),
 

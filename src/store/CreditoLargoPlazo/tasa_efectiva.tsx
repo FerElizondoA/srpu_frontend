@@ -17,7 +17,8 @@ export interface TasaEfectivaSlice {
 
   addComision: (newComision: IComisiones) => void;
   setTablaComisiones: (newTablaComisiones: IComisiones[]) => void;
-  cleanComision: () => void;
+  cleanComisiones: () => void;
+  cleanTablaComision: () => void;
   removeComision: (index: number) => void;
 
   catalogoTiposComision: ICatalogo[];
@@ -71,15 +72,40 @@ export const createTasaEfectivaSlice: StateCreator<TasaEfectivaSlice> = (
 
   catalogoTiposComision: [],
 
-  addComision: (newComision: IComisiones) =>
-    set((state) => ({
-      tablaComisiones: [...state.tablaComisiones, newComision],
-    })),
+
 
   setTablaComisiones: (newTablaComisiones: IComisiones[]) =>
     set(() => ({ tablaComisiones: newTablaComisiones })),
 
-  cleanComision: () => set((state) => ({ tablaComisiones: [] })),
+  cleanComisiones: () =>
+    set((state) => ({
+      comision: {
+        fechaComision: format(new Date(), "MM/dd/yyyy").toString(),
+
+        tipoDeComision: {
+          Id: "",
+          Descripcion: "",
+          detallOtrasComisiones: "",
+        },
+
+        periodicidadDePago: {
+          Id: "",
+          Descripcion: "",
+          detallePerfilEspecifico: "",
+        },
+
+        monto: "0",
+        porcentaje: "",
+        iva: false,
+      },
+    })),
+
+  cleanTablaComision: () => set((state) => ({ tablaComisiones: [] })),
+
+  addComision: (newComision: IComisiones) =>
+    set((state) => ({
+      tablaComisiones: [...state.tablaComisiones, JSON.parse(JSON.stringify(newComision))],
+    })),
 
   removeComision: (index: number) =>
     set((state) => ({

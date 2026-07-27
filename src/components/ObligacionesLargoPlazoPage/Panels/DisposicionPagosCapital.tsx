@@ -31,9 +31,10 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { addDays } from "date-fns";
+import { addDays, parse } from "date-fns";
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 
-import { format } from "date-fns";
+import { format, differenceInDays, differenceInMonths } from "date-fns";
 import es from "date-fns/locale/es";
 import { useEffect, useState } from "react";
 import validator from "validator";
@@ -54,42 +55,54 @@ import { useReestructuraStore } from "../../../store/Reestructura/main";
 const heads: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Primer Pago",
-  },
-  {
-    label: "Tasa Interes",
-  },
-  {
-    label: "Periodicidad de Pago",
-  },
-  {
-    label: "Tasa de Referencia",
-  },
-  {
-    label: "Sobretasa",
-  },
-  {
-    label: "Dias del Ejercicio",
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición"
+    },
+    {
+      label: "Fecha Indicativa"
+    },
+    {
+      label: "Importe de Disposición",
+    },
+    {
+      label: "Fecha de Primer Pago",
+    },
+    {
+      label: "Tasa Interes",
+    },
+    {
+      label: "Periodicidad de Pago",
+    },
+    {
+      label: "Detalle Periocidad de Pago",
+    },
+    {
+      label: "Tasa de Referencia",
+    },
+    {
+      label: "Sobretasa",
+    },
+    {
+      label: "Dias del Ejercicio",
+    },
+  ];
 
 const headsDisposicion: readonly {
   label: string;
 }[] = [
-  {
-    label: "Borrar",
-  },
-  {
-    label: "Fecha de Disposición",
-  },
-  {
-    label: `Importe de disposición`,
-  },
-];
+    {
+      label: "Borrar",
+    },
+    {
+      label: "Fecha de Disposición",
+    },
+    {
+      label: `Importe de disposición`,
+    },
+  ];
 
 export function DisposicionPagosCapital() {
   // GET CATALOGOS
@@ -173,6 +186,18 @@ export function DisposicionPagosCapital() {
     (state) => state.encabezado.fechaContratacion
   );
 
+  const cleanDisposicion: Function = useLargoPlazoStore(
+    (state) => state.cleanDisposicion
+  );
+
+  const cleanTasaInteres: Function = useLargoPlazoStore(
+    (state) => state.cleanTasaInteres
+  );
+
+  const fechaVencimiento: string = useLargoPlazoStore(
+    (state) => state.informacionGeneral.fechaVencimiento
+  );
+
   const tasasParciales: boolean = useLargoPlazoStore(
     (state) => state.tasasParciales
   );
@@ -218,41 +243,164 @@ export function DisposicionPagosCapital() {
     }
   };
 
-  useEffect(() => {
-    if (tasasParciales === false) {
-      // setTasaInteres({ ...tasaDeInteres, tasaFija: "" });
-      setTablaTasaInteres([tasaDeInteres]);
+  const obtenerMaxPagos = () => {
+    if (!pagosDeCapital.fechaPrimerPago || !fechaVencimiento) {
+      return 0;
     }
-  }, [tasasParciales, tasaDeInteres]);
+    const fechaPrimerPagoDate = parse(
+      pagosDeCapital.fechaPrimerPago,
+      "MM/dd/yyyy",
+      new Date()
+    );
+    const fechaVencimientoDate = new Date(fechaVencimiento);
+    const mesesDisponibles = differenceInMonths(fechaVencimientoDate, fechaPrimerPagoDate) + 1;
+    switch (pagosDeCapital.periodicidadDePago.Descripcion) {
+      case "Pago único": return 1;
+      case "Mensual": return mesesDisponibles;
+      case "Trimestral": return Math.floor((mesesDisponibles - 1) / 3) + 1;
+      case "Cuatrimestral": return Math.floor((mesesDisponibles - 1) / 4) + 1;
+      case "Semestral": return Math.floor((mesesDisponibles - 1) / 6) + 1;
+      case "Anual": return Math.floor((mesesDisponibles - 1) / 12) + 1;
+      default: return 0;
+    }
+  };
+
+  const [restante, setRestante] = useState(0);
+
+  const parseMoney = (v: string | number): number => {
+    if (typeof v === "number") return v;
+    const num = Number(String(v).replace(/[$,]/g, ""));
+    return Number.isFinite(num) ? num : 0;
+  };
+
+  const toCents = (n: number) => Math.round(n * 100);
+
+  useEffect(() => {
+    const totalImporteCents = tablaTasaInteres.reduce((acc, it) => {
+      const importePesos = parseMoney(it.importe);
+      return acc + toCents(importePesos);
+    }, 0);
+
+    const montoCents = toCents(parseMoney(monto));
+    const nuevoRestanteCents = montoCents - totalImporteCents;
+
+    setRestante(nuevoRestanteCents / 100);
+  }, [tablaTasaInteres, monto]);
+
+  const validacionBotonAgregar = (valorFormateado: string) => {
+    const valorNumerico = valorFormateado.replace(/[^\d.-]/g, "");
+    return (parseFloat(valorNumerico));
+  };
+
+  const heredarInteres = (registro: ITasaInteres) => {
+    if (registro.tasaFija !== "N/A") {
+      setRadioValue(1);
+      setTasaInteres({
+        ...tasaDeInteres,
+        fechaPrimerPago: registro.fechaPrimerPago,
+        tasaFija: registro.tasaFija,
+        diasEjercicio: {
+          Id: registro.diasEjercicio.Id,
+          Descripcion: registro.diasEjercicio.Descripcion,
+        },
+        periocidadPago: {
+          Id: registro.periocidadPago.Id,
+          Descripcion: registro.periocidadPago.Descripcion,
+          detallePeriodicidadPago: registro.periocidadPago.detallePeriodicidadPago,
+        },
+        tasaReferencia: { Id: "", Descripcion: "" },
+        sobreTasa: "N/A",
+      });
+    } else {
+      setRadioValue(2);
+      setTasaInteres({
+        ...tasaDeInteres,
+        fechaPrimerPago: registro.fechaPrimerPago,
+        periocidadPago: {
+          Id: registro.periocidadPago.Id,
+          Descripcion: registro.periocidadPago.Descripcion,
+          detallePeriodicidadPago: registro.periocidadPago.detallePeriodicidadPago,
+        },
+        tasaReferencia: {
+          Id: registro.tasaReferencia.Id,
+          Descripcion: registro.tasaReferencia.Descripcion,
+        },
+        sobreTasa: registro.sobreTasa,
+        diasEjercicio: {
+          Id: registro.diasEjercicio.Id,
+          Descripcion: registro.diasEjercicio.Descripcion,
+        },
+        tasaFija: "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    const primerPago = new Date(pagosDeCapital.fechaPrimerPago);
+    const vencimiento = new Date(fechaVencimiento);
+
+    if (primerPago > vencimiento) {
+      setPagosDeCapital((prev: any) => ({
+        ...prev,
+        fechaPrimerPago: format(vencimiento, "MM/dd/yyyy"),
+      }));
+    }
+  }, [fechaVencimiento]);
+
+  useEffect(() => {
+    if (
+      !pagosDeCapital.fechaPrimerPago ||
+      !fechaVencimiento
+    ) {
+      return;
+    }
+
+    const fechaPrimerPagoActual =
+      parse(
+        pagosDeCapital.fechaPrimerPago,
+        "MM/dd/yyyy",
+        new Date()
+      );
+
+    const fechaVencimientoDate =
+      new Date(fechaVencimiento);
+
+    if (
+      fechaPrimerPagoActual >
+      fechaVencimientoDate
+    ) {
+      setPagosDeCapital({
+        ...pagosDeCapital,
+        fechaPrimerPago: format(
+          fechaVencimientoDate,
+          "MM/dd/yyyy"
+        ),
+      });
+    }
+  }, [
+    fechaVencimiento,
+    pagosDeCapital.fechaPrimerPago,
+  ]);
 
   useEffect(() => {
     if (disposicionesParciales === false) {
-      setDisposicion({ ...disposicion, importe: moneyMask(monto.toString()) });
-      setTablaDisposicion([
+      setTasaInteres((prev: any) => ({
+        ...prev,
+        importe: moneyMask(monto.toString()),
+      }));
+      setTablaTasaInteres([
         {
-          fechaDisposicion: disposicion.fechaDisposicion,
+          Disposiciones: {
+            fechaDisposicion: tasaDeInteres.Disposiciones?.fechaDisposicion,
+            fechaIndicativa: tasaDeInteres.Disposiciones?.fechaIndicativa
+          },
           importe: moneyMask(monto.toString()),
         },
       ]);
     }
-  }, [monto, disposicionesParciales]);
+  }, [monto, disposicionesParciales === false]);
 
-  const [restante, setRestante] = useState(0);
 
-  useEffect(() => {
-    let loc = 0.0;
-    tablaDisposicion.map((value: any, index: number) => {
-      loc += parseFloat(
-        value.importe.toString().replaceAll("$", "").replaceAll(",", "")
-      );
-    });
-
-    let res = 0.0;
-    res =
-      parseFloat(monto.toString().replaceAll("$", "").replaceAll(",", "")) -
-      parseFloat(loc.toFixed(2));
-    setRestante(res);
-  }, [tablaDisposicion]);
 
   const query = {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 599px)"),
@@ -280,41 +428,37 @@ export function DisposicionPagosCapital() {
       }}
       flexDirection={"column"}
       justifyContent={"space-between"}
-      height={
-        query.isMobile === false
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "32rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "44rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "44rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "60rem"
-            : "36rem"
-          : query.isMobile === true
-          ? disposicionesParciales === false && tasasParciales === false
-            ? "50rem"
-            : disposicionesParciales === true && tasasParciales === false
-            ? "65rem"
-            : disposicionesParciales === false && tasasParciales === true
-            ? "65rem"
-            : disposicionesParciales === true && tasasParciales === true
-            ? "85rem"
-            : "52rem"
-          : "36rem"
-      }
     >
-      <Grid item container mt={2} direction="column">
+      <Grid container mt={2} direction="column"
+        height={{
+          xs: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "30rem" : "20rem",
+          sm: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          md: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          lg: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem",
+          xl: pagosDeCapital.periodicidadDePago?.Descripcion ===
+            "Perfil Especifico" ? "15rem" : "10rem"
+        }}
+      >
         <Grid item>
-          <Divider>
+          <Divider sx={{ marginBottom: 2 }}>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               PAGOS DE CAPITAL
             </Typography>
           </Divider>
         </Grid>
 
-        <Grid container display={"flex"} justifyContent={"space-evenly"}>
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3} sx={{ width: "100%" }}>
+        <Grid container
+          display={"flex"}
+          justifyContent={"space-evenly"}
+          alignItems={"center"}
+        >
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
+            mb={{ xs: 3, sm: 0 }}
+            sx={{ width: "100%" }}>
             <InputLabel sx={queries.medium_text}>
               Fecha de Primer Pago
             </InputLabel>
@@ -323,21 +467,28 @@ export function DisposicionPagosCapital() {
               adapterLocale={es}
             >
               <DesktopDatePicker
-                minDate={new Date(fechaContratacion)}
-                maxDate={new Date(addDays(new Date(fechaContratacion), 365))}
                 sx={{ width: "100%" }}
+                minDate={new Date(fechaContratacion)}
+                maxDate={new Date(fechaVencimiento)}
                 value={new Date(pagosDeCapital.fechaPrimerPago)}
-                onChange={(date) =>
+                onChange={(date) => {
+                  if (!date) return;
+                  const fechaContratacionDate = new Date(fechaContratacion);
+                  const fechaVencimientoDate = new Date(fechaVencimiento);
+                  let fechaFinal = date;
+                  if (date < fechaContratacionDate) { fechaFinal = fechaContratacionDate; }
+                  if (date > fechaVencimientoDate) { fechaFinal = fechaVencimientoDate; }
                   setPagosDeCapital({
                     ...pagosDeCapital,
-                    fechaPrimerPago: format(date!, "MM/dd/yyyy"),
-                  })
-                }
+                    fechaPrimerPago: format(fechaFinal, "MM/dd/yyyy"),
+                  });
+                }}
               />
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
+            mb={{ xs: 3, sm: 0 }}>
             <InputLabel sx={queries.medium_text}>
               Periodicidad de Pago
             </InputLabel>
@@ -362,9 +513,11 @@ export function DisposicionPagosCapital() {
                 setPagosDeCapital({
                   ...pagosDeCapital,
                   periodicidadDePago: {
-                    Id: text?.Id,
-                    Descripcion: text?.Descripcion,
+                    Id: text?.Id || "",
+                    Descripcion: text?.Descripcion || "",
+                    detallePeriodicidadPago: "",
                   },
+                  numeroDePago: 0,
                 })
               }
               renderInput={(params) => (
@@ -379,11 +532,69 @@ export function DisposicionPagosCapital() {
                 value.Descripcion === ""
               }
             />
+            {pagosDeCapital.periodicidadDePago?.Descripcion ===
+              "Perfil Especifico" && (
+                <Grid>
+                  <InputLabel sx={{ ...queries.medium_text, mb: 2 }}>
+                    Detalle de la Periodicidad
+                  </InputLabel>
+                  <TextField
+                    fullWidth
+                    multiline
+                    minRows={2}
+                    maxRows={2}
+                    variant="outlined"
+                    value={
+                      pagosDeCapital.periodicidadDePago
+                        ?.detallePeriodicidadPago || ""
+                    }
+                    helperText={`${pagosDeCapital.periodicidadDePago
+                      ?.detallePeriodicidadPago?.length || 0
+                      } / 500 caracteres`}
+                    onChange={(e) => {
+                      let valor = e.target.value;
+                      valor = valor
+                        .replace(/[<>]/g, "")
+                        .replace(/script/gi, "")
+                        .replace(/javascript:/gi, "");
+                      if (valor.length > 500) {
+                        valor = valor.substring(0, 500);
+                      }
+                      setPagosDeCapital({
+                        ...pagosDeCapital,
+                        periodicidadDePago: {
+                          ...pagosDeCapital.periodicidadDePago,
+                          detallePeriodicidadPago: valor,
+                        },
+                      });
+                    }}
+                  />
+                </Grid>
+              )}
           </Grid>
 
-          <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-            <InputLabel sx={queries.medium_text}>Número de Pagos</InputLabel>
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
+            mb={{ xs: 3, sm: 0 }}>
+            <InputLabel sx={{ ...queries.medium_text }}>
+              <Grid container display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
+                Número de Pagos
+              </Grid>
+            </InputLabel>
             <TextField
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", "."].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              inputProps={{
+                inputMode: "numeric",
+                pattern: "[0-9]*",
+              }}
+              helperText={
+                pagosDeCapital.periodicidadDePago?.Descripcion === "Perfil Especifico"
+                  ? "La cantidad de pagos será determinada conforme al detalle capturado."
+                  : `Máximo permitido: ${obtenerMaxPagos()}`
+              }
               placeholder="0"
               value={
                 pagosDeCapital.numeroDePago <= 0
@@ -391,10 +602,15 @@ export function DisposicionPagosCapital() {
                   : pagosDeCapital.numeroDePago.toString()
               }
               onChange={(v) => {
-                setPagosDeCapital({
-                  ...pagosDeCapital,
-                  numeroDePago: v.target.value,
-                });
+                const valor = Number(v.target.value);
+                const esPerfilEspecifico =
+                  pagosDeCapital.periodicidadDePago?.Descripcion === "Perfil Especifico";
+                if (esPerfilEspecifico || valor <= obtenerMaxPagos() || v.target.value === "") {
+                  setPagosDeCapital({
+                    ...pagosDeCapital,
+                    numeroDePago: v.target.value,
+                  });
+                }
               }}
               fullWidth
               InputLabelProps={{
@@ -410,12 +626,37 @@ export function DisposicionPagosCapital() {
               variant="standard"
             />
           </Grid>
+
+          <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+            <FormControlLabel
+              label="Periodo de Gracia"
+              control={
+                <Checkbox
+                  checked={pagosDeCapital.periodoGracia}
+                  onChange={(v) => {
+                    setPagosDeCapital({
+                      ...pagosDeCapital,
+                      periodoGracia: !pagosDeCapital.periodoGracia,
+                    });
+                  }}
+                />
+              }
+            ></FormControlLabel>
+          </Grid>
         </Grid>
       </Grid>
 
-      <Grid container direction="column" width={"100%"}>
-        <Grid item width={"100%"}>
-          <Divider>
+      <Grid container direction="column" width={"100%"} alignItems={"center"}
+        height={{
+          xs: "16rem",
+          sm: "16rem",
+          md: "16rem",
+          lg: "9rem",
+          xl: "9rem"
+        }}
+      >
+        <Grid item width={"100%"} alignItems={"center"}>
+          <Divider sx={{ marginBottom: 2 }}>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               DISPOSICIÓN
             </Typography>
@@ -428,21 +669,29 @@ export function DisposicionPagosCapital() {
             alignItems={"center"}
             width={"100%"}
           >
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid item xs={10} sm={2} md={2} lg={2} xl={2}
+              display={"flex"} justifyContent={"space-evenly"} alignItems={"center"}
+              mb={{ xs: 3 }}
+            >
               <FormControlLabel
-              disabled={reestructura !== ""}
                 label="Disposiciones Parciales"
                 control={
                   <Checkbox
                     checked={disposicionesParciales}
                     onChange={(v) => {
                       setDisposicionesParciales();
+                      setTablaTasaInteres([])
+                      if (disposicionesParciales === false) {
+                        removeDisposicion(0)
+                      }
                     }}
                   />
                 }
               ></FormControlLabel>
             </Grid>
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+              mb={{ xs: 3 }}
+            >
               <InputLabel sx={queries.medium_text}>
                 Fecha de Disposición
               </InputLabel>
@@ -452,178 +701,112 @@ export function DisposicionPagosCapital() {
               >
                 <DesktopDatePicker
                   sx={{ width: "100%" }}
-                  disabled={reestructura !== ""}
-                  value={new Date(disposicion.fechaDisposicion)}
+                  value={new Date(tasaDeInteres.Disposiciones.fechaDisposicion)}
                   onChange={(date) => {
-                    setDisposicion({
-                      ...disposicion,
-                      fechaDisposicion: format(date!, "MM/dd/yyyy"),
+                    setTasaInteres({
+                      ...tasaDeInteres,
+                      Disposiciones: {
+                        fechaDisposicion: format(date!, "MM/dd/yyyy"),
+                      }
                     });
                   }}
                   minDate={new Date(fechaContratacion)}
-                  maxDate={new Date(addDays(new Date(), 365))}
+                  maxDate={new Date(fechaVencimiento)}
                 />
               </LocalizationProvider>
-            </Grid>
-
-            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}>
-              <InputLabel sx={queries.medium_text}>Importe</InputLabel>
-
-              <TextField
-                disabled={!disposicionesParciales}
-                helperText={
-                  disposicionesParciales
-                    ? "Monto Original Contratado: " +
-                      monto +
-                      "; Monto restante: " +
-                      restante.toFixed(2)
-                    : ""
-                }
-                value={disposicion.importe}
-                onChange={(v) => {
-                  if (
-                    validator.isNumeric(v.target.value.replace(/\D/g, "")) &&
-                    disposicionesParciales &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <
-                      9999999999999999 &&
-                    parseFloat(v.target.value.replace(/\D/g, "")) <=
-                      restante * 101
-                  ) {
-                    setDisposicion({
-                      ...disposicion,
-                      importe: moneyMask(v.target.value),
-                    });
-                  } else if (v.target.value === "") {
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
+              <Grid>
+                <FormControlLabel
+                  label="Fecha Indicativa"
+                  control={
+                    <Checkbox
+                      checked={tasaDeInteres.Disposiciones?.fechaIndicativa ?? false}
+                      onChange={() => {
+                        const nuevaFechaIndicativa =
+                          !(tasaDeInteres.Disposiciones?.fechaIndicativa ?? false);
+                        setTasaInteres({
+                          ...tasaDeInteres,
+                          Disposiciones: {
+                            ...(tasaDeInteres.Disposiciones ?? {}),
+                            fechaIndicativa: nuevaFechaIndicativa,
+                          },
+                        });
+                      }}
+                    />
                   }
-                }}
-                error={
-                  parseFloat(
-                    disposicion.importe.toString().replace(/\D/g, "")
-                  ) > parseFloat(monto.toString().replace(/\D/g, ""))
-                }
-                fullWidth
-                InputLabelProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                InputProps={{
-                  style: {
-                    fontFamily: "MontserratMedium",
-                  },
-                }}
-                variant="standard"
-              />
-            </Grid>
-          </Grid>
-          {disposicionesParciales && (
-            <Grid
-              container
-              flexDirection={"column"}
-              alignItems={"center"}
-              width={"100%"}
-            >
-              <ThemeProvider theme={buttonTheme}>
-                <Button
-                  sx={{
-                    ...queries.buttonContinuarSolicitudInscripcion,
-                    mt: 2,
-                    mb: 2,
-                    width: "15vh",
-                  }}
-                  disabled={
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) === 0 ||
-                    parseFloat(
-                      disposicion.importe.toString().replace(/\D/g, "")
-                    ) >
-                      restante * 101
-                  }
-                  variant="outlined"
-                  onClick={() => {
-                    setDisposicion({ ...disposicion, importe: moneyMask("0") });
-                    addDisposicion(disposicion);
-                  }}
-                >
-                  Agregar
-                </Button>
-              </ThemeProvider>
-
-              <Grid
-                width={"100%"}
-                display={"flex"}
-                justifyContent={"center"}
-                height={"12rem"}
-              >
-                <Paper sx={{ width: "88%", height: "100%" }}>
-                  <TableContainer
-                    sx={{
-                      height: "100%",
-                      overflow: "auto",
-                      "&::-webkit-scrollbar": {
-                        width: ".5vw",
-                        height: ".5vh",
-                        mt: 1,
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "#AF8C55",
-                        outline: "1px solid slategrey",
-                        borderRadius: 1,
-                      },
-                    }}
-                  >
-                    <Table stickyHeader aria-label="sticky table">
-                      <TableHead>
-                        <TableRow>
-                          {headsDisposicion.map((head, index) => (
-                            <StyledTableCell align="center" key={index}>
-                              <TableSortLabel>{head.label}</TableSortLabel>
-                            </StyledTableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {tablaDisposicion.map(
-                          (row: IDisposicion, index: number) => {
-                            return (
-                              <StyledTableRow key={index}>
-                                <StyledTableCell align="center">
-                                  <Tooltip title="Eliminar">
-                                    <IconButton
-                                      type="button"
-                                      onClick={() => {
-                                        removeDisposicion(index);
-                                      }}
-                                    >
-                                      <DeleteIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                </StyledTableCell>
-                                <StyledTableCell align="center" component="th">
-                                  {row.fechaDisposicion}
-                                </StyledTableCell>
-                                <StyledTableCell align="center" component="th">
-                                  {row.importe}
-                                </StyledTableCell>
-                              </StyledTableRow>
-                            );
-                          }
-                        )}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
+                ></FormControlLabel>
               </Grid>
             </Grid>
-          )}
+
+            <Grid item xs={10} sm={3} md={3} lg={3} xl={3}
+              mb={{ xs: 3 }}
+            >
+              <InputLabel sx={queries.medium_text}>Importe</InputLabel>
+
+              <Grid justifyContent={"space-between"}>
+                {validacionBotonAgregar(
+                  tasaDeInteres?.importe.toString()
+                ) >
+                  restante && disposicionesParciales ? <InputLabel>
+                  <Typography sx={{
+                    fontSize: ".7rem",
+                    fontFamily: "MontserratMedium",
+                    color: "red"
+                  }}>
+                    *favor de ingresar un numero menor*
+                  </Typography>
+                </InputLabel> : null}
+
+
+
+                <Grid display={"flex"} justifyContent={"space-between"}>
+                  <TextField
+                    disabled={!disposicionesParciales}
+                    helperText={
+                      (disposicionesParciales
+                        ? `Monto Original Contratado: ${moneyMask(String(monto))}; 
+                        Monto restante: ${moneyMask(String(restante * 100))}`
+                        : ""
+                      )
+                    }
+                    value={moneyMask(String(tasaDeInteres.importe))}
+                    onChange={(v) => {
+                      const valornuevo = v.target.value;
+                      console.log("valorNuevo", valornuevo);
+
+                      setTasaInteres({ ...tasaDeInteres, importe: moneyMask(valornuevo) });
+                      //setDisposicion({ ...disposicion, importe: moneyMask(valornuevo) });
+                    }}
+                    error={
+                      disposicionesParciales === false ? false :
+                        validacionBotonAgregar(
+                          tasaDeInteres.importe.toString()
+                        ) >
+                        restante
+                    }
+                    fullWidth
+                    InputLabelProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontFamily: "MontserratMedium",
+                      },
+                    }}
+                    variant="standard"
+                  />
+                </Grid>
+
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
       <Grid container direction="column">
         <Grid item>
-          <Divider>
+          <Divider sx={{ marginBottom: 2 }}>
             <Typography color={"#af8c55 "} fontWeight={"bold"}>
               TASA DE INTERÉS
             </Typography>
@@ -668,7 +851,7 @@ export function DisposicionPagosCapital() {
                 </Grid>
               </RadioGroup>
             </FormControl>
-            <Grid item>
+            {/* <Grid item>
               <FormControlLabel
                 label="Agregar Tasas"
                 control={
@@ -681,7 +864,7 @@ export function DisposicionPagosCapital() {
                   />
                 }
               ></FormControlLabel>
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Grid container display={"flex"} justifyContent={"center"} mb={2}>
@@ -690,8 +873,7 @@ export function DisposicionPagosCapital() {
                 <Grid
                   item
                   xs={10}
-                  sm={2}
-                  md={2}
+                  sm={5} md={5}
                   lg={2}
                   xl={2}
                   display={"block"}
@@ -705,7 +887,8 @@ export function DisposicionPagosCapital() {
                   >
                     <DesktopDatePicker
                       sx={{ width: "100%" }}
-                     
+                      minDate={new Date(fechaContratacion)}
+                      maxDate={new Date(fechaVencimiento)}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) => {
                         setTasaInteres({
@@ -716,17 +899,20 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Tasa Fija</InputLabel>
-
                   <TextField
+                    type="text"
                     placeholder="0"
                     value={tasaDeInteres.tasaFija}
-                    onChange={(v) => {
-                      setTasaInteres({
-                        ...tasaDeInteres,
-                        tasaFija: v.target.value,
-                      });
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*\.?\d*$/.test(value)) {
+                        setTasaInteres({
+                          ...tasaDeInteres,
+                          tasaFija: value,
+                        });
+                      }
                     }}
                     fullWidth
                     InputLabelProps={{
@@ -742,7 +928,7 @@ export function DisposicionPagosCapital() {
                     variant="standard"
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -785,7 +971,7 @@ export function DisposicionPagosCapital() {
                     }
                   />
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -810,8 +996,12 @@ export function DisposicionPagosCapital() {
                       setTasaInteres({
                         ...tasaDeInteres,
                         periocidadPago: {
-                          Id: text?.Id,
-                          Descripcion: text?.Descripcion,
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                          detallePeriodicidadPago:
+                            text?.Descripcion === "Perfil Especifico"
+                              ? tasaDeInteres.periocidadPago.detallePeriodicidadPago
+                              : 0,
                         },
                       })
                     }
@@ -827,6 +1017,52 @@ export function DisposicionPagosCapital() {
                       value.Descripcion === ""
                     }
                   />
+                  {
+                    tasaDeInteres.periocidadPago?.Descripcion === "Perfil Especifico" && (
+                      <Grid item>
+                        <InputLabel sx={queries.medium_text}>
+                          Detalle de Periodicidad
+                        </InputLabel>
+                        <TextField
+                          placeholder="0"
+                          value={
+                            tasaDeInteres.periocidadPago.detallePeriodicidadPago || ""
+                          }
+                          onChange={(v) => {
+                            const valor = v.target.value;
+                            const soloNumeros = /^\d*$/;
+                            if (soloNumeros.test(valor) && valor.length <= 5) {
+                              setTasaInteres({
+                                ...tasaDeInteres,
+                                periocidadPago: {
+                                  ...tasaDeInteres.periocidadPago,
+                                  detallePeriodicidadPago:
+                                    valor === "" ? 0 : Number(valor),
+                                },
+                              });
+                            }
+                          }}
+                          fullWidth
+                          variant="outlined"
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            maxLength: 5,
+                          }}
+                          sx={{
+                            "& input[type=number]": {
+                              MozAppearance: "textfield",
+                            },
+                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                            {
+                              WebkitAppearance: "none",
+                              margin: 0,
+                            },
+                          }}
+                        />
+                      </Grid>
+                    )
+                  }
                 </Grid>
               </Grid>
             ) : (
@@ -837,7 +1073,7 @@ export function DisposicionPagosCapital() {
                   display: "flex",
                 }}
               >
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Fecha de Primer Pago
                   </InputLabel>
@@ -846,8 +1082,9 @@ export function DisposicionPagosCapital() {
                     adapterLocale={es}
                   >
                     <DesktopDatePicker
-                
                       sx={{ width: "100%" }}
+                      minDate={new Date(fechaContratacion)}
+                      maxDate={new Date(fechaVencimiento)}
                       value={new Date(tasaDeInteres.fechaPrimerPago)}
                       onChange={(date) =>
                         setTasaInteres({
@@ -858,7 +1095,7 @@ export function DisposicionPagosCapital() {
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Periodicidad de Pago
                   </InputLabel>
@@ -883,8 +1120,12 @@ export function DisposicionPagosCapital() {
                       setTasaInteres({
                         ...tasaDeInteres,
                         periocidadPago: {
-                          Id: text?.Id,
-                          Descripcion: text?.Descripcion,
+                          Id: text?.Id || "",
+                          Descripcion: text?.Descripcion || "",
+                          detallePeriodicidadPago:
+                            text?.Descripcion === "Perfil Especifico"
+                              ? tasaDeInteres.periocidadPago.detallePeriodicidadPago
+                              : 0,
                         },
                       })
                     }
@@ -900,9 +1141,55 @@ export function DisposicionPagosCapital() {
                       value.Descripcion === ""
                     }
                   />
+                  {
+                    tasaDeInteres.periocidadPago?.Descripcion === "Perfil Especifico" && (
+                      <Grid item>
+                        <InputLabel sx={queries.medium_text}>
+                          Detalle de Periodicidad
+                        </InputLabel>
+                        <TextField
+                          placeholder="0"
+                          value={
+                            tasaDeInteres.periocidadPago.detallePeriodicidadPago || ""
+                          }
+                          onChange={(v) => {
+                            const valor = v.target.value;
+                            const soloNumeros = /^\d*$/;
+                            if (soloNumeros.test(valor) && valor.length <= 5) {
+                              setTasaInteres({
+                                ...tasaDeInteres,
+                                periocidadPago: {
+                                  ...tasaDeInteres.periocidadPago,
+                                  detallePeriodicidadPago:
+                                    valor === "" ? 0 : Number(valor),
+                                },
+                              });
+                            }
+                          }}
+                          fullWidth
+                          variant="outlined"
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            maxLength: 5,
+                          }}
+                          sx={{
+                            "& input[type=number]": {
+                              MozAppearance: "textfield",
+                            },
+                            "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+                            {
+                              WebkitAppearance: "none",
+                              margin: 0,
+                            },
+                          }}
+                        />
+                      </Grid>
+                    )
+                  }
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Tasa de Referencia
                   </InputLabel>
@@ -946,7 +1233,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>Sobretasa</InputLabel>
                   <TextField
                     //type="number"
@@ -982,7 +1269,7 @@ export function DisposicionPagosCapital() {
                   />
                 </Grid>
 
-                <Grid item xs={10} sm={2} md={2} lg={2} xl={2}>
+                <Grid item xs={10} sm={5} md={5} lg={2} xl={2}>
                   <InputLabel sx={queries.medium_text}>
                     Días del Ejercicio
                   </InputLabel>
@@ -1027,7 +1314,7 @@ export function DisposicionPagosCapital() {
                 </Grid>
               </Grid>
             )}
-            {tasasParciales && (
+            {disposicionesParciales && (
               <Grid
                 container
                 // sx={queries.tablaDisposicionPagosCapital}
@@ -1051,11 +1338,18 @@ export function DisposicionPagosCapital() {
                       (radioValue === 2 &&
                         tasaDeInteres.tasaReferencia.toString() === "") ||
                       (radioValue === 2 &&
-                        tasaDeInteres.sobreTasa.toString() === "")
+                        tasaDeInteres.sobreTasa.toString() === "") ||
+                      validacionBotonAgregar(
+                        tasaDeInteres?.importe?.toString()
+                      ) === 0 ||
+                      validacionBotonAgregar(
+                        tasaDeInteres?.importe?.toString()
+                      ) > restante
                     }
                     variant="outlined"
                     onClick={() => {
                       addTasaInteres(tasaDeInteres);
+                      cleanTasaInteres();
                     }}
                   >
                     Agregar
@@ -1101,40 +1395,55 @@ export function DisposicionPagosCapital() {
                               return (
                                 <StyledTableRow key={index}>
                                   <StyledTableCell align="center">
-                                    <Tooltip title="Eliminar">
-                                      <IconButton
-                                        type="button"
-                                        onClick={() => {
-                                          removeTasaInteres(index);
-                                        }}
-                                      >
-                                        <DeleteIcon />
-                                      </IconButton>
-                                    </Tooltip>
+                                    <Grid display={"flex"} justifyContent={"space-evenly"}>
+                                      <Tooltip title="Eliminar">
+                                        <IconButton
+                                          type="button"
+                                          onClick={() => {
+                                            removeTasaInteres(index);
+                                          }}
+                                        >
+                                          <DeleteIcon />
+                                        </IconButton>
+                                      </Tooltip>
+                                      <Tooltip title="Heredar Interés">
+                                        <IconButton
+                                          onClick={() => heredarInteres(row)}
+                                        >
+                                          <BorderColorIcon />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </Grid>
                                   </StyledTableCell>
-                                  <StyledTableCell
-                                    align="center"
-                                    component="th"
-                                  >
-                                    {row.fechaPrimerPago}
+                                  <StyledTableCell align="center" component="th">
+                                    {row?.Disposiciones?.fechaDisposicion}
                                   </StyledTableCell>
-                                  <StyledTableCell
-                                    align="center"
-                                    component="th"
-                                  >
-                                    {row.tasaFija}
+                                  <StyledTableCell align="center" component="th">
+                                    {row?.Disposiciones?.fechaIndicativa === true ? "Aplica" : "N/A"}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" component="th">
+                                    {row?.importe}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" component="th">
+                                    {row?.fechaPrimerPago}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center" component="th">
+                                    {row?.tasaFija}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.periocidadPago.Descripcion}
+                                    {row?.periocidadPago?.Descripcion}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.tasaReferencia.Descripcion || "N/A"}
+                                    {row?.periocidadPago?.Descripcion === "Perfil Especifico" ? row?.periocidadPago?.detallePeriodicidadPago : "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.sobreTasa}
+                                    {row?.tasaReferencia?.Descripcion || "N/A"}
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
-                                    {row.diasEjercicio.Descripcion}
+                                    {row?.sobreTasa || "N/A"}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                    {row?.diasEjercicio?.Descripcion}
                                   </StyledTableCell>
                                 </StyledTableRow>
                               );

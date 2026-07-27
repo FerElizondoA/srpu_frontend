@@ -228,11 +228,11 @@ export function GastoCostos() {
       <Grid
         item
         xs={10}
-        sm={5}
+        sm={10}
         md={5}
         lg={3}
         xl={3}
-        sx={isSmallScreen ? gridItemStyle : {}}
+        mt={{ xs: 3, sm: 3 }}
       >
         <InputLabel sx={queries.medium_text}>Destino</InputLabel>
         <Autocomplete
@@ -304,29 +304,22 @@ export function GastoCostos() {
                 display={"flex"}
                 justifyContent={"space-evenly"}
                 mt={4}
-              // xs={12}
-              // sm={5}
-              // md={5}
-              // lg={3.3}
-              // xl={12}
+                width={"100%"}
+                flexWrap={"wrap"}
+                gap={4}
               >
                 <Grid
                   item
                   xs={10}
-                  sm={4}
+                  sm={10}
                   md={4}
                   lg={4}
-                  xl={4.9}
-                //sx={isSmallScreen ? gridItemStyle : {}}
+                  xl={4}
                 >
                   <InputLabel sx={queries.medium_text}>
                     Detalle de la Inversión
                   </InputLabel>
                   <Autocomplete
-                    // disabled={
-                    //   reestructura === "con autorizacion" ||
-                    //   reestructura === "sin autorizacion"
-                    // }
                     clearText="Borrar"
                     noOptionsText="Sin opciones"
                     closeText="Cerrar"
@@ -365,14 +358,12 @@ export function GastoCostos() {
                 </Grid>
 
                 <Grid
-
-                  justifyContent={"center"}
+                  item
                   xs={10}
                   sm={10}
-                  md={10}
-                  lg={10}
-                  xl={4.8}
-                  sx={isSmallScreen ? gridItemStyle : {}}
+                  md={5}
+                  lg={5}
+                  xl={5}
                 >
                   <Grid display={"flex"} justifyContent={"space-between"}>
                     <InputLabel sx={{
@@ -438,8 +429,9 @@ export function GastoCostos() {
                     item
                     display={"flex"}
                     justifyContent={"center"}
+                    gap={2}
                   >
-                    <Grid item sx={{ position: "relative", width: "100%" }}>
+                    <Grid item sx={{ position: "relative", width: { xs: "85%", sm: "85%", md: "100%" } }}>
                       <Typography
                         position={"absolute"}
                         sx={{
@@ -483,7 +475,7 @@ export function GastoCostos() {
                       />
                     </Grid>
 
-                    <Grid display={"flex"} justifyContent={"end"} sx={{ width: "10%" }}>
+                    <Grid display={"flex"} justifyContent={"end"} sx={{ width: { xs: "15%", sm: "15%", md: "10%" } }}>
                       <Tooltip title={"Remover Archivo"}>
                         <Button
                           onClick={() => {
@@ -514,6 +506,9 @@ export function GastoCostos() {
             justifyContent={"space-evenly"}
             mt={3}
             marginBottom={3}
+            width={"100%"}
+            flexWrap={"wrap"}
+            gap={4}
           >
             {gastosCostos.destino.Descripcion.toLowerCase().includes(
               "refinanciamiento"
@@ -522,17 +517,13 @@ export function GastoCostos() {
                 <Grid item
                   xs={10}
                   sm={10}
-                  md={10}
-                  lg={10}
+                  md={3}
+                  lg={3}
                   xl={3}>
                   <InputLabel sx={queries.medium_text}>
                     Clave de Inscripción del Financiamiento a Refinanciar
                   </InputLabel>
                   <TextField
-                    // disabled={
-                    //   reestructura === "con autorizacion" ||
-                    //   reestructura === "sin autorizacion"
-                    // }
                     fullWidth
                     value={gastosCostos.claveInscripcionFinanciamiento}
                     onChange={(v) => {
@@ -559,11 +550,10 @@ export function GastoCostos() {
             <Grid
               item
               xs={10}
-              sm={8}
-              md={10}
-              lg={11}
-              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 4.9 : 3}
-              sx={isSmallScreen ? gridItemStyle : {}}
+              sm={10}
+              md={gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 4}
+              lg={gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 4}
+              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 4 : (gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 4)}
             >
               <InputLabel sx={queries.medium_text}>Descripción</InputLabel>
               <TextField
@@ -598,19 +588,14 @@ export function GastoCostos() {
               item
               xs={10}
               sm={10}
-              md={10}
-              lg={10}
-              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 4.8 : 3}
-              sx={isSmallScreen ? gridItemStyle : {}}
+              md={gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 5}
+              lg={gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 5}
+              xl={gastosCostos.destino.Descripcion.toLowerCase() === "inversión pública productiva" ? 5 : (gastosCostos.destino.Descripcion.toLowerCase().includes("refinanciamiento") ? 3 : 4)}
             >
               <InputLabel sx={queries.medium_text}>
                 Gastos Adicionales
               </InputLabel>
               <TextField
-                //   disabled={
-                //     reestructura === "con autorizacion" ||
-                //   reestructura === "sin autorizacion"
-                // }
                 fullWidth
                 value={gastosCostos.gastosAdicionales}
                 onChange={(v) => {
@@ -641,23 +626,23 @@ export function GastoCostos() {
             justifyContent={"space-evenly"}
             mt={3}
             marginBottom={3}
+            width={"100%"}
+            flexWrap={"wrap"}
+            gap={4}
+            rowGap={4}
           >
+
 
             <Grid
               item
               xs={10}
               sm={10}
-              md={10}
-              lg={10}
+              md={3}
+              lg={3}
               xl={3}
-              sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel sx={queries.medium_text}>Monto</InputLabel>
               <TextField
-                //   disabled={
-                //     reestructura === "con autorizacion" ||
-                //   reestructura === "sin autorizacion"
-                // }
                 fullWidth
                 placeholder="0"
                 value={gastosCostos.monto}
@@ -691,7 +676,6 @@ export function GastoCostos() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  //startAdornment: <AttachMoneyIcon />,
                 }}
                 variant="standard"
               />
@@ -701,17 +685,14 @@ export function GastoCostos() {
               item
               xs={10}
               sm={10}
-              md={10}
-              lg={10}
+              md={3}
+              lg={3}
               xl={3}
-              sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel sx={queries.medium_text}>
                 Monto Gastos Adicionales
               </InputLabel>
               <TextField
-                // disabled={reestructura === "con autorizacion" ||
-                // reestructura === "sin autorizacion" }
                 fullWidth
                 placeholder="0"
                 value={gastosCostos.montoGastosAdicionales}
@@ -745,7 +726,6 @@ export function GastoCostos() {
                   style: {
                     fontFamily: "MontserratMedium",
                   },
-                  //startAdornment: <AttachMoneyIcon />,
                 }}
                 variant="standard"
               />
@@ -755,10 +735,9 @@ export function GastoCostos() {
               item
               xs={10}
               sm={10}
-              md={10}
-              lg={10}
+              md={3}
+              lg={3}
               xl={3}
-              sx={isSmallScreen ? gridItemStyle : {}}
             >
               <InputLabel disabled sx={queries.medium_text}>
                 Saldo Vigente
