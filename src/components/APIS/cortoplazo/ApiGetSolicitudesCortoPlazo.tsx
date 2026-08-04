@@ -3,6 +3,7 @@ import { IComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogCom
 import { rolesAdmin } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { ConsultaRequerimientosReestructura } from "../../../store/SolicitudFirma/solicitudFirma";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
+import { useLargoPlazoStore } from "../../../store/CreditoLargoPlazo/main";
 import { useNavigate } from "react-router-dom";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
@@ -13,7 +14,8 @@ export function getComentariosSolicitudPlazo(
   setState: Function
 ) {
 
-  const state = useCortoPlazoStore.getState();
+      const state = useCortoPlazoStore.getState();
+      const stateLP = useLargoPlazoStore.getState();
 
   return axios({
     method: "get",
@@ -60,12 +62,27 @@ export function getComentariosSolicitudPlazo(
       const esAdmin = rolesAdmin.includes(rol);
 
       const comentariosFiltrados = data.data.filter((c: IComentarios) =>
-        esAdmin ? c.Tipo === "Requerimiento" : c.Tipo === "Captura"
+        esAdmin ? c.Tipo === "Requerimiento" : c.Tipo === "Captura" || c.Tipo === "Requerimiento"
       );
       
       // console.log("Data comentarios filtrados", comentariosFiltrados)
 
       state.setComentariosSolicitudInscripcion(comentariosFiltrados);
+
+      const requerimientos = data.data.filter(
+        (c: IComentarios) => c.Tipo === "Requerimiento"
+      );
+
+      if (esAdmin) {
+        state.setDatosActualizar([]);
+        stateLP.setDatosActualizar([]);
+      } else if (requerimientos.length > 0) {
+        state.setDatosActualizar(requerimientos);
+        stateLP.setDatosActualizar(requerimientos);
+      } else {
+        state.setDatosActualizar([]);
+        stateLP.setDatosActualizar([]);
+      }
 
 
       // state.setComentariosSolicitudInscripcion(data.data);
@@ -75,5 +92,32 @@ export function getComentariosSolicitudPlazo(
     })
     .catch((error) => {
       return error;
+    });
+}
+
+export function getFechasFirmaVerificador(
+  idSolicitud: string
+): Promise<{
+  fechaInscripcion: string | null;
+  fechaRespuestaPrevencion: string | null;
+}> {
+  return axios({
+    method: "get",
+    url: process.env.REACT_APP_APPLICATION_BACK + `/get-FechasFirmaVerificador/${idSolicitud}`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken") || "",
+    },
+  })
+    .then(({ data }) => ({
+      fechaInscripcion: data.fechaInscripcion || null,
+      fechaRespuestaPrevencion: data.fechaRespuestaPrevencion || null,
+    }))
+    .catch((error) => {
+      console.error("Error obteniendo fechas firma verificador:", error);
+      return {
+        fechaInscripcion: null,
+        fechaRespuestaPrevencion: null,
+      };
     });
 }

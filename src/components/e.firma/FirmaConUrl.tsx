@@ -14,6 +14,7 @@ import {
 } from "../ObligacionesCortoPlazoPage/Dialogs/DialogSolicitarModificacion";
 import { useInscripcionStore } from "../../store/Inscripcion/main";
 import { IInscripcion } from "../../store/Inscripcion/inscripcion";
+import { useTrazabilidad } from "../../store/Trazabilidad/main";
 
 export const FirmaConUrl = () => {
   const query = {
@@ -23,15 +24,17 @@ export const FirmaConUrl = () => {
 
   const url: string = useSolicitudFirmaStore((state) => state.url);
 
+  const filtro = useInscripcionStore.getState();
+
   const changeInfoDoc: Function = useSolicitudFirmaStore(
     (state) => state.changeInfoDoc
   );
 
   const [usuarios, setUsuarios] = useState<Array<IUsuariosAsignables>>([]);
 
-   const inscripcion : IInscripcion = useInscripcionStore(
+  const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
-  ); 
+  );
 
   useEffect(() => {
     getListadoUsuarioRol(setUsuarios);
@@ -46,6 +49,8 @@ export const FirmaConUrl = () => {
   ) => {
     let users: string[] = [];
     let editor = "";
+    // Capturar la fecha para que coincida con FechaRequerimientos
+    const fechaNotificacion = new Date().toISOString();
     //TODOS LOS IF TENIAN MENOS 1 POR EL EL NUEVO ESTATUS 
     if (estatus === "4") {
       console.log("Estatus CHIDO 4: ", estatus);
@@ -60,15 +65,16 @@ export const FirmaConUrl = () => {
         )
         .map((usuario) => usuario.Id);
 
-        console.log("Usuarios Destino para Notificación: ", usuariosDestino);
+      console.log("Usuarios Destino para Notificación: ", usuariosDestino);
 
       createNotification(
         "Crédito Simple a Corto Plazo",
         `Solicitud lista para asignar a usuario revisor`,
-        usuariosDestino ,// ← AQUÍ ESTÁ LA CORRECCIÓN
+        usuariosDestino,// ← AQUÍ ESTÁ LA CORRECCIÓN
         inscripcion.Id,
         "Asignacion",
-        parseInt(inscripcion.NumeroRegistro) //numero registro solicitud
+        parseInt(inscripcion.NumeroRegistro), //numero registro solicitud
+        fechaNotificacion
       );
 
       // createNotification(
@@ -98,6 +104,32 @@ export const FirmaConUrl = () => {
       //   `Se ha registrado una solicitud de inscripción pendiente de revisión`,
       //   users
       // );
+    // } else if (estatus === "7" && filtro.proceso === "desechado") {
+    //   createNotification(
+    //     "Crédito Simple a Corto Plazo",
+    //     `${oficio} ha sido autorizado con fecha ${
+    //       new Date().toLocaleString("es-MX").split(" ")[0]
+    //     } y hora ${new Date().toLocaleString("es-MX").split(" ")[1]}`,
+    //     users
+    //   );
+    } else if (estatus === "30") {
+      // Desechamiento - notificar al Verificador
+      const idVerificador = useTrazabilidad.getState().IdPrimerUsuarioEstatus2;
+      console.log("Estatus 30 - Desechamiento, ID Verificador: ", idVerificador);
+      
+      if (idVerificador && idVerificador !== "") {
+        createNotification(
+          "Crédito Simple a Corto Plazo",
+          `La solicitud ha sido desechada. Por favor, ingresa al apartado Consulta de Solicitudes para ver más detalles.`,
+          [idVerificador],
+          id,
+          "inscripcion",
+          parseInt(inscripcion.NumeroRegistro),
+          fechaNotificacion
+        );
+      }
+      
+      editor = idVerificador || idCreador;
     } else if (estatus === "9") {
       editor = idCreador;
       //editor = "";

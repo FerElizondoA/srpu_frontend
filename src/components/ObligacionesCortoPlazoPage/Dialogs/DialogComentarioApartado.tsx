@@ -153,6 +153,10 @@ export function ComentarioApartado({
     state => state.removeComentarioEliminar
   );
 
+  const removeComentarioNoSolventado = useCortoPlazoStore(
+    state => state.removeComentarioNoSolventado
+  );
+
   // const [comentariosEliminar, setComentariosEliminar] = useState<
   //   {
   //     id: string;
@@ -252,6 +256,19 @@ export function ComentarioApartado({
 
 
 
+  const obtenerLetraDeclaratoria = (apartado: string): string => {
+    const match = apartado.match(/^([a-zA-Z])[\)\.]/);
+    return match ? match[1].toUpperCase() : "";
+  };
+
+  const getTituloComentario = () => {
+    if (openState.tab === "TabDeclaratorias") {
+      const letra = obtenerLetraDeclaratoria(openState.apartado);
+      return letra ? `Comentario: Declaratoria ${letra})` : `Comentario: Declaratoria`;
+    }
+    return `Comentario: ${openState.apartado}`;
+  };
+
   return (
     <Dialog
       fullWidth
@@ -262,7 +279,7 @@ export function ComentarioApartado({
       }}
     >
       <DialogTitle sx={{ color: "#AF8C55" }}>
-        Comentario: <strong>{openState.apartado}</strong>
+        {getTituloComentario()}
       </DialogTitle>
 
       <DialogContent>
@@ -320,6 +337,7 @@ export function ComentarioApartado({
                               apartado: item.apartado,
                               jsonOriginal: item.jsonOriginal,
                             });
+                            removeComentarioNoSolventado(item.id);
                           }
                         }}
                       >

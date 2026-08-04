@@ -25,6 +25,13 @@ export function FuentePagoSecciones() {
     isMobile: useMediaQuery("(min-width: 0px) and (max-width: 600px)"),
   };
 
+  const datosActualizar: Array<string> = useLargoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
+  const disable =
+    datosActualizar.length > 0 && !datosActualizar.includes("Fuente de Pago");
+
   const [tabIndex, setTabIndex] = useState(0);
   const handleChange = (event: SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
@@ -207,7 +214,7 @@ export function FuentePagoSecciones() {
         }}>
           <ThemeProvider theme={buttonTheme}>
             <Button sx={{ ...queries.buttonContinuar }}
-              disabled={!mecanismoVehiculoPago.NumeroRegistro}
+              disabled={disable || !mecanismoVehiculoPago.NumeroRegistro}
               onClick={() => {
                 if (mecanismoVehiculoPago.NumeroRegistro) {
                   llenarFuentePago(tipoMecanismoVehiculoPago);

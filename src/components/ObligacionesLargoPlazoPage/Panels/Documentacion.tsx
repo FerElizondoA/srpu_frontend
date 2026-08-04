@@ -363,7 +363,7 @@ export const Documentacion = ({ addArrDocsEliminados, }: { addArrDocsEliminados:
                             val.nombreArchivo ===
                             "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                             (datosActualizar.length > 0 &&
-                              !datosActualizar.includes(val.tipoArchivo))
+                              !datosActualizar.includes(val.descripcionTipo))
                           }
                           size="small"
                           multiline={!query.isMobile}
@@ -436,7 +436,7 @@ export const Documentacion = ({ addArrDocsEliminados, }: { addArrDocsEliminados:
                             <input
                               disabled={
                                 datosActualizar.length > 0 &&
-                                !datosActualizar.includes(val.tipoArchivo)
+                                !datosActualizar.includes(val.descripcionTipo)
                               }
                               type="file"
                               accept="application/pdf"
@@ -456,6 +456,10 @@ export const Documentacion = ({ addArrDocsEliminados, }: { addArrDocsEliminados:
                             <Tooltip title="Remover Archivo">
                               <Button
                                 sx={{ position: "absolute", right: 0 }}
+                                disabled={
+                                  datosActualizar.length > 0 &&
+                                  !datosActualizar.includes(val.descripcionTipo)
+                                }
                                 onClick={() => {
                                   // clearArchivo(index);
                                   // quitDocument(openEliminar.index);

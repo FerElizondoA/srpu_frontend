@@ -1,8 +1,9 @@
 import axios from "axios";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { StateCreator } from "zustand";
 import { ActualizaDescarga } from "../../components/APIS/pathDocSol/APISDocumentos";
+import { getFechasFirmaVerificador } from "../../components/APIS/cortoplazo/ApiGetSolicitudesCortoPlazo";
 import { useCortoPlazoStore } from "../CreditoCortoPlazo/main";
 import { IInscripcion, ISolicitudLargoPlazo } from "../Inscripcion/inscripcion";
 import { useInscripcionStore } from "../Inscripcion/main";
@@ -441,7 +442,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
 
 
 
-  changeInfoDoc: (info: any, cambiaEstatus: Function) => {
+  changeInfoDoc: async (info: any, cambiaEstatus: Function) => {
     set(() => ({ infoDoc: info }));
     const stateCancelaciones = useCancelacionStore.getState()
     const stateTrazabilidad = useTrazabilidad.getState()
@@ -562,7 +563,7 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
             responseType: "arraybuffer",
           }
         )
-        .then((response) => {
+        .then(async (response) => {
           //Para guardar los porcentajes acumulados ya inscritos
           if (filtro.inscripcion.TipoSolicitud === "Crédito Simple a Largo Plazo" && filtro.inscripcion.NoEstatus === "10") {
 
@@ -707,36 +708,42 @@ export const createSolicitudFirmaSlice: StateCreator<SolicitudFirmaSlice> = (
           //Aqui ira el proceso para tomar el primer ID del usuario verificador con el estatus 2 
           // que este de la tabla trazabilidad, y este de convierta en el usuario EDITOR ******
 
-          stateTrazabilidad.getPrimerUsuarioEstatus2(estatusPrevio.Id)
+          await stateTrazabilidad.getPrimerUsuarioEstatus2(estatusPrevio.Id)
           console.log("estatusPrevio QUIERO EL ID ", estatusPrevio)
 
 
           cambiaEstatus(
             estatusPrevio.ControlInterno === "inscripcion"
               ? "4" // Revision // Asignaccion
-              : estatusPrevio.NoEstatus === "8" ? "9" // 7 y 8
-                : estatusPrevio.ControlInterno === "revision" &&
-                  state.proceso === "actualizacion"
-                  ? "9" //Antes 8// 
-                  : estatusPrevio.NoEstatus === "10" // Antes 9
-                    ? "11" // Antes 10
-                    : estatusPrevio.NoEstatus === "11" && //Antes 10
-                      state.proceso === "cancelacion"
-                      ? "13" //actualizacion: era 13 pero se cambiara  //AQUI SE ASIGNA PROCESO CANCELACION //Antes 12
-                      : estatusPrevio.ControlInterno === "cancelacion" &&
-                        state.proceso === "actualizacion"
-                        ? "18" // Antes 17 // Antes 16
-                        : estatusPrevio.ControlInterno === "cancelado"
-                          ? "20" //Antes 19// Antes 18
-                          : estatusPrevio.NoEstatus === "21" // Antes 20// Antes 19 
-                            ? "22" //Antes 21// Antes 20
-                            : estatusPrevio.NoEstatus === "26" // Antes 24 Se agrego 2 por las 2 asignaciones nuevas // Antes 23
-                              ? "27" // Antes 25 Se agrego 2 por las 2 asignaciones nuevas // Antes 24
-                              : estatusPrevio.NoEstatus === "28"  // Antes 26 Se agrego 2 por las 2 asignaciones nuevas // Antes 25
-                                ? "11" // Antes 10
-                                : "13", // Antes 11
+              : estatusPrevio.NoEstatus === "7" && filtro.proceso === "desechado"
+                ? "30" // Desechamiento: estatus 7 -> 30
+                : estatusPrevio.NoEstatus === "8" ? "9" // 7 y 8
+                  : estatusPrevio.ControlInterno === "revision" &&
+                    filtro.proceso === "actualizacion"
+                    ? "9" //Antes 8// 
+                    : estatusPrevio.NoEstatus === "10" // Antes 9
+                      ? "11" // Antes 10
+                      : estatusPrevio.NoEstatus === "11" && //Antes 10
+                        filtro.proceso === "cancelacion"
+                        ? "13" //actualizacion: era 13 pero se cambiara  //AQUI SE ASIGNA PROCESO CANCELACION //Antes 12
+                        : estatusPrevio.ControlInterno === "cancelacion" &&
+                          filtro.proceso === "actualizacion"
+                          ? "18" // Antes 17 // Antes 16
+                          : estatusPrevio.ControlInterno === "cancelado"
+                            ? "20" //Antes 19// Antes 18
+                            : estatusPrevio.NoEstatus === "21" // Antes 20// Antes 19 
+                              ? "22" //Antes 21// Antes 20
+                              : estatusPrevio.NoEstatus === "26" // Antes 24 Se agrego 2 por las 2 asignaciones nuevas // Antes 23
+                                ? "27" // Antes 25 Se agrego 2 por las 2 asignaciones nuevas // Antes 24
+                                : estatusPrevio.NoEstatus === "28"  // Antes 26 Se agrego 2 por las 2 asignaciones nuevas // Antes 25
+                                  ? "11" // Antes 10
+                                  : estatusPrevio.NoEstatus === "29"
+                                    ? "30"
+                                    : "13", // Antes 11
             estatusPrevio.Id,
-            estatusPrevio.NoEstatus === "8" ? stateTrazabilidad.IdPrimerUsuarioEstatus2 : inf.IdUsuario,
+            estatusPrevio.NoEstatus === "8" || (estatusPrevio.NoEstatus === "7" && filtro.proceso === "desechado")
+              ? stateTrazabilidad.IdPrimerUsuarioEstatus2 
+              : inf.IdUsuario,
             estatusPrevio.NoEstatus === "12" ? localStorage.getItem("IdUsuario") : ""
           );
 
@@ -1136,6 +1143,97 @@ export async function ConsultaSolicitud(setUrl: Function) { //PDF Inscripcion  V
     .catch((err) => { });
 }
 
+
+export async function desechamientoDoc(
+  NoOficio: string,
+  Solicitud: string,
+  comentariosOriginales: any[],
+  comentariosNoSolventados: any[],
+  comentariosNuevos: any,
+  fechaPrevencion: string,
+  setUrl: Function
+) {
+  const solicitud: any = JSON.parse(Solicitud);
+  const inscripcion = useInscripcionStore.getState().inscripcion;
+
+  const state = useCortoPlazoStore.getState();
+  const MontoALetras = state.convertirMontosAPalabras(
+    solicitud?.informacionGeneral?.informacionGeneral?.monto.toString()
+  );
+
+  // Obtener fechas de firma del verificador desde trazabilidad
+  let fechaInscripcion = "";
+  let fechaRespuestaPrevencion = "";
+  try {
+    const fechas = await getFechasFirmaVerificador(inscripcion.Id);
+    if (fechas.fechaInscripcion) {
+      fechaInscripcion = format(new Date(fechas.fechaInscripcion), "PPP", { locale: es });
+    }
+    if (fechas.fechaRespuestaPrevencion) {
+      fechaRespuestaPrevencion = format(new Date(fechas.fechaRespuestaPrevencion), "PPP", { locale: es });
+    }
+  } catch (error) {
+    console.error("Error obteniendo fechas firma verificador:", error);
+  }
+
+  await axios
+    .post(
+      process.env.REACT_APP_APPLICATION_BACK + "/create-pdf-desechamiento",
+      {
+        /*Ya*/oficioConstancia: NoOficio,
+        servidorPublico: solicitud.encabezado.solicitanteAutorizado.Nombre,
+        cargo: solicitud.encabezado.solicitanteAutorizado.Cargo,
+        organismo: solicitud.encabezado.organismo.Organismo,
+        oficioSolicitud: NoOficio,
+        fechaSolicitud: format(
+          new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),
+          "PPP",
+          { locale: es }
+        ),
+        fechaActual: format(new Date(), "PPP", { locale: es }),
+        NombreOrganismo: solicitud.encabezado.organismo.Organismo,
+        /*Ya*/InstitucionFinanciera:
+          solicitud.informacionGeneral.informacionGeneral.institucionFinanciera.Descripcion,
+        fechaContratacion: format(
+          new Date(solicitud.informacionGeneral.informacionGeneral.fechaContratacion),
+          "PPP",
+          { locale: es }
+        ),
+        /*Ya*/MontoOriginal: solicitud.informacionGeneral.informacionGeneral.monto
+          .toString()
+          .replace("$ ", "$"),
+
+        /*Ya*/MontoLetras: MontoALetras.replace("$ ", "$"),
+        Requerimientos: JSON.stringify(comentariosOriginales),
+        ObseervacionesNoResueltas: JSON.stringify(comentariosNoSolventados),
+        FechaPrevencion: fechaPrevencion ? format(new Date(fechaPrevencion), "PPP", { locale: es }) : "",
+        FechaSiguientePrevencion: fechaPrevencion ? format(addDays(new Date(fechaPrevencion), 1), "PPP", { locale: es }) : "",
+        Fecha10Prevencion: fechaPrevencion ? format(addDays(new Date(fechaPrevencion), 10), "PPP", { locale: es }) : "",
+        FechaInscripcion: fechaInscripcion,
+        FechaRespuestaPrevencion: fechaRespuestaPrevencion,
+        FechaActual: format(new Date(), "PPP", { locale: es }),
+        TipoEntePublico: solicitud.encabezado.tipoEntePublico.TipoEntePublico,
+        directorGeneral: solicitud.inscripcion.servidorPublicoDirigido,
+        cargoDirectorGeneral:
+          solicitud.inscripcion.cargoServidorPublicoServidorPublicoDirigido,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("jwtToken"),
+          "Access-Control-Allow-Origin": "*",
+        },
+        responseType: "arraybuffer",
+      }
+    )
+    .then((response) => {
+      const a = window.URL || window.webkitURL;
+      const url = a.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      setUrl(url);
+    })
+    .catch((err) => {});
+}
 
 export async function ConsultaSolicitudReestructura(setUrl: Function) {
   let inscripcion: IDatosSolicitudReestructura = useInscripcionStore?.getState()?.inscripcionReestructura;

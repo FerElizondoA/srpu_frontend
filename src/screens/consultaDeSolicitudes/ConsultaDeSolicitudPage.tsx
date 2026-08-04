@@ -47,6 +47,7 @@ import {
   ConsultaConstancia,
   ConsultaRequerimientos,
   ConsultaSolicitud,
+  desechamientoDoc,
 } from "../../store/SolicitudFirma/solicitudFirma";
 import { DialogTrazabilidad } from "./DialogTrazabilidad";
 import { queries } from "../../queries";
@@ -491,7 +492,7 @@ export function ConsultaDeSolicitudPage() {
                   datosFiltrados.map((row, index) => {
                     let chip = <></>;
                     if ((localStorage.getItem("Rol") === "Capturador" || localStorage.getItem("Rol") === "Verificador") &&
-                      (row.Control !== "Capturador" && row.Control !== "Verificador")) {
+                      (row.Control !== "Capturador" && row.Control !== "Verificador" && row.Control !== "Desechado")) {
 
                       chip = (
                         <Chip
@@ -775,12 +776,47 @@ export function ConsultaDeSolicitudPage() {
                                                 a.Tipo === "Requerimiento"
                                             )[0]
                                             : {},
-                                            data.filter((a: any) => a.Tipo === "Requerimiento").length > 0 ? true : false
-                                          
+                                          data.filter((a: any) => a.Tipo === "Requerimiento").length > 0 ? true : false
+
 
                                         );
                                         // }
                                       });
+                                    } else if (row.NoEstatus === "29") {
+                                      const state = useCortoPlazoStore.getState();
+                                      const comentariosOriginales = state.comentariosSolicitudInscripcion
+                                        .filter((c: any) => c.Tipo === "Requerimiento")
+                                        .map((c: any) => {
+                                          try {
+                                            const parsed = JSON.parse(c.Comentarios);
+                                            return {
+                                              id: c.Id,
+                                              apartado: Object.keys(parsed)[0],
+                                              comentario: Object.values(parsed)[0],
+                                              fecha: c.FechaCreacion,
+                                              usuario: c.Nombre,
+                                            };
+                                          } catch (e) {
+                                            return null;
+                                          }
+                                        })
+                                        .filter((c: any) => c !== null);
+
+                                      const comentariosNoSolventados = state.comentariosNoSolventados;
+                                      const comentariosNuevos = state.comentarios;
+                                      const fechaPrevencion = row.FechaRequerimientos || "";
+
+                                      desechamientoDoc(
+                                        row.NumeroRegistro,
+                                        row.Solicitud,
+                                        comentariosOriginales,
+                                        comentariosNoSolventados,
+                                        comentariosNuevos,
+                                        fechaPrevencion,
+                                        setUrl
+                                      );
+                                      setProceso("Por Firmar");
+                                      navigate("../firmaUrl");
                                     } else {
                                       ConsultaConstancia(
                                         row.Solicitud,

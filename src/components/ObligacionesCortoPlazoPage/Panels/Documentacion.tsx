@@ -352,7 +352,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                               val.nombreArchivo ===
                               "ARRASTRE O DE CLIC AQUÍ PARA SELECCIONAR ARCHIVO" ||
                               (datosActualizar.length > 0 &&
-                                !datosActualizar.includes(val.tipoArchivo))
+                                !datosActualizar.includes(val.descripcionTipo))
                           }
                           size="small"
                           multiline={!query.isMobile}
@@ -429,7 +429,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                                 reestructura === "con autorizacion"
                                   ? true
                                   : datosActualizar.length > 0 &&
-                                  !datosActualizar.includes(val.tipoArchivo)
+                                  !datosActualizar.includes(val.descripcionTipo)
                               }
                               type="file"
                               accept="application/pdf"
@@ -450,6 +450,10 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                             <Tooltip title="Remover Archivo">
                               <Button
                                 sx={{ position: "absolute", right: 0 }}
+                                disabled={
+                                  datosActualizar.length > 0 &&
+                                  !datosActualizar.includes(val.descripcionTipo)
+                                }
                                 onClick={() => {
                                   //  clearArchivo(index);
                                   setOpenEliminar({ open: true, index: index })
@@ -503,7 +507,7 @@ export function Documentacion({ addArrDocsEliminados }: { addArrDocsEliminados: 
                           <input
                             disabled={
                               reestructura === "con autorizacion" ? true :
-                                datosActualizar.length > 0 && !datosActualizar.includes(val.tipoArchivo)
+                                datosActualizar.length > 0 && !datosActualizar.includes(val.descripcionTipo)
                             }
                             type="file"
                             accept="application/pdf"

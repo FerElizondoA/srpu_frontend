@@ -6,10 +6,12 @@ import {
   TextField,
   DialogTitle,
   DialogContent,
+  DialogActions,
   FormControl,
   MenuItem,
-  DialogActions,
   Grid,
+  Paper,
+  Divider,
 } from "@mui/material";
 import { queries } from "../../../queries";
 import { useCortoPlazoStore } from "../../../store/CreditoCortoPlazo/main";
@@ -18,12 +20,11 @@ import { createNotification } from "../../LateralMenu/APINotificaciones";
 import Swal from "sweetalert2";
 import { getListadoUsuarioRol } from "../../APIS/Config/Solicitudes-Usuarios";
 import { CambiaEstatus } from "../../../store/SolicitudFirma/solicitudFirma";
+import { useTrazabilidad } from "../../../store/Trazabilidad/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IDocsEliminados } from "../Panels/InterfacesCortoPlazo";
 import { alertaConfirmCancelar } from "../../../generics/Alertas";
-import { clear } from "@testing-library/user-event/dist/clear";
-import { getSolicitudes } from "../../APIS/cortoplazo/APISInformacionGeneral";
 
 export interface IUsuariosAsignables {
   Id: string;
@@ -69,6 +70,14 @@ export function DialogSolicitarModificacion({
 
   const comentarios: {} = useCortoPlazoStore((state) => state.comentarios);
 
+  const comentariosSolicitudInscripcion = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion
+  );
+
+  const comentariosNoSolventados = useCortoPlazoStore(
+    (state) => state.comentariosNoSolventados
+  );
+
   const inscripcion: IInscripcion = useInscripcionStore(
     (state) => state.inscripcion
   );
@@ -105,11 +114,13 @@ export function DialogSolicitarModificacion({
     // console.log('arrDocsEliminadossolicitar modificacion', arrDocsEliminados);
   }, [openState]);
 
-  const checkform = () => {
+  const checkform = async () => {
     if (rolesAdmin.includes(localStorage.getItem("Rol")!)) {
 
       //export const rolesAdmin = ["Revisor", "Validador", "Autorizador"];
 
+      // Capturar la fecha antes de cambiaEstatus para que coincida con FechaRequerimientos
+      const fechaNotificacion = new Date().toISOString();
 
       if (comentarios && Object.keys(comentarios).length > 0) {
         console.log("AGREGAR COMENTARIO");
@@ -120,15 +131,22 @@ export function DialogSolicitarModificacion({
         );
       }
 
+      if (
+        localStorage.getItem("Rol") === "Autorizador" &&
+        accion === "requerimiento"
+      ) {
+        await useTrazabilidad
+          .getState()
+          .getPrimerUsuarioEstatus2(inscripcion.Id);
+      }
+
       CambiaEstatus(
         localStorage.getItem("Rol") === "Autorizador"
           ? accion === "enviar"
             ? "10"
             : accion === "requerimiento"
               ? "8"
-              : accion === "desechamiento" //Puede que no lo ocupes
-                ? "29"
-                : "6"   //SINO SE OCUPA LO DE ARRIBA ESTE ES EL ESTATUS QUE DEBE QUEDAR POR DEFAULT
+              : "6"   //SINO SE OCUPA LO DE ARRIBA ESTE ES EL ESTATUS QUE DEBE QUEDAR POR DEFAULT
           : localStorage.getItem("Rol") === "Validador"
             ? accion === "enviar"
               ? "7" //Antes 6
@@ -137,7 +155,9 @@ export function DialogSolicitarModificacion({
 
         inscripcion.Id,
         localStorage.getItem("Rol") === "Autorizador" && idUsuarioAsignado === ""
-          ? localStorage.getItem("IdUsuario")!
+          ? accion === "requerimiento"
+            ? useTrazabilidad.getState().IdPrimerUsuarioEstatus2
+            : localStorage.getItem("IdUsuario")!
           : idUsuarioAsignado
       ).then(() => {
 
@@ -148,9 +168,7 @@ export function DialogSolicitarModificacion({
           ${localStorage.getItem("Rol") === "Autorizador" 
             ?accion === "enviar" 
               ?"firmar"
-              : accion === "desechamiento"
-                  ? "desechamiento"
-                  : "validación"
+              : "validación"
             : localStorage.getItem("Rol") === "Validador"
               ? accion === "enviar"
                 ? "autorización"
@@ -160,13 +178,15 @@ export function DialogSolicitarModificacion({
 
           [
             localStorage.getItem("Rol") === "Autorizador"
-              ? localStorage.getItem("IdUsuario")!
+              ? accion === "requerimiento"
+                ? useTrazabilidad.getState().IdPrimerUsuarioEstatus2
+                : localStorage.getItem("IdUsuario")!
               : idUsuarioAsignado,
           ],
           inscripcion.Id,
           "inscripcion",
           parseInt(inscripcion.NumeroRegistro),
-          //Aqui va el control interno
+          fechaNotificacion
         );
 
 
@@ -311,23 +331,29 @@ export function DialogSolicitarModificacion({
     handler(false);
   };
 
-  const tituloDialog = (accion: string) => {
+  const getDialogTitle = (accion: string) => {
     switch (accion) {
       case "enviar":
-        return "Esta por confirmar la solicitud, ¿Desea continuar?";
+        return "Confirmar Solicitud";
       case "requerimiento":
-        return "Esta por confirmar una solicitud de prevención, ¿Desea continuar?";
-      case "desechamiento":
-        return "Esta por desechar la solicitud, ¿Desea continuar?";
+        return "Solicitud de Prevención";
+      case "modificar":
+        return "Devolver para Modificación";
       default:
-        return "Favor de asignar a un usuario para validacion:";
+        return "Confirmar Acción";
     }
-  }
+  };
 
+  const getComentariosTitle = () => {
+    const rol = localStorage.getItem("Rol") || "";
+    return ["Revisor", "Validador", "Autorizador"].includes(rol)
+      ? "Requerimientos"
+      : "Comentarios";
+  };
 
   return (
     <Dialog
-       maxWidth={"md"}
+      maxWidth={"md"}
       fullWidth
       open={openState}
       keepMounted
@@ -335,141 +361,191 @@ export function DialogSolicitarModificacion({
         handler(false);
       }}
     >
-
-      <DialogTitle sx={{ display: "flex", justifyContent: "center" }}>
-        <Typography sx={queries.bold_text}>
-          {tituloDialog(accion)}
-
+      <DialogTitle
+        sx={{
+          bgcolor: "#AF8C55",
+          color: "white",
+          textAlign: "center",
+          py: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          {getDialogTitle(accion)}
         </Typography>
       </DialogTitle>
 
+      <DialogContent sx={{ p: 3 }}>
+        <Grid container spacing={3}>
+          {/* Selector de usuario (si aplica) */}
+          {!(localStorage.getItem("Rol") === "Autorizador" &&
+            (accion === "enviar" || accion === "requerimiento")) && (
+            <Grid item xs={12}>
+              <Paper
+                elevation={2}
+                sx={{ p: 2, bgcolor: "#f5f5f5", borderLeft: "4px solid #AF8C55", mt: 2 }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                  Asignar a:
+                </Typography>
+                <FormControl fullWidth>
+                  <TextField
+                    select
+                    value={idUsuarioAsignado}
+                    onChange={(e) => {
+                      setidUsuarioAsignado(e.target.value);
+                    }}
+                    placeholder="Seleccione un usuario"
+                  >
+                    {localStorage.getItem("Rol")! === "Autorizador" ||
+                    localStorage.getItem("Rol") === "Revisor"
+                      ? usuarios
+                          .filter((usr) => usr.Rol === "Validador")
+                          .map((usuario, index) => {
+                            return (
+                              <MenuItem value={usuario.Id} key={index}>
+                                {usuario.Nombre +
+                                  " " +
+                                  usuario.ApellidoPaterno +
+                                  " " +
+                                  usuario.ApellidoMaterno +
+                                  " - " +
+                                  (usuario.Rol || "")}
+                              </MenuItem>
+                            );
+                          })
+                      : localStorage.getItem("Rol")! === "Validador"
+                      ? accion === "enviar"
+                        ? usuarios
+                            .filter((usr) => usr.Rol === "Autorizador")
+                            .map((usuario, index) => {
+                              return (
+                                <MenuItem value={usuario.Id} key={index}>
+                                  {usuario.Nombre +
+                                    " " +
+                                    usuario.ApellidoPaterno +
+                                    " " +
+                                    usuario.ApellidoMaterno +
+                                    " - " +
+                                    (usuario.Rol || "")}
+                                </MenuItem>
+                              );
+                            })
+                        : usuarios
+                            .filter((usr) => usr.Rol === "Revisor")
+                            .map((usuario, index) => {
+                              return (
+                                <MenuItem value={usuario.Id} key={index}>
+                                  {usuario.Nombre +
+                                    " " +
+                                    usuario.ApellidoPaterno +
+                                    " " +
+                                    usuario.ApellidoMaterno +
+                                    " - " +
+                                    (usuario.Rol || "")}
+                                </MenuItem>
+                              );
+                            })
+                      : usuarios
+                          .filter((usr) => usr.Rol === "Capturador")
+                          .map((usuario, index) => {
+                            return (
+                              <MenuItem value={usuario.Id} key={index}>
+                                {usuario.Nombre +
+                                  " " +
+                                  usuario.ApellidoPaterno +
+                                  " " +
+                                  usuario.ApellidoMaterno +
+                                  " - " +
+                                  (usuario.Rol || "")}
+                              </MenuItem>
+                            );
+                          })}
+                  </TextField>
+                </FormControl>
+              </Paper>
+            </Grid>
+          )}
 
-      <DialogContent>
-        {localStorage.getItem("Rol") === "Autorizador" &&
-          (accion === "enviar" || accion === "requerimiento" || accion === "desechamiento") ? null : (
-          <Grid mb={2}>
-            <FormControl fullWidth>
-              <TextField
-                select
-                value={idUsuarioAsignado}
-                onChange={(e) => {
-                  console.log("VALOR USUARIO", e.target.value);
+          {/* Comentarios/Requerimientos */}
+          {Object.values(comentarios).some((val) => val !== "") && (
+            <Grid item xs={12}>
+              <Paper
+                elevation={2}
+                sx={{ p: 2, bgcolor: "#fafafa", borderLeft: "4px solid #AF8C55", mt: 2 }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 600, color: "#AF8C55", mb: 1 }}
+                >
+                  {getComentariosTitle()}
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                {Object.entries(comentarios).map(([key, val], index) =>
+                  val === "" ? null : (
+                    <Grid
+                      item
+                      xs={12}
+                      key={index}
+                      sx={{
+                        mb: 1,
+                        p: 1.5,
+                        bgcolor: "white",
+                        borderRadius: 1,
+                        border: "1px solid #e0e0e0",
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 600, color: "#AF8C55" }}
+                      >
+                        {key}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: "#000000" }}>
+                        {val as string}
+                      </Typography>
+                    </Grid>
+                  )
+                )}
+              </Paper>
+            </Grid>
+          )}
 
-                  setidUsuarioAsignado(e.target.value);
+          {/* Mensaje si no hay comentarios */}
+          {Object.values(comentarios).every((val) => val === "") && (
+            <Grid item xs={12}>
+              <Paper
+                elevation={2}
+                sx={{
+                  p: 2,
+                  bgcolor: "#f5f5f5",
+                  borderLeft: "4px solid #9e9e9e",
+                  textAlign: "center",
+                  mt: 2,
                 }}
               >
-                {localStorage.getItem("Rol")! === "Autorizador" ||
-                  localStorage.getItem("Rol") === "Revisor"
-                  ? usuarios
-                    .filter((usr) => usr.Rol === "Validador")
-                    .map((usuario, index) => {
-                      return (
-                        <MenuItem value={usuario.Id} key={index}>
-                          {usuario.Nombre +
-                            " " +
-                            usuario.ApellidoPaterno +
-                            " " +
-                            usuario.ApellidoMaterno +
-                            " - " +
-                            (usuario.Rol || "")}
-                        </MenuItem>
-                      );
-                    })
-                  : localStorage.getItem("Rol")! === "Validador"
-                    ? accion === "enviar"
-                      ? usuarios
-                        .filter((usr) => usr.Rol === "Autorizador")
-                        .map((usuario, index) => {
-                          return (
-                            <MenuItem value={usuario.Id} key={index}>
-                              {usuario.Nombre +
-                                " " +
-                                usuario.ApellidoPaterno +
-                                " " +
-                                usuario.ApellidoMaterno +
-                                " - " +
-                                (usuario.Rol || "")}
-                            </MenuItem>
-                          );
-                        })
-                      : usuarios
-                        .filter((usr) => usr.Rol === "Revisor")
-                        .map((usuario, index) => {
-                          return (
-                            <MenuItem value={usuario.Id} key={index}>
-                              {usuario.Nombre +
-                                " " +
-                                usuario.ApellidoPaterno +
-                                " " +
-                                usuario.ApellidoMaterno +
-                                " - " +
-                                (usuario.Rol || "")}
-                            </MenuItem>
-                          );
-                        })
-                    : usuarios
-                      .filter((usr) => usr.Rol === "Capturador")
-                      .map((usuario, index) => {
-                        return (
-                          <MenuItem value={usuario.Id} key={index}>
-                            {usuario.Nombre +
-                              " " +
-                              usuario.ApellidoPaterno +
-                              " " +
-                              usuario.ApellidoMaterno +
-                              " - " +
-                              (usuario.Rol || "")}
-                          </MenuItem>
-                        );
-                      })}
-              </TextField>
-            </FormControl>
-          </Grid>
-        )}
-
-        {Object.entries(comentarios).length > 0 && (
-          <Typography sx={queries.bold_text}>
-            {rolesAdmin.includes(localStorage.getItem("Rol")!)
-              ? "Requerimientos"
-              : "Comentarios"}
-          </Typography>
-        )}
-
-        {Object.values(comentarios).every(val => val === "") ? (
-            <Typography sx={{ ...queries.text, fontSize: "1.5ch", display: "flex", justifyContent: "center" }}>
-              {rolesAdmin.includes(localStorage.getItem("Rol")!)
-                ? " Sin Requerimientos"
-                : "Sin Comentarios"}
-            </Typography>
-          ) : (
-            Object.entries(comentarios).map(([key, val], index) =>
-              val === "" ? null : (
-                <Typography sx={{ fontSize: "1.5ch" }} key={index}>
-                  <strong>{key}:</strong> {val as string}
+                <Typography variant="body1" sx={{ color: "#757575" }}>
+                  {["Revisor", "Validador", "Autorizador"].includes(
+                    localStorage.getItem("Rol") || ""
+                  )
+                    ? "Sin requerimientos adicionales"
+                    : "Sin comentarios adicionales"}
                 </Typography>
-              )
-            )
+              </Paper>
+            </Grid>
           )}
-        {/* {Object.entries(comentarios).map(([key, val], index) =>
-          (val as string) === "" ? null : (
-            <Typography
-              sx={{
-                fontSize: "1.5ch",
-              }}
-              key={index}
-            >
-              <strong>{key}:</strong>
-              {val as string}
-            </Typography>
-          )
-        )} */}
+        </Grid>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ p: 2, bgcolor: "#f5f5f5", justifyContent: "space-between" }}>
         <Button
-          sx={queries.buttonCancelar}
-          variant="text"
+          variant="contained"
           onClick={() => handler(false)}
+          sx={{
+            bgcolor: "#AF8C55",
+            "&:hover": {
+              bgcolor: "#8b6f47",
+            },
+          }}
         >
           Cancelar
         </Button>
@@ -480,13 +556,22 @@ export function DialogSolicitarModificacion({
               ? accion === "modificar" && idUsuarioAsignado === ""
               : idUsuarioAsignado === ""
           }
-          variant="text"
-          sx={queries.buttonContinuar}
+          variant="contained"
           onClick={() => {
             checkform();
           }}
+          sx={{
+            bgcolor: "#15212f",
+            "&:hover": {
+              bgcolor: "#0d1520",
+            },
+            "&.Mui-disabled": {
+              bgcolor: "#bdbdbd",
+              color: "#757575",
+            },
+          }}
         >
-          Enviar
+          Confirmar
         </Button>
       </DialogActions>
     </Dialog>

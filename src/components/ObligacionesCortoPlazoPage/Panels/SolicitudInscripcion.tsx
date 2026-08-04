@@ -32,6 +32,7 @@ import { IDocsEliminados } from "./InterfacesCortoPlazo";
 import { IFile } from "./Documentacion";
 import { useInscripcionStore } from "../../../store/Inscripcion/main";
 import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { IComentarios } from "../Dialogs/DialogComentariosSolicitud";
 
 interface Head {
   label: string;
@@ -103,6 +104,21 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
   };
 
   const comentarios: any = useCortoPlazoStore((state) => state.comentarios);
+
+  const comentariosSolicitudInscripcion: IComentarios[] = useCortoPlazoStore(
+    (state) => state.comentariosSolicitudInscripcion
+  );
+
+  const tieneComentariosAutorizador = (apartado: string) => {
+    return comentariosSolicitudInscripcion.some((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        return parsed[apartado] !== undefined && parsed[apartado] !== "";
+      } catch (error) {
+        return false;
+      }
+    });
+  }
 
   const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
 
@@ -647,7 +663,9 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
                                   (checkObj[1] === true && index === 2) ||
                                   (checkObj[2] === true && index === 1) ||
                                   (checkObj[3] === true && index === 4) ||
-                                  (checkObj[4] === true && index === 3)
+                                  (checkObj[4] === true && index === 3) ||
+                                  (localStorage.getItem("Rol") === "Verificador" && 
+                                   !tieneComentariosAutorizador(row.Descripcion))
                                 }
                                 onChange={(v) => {
                                   v.target.checked

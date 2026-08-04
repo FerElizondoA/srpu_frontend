@@ -101,12 +101,22 @@ export const createTrazabilidadSlice: StateCreator<TrazabilidadSlice> = (
         },
       })
       .then(({ data }) => {
-
-        state.setIdPrimerUsuarioEstatus2(data.data);
-        console.log("Primer usuario con estatus 2: ", data.data);
+        // data.data es un array de rows del stored procedure
+        // Extraer el primer elemento y obtener el campo Id o IdUsuario
+        let idUsuario = "";
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          const row = data.data[0];
+          idUsuario = row?.Id || row?.IdUsuario || row?.ID || row?.UsuarioModificador || "";
+        } else if (typeof data.data === "string") {
+          idUsuario = data.data;
+        }
+        
+        state.setIdPrimerUsuarioEstatus2(idUsuario);
+        console.log("Primer usuario con estatus 2: ", idUsuario);
 
       }).catch((error) => {
         console.log("Error al obtener el primer usuario con estatus 2", error);
+        state.setIdPrimerUsuarioEstatus2("");
       });
   }
 });

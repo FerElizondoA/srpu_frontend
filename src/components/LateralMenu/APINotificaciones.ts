@@ -7,7 +7,8 @@ export const createNotification = (
   listadoUsuarios: Array<string>,
   IdSolicitud?: string,
   ControlInterno?: string,
-  NumRegistroSolicitud?: number
+  NumRegistroSolicitud?: number,
+  FechaNotificacion?: string
 ) => {
   console.log("ListadoUsuarios en APINotificaciones: ", listadoUsuarios);
   axios
@@ -21,6 +22,7 @@ export const createNotification = (
         IdUsuarioCreador: localStorage.getItem("IdUsuario"),
         ListadoUsuarios: listadoUsuarios,
         NumRegistroSolicitud: NumRegistroSolicitud,
+        FechaNotificacion: FechaNotificacion,
       },
       {
         headers: {

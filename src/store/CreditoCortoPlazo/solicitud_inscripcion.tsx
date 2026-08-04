@@ -113,6 +113,29 @@ export interface SolicitudInscripcionSlice {
 
   cleanComentariosEliminar: () => void;
 
+  comentariosNoSolventados: {
+    id: string;
+    apartado: string;
+    comentario: string;
+    fechaOriginal: string;
+    observacion: string;
+  }[];
+
+  setComentariosNoSolventados: (
+    comentario: {
+      id: string;
+      apartado: string;
+      comentario: string;
+      fechaOriginal: string;
+    }
+  ) => void;
+
+  updateObservacionNoSolventado: (id: string, observacion: string) => void;
+
+  removeComentarioNoSolventado: (id: string) => void;
+
+  cleanComentariosNoSolventados: () => void;
+
   // eliminarComentariosBD: (IdComentarioEliminar: string) => void;
   // setIdComentarioEiminar: (IdComentarioEliminar: string) => void;
   // IdComentarioEliminar: string;
@@ -158,6 +181,45 @@ export const createSolicitudInscripcionSlice: StateCreator<
   cleanComentariosEliminar: () => {
     set({
       comentariosEliminar: []
+    });
+  },
+
+  comentariosNoSolventados: [],
+
+  setComentariosNoSolventados: (comentario) => {
+    set((state) => {
+      const existe = state.comentariosNoSolventados.some(c => c.id === comentario.id);
+      
+      if (existe) {
+        return state;
+      }
+      return {
+        comentariosNoSolventados: [
+          ...state.comentariosNoSolventados,
+          { ...comentario, observacion: "" }
+        ]
+      };
+    });
+  },
+
+  updateObservacionNoSolventado: (id, observacion) => {
+    set((state) => ({
+      comentariosNoSolventados: state.comentariosNoSolventados.map(c => 
+        c.id === id ? { ...c, observacion } : c
+      )
+    }));
+  },
+
+  removeComentarioNoSolventado: (id) => {
+    set((state) => ({
+      comentariosNoSolventados:
+        state.comentariosNoSolventados.filter(c => c.id !== id)
+    }));
+  },
+
+  cleanComentariosNoSolventados: () => {
+    set({
+      comentariosNoSolventados: []
     });
   },
 

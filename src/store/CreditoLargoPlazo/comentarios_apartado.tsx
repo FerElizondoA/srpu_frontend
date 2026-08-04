@@ -44,6 +44,7 @@ export const createComentarioLargoPlazoSlice: StateCreator<ComentarioApartadoLar
       comentarios: {},
       comentariosRegistro: {},
       idComentario: "",
+      datosActualizar: [],
     }));
   },
 
@@ -76,8 +77,24 @@ export const createComentarioLargoPlazoSlice: StateCreator<ComentarioApartadoLar
   datosActualizar: [],
 
   setDatosActualizar: (datos: any) => {
+    if (!datos || datos.length === 0) {
+      set((state) => ({
+        datosActualizar: [],
+      }));
+      return;
+    }
+    const keys: string[] = [];
+    (Array.isArray(datos) ? datos : [datos]).forEach((d: any) => {
+      try {
+        Object.keys(JSON.parse(d.Comentarios)).forEach((k) => {
+          if (!keys.includes(k)) keys.push(k);
+        });
+      } catch (e) {
+        // ignora comentario inválido
+      }
+    });
     set((state) => ({
-      datosActualizar: Object.keys(JSON.parse(datos[0]!.Comentarios)),
+      datosActualizar: keys,
     }));
   },
 });

@@ -76,6 +76,13 @@ export function Autorizacion() {
   const [openDialogNuevaAutorizacion, setOpenNuevaAutorizacion] =
     useState(false);
 
+  const datosActualizar: Array<string> = useLargoPlazoStore(
+    (state) => state.datosActualizar
+  );
+
+  const disable =
+    datosActualizar.length > 0 && !datosActualizar.includes("Autorización");
+
   const autorizaciones: IAutorizaciones[] = useLargoPlazoStore(
     (state) => state.autorizaciones
   );
@@ -326,7 +333,7 @@ console.log("arr", arr)
             Autorización de la legislatura local
           </InputLabel>
           <Autocomplete
-            //disabled={reestructura === "con autorizacion"}
+            disabled={disable || reestructura === "con autorizacion"}
             disableClearable
             clearText="Borrar"
             noOptionsText="Sin opciones"
@@ -388,7 +395,7 @@ console.log("arr", arr)
           <Grid item width={"100%"} display={"flex"} justifyContent={"end"}>
             <ThemeProvider theme={buttonTheme}>
               <Button
-                //disabled={reestructura === "con autorizacion"}
+                disabled={disable || reestructura === "con autorizacion"}
                 sx={{
                   backgroundColor: "#15212f",
                   color: "white",
@@ -557,7 +564,7 @@ console.log("arr", arr)
                     >
                       <Tooltip title="Eliminar">
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
+                          disabled={disable || reestructura === "con autorizacion"}
                           type="button"
                           onClick={() => {
                             setDialogNumAutorizacion(
@@ -574,7 +581,7 @@ console.log("arr", arr)
 
                       <Tooltip title="Editar">
                         <IconButton
-                          disabled={reestructura !== ""}
+                          disabled={disable || reestructura !== ""}
                           type="button"
                           onClick={() => {
                             setAccion("Editar");
@@ -752,7 +759,7 @@ console.log("arr", arr)
                     >
                       <Tooltip title="Eliminar">
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
+                          disabled={disable || reestructura === "con autorizacion"}
                           type="button"
                           onClick={() => {
                             setDialogNumAutorizacion(
@@ -769,7 +776,7 @@ console.log("arr", arr)
 
                       <Tooltip title="Editar">
                         <IconButton
-                          disabled={reestructura === "con autorizacion"}
+                          disabled={disable || reestructura === "con autorizacion"}
                           type="button"
                           onClick={() => {
                             console.log("arr EDITAR", arr)

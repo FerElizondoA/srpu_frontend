@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Badge,
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -183,11 +184,13 @@ export function Resumen({
   estatus,
   arrDocsEliminados,
   funcionFiltroComentarios,
+  mostrarDeclaratorias,
 }: {
   coments: boolean,
   estatus: string,
   arrDocsEliminados?: IDocsEliminados[],
-  funcionFiltroComentarios?: Function
+  funcionFiltroComentarios?: Function,
+  mostrarDeclaratorias?: boolean
 }) {
   const [showModalPrevia, setShowModalPrevia] = useState(false);
 
@@ -250,6 +253,30 @@ export function Resumen({
   const documentos: IFile[] = useLargoPlazoStore(
     (state) => state.tablaDocumentos
   );
+
+  // Declaratorias
+  const catalogoReglas: ICatalogo[] = useCortoPlazoStore(
+    (state) => state.catalogoReglas
+  );
+  const reglasAplicables: string[] = useCortoPlazoStore(
+    (state) => state.reglasAplicables
+  );
+  const getReglas: Function = useCortoPlazoStore((state) => state.getReglas);
+
+  const organismoLP = useCortoPlazoStore(
+    (state) => state.encabezado.organismo.Organismo
+  );
+
+  const obtenerDescripcionReglaLP = (descripcion: string) => {
+    if (descripcion.includes("Municipio de Guadalupe.")) {
+      return descripcion.replace("Municipio de Guadalupe.", organismoLP + ".");
+    }
+    return descripcion;
+  };
+
+  useEffect(() => {
+    catalogoReglas.length <= 0 && getReglas();
+  }, []);
 
   const [openTasa, setOpenTasa] = useState(false);
   const [openComision, setOpenComision] = useState(false);
@@ -400,6 +427,17 @@ export function Resumen({
   const comentariosSolicitudInscripcion: IComentarios[] = useCortoPlazoStore(
     (state) => state.comentariosSolicitudInscripcion
   );
+
+  const tieneComentariosPreviosLP = (apartado: string) => {
+    return comentariosSolicitudInscripcion.some((c) => {
+      try {
+        const parsed = JSON.parse(c.Comentarios);
+        return parsed[apartado] !== undefined && parsed[apartado] !== "";
+      } catch (error) {
+        return false;
+      }
+    });
+  }
 
 
   const toBase64 = (file: any) =>
@@ -1902,6 +1940,87 @@ export function Resumen({
             </TableContainer>
           </Grid>
         </Grid>
+
+        {/* Sección de Declaratorias - Solo visible cuando mostrarDeclaratorias es true */}
+        {mostrarDeclaratorias && catalogoReglas.length > 0 && (
+          <Grid mt={3} width={"100%"}>
+            <Typography sx={queries.bold_text}>
+              Declaratorias Aplicables al Financiamiento u Obligación:
+            </Typography>
+            <Divider color="lightGrey"></Divider>
+            <Grid item width={"100%"} mt={3}>
+              <TableContainer
+                sx={{
+                  maxHeight: "100%",
+                  width: "100%",
+                  overflow: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: ".5vw",
+                    height: ".5vh",
+                    mt: 1,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#AF8C55",
+                    outline: "1px solid slategrey",
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+                        <StyledTableCell sx={{ width: "5%" }}>
+                          Comentarios
+                        </StyledTableCell>
+                      )}
+                      <StyledTableCell sx={{ width: "5%" }}>Seleccionada</StyledTableCell>
+                      <StyledTableCell>Declaratoria</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {catalogoReglas.map((row, index) => {
+                      const esAplicable = reglasAplicables.some(
+                        (regla) => regla === row.Descripcion || regla === obtenerDescripcionReglaLP(row.Descripcion)
+                      );
+
+                      return (
+                        <StyledTableRow key={index}>
+                          {(activaAccion || (activacionComentariosRevisor.includes(estatus) && localStorage.getItem("Rol") === "Revisor")) && (
+                            <StyledTableCell>
+                              <BotonComentario
+                                apartado={row.Descripcion}
+                                tab="TabDeclaratorias"
+                                activaAccion={activaAccion}
+                                estatus={estatus}
+                                activacionComentariosRevisor={activacionComentariosRevisor}
+                                comentarios={comentarios}
+                                comentariosBDMap={comentariosBDMap}
+                                setOpenComentarioApartado={setOpenComentarioApartado}
+                              />
+                            </StyledTableCell>
+                          )}
+                          <StyledTableCell align="center">
+                            <Checkbox
+                              checked={esAplicable}
+                              disabled={true}
+                              size="small"
+                            />
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            <Typography sx={{ fontSize: "0.85rem" }}>
+                              {obtenerDescripcionReglaLP(row.Descripcion)}
+                            </Typography>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
       <Dialog
         open={showModalPrevia}

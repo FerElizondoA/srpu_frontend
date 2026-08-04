@@ -524,6 +524,10 @@ export function InformacionGeneral() {
           <InputLabel sx={queries.medium_text}>Fecha de Vencimiento</InputLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
             <DesktopDatePicker
+              disabled={
+                datosActualizar.length > 0 &&
+                !datosActualizar.includes("Fecha de Vencimiento")
+              }
               value={vencimiento ? new Date(vencimiento) : null}
               sx={{ width: "100%" }}
               onChange={(date) => {
@@ -933,6 +937,10 @@ export function InformacionGeneral() {
                         <StyledTableCell align="center">
                           <Tooltip title="Eliminar">
                             <IconButton
+                              disabled={
+                                datosActualizar.length > 0 &&
+                                !datosActualizar.includes("Tabla Obligado Solidario / Aval")
+                              }
                               type="button"
                               onClick={() => removeObligadoSolidarioAval(index)}
                             >
@@ -949,6 +957,10 @@ export function InformacionGeneral() {
 
                         <StyledTableCell align="center" component="th">
                           <TextField
+                            disabled={
+                              datosActualizar.length > 0 &&
+                              !datosActualizar.includes("Tabla Obligado Solidario / Aval")
+                            }
                             variant="outlined"
                             fullWidth
                             type="text"

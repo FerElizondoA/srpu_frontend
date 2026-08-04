@@ -188,9 +188,8 @@ export function CondicionesFinancieras() {
   );
 
   let disable =
-    datosActualizar.length < 0 &&
-    (!datosActualizar.includes("Tabla Condiciones Financieras") ||
-      !datosActualizar.includes("Monto Original Contratado"));
+    datosActualizar.length > 0 &&
+    !datosActualizar.includes("Tabla Condiciones Financieras");
 
   const reestructura: string = useReestructuraStore(
     (state) => state.reestructura
