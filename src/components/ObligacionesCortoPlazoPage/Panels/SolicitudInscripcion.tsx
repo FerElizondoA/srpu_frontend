@@ -665,6 +665,7 @@ export function SolicitudInscripcion({ arrDocsEliminados }: { arrDocsEliminados?
                                   (checkObj[3] === true && index === 4) ||
                                   (checkObj[4] === true && index === 3) ||
                                   (localStorage.getItem("Rol") === "Verificador" && 
+                                   inscripcion.NoEstatus === "9" &&
                                    !tieneComentariosAutorizador(row.Descripcion))
                                 }
                                 onChange={(v) => {

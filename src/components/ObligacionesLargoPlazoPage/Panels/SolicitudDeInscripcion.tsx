@@ -34,6 +34,8 @@ import { IDocsEliminados } from "../../ObligacionesCortoPlazoPage/Panels/Interfa
 import { IFile } from "./Documentacion";
 import { Autorizacion } from "./Autorizacion";
 import { IComentarios } from "../../ObligacionesCortoPlazoPage/Dialogs/DialogComentariosSolicitud";
+import { IInscripcion } from "../../../store/Inscripcion/inscripcion";
+import { useInscripcionStore } from "../../../store/Inscripcion/main";
 
 interface Head {
   label: string;
@@ -96,6 +98,10 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
       }
     });
   }
+
+  const inscripcion: IInscripcion = useInscripcionStore(
+    (state) => state.inscripcion
+  );
 
 
 
@@ -620,6 +626,7 @@ export function SolicitudDeInscripcion({ arrDocsEliminados }: { arrDocsEliminado
                                   (checkObj[3] === true && index === 4) ||
                                   (checkObj[4] === true && index === 3) ||
                                   (localStorage.getItem("Rol") === "Verificador" && 
+                                   inscripcion.NoEstatus === "9" &&
                                    !tieneComentariosAutorizador(row.Descripcion))
                                 }
                                 onChange={(v) => {
